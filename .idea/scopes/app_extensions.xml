@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="app.extensions" pattern="file:app/extensions.py" />
+</component>

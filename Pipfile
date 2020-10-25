@@ -1,0 +1,32 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+click = "==8.0.1"
+environs = "==9.3.3"
+flask = "==2.0.1"
+flask-caching = "==1.10.1"
+flask-debugtoolbar = "==0.11.0"
+flask-static-digest = "==0.2.1"
+gunicorn = "==20.1.0"
+psycopg2 = "==2.9.1"
+werkzeug = "==2.0.1"
+
+[dev-packages]
+beautifulsoup4 = "==4.10.0"
+bump2version = "==1.0.1"
+flask-shell-ipython = "==0.4.1"
+ipython = "==7.28.0"
+jss = {editable = true, path = "."}
+prompt-toolkit = "==3.0.20"
+pyaud = "==3.2.7"
+pytest = "==6.2.4"
+pytest-randomly = "==3.10.1"
+pytest-sugar = "==0.9.4"
+restview = "==2.9.2"
+twine = "==3.4.2"
+
+[requires]
+python_version = "3.8"

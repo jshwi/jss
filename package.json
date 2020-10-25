@@ -1,0 +1,36 @@
+{
+  "name": "jss",
+  "version": "0.1.0",
+  "description": "A Flask web application",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "clean": "pyaud clean",
+    "digest": "flask digest compile",
+    "lint": "pyaud lint",
+    "test": "pyaud coverage",
+    "typecheck": "pyaud typecheck",
+    "upgrade": "flask db upgrade"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jshwi/jss.git"
+  },
+  "keywords": [
+    "Flask",
+    "web",
+    "application"
+  ],
+  "author": "Stephen Whitlock",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jshwi/jss/issues"
+  },
+  "homepage": "https://github.com/jshwi/jss#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "2.4.1"
+  }
+}

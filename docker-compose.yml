@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  production:
+    build:
+      context: .
+      target: production
+    image: jss-production:0.1.0
+    command: .venv/bin/pipenv run gunicorn --bind 0.0.0.0:5000 wsgi:app
+    expose:
+      - "5000"
+    env_file: .env
+    environment:
+      FLASK_ENV: production
+    depends_on:
+      - db
+
+  development:
+    build:
+      context: .
+      target: development
+    image: jss-development:0.1.0
+    command: .venv/bin/pipenv run flask run --host 0.0.0.0
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: development
+    env_file: .env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: jss
+      POSTGRES_PASSWORD: jss
+      POSTGRES_DB: jss
+
+  nginx:
+    build:
+      context: .
+      target: nginx
+    image: jss-nginx:0.1.0
+    ports:
+      - "1337:80"
+    depends_on:
+      - production
+
+volumes:
+  postgres_data:

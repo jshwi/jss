@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#=======================================================================
+#
+#          FILE:  post_compile
+#
+#         USAGE:  To be called upon deployment: post-compile
+#
+#   DESCRIPTION:  Post-compile hook for app deployment
+#
+#        AUTHOR:  Stephen Whitlock (jshwi), stephen@jshwisolutions.com
+#       CREATED:  26/09/21 17:42:54
+#      REVISION:  0.1.0
+#=======================================================================
+set -o errexit
+
+echo "-----> Digesting static files"
+cd "${1}" && flask digest compile

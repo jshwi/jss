@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="app.static.darkreader" pattern="file:app/static/darkreader.css" />
+</component>

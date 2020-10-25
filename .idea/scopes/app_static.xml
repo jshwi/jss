@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="app.static" pattern="file[jshwisolutions]:app/static/*" />
+</component>

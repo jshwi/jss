@@ -1,0 +1,465 @@
+"""
+tests._test
+===========
+"""
+# pylint: disable=too-many-arguments,too-many-lines
+import sqlite3
+from typing import Callable
+
+import pytest
+from flask import Flask, g, session
+from flask.testing import FlaskClient, FlaskCliRunner
+
+from app.models import get_db
+
+from .utils import (
+    MAIN_USER_PASSWORD,
+    MAIN_USER_USERNAME,
+    OTHER_USER_PASSWORD,
+    OTHER_USER_USERNAME,
+    POST_AUTHOR_ID,
+    POST_BODY,
+    POST_CREATED,
+    POST_TITLE,
+    UPDATE1,
+    AuthActions,
+    PostTestObject,
+    Recorder,
+    UserTestObject,
+)
+
+
+@pytest.mark.usefixtures("init_db")
+def test_register(
+    test_app: Flask, client: FlaskClient, auth: AuthActions
+) -> None:
+    """The register view should render successfully on ``GET``.
+
+    On ``POST``, with valid form data, it should redirect to the login
+    URL and the user's data should be in the database. Invalid data
+    should display error messages.
+
+    To test that the page renders successfully a simple request is made
+    and checked for a ``200 OK`` ``status_code``.
+
+    Headers will have a ``Location`` object with the login URL when the
+    register view redirects to the login view.
+
+    :param test_app:    Test ``Flask`` app object.
+    :param client:      App's test-client API.
+    :param auth:        Handle authorization with test app.
+    """
+    assert client.get("/auth/register").status_code == 200
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    response = auth.register(user_test_object)
+    assert response.headers["Location"] == "http://localhost/auth/login"
+    with test_app.app_context():
+        assert (
+            get_db()
+            .execute(
+                f"select * from user"
+                f" where username = '{user_test_object.username}'"
+            )
+            .fetchone()
+            is not None
+        )
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize(
+    "username,password,message",
+    [
+        ("", "", b"Username is required."),
+        ("a", "", b"Password is required."),
+        (MAIN_USER_USERNAME, MAIN_USER_PASSWORD, b"already registered"),
+    ],
+    ids=["no-username", "no-password", "name-taken"],
+)
+def test_register_validate_input(
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    username: str,
+    password: str,
+    message: str,
+) -> None:
+    """Test invalid input and error messages.
+
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param username:        The test username input.
+    :param password:        The test password input.
+    :param message:         The expected message for the response.
+    """
+    registered = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    registering = UserTestObject(username, password)
+    add_test_user(registered)
+    response = auth.register(registering)
+    assert message in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_login(
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+) -> None:
+    """Test login functionality.
+
+    :param client:          Flask client testing helper.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    add_test_user(user_test_object)
+    response = auth.login(user_test_object)
+    assert response.headers["Location"] == "http://localhost/"
+    with client:
+        client.get("/")
+        assert session["user_id"] == 1
+        assert g.user["username"] == user_test_object.username
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize(
+    "username,password",
+    [
+        ("not-a-username", MAIN_USER_PASSWORD),
+        (MAIN_USER_USERNAME, "not-a-password"),
+    ],
+    ids=["incorrect-username", "incorrect-password"],
+)
+def test_login_validate_input(
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    username: str,
+    password: str,
+) -> None:
+    """Test incorrect username and password error messages.
+
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param username:        Parametrized incorrect username
+    :param password:        Parametrized incorrect password
+    """
+    registered_user = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    add_test_user(registered_user)
+    test_user = UserTestObject(username, password)
+    response = auth.login(test_user)
+    assert b"Invalid username or password" in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_logout(client: FlaskClient, auth: AuthActions) -> None:
+    """Test logout functionality.
+
+    :param client:  Client for testing app.
+    :param auth:    Handle authorization with test app.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    auth.login(user_test_object)
+    with client:
+        auth.logout()
+        assert "user_id" not in session
+
+
+@pytest.mark.usefixtures("init_db")
+def test_index(
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    add_test_post: Callable[[PostTestObject], None],
+) -> None:
+    """Test login and subsequent requests from the client.
+
+    The index view should display information about the post that was
+    added with the test data. When logged in as the author there should
+    be a link to edit the post.
+
+    We can also test some more authentication behaviour while testing
+    the index view. When not logged in each pages shows links to log in
+    or register. When logged in there's a link to log out.
+
+    :param client:          Client for testing app.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    response = client.get("/")
+    assert b"Log In" in response.data
+    assert b"Register" in response.data
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    post_test_object = PostTestObject(
+        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+    )
+    add_test_user(user_test_object)
+    add_test_post(post_test_object)
+    auth.login(user_test_object)
+    response = client.get("/").data.decode()
+    assert "Log Out" in response
+    assert post_test_object.title in response
+    assert f"by {user_test_object.username}" in response
+    assert str(post_test_object.created).split()[0] in response
+    assert post_test_object.body in response
+    assert 'href="/1/update"' in response
+
+
+@pytest.mark.parametrize("route", ["/create", UPDATE1, "/1/delete"])
+def test_login_required(client: FlaskClient, route: str) -> None:
+    """Test requirement that user be logged in to post.
+
+    A user must be logged in to access the create, update, and delete
+    views.
+
+    The logged in user must be the author of the post to access the
+    update and delete views, otherwise a ``403 Forbidden`` status is
+    returned.
+
+    :param client:  Client for testing app.
+    :param route:   Parametrized route path.
+    """
+    response = client.post(route)
+    assert response.headers["Location"] == "http://localhost/auth/login"
+
+
+@pytest.mark.usefixtures("init_db")
+def test_author_required(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    add_test_post: Callable[[PostTestObject], None],
+) -> None:
+    """Test author's name when required.
+
+    The create and update views should render and return a ``200 OK``
+    status for a ``GET`` request.
+
+    When valid data is sent in a ``POST`` request the create view should
+    insert the new post data into the database and the update view
+    should modify the existing data. Both pages should show an error
+    message on invalid data.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param client:          Client for testing app.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    other_user_test_object = UserTestObject(
+        OTHER_USER_USERNAME, OTHER_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    add_test_user(other_user_test_object)
+    post_test_object = PostTestObject(
+        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+    )
+    add_test_post(post_test_object)
+    # change the post author to another author
+    with test_app.app_context():
+        db = get_db()
+        db.execute("UPDATE post SET author_id = 2 WHERE id = 1")
+        db.commit()
+
+    auth.login(user_test_object)
+    # current user cannot modify other user's post
+    assert client.post(UPDATE1).status_code == 403
+    assert client.post("/1/delete").status_code == 403
+
+    # current user doesn't see edit link
+    assert b'href="/1/update"' not in client.get("/").data
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize("route", ["/2/update", "/2/delete"])
+def test_exists_required(
+    client: FlaskClient,
+    auth: AuthActions,
+    route: str,
+    add_test_user: Callable[[UserTestObject], None],
+    add_test_post: Callable[[PostTestObject], None],
+) -> None:
+    """Test ``404 Not Found`` is returned when a route does not exist.
+
+    :param client:          Client for testing app.
+    :param auth:            Handle authorization with test app.
+    :param route:           Parametrized route path.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    post_test_object = PostTestObject(
+        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+    )
+    add_test_user(user_test_object)
+    add_test_post(post_test_object)
+    auth.login(user_test_object)
+    response = client.post(route)
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures("init_db")
+def test_create(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+) -> None:
+    """Test create view functionality.
+
+    When valid data is sent in a ``POST`` request the create view should
+    insert the new post data into the database.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param client:          Client for testing app.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    add_test_user(user_test_object)
+    auth.login(user_test_object)
+    assert client.get("/create").status_code == 200
+    client.post("/create", data={"title": POST_TITLE, "body": POST_BODY})
+    with test_app.app_context():
+        count = get_db().execute("SELECT COUNT(id) FROM post").fetchone()[0]
+        assert count == 1
+
+
+@pytest.mark.usefixtures("init_db")
+def test_update(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    add_test_post: Callable[[PostTestObject], None],
+) -> None:
+    """Test update view modifies the existing data.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param client:          Client for testing app.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    created_post = PostTestObject(
+        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+    )
+    updated_post = PostTestObject(
+        "updated title", "updated body", POST_AUTHOR_ID, POST_CREATED
+    )
+    add_test_user(user_test_object)
+    add_test_post(created_post)
+    auth.login(user_test_object)
+    assert client.get(UPDATE1).status_code == 200
+    client.post(
+        UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
+    )
+    with test_app.app_context():
+        db = get_db()
+        post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()
+        assert post["title"] == updated_post.title
+        assert post["body"] == updated_post.body
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize("route", ["/create", UPDATE1])
+def test_create_update_validate(
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    add_test_post: Callable[[PostTestObject], None],
+    route: str,
+) -> None:
+    """Both pages should show an error message on invalid data.
+
+    :param client:          Client for testing app.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    :param route:           Parametrized route path.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    add_test_user(user_test_object)
+    post_test_object = PostTestObject(
+        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+    )
+    add_test_post(post_test_object)
+    auth.login(user_test_object)
+    other_post = PostTestObject("", "", POST_AUTHOR_ID, POST_CREATED)
+    response = client.post(
+        route,
+        data={"title": other_post.title, "body": other_post.body},
+        follow_redirects=True,
+    )
+    assert b"Title is required" in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_delete(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    add_test_post: Callable[[PostTestObject], None],
+) -> None:
+    """Test deletion of posts.
+
+    The delete view should redirect to the index URl and the post should
+    no longer exist in the database.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param client:          Client for testing app.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    add_test_user(user_test_object)
+    post_test_object = PostTestObject(
+        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+    )
+    add_test_post(post_test_object)
+    auth.login(user_test_object)
+    response = client.post("/1/delete")
+    assert response.headers["Location"] == "http://localhost/"
+    with test_app.app_context():
+        db = get_db()
+        post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()
+        assert post is None
+
+
+def test_get_close_db(test_app: Flask) -> None:
+    """Test closure of app's database.
+
+    Within an application context ``get_db`` should return the same
+    connection each time it is called. After the context, the connection
+    should be closed.
+
+    :param test_app: Test ``Flask`` app object.
+    """
+    with test_app.app_context():
+        db = get_db()
+        assert db is get_db()
+
+    with pytest.raises(sqlite3.ProgrammingError) as err:
+        db.execute("SELECT 1")
+
+    assert "closed" in str(err.value)
+
+
+def test_init_db_command(
+    runner: FlaskCliRunner, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Test initialisation of database.
+
+    :param runner:          Fixture derived from the ``create_app``
+                            factory fixture used to call the ``init-db``
+                            command by name.
+    :param monkeypatch:     Mock patch environment and attributes.
+    """
+    state = Recorder()
+    monkeypatch.setattr("app.cli.init_db", state)
+    result = runner.invoke(args=["create", "db"])
+    assert "Initialized" in result.output
+    assert state.called
