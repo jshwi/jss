@@ -3,14 +3,13 @@ tests._test
 ===========
 """
 # pylint: disable=too-many-arguments,too-many-lines
-import sqlite3
 from typing import Callable
 
 import pytest
 from flask import Flask, g, session
 from flask.testing import FlaskClient, FlaskCliRunner
 
-from app.models import get_db
+from app.models import Post, User, db
 
 from .utils import (
     MAIN_USER_PASSWORD,
@@ -54,15 +53,8 @@ def test_register(
     response = auth.register(user_test_object)
     assert response.headers["Location"] == "http://localhost/auth/login"
     with test_app.app_context():
-        assert (
-            get_db()
-            .execute(
-                f"select * from user"
-                f" where username = '{user_test_object.username}'"
-            )
-            .fetchone()
-            is not None
-        )
+        user = User.query.filter_by(username=user_test_object.username).first()
+        assert user is not None
 
 
 @pytest.mark.usefixtures("init_db")
@@ -116,7 +108,7 @@ def test_login(
     with client:
         client.get("/")
         assert session["user_id"] == 1
-        assert g.user["username"] == user_test_object.username
+        assert g.user.username == user_test_object.username
 
 
 @pytest.mark.usefixtures("init_db")
@@ -257,9 +249,9 @@ def test_author_required(
     add_test_post(post_test_object)
     # change the post author to another author
     with test_app.app_context():
-        db = get_db()
-        db.execute("UPDATE post SET author_id = 2 WHERE id = 1")
-        db.commit()
+        post = Post.query.get(1)
+        post.user_id = 2
+        db.session.commit()
 
     auth.login(user_test_object)
     # current user cannot modify other user's post
@@ -321,7 +313,7 @@ def test_create(
     assert client.get("/create").status_code == 200
     client.post("/create", data={"title": POST_TITLE, "body": POST_BODY})
     with test_app.app_context():
-        count = get_db().execute("SELECT COUNT(id) FROM post").fetchone()[0]
+        count = Post.query.count()
         assert count == 1
 
 
@@ -356,10 +348,9 @@ def test_update(
         UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
     )
     with test_app.app_context():
-        db = get_db()
-        post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()
-        assert post["title"] == updated_post.title
-        assert post["body"] == updated_post.body
+        post = Post.query.get(1)
+        assert post.title == updated_post.title
+        assert post.body == updated_post.body
 
 
 @pytest.mark.usefixtures("init_db")
@@ -424,34 +415,14 @@ def test_delete(
     response = client.post("/1/delete")
     assert response.headers["Location"] == "http://localhost/"
     with test_app.app_context():
-        db = get_db()
-        post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()
+        post = Post.query.get(1)
         assert post is None
 
 
-def test_get_close_db(test_app: Flask) -> None:
-    """Test closure of app's database.
-
-    Within an application context ``get_db`` should return the same
-    connection each time it is called. After the context, the connection
-    should be closed.
-
-    :param test_app: Test ``Flask`` app object.
-    """
-    with test_app.app_context():
-        db = get_db()
-        assert db is get_db()
-
-    with pytest.raises(sqlite3.ProgrammingError) as err:
-        db.execute("SELECT 1")
-
-    assert "closed" in str(err.value)
-
-
-def test_init_db_command(
+def test_create_command(
     runner: FlaskCliRunner, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Test initialisation of database.
+    """Test cli.
 
     :param runner:          Fixture derived from the ``create_app``
                             factory fixture used to call the ``init-db``
@@ -459,7 +430,15 @@ def test_init_db_command(
     :param monkeypatch:     Mock patch environment and attributes.
     """
     state = Recorder()
-    monkeypatch.setattr("app.cli.init_db", state)
-    result = runner.invoke(args=["create", "db"])
-    assert "Initialized" in result.output
+    monkeypatch.setattr("app.cli.command", state)
+    runner.invoke(args=["create", "command"])
     assert state.called
+
+
+def test_export() -> None:
+    """Test export (to dict_ function for models."""
+    post = Post(title=POST_TITLE, body=POST_BODY, created=POST_CREATED)
+    as_dict = post.export()
+    assert as_dict["title"] == POST_TITLE
+    assert as_dict["body"] == POST_BODY
+    assert as_dict["created"] == str(POST_CREATED)

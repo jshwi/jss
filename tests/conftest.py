@@ -14,7 +14,7 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from app import create_app
-from app.models import get_db, init_db
+from app.models import Post, User, db
 
 from .utils import AuthActions, PostTestObject, UserTestObject
 
@@ -35,7 +35,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     :param:             Test ``Flask`` app object.
     """
     monkeypatch.setenv("FLASK_ENV", "testing")
-    monkeypatch.setenv("DATABASE_URL", str(tmp_path / "test.db"))
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
     monkeypatch.setenv("SECRET_KEY", "testing")
     return create_app()
 
@@ -47,7 +47,7 @@ def fixture_init_db(test_app: Flask) -> None:
     :param test_app: Test ``Flask`` app object.
     """
     with test_app.app_context():
-        init_db()
+        db.create_all()
 
 
 @pytest.fixture(name="add_test_user")
@@ -60,11 +60,12 @@ def fixture_add_test_user(test_app: Flask) -> Callable[[UserTestObject], None]:
 
     def _add_test_user(user_test_object: UserTestObject) -> None:
         with test_app.app_context():
-            get_db().executescript(
-                "INSERT INTO user (username, password)"
-                f" VALUES ('{user_test_object.username}',"
-                f"'{user_test_object.password_hash}');"
+            test_user = User(
+                username=user_test_object.username,
+                password_hash=user_test_object.password_hash,
             )
+            db.session.add(test_user)
+            db.session.commit()
 
     return _add_test_user
 
@@ -79,16 +80,14 @@ def fixture_add_test_post(test_app: Flask) -> Callable[[PostTestObject], None]:
 
     def _add_test_post(post_test_object: PostTestObject) -> None:
         with test_app.app_context():
-            get_db().executescript(
-                (
-                    "INSERT INTO post (title, body, author_id, created)"
-                    f"VALUES"
-                    f" ('{post_test_object.title}',"
-                    f" '{post_test_object.body}',"
-                    f" '{post_test_object.author_id}',"
-                    f" '{post_test_object.created}');"
-                )
+            post = Post(
+                title=post_test_object.title,
+                body=post_test_object.body,
+                user_id=post_test_object.user_id,
+                created=post_test_object.created,
             )
+            db.session.add(post)
+            db.session.commit()
 
     return _add_test_post
 

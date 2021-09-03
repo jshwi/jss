@@ -4,95 +4,72 @@ app.models
 
 Define app's database models.
 """
-import sqlite3
-from typing import Optional
+# pylint: disable=too-few-public-methods
+from __future__ import annotations
 
-from flask import Flask, Response, current_app, g
+from datetime import datetime
+from typing import Dict
 
-# rules for initializing a new application database
-# the database is designed to store user information and user's post
-# information
-# the user field mist be unique and the user and password fields cannot
-# blank
-# each user and post will contain a corresponding id
-# the post is bound to the user by referencing the `author_id`
-# posts must contain and author id, timestamp, title, and body
-# the author's id will be cross referenced as a foreign key
-_SCHEMA = """\
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS post;
+from sqlalchemy_utils import generic_repr
+from werkzeug.security import check_password_hash, generate_password_hash
 
-CREATE TABLE user (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
-);
+from .extensions import db
 
-CREATE TABLE post (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    author_id INTEGER NOT NULL,
-    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    title TEXT NOT NULL,
-    body TEXT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES user (id)
-);\
-"""
+_USER_ID = "user.id"
 
 
-def get_db() -> sqlite3.Connection:
-    """Return a connection to the ``SQLite`` database.
+@generic_repr("id")
+class _BaseModel(db.Model):
+    __abstract__ = True
 
-    The connection is stored and reused instead of creating a new
-    connection after each invocation.
+    def export(self) -> Dict[str, str]:
+        """Get post attributes as a dict of str objects.
 
-    This will be called when the application has been created. This is
-    the first thing that needs to be done when working with databases.
-    Any queries and operations are performed using the connection which
-    is closed after the work has finished.
-
-    The connection is instructed to return rows that behave like Python
-    dict objects. This allows access to the columns by name.
-
-    The location of the database is defined  with the ``DATABASE_URL``
-    configuration key. This file does not need to exist yet and won't
-    until the database has been initialized through the commandline.
-
-    :return: Initialized or retrieved SQLite connection object.
-    """
-    if "db" not in g:
-        g.db = sqlite3.connect(  # pylint: disable=assigning-non-slot
-            current_app.config["DATABASE_URL"],
-            detect_types=sqlite3.PARSE_DECLTYPES,
-        )
-        g.db.row_factory = sqlite3.Row
-
-    return g.db
+        :return: Post as dict.
+        """
+        return {
+            k: str(v)
+            for k, v in self.__dict__.items()
+            if not k.startswith("_")
+        }
 
 
-def _close_db(_: Optional[BaseException] = None) -> Response:
-    # close database connection if it is active
-    # error passed to function through `teardown_appcontext`
-    # no exception handling needs to be made in this function.
-    db = g.pop("db", None)
-    if db is not None:
-        db.close()
+class User(_BaseModel):  # type: ignore
+    """Database schema for users."""
 
-    return Response()
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    admin = db.Column(db.Boolean, default=False)
+    posts = db.relationship("Post", backref="author", lazy="dynamic")
+    confirmed = db.Column(db.Boolean, default=True)
+    confirmed_on = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    about_me = db.Column(db.String(140))
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password: str) -> None:
+        """Hash and store a new user password.
+
+        :param password: User's choice in password.
+        """
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        """Match entered password against existing password hash.
+
+        :param password:    User's password attempt.
+        :return:            Attempt matches hash: True or False.
+        """
+        return check_password_hash(self.password_hash, password)
 
 
-def init_db() -> None:
-    """Read schema template to initialize database."""
-    get_db().executescript(_SCHEMA)
+class Post(_BaseModel):
+    """Database schema for posts."""
 
-
-def init_app(app: Flask) -> None:
-    """Initialize the app.
-
-    Add callback function to specify the rules of tearing down the app
-    after use.
-
-    Add commandline arguments to ``Flask`` .
-
-    :param app: App object.
-    """
-    app.teardown_appcontext(_close_db)
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    body = db.Column(db.String)
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))

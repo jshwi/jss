@@ -25,9 +25,8 @@ from flask import (
     url_for,
 )
 from werkzeug import Response
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from .models import get_db
+from .models import Post, User, db
 from .post import get_post
 from .security import login_required
 
@@ -55,26 +54,18 @@ def register() -> Union[str, Response]:
         error = None
         username = request.form["username"]
         password = request.form["password"]
-        db = get_db()
-
         if not username:
             error = "Username is required."
         elif not password:
             error = "Password is required."
-        elif (
-            db.execute(
-                "SELECT id FROM user WHERE username = ?", (username,)
-            ).fetchone()
-            is not None
-        ):
+        elif User.query.filter_by(username=username).first() is not None:
             error = f"User {username} is already registered."
 
         if error is None:
-            db.execute(
-                "INSERT INTO user (username, password) VALUES (?, ?)",
-                (username, generate_password_hash(password)),
-            )
-            db.commit()
+            user = User(username=username)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
             return redirect(url_for("auth.login"))
 
         flash(error)
@@ -107,16 +98,10 @@ def login() -> Union[str, Response]:
                 login POST.
     """
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        user = (
-            get_db()
-            .execute("SELECT * FROM user WHERE username = ?", (username,))
-            .fetchone()
-        )
-        if user and check_password_hash(user["password"], password):
+        user = User.query.filter_by(username=request.form["username"]).first()
+        if user and user.check_password(request.form["password"]):
             session.clear()
-            session["user_id"] = user["id"]
+            session["user_id"] = user.id
             return redirect(url_for("index"))
 
         flash("Invalid username or password.")
@@ -131,11 +116,7 @@ def load_logged_in_user() -> None:
     if user_id is None:
         g.user = None  # pylint: disable=assigning-non-slot
     else:
-        g.user = (  # pylint: disable=assigning-non-slot
-            get_db()
-            .execute("SELECT * FROM user WHERE id = ?", (user_id,))
-            .fetchone()
-        )
+        g.user = User.query.get(user_id)  # pylint: disable=assigning-non-slot
 
 
 @auth_blueprint.route("/logout", methods=["GET"])
@@ -167,15 +148,8 @@ def index() -> str:
 
     :return: Rendered index template.
     """
-    posts = (
-        get_db()
-        .execute(
-            "SELECT p.id, title, body, created, author_id, username"
-            " FROM post p JOIN user u ON p.author_id = u.id"
-            " ORDER by created DESC"
-        )
-        .fetchall()
-    )
+    # noinspection PyUnresolvedReferences
+    posts = Post.query.order_by(Post.created.desc())
     return render_template("index.html", posts=posts)
 
 
@@ -205,12 +179,9 @@ def create() -> Union[str, Response]:
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
-                "INSERT INTO post (title, body, author_id) VALUES (?, ?, ?)",
-                (title, body, g.user["id"]),
-            )
-            db.commit()
+            post = Post(title=title, body=body, user_id=g.user.id)
+            db.session.add(post)
+            db.session.commit()
             return redirect(url_for(_URL_FOR_INDEX))
 
     return render_template("user/create.html")
@@ -229,7 +200,6 @@ def update(id: int) -> Union[str, Response]:
     if request.method == "POST":
         error = None
         title = request.form["title"]
-        body = request.form["body"]
 
         if not title:
             error = "Title is required."
@@ -237,12 +207,9 @@ def update(id: int) -> Union[str, Response]:
         if error is not None:
             flash(error)
         else:
-            db = get_db()
-            db.execute(
-                "UPDATE post SET title = ?, body = ? WHERE id = ?",
-                (title, body, id),
-            )
-            db.commit()
+            post.title = request.form.get("title")
+            post.body = request.form.get("body")
+            db.session.commit()
             return redirect(url_for(_URL_FOR_INDEX))
 
     return render_template("user/update.html", post=post)
@@ -260,10 +227,9 @@ def delete(id: int) -> Response:
     :param id:  The post's ID.
     :return:    Response object redirect to index view.
     """
-    get_post(id)
-    db = get_db()
-    db.execute("DELETE FROM post WHERE id = ?", (id,))
-    db.commit()
+    post = get_post(id)
+    db.session.delete(post)
+    db.session.commit()
     return redirect(url_for(_URL_FOR_INDEX))
 
 

@@ -14,4 +14,4 @@
 set -o errexit
 set -o nounset
 
-flask create db
+flask db upgrade

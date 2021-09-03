@@ -22,6 +22,7 @@ POST_TITLE = "test title"
 POST_BODY = "test\nbody"
 POST_AUTHOR_ID = 1
 POST_CREATED = datetime(2018, 1, 1, 0, 0, 0)
+MAIN_USER_REGISTERED_ON = datetime(2018, 1, 1, 0, 0, 1)
 
 
 class UserTestObject:
@@ -35,6 +36,7 @@ class UserTestObject:
         self.username = username
         self.password = password
         self.password_hash = generate_password_hash(password)
+        self.registered_on = MAIN_USER_REGISTERED_ON
 
 
 class PostTestObject:
@@ -42,16 +44,16 @@ class PostTestObject:
 
     :param title:       Title of the post.
     :param body:        Main content of the post..
-    :param author_id:   ID of the user who made the post.
+    :param user_id:   ID of the user who made the post.
     :param created:     When the post was created.
     """
 
     def __init__(
-        self, title: str, body: str, author_id: int, created: datetime
+        self, title: str, body: str, user_id: int, created: datetime
     ) -> None:
         self.title = title
         self.body = body
-        self.author_id = author_id
+        self.user_id = user_id
         self.created = created
 
 

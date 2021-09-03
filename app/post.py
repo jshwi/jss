@@ -4,15 +4,13 @@ app.post
 
 Helper function(s) for user posting.
 """
-from sqlite3 import Connection
-
 from flask import g
 from werkzeug import exceptions
 
-from .models import get_db
+from .models import Post
 
 
-def get_post(id: int, checkauthor: bool = True) -> Connection:
+def get_post(id: int, checkauthor: bool = True) -> Post:
     """Get post by post's ID.
 
     Check if the author matches the logged in user. To keep the code DRY
@@ -38,21 +36,11 @@ def get_post(id: int, checkauthor: bool = True) -> Connection:
     :param checkauthor:    Rule whether to check for author ID.
     :return:                Post's connection object.
     """
-    post = (
-        get_db()
-        .execute(
-            "SELECT p.id, title, body, created, author_id, username "
-            "FROM post p JOIN user u ON p.author_id = u.id "
-            "WHERE p.id = ?",
-            (id,),
-        )
-        .fetchone()
-    )
-
+    post = Post.query.get(id)
     if post is None:
         exceptions.abort(404, f"Post id {id} doesn't exist.")
 
-    if checkauthor and post["author_id"] != g.user["id"]:
+    if checkauthor and post.user_id != g.user.id:
         exceptions.abort(403)
 
     return post

@@ -95,6 +95,16 @@ class Config:
         """Can be "memcached", "redis", etc."""
         return env.str("CACHE_TYPE", default="simple")
 
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> str:
+        """Alias for ``DATABASE_URL.``"""
+        return env.str("SQLALCHEMY_DATABASE_URI", default=self.DATABASE_URL)
+
+    @property
+    def SQLALCHEMY_TRACK_MODIFICATIONS(self) -> bool:
+        """Set to False by default: Can be a resource drain."""
+        return env.bool("SQlALCHEMY_TRACK_MODIFICATIONS", default=False)
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.

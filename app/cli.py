@@ -8,7 +8,9 @@ import click
 from flask import Flask
 from flask.cli import with_appcontext
 
-from .models import init_db
+
+def command() -> None:
+    """Placeholder for future create funcs."""
 
 
 @click.group()
@@ -16,12 +18,11 @@ def create() -> None:
     """App init methods."""
 
 
-@create.command("db")
+@create.command("command")
 @with_appcontext
-def create_db_command() -> None:
-    """initialize database."""
-    init_db()
-    click.echo("Initialized database")
+def create_command() -> None:
+    """Placeholder for future create commands."""
+    command()
 
 
 def init_app(app: Flask) -> None:

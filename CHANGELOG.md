@@ -7,3 +7,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v0.1.0...HEAD)
 ------------------------------------------------------------------------
+### Changed
+- Moves database over to `SQLAlchemy`
