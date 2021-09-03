@@ -15,5 +15,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adds mandatory email field for registration
 
 ### Changed
+- Removes posting for all users as default
 - Adds `Flask-Login` for handling logins
 - Moves database over to `SQLAlchemy`

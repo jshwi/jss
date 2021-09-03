@@ -27,6 +27,7 @@ from werkzeug import Response
 
 from .models import Post, User, db
 from .post import get_post
+from .security import admin_required
 from .user import create_user
 
 _URL_FOR_INDEX = "index"
@@ -145,6 +146,7 @@ def index() -> str:
 
 @views_blueprint.route("/create", methods=["GET", "POST"])
 @login_required
+@admin_required
 def create() -> Union[str, Response]:
     """Create a post.
 
@@ -179,6 +181,7 @@ def create() -> Union[str, Response]:
 
 @views_blueprint.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
+@admin_required
 def update(id: int) -> Union[str, Response]:
     """Update post that corresponds to the provided post ID.
 
@@ -207,6 +210,7 @@ def update(id: int) -> Union[str, Response]:
 
 @views_blueprint.route("/<int:id>/delete", methods=["POST"])
 @login_required
+@admin_required
 def delete(id: int) -> Response:
     """Delete post by post's ID.
 

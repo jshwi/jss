@@ -16,7 +16,9 @@ from app.mail import send_email
 from app.models import Post, User, db
 
 from .utils import (
+    ADMIN_USER_EMAIL,
     ADMIN_USER_PASSWORD,
+    ADMIN_USER_USERNAME,
     MAIN_USER_EMAIL,
     MAIN_USER_PASSWORD,
     MAIN_USER_USERNAME,
@@ -275,7 +277,7 @@ def test_author_required(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     other_user_test_object = UserTestObject(
         OTHER_USER_USERNAME, OTHER_USER_EMAIL, OTHER_USER_PASSWORD
@@ -319,7 +321,7 @@ def test_exists_required(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     post_test_object = PostTestObject(
         POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
@@ -349,7 +351,7 @@ def test_create(
     :param add_test_user:   Add user to test database.
     """
     user_test_object = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     add_test_user(user_test_object)
     auth.login(user_test_object)
@@ -377,7 +379,7 @@ def test_update(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     created_post = PostTestObject(
         POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
@@ -416,7 +418,7 @@ def test_create_update_validate(
     :param route:           Parametrized route path.
     """
     user_test_object = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     add_test_user(user_test_object)
     post_test_object = PostTestObject(
@@ -453,7 +455,7 @@ def test_delete(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     add_test_user(user_test_object)
     post_test_object = PostTestObject(
@@ -636,3 +638,42 @@ def test_create_admin(
         admin = User.query.filter_by(username="admin").first()
         assert admin.email == test_app.config["ADMINS"][0]
         assert admin.check_password(ADMIN_USER_PASSWORD)
+
+
+def test_404_error(client: FlaskClient) -> None:
+    """Test ``404 Not Found`` is returned when a route does not exist.
+
+    :param client:          Client for testing app.
+    """
+    response = client.post("/does_not_exist")
+    assert response.status_code == 404
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize("route", ["/create", UPDATE1, "/1/delete"])
+def test_admin_required(
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    route: str,
+) -> None:
+    """Test requirement that admin user be logged in to post.
+
+    An admin user must be logged in to access the create, update, and
+    delete views.
+
+    The logged in user must be the author of the post to access the
+    update and delete views, otherwise a ``403 Forbidden`` status is
+    returned.
+
+    :param client:  Client for testing app.
+    :param auth:    Handle authorization with test app.
+    :param route:   Parametrized route path.
+    """
+    user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=False
+    )
+    add_test_user(user_test_object)
+    auth.login(user_test_object)
+    response = client.post(route)
+    assert response.status_code == 401
