@@ -7,12 +7,12 @@
 <nav>
     <h1><a href="{{ url_for('index') }}">JSS</a></h1>
     <ul>
-        {% if g.user %}
-            <li><span>{{ g.user.username }}</span></li>
-            <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-        {% else %}
+        {% if current_user.is_anonymous %}
             <li><a href="{{ url_for('auth.register') }}">Register</a></li>
             <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+        {% else %}
+            <li><span>{{ current_user.username }}</span></li>
+            <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
         {% endif %}
     </ul>
 </nav>

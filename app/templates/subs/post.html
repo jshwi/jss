@@ -7,7 +7,7 @@
                 on {{ post.created.strftime("%Y-%m-%d") }}
             </div>
         </div>
-        {% if g.user.id == post.user_id %}
+        {% if current_user.id == post.user_id %}
             <a class="action" href="{{ url_for('views.update', id=post.id) }}">Edit</a>
         {% endif %}
     </header>

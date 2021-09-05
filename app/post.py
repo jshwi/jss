@@ -4,7 +4,7 @@ app.post
 
 Helper function(s) for user posting.
 """
-from flask import g
+from flask_login import current_user
 from werkzeug import exceptions
 
 from .models import Post
@@ -40,7 +40,7 @@ def get_post(id: int, checkauthor: bool = True) -> Post:
     if post is None:
         exceptions.abort(404, f"Post id {id} doesn't exist.")
 
-    if checkauthor and post.user_id != g.user.id:
+    if checkauthor and post.user_id != current_user.id:
         exceptions.abort(403)
 
     return post

@@ -66,6 +66,7 @@ def fixture_add_test_user(test_app: Flask) -> Callable[[UserTestObject], None]:
     :return:            Function for using this fixture.
     """
 
+    # noinspection PyArgumentList
     def _add_test_user(user_test_object: UserTestObject) -> None:
         with test_app.app_context():
             test_user = User(

@@ -7,8 +7,9 @@ import json
 from typing import Callable, List
 
 import pytest
-from flask import Flask, g, session
+from flask import Flask, session
 from flask.testing import FlaskClient, FlaskCliRunner
+from flask_login import current_user
 
 from app.extensions import mail
 from app.mail import send_email
@@ -138,8 +139,7 @@ def test_login(
     assert response.headers["Location"] == "http://localhost/"
     with client:
         client.get("/")
-        assert session["user_id"] == 1
-        assert g.user.username == user_test_object.username
+        assert current_user.username == user_test_object.username
 
 
 @pytest.mark.usefixtures("init_db")
@@ -247,7 +247,7 @@ def test_login_required(client: FlaskClient, route: str) -> None:
     :param route:   Parametrized route path.
     """
     response = client.post(route)
-    assert response.headers["Location"] == "http://localhost/auth/login"
+    assert response.status_code == 401
 
 
 @pytest.mark.usefixtures("init_db")

@@ -10,6 +10,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Dict
 
+from flask_login import UserMixin
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -34,7 +35,7 @@ class _BaseModel(db.Model):
         }
 
 
-class User(_BaseModel):  # type: ignore
+class User(UserMixin, _BaseModel):  # type: ignore
     """Database schema for users."""
 
     id = db.Column(db.Integer, primary_key=True)

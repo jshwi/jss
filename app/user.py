@@ -9,6 +9,7 @@ from typing import Any
 
 from flask import current_app
 
+from .extensions import login_manager
 from .models import User, db
 
 
@@ -23,6 +24,7 @@ def create_user(
     :param kwargs:      Non-mandatory keyword arguments to pas to model.
     :return:            New ``User`` object.
     """
+    # noinspection PyArgumentList
     user = User(username=username, email=email, **kwargs)
     user.set_password(password)
     db.session.add(user)
@@ -86,3 +88,13 @@ def create_admin_cli() -> None:
             admin=True,
         )
         print("admin successfully created")
+
+
+@login_manager.user_loader
+def user_login(id: int) -> User:
+    """Wrap the user object.
+
+    :param id:  User id to get.
+    :return:    Returned user object.
+    """
+    return User.query.get(id)

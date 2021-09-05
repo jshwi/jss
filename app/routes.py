@@ -17,18 +17,16 @@ from flask import (
     Blueprint,
     Flask,
     flash,
-    g,
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
+from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug import Response
 
 from .models import Post, User, db
 from .post import get_post
-from .security import login_required
 from .user import create_user
 
 _URL_FOR_INDEX = "index"
@@ -103,23 +101,12 @@ def login() -> Union[str, Response]:
     if request.method == "POST":
         user = User.query.filter_by(username=request.form["username"]).first()
         if user and user.check_password(request.form["password"]):
-            session.clear()
-            session["user_id"] = user.id
+            login_user(user)
             return redirect(url_for("index"))
 
         flash("Invalid username or password.")
 
     return render_template("auth/login.html")
-
-
-@auth_blueprint.before_app_request
-def load_logged_in_user() -> None:
-    """Load user credentials from database, if they exist."""
-    user_id = session.get("user_id")
-    if user_id is None:
-        g.user = None  # pylint: disable=assigning-non-slot
-    else:
-        g.user = User.query.get(user_id)  # pylint: disable=assigning-non-slot
 
 
 @auth_blueprint.route("/logout", methods=["GET"])
@@ -136,7 +123,7 @@ def logout() -> Response:
 
     :return: Response object redirect to index view.
     """
-    session.clear()
+    logout_user()
     return redirect(url_for("index"))
 
 
@@ -182,7 +169,7 @@ def create() -> Union[str, Response]:
         if error is not None:
             flash(error)
         else:
-            post = Post(title=title, body=body, user_id=g.user.id)
+            post = Post(title=title, body=body, user_id=current_user.id)
             db.session.add(post)
             db.session.commit()
             return redirect(url_for(_URL_FOR_INDEX))
