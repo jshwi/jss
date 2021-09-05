@@ -4,11 +4,15 @@
 {% endblock %}
 {% block content %}
     <form method="post">
-        <label for="title">Title</label>
-        <input name="title" id="title" value="{{ request.form['title'] }}"
-               required>
-        <label for="body">Body</label>
-        <textarea name="body" id="body">{{ request.form['body'] }}</textarea>
-        <input type="submit" value="Save">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(size=168) }}<br>
+        </p>
+        <p>
+            {{ form.body.label }}<br>
+            {{ form.body() }}<br>
+        </p>
+        <p>{{ form.submit() }}</p>
     </form>
 {% endblock %}

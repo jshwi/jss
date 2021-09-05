@@ -21,6 +21,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.forms
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.mail
    :members:
    :undoc-members:

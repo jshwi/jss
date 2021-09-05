@@ -82,10 +82,13 @@ class AuthActions:
     def __init__(self, client: FlaskClient) -> None:
         self._client = client
 
-    def login(self, user_test_object: UserTestObject) -> Response:
+    def login(
+        self, user_test_object: UserTestObject, follow_redirects: bool = False
+    ) -> Response:
         """Set client to the login state.
 
         :param user_test_object:    Attributes possessed by user.
+        :param follow_redirects:    Follow redirects.
         :return:                    Response object.
         """
         return self._client.post(
@@ -94,6 +97,7 @@ class AuthActions:
                 "username": user_test_object.username,
                 "password": user_test_object.password,
             },
+            follow_redirects=follow_redirects,
         )
 
     def logout(self) -> Response:
@@ -103,10 +107,13 @@ class AuthActions:
         """
         return self._client.get(self.logout_route)
 
-    def register(self, user_test_object: UserTestObject) -> Response:
+    def register(
+        self, user_test_object: UserTestObject, follow_redirects: bool = False
+    ) -> Response:
         """Register a user.
 
         :param user_test_object:    Attributes possessed by user.
+        :param follow_redirects:    Follow redirects.
         :return:                    Response object.
         """
         return self._client.post(
@@ -115,7 +122,9 @@ class AuthActions:
                 "username": user_test_object.username,
                 "email": user_test_object.email,
                 "password": user_test_object.password,
+                "confirm_password": user_test_object.password,
             },
+            follow_redirects=follow_redirects,
         )
 
 

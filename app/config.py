@@ -120,6 +120,16 @@ class Config:
         """List of web admins."""
         return env.list("ADMINS", default=[])
 
+    @property
+    def WTF_CSRF_ENABLED(self) -> bool:
+        """Cross-Site Request Forgery: Switch off for testing."""
+        return env.bool("WTF_CSRF_ENABLED", default=not self.TESTING)
+
+    @property
+    def WTF_CSRF_SECRET_KEY(self) -> str:
+        """Secret keys for signing CSRF tokens."""
+        return env.str("WTF_CSRF_SECRET_KEY", self.SECRET_KEY)
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.

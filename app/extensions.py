@@ -12,6 +12,7 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
+from flask_wtf.csrf import CSRFProtect
 
 debug_toolbar = DebugToolbarExtension()
 static_digest = FlaskStaticDigest()
@@ -20,6 +21,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
 login_manager = LoginManager()
+csrf_protect = CSRFProtect()
 
 
 def init_app(app: Flask) -> None:
@@ -34,3 +36,4 @@ def init_app(app: Flask) -> None:
     migrate.init_app(app, db)
     mail.init_app(app)
     login_manager.init_app(app)
+    csrf_protect.init_app(app)

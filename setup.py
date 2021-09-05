@@ -32,6 +32,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "click==8.0.1",
+        "email-validator==1.1.3",
         "environs==9.3.3",
         "flask==2.0.1",
         "flask-caching==1.10.1",
@@ -41,6 +42,7 @@ setup(
         "flask-migrate==3.1.0",
         "flask-sqlalchemy==2.5.1",
         "flask-static-digest==0.2.1",
+        "flask-wtf==0.15.1",
         "gunicorn==20.1.0",
         "psycopg2==2.9.1",
         "sqlalchemy-utils==0.37.8",

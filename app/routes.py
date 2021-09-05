@@ -13,18 +13,11 @@ based on its name and arguments.
 """
 from typing import Union
 
-from flask import (
-    Blueprint,
-    Flask,
-    flash,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import Blueprint, Flask, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug import Response
 
+from .forms import LoginForm, PostForm, RegistrationForm
 from .models import Post, User, db
 from .post import get_post
 from .security import admin_required
@@ -50,29 +43,12 @@ def register() -> Union[str, Response]:
                 Response object redirect to login view on successful
                 POST.
     """
-    if request.method == "POST":
-        error = None
-        username = request.form["username"]
-        email = request.form["email"]
-        password = request.form["password"]
-        if not username:
-            error = "Username is required."
-        elif not email:
-            error = "Email is required."
-        elif not password:
-            error = "Password is required."
-        elif User.query.filter_by(username=username).first() is not None:
-            error = f"User {username} is already registered."
-        elif User.query.filter_by(email=email).first() is not None:
-            error = f"Email {email} is already registered."
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        create_user(form.username.data, form.email.data, form.password.data)
+        return redirect(url_for("auth.login"))
 
-        if error is None:
-            create_user(username, email, password)
-            return redirect(url_for("auth.login"))
-
-        flash(error)
-
-    return render_template("auth/register.html")
+    return render_template("auth/register.html", form=form)
 
 
 @auth_blueprint.route("/login", methods=["GET", "POST"])
@@ -99,15 +75,16 @@ def login() -> Union[str, Response]:
                 Response object redirect to index view on successful
                 login POST.
     """
-    if request.method == "POST":
-        user = User.query.filter_by(username=request.form["username"]).first()
-        if user and user.check_password(request.form["password"]):
-            login_user(user)
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
             return redirect(url_for("index"))
 
         flash("Invalid username or password.")
 
-    return render_template("auth/login.html")
+    return render_template("auth/login.html", form=form)
 
 
 @auth_blueprint.route("/logout", methods=["GET"])
@@ -160,23 +137,16 @@ def create() -> Union[str, Response]:
     :return:    Rendered create template on GET or failed POST. Response
                 object redirect to index view on successful POST.
     """
-    if request.method == "POST":
-        error = None
-        title = request.form["title"]
-        body = request.form["body"]
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(
+            title=form.title.data, body=form.body.data, user_id=current_user.id
+        )
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for(_URL_FOR_INDEX))
 
-        if not title:
-            error = "Title is required."
-
-        if error is not None:
-            flash(error)
-        else:
-            post = Post(title=title, body=body, user_id=current_user.id)
-            db.session.add(post)
-            db.session.commit()
-            return redirect(url_for(_URL_FOR_INDEX))
-
-    return render_template("user/create.html")
+    return render_template("user/create.html", form=form)
 
 
 @views_blueprint.route("/<int:id>/update", methods=["GET", "POST"])
@@ -190,22 +160,14 @@ def update(id: int) -> Union[str, Response]:
                 object redirect to index view on successful update POST.
     """
     post = get_post(id)
-    if request.method == "POST":
-        error = None
-        title = request.form["title"]
+    form = PostForm(title=post.title, body=post.body)
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.body = form.body.data
+        db.session.commit()
+        return redirect(url_for(_URL_FOR_INDEX))
 
-        if not title:
-            error = "Title is required."
-
-        if error is not None:
-            flash(error)
-        else:
-            post.title = request.form.get("title")
-            post.body = request.form.get("body")
-            db.session.commit()
-            return redirect(url_for(_URL_FOR_INDEX))
-
-    return render_template("user/update.html", post=post)
+    return render_template("user/update.html", post=post, form=form)
 
 
 @views_blueprint.route("/<int:id>/delete", methods=["POST"])

@@ -69,59 +69,6 @@ def test_register(
 
 
 @pytest.mark.usefixtures("init_db")
-@pytest.mark.parametrize(
-    "username,email,password,message",
-    [
-        ("", "", "", b"Username is required."),
-        (OTHER_USER_USERNAME, "", "", b"Email is required."),
-        ("a", OTHER_USER_EMAIL, "", b"Password is required."),
-        (
-            MAIN_USER_USERNAME,
-            OTHER_USER_EMAIL,
-            MAIN_USER_PASSWORD,
-            b"already registered",
-        ),
-        (
-            OTHER_USER_USERNAME,
-            MAIN_USER_EMAIL,
-            MAIN_USER_PASSWORD,
-            b"already registered",
-        ),
-    ],
-    ids=[
-        "no-username",
-        "no-email",
-        "no-password",
-        "name-taken",
-        "email-taken",
-    ],
-)
-def test_register_validate_input(
-    auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
-    username: str,
-    email: str,
-    password: str,
-    message: str,
-) -> None:
-    """Test invalid input and error messages.
-
-    :param auth:            Handle authorization with test app.
-    :param add_test_user:   Add user to test database.
-    :param username:        The test username input.
-    :param password:        The test password input.
-    :param message:         The expected message for the response.
-    """
-    registered = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
-    )
-    registering = UserTestObject(username, email, password)
-    add_test_user(registered)
-    response = auth.register(registering)
-    assert message in response.data
-
-
-@pytest.mark.usefixtures("init_db")
 def test_login(
     client: FlaskClient,
     auth: AuthActions,
@@ -401,41 +348,6 @@ def test_update(
 
 
 @pytest.mark.usefixtures("init_db")
-@pytest.mark.parametrize("route", ["/create", UPDATE1])
-def test_create_update_validate(
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
-    add_test_post: Callable[[PostTestObject], None],
-    route: str,
-) -> None:
-    """Both pages should show an error message on invalid data.
-
-    :param client:          Client for testing app.
-    :param auth:            Handle authorization with test app.
-    :param add_test_user:   Add user to test database.
-    :param add_test_post:   Add post to test database.
-    :param route:           Parametrized route path.
-    """
-    user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
-    )
-    add_test_user(user_test_object)
-    post_test_object = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
-    )
-    add_test_post(post_test_object)
-    auth.login(user_test_object)
-    other_post = PostTestObject("", "", POST_AUTHOR_ID, POST_CREATED)
-    response = client.post(
-        route,
-        data={"title": other_post.title, "body": other_post.body},
-        follow_redirects=True,
-    )
-    assert b"Title is required" in response.data
-
-
-@pytest.mark.usefixtures("init_db")
 def test_delete(
     test_app: Flask,
     client: FlaskClient,
@@ -548,24 +460,40 @@ def test_create_user_no_exist(
 ) -> None:
     """Test creation of a new user that doesn't exist.
 
-    :param test_app:        Test ``Flask`` app object.
-    :param runner:          Fixture derived from the ``create_app``
-                            factory fixture used to call the ``init-db``
-                            command by name.
-    :param patch_getpass:   Patch getpass to receive list of passwords.
+    :param test_app:    Test ``Flask`` app object.
+    :param runner:      Fixture derived from the ``create_app`` factory
+                        fixture used to call the ``init-db`` command by
+                        name.
     """
+    user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}\n"
     patch_getpass([MAIN_USER_PASSWORD, MAIN_USER_PASSWORD])
-    user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}"
     response = runner.invoke(args=["create", "user"], input=user_input)
     assert "user successfully created" in response.output
     with test_app.app_context():
         user = User.query.filter_by(username=MAIN_USER_USERNAME).first()
+        assert user.email == MAIN_USER_EMAIL
         assert user.check_password(MAIN_USER_PASSWORD)
 
 
+@pytest.mark.parametrize(
+    "username,email,expected",
+    [
+        (MAIN_USER_USERNAME, "unique@test.com", "username is taken"),
+        (
+            "unique",
+            MAIN_USER_EMAIL,
+            "a user with this email address is already registered",
+        ),
+    ],
+    ids=["username", "email"],
+)
 @pytest.mark.usefixtures("init_db")
 def test_create_user_exists(
-    runner: FlaskCliRunner, add_test_user: Callable[[UserTestObject], None]
+    runner: FlaskCliRunner,
+    add_test_user: Callable[[UserTestObject], None],
+    username: str,
+    email: str,
+    expected: str,
 ) -> None:
     """Test creation of a new user that exists.
 
@@ -577,8 +505,10 @@ def test_create_user_exists(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     add_test_user(user_test_object)
-    response = runner.invoke(args=["create", "user"], input=MAIN_USER_USERNAME)
-    assert "username is taken" in response.output
+    response = runner.invoke(
+        args=["create", "user"], input=f"{username}\n{email}\n"
+    )
+    assert expected in response.output
 
 
 @pytest.mark.usefixtures("init_db")
@@ -613,8 +543,8 @@ def test_create_user_passwords_no_match(
                     fixture used to call the ``init-db`` command by
                     name.
     """
+    user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}\n"
     patch_getpass([MAIN_USER_PASSWORD, OTHER_USER_PASSWORD])
-    user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}"
     response = runner.invoke(args=["create", "user"], input=user_input)
     assert "passwords do not match: could not add user" in response.output
 
@@ -677,3 +607,37 @@ def test_admin_required(
     auth.login(user_test_object)
     response = client.post(route)
     assert response.status_code == 401
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize(
+    "username,email,message",
+    [
+        (MAIN_USER_USERNAME, OTHER_USER_EMAIL, b"Username is taken"),
+        (OTHER_USER_USERNAME, MAIN_USER_EMAIL, b"already registered"),
+    ],
+    ids=["username", "email"],
+)
+def test_register_invalid_fields(
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+    username: str,
+    email: str,
+    message: str,
+) -> None:
+    """Test different invalid input and error messages.
+
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param username:        The test username input.
+    :param message:         The expected message for the response.
+    """
+    user_test_object = UserTestObject(
+        username=MAIN_USER_USERNAME,
+        email=MAIN_USER_EMAIL,
+        password=MAIN_USER_PASSWORD,
+    )
+    add_test_user(user_test_object)
+    new_user_test_object = UserTestObject(username, email, MAIN_USER_PASSWORD)
+    response = auth.register(new_user_test_object)
+    assert message in response.data
