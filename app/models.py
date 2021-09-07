@@ -45,8 +45,8 @@ class User(UserMixin, _BaseModel):  # type: ignore
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     admin = db.Column(db.Boolean, default=False)
     posts = db.relationship("Post", backref="author", lazy="dynamic")
-    confirmed = db.Column(db.Boolean, default=True)
-    confirmed_on = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    confirmed = db.Column(db.Boolean, default=False)
+    confirmed_on = db.Column(db.DateTime)
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 

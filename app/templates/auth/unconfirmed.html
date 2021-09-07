@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+<h1>{% block header %}
+    <h1>{% block title %}Account Verification Pending{% endblock %}</h1>
+{% endblock %}</h1>
+{% block content %}
+    <p>Please check your inbox or or junk folder for a confirmation link.</p>
+    <p>Didn't get the email?<a
+            href="{{ url_for('auth.resend_confirmation') }}">Resend</a>.</p>
+{% endblock %}

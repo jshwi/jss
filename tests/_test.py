@@ -3,6 +3,7 @@ tests._test
 ===========
 """
 # pylint: disable=too-many-arguments,too-many-lines
+import functools
 import json
 from typing import Callable, List
 
@@ -10,6 +11,7 @@ import pytest
 from flask import Flask, session
 from flask.testing import FlaskClient, FlaskCliRunner
 from flask_login import current_user
+from itsdangerous import URLSafeTimedSerializer
 
 from app.extensions import mail
 from app.mail import send_email
@@ -62,7 +64,7 @@ def test_register(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     response = auth.register(user_test_object)
-    assert response.headers["Location"] == "http://localhost/auth/login"
+    assert response.headers["Location"] == "http://localhost/auth/unconfirmed"
     with test_app.app_context():
         user = User.query.filter_by(username=user_test_object.username).first()
         assert user is not None
@@ -85,7 +87,7 @@ def test_login(
     )
     add_test_user(user_test_object)
     response = auth.login(user_test_object)
-    assert response.headers["Location"] == "http://localhost/"
+    assert response.headers["Location"] == "http://localhost/auth/unconfirmed"
     with client:
         client.get("/")
         assert current_user.username == user_test_object.username
@@ -641,3 +643,138 @@ def test_register_invalid_fields(
     new_user_test_object = UserTestObject(username, email, MAIN_USER_PASSWORD)
     response = auth.register(new_user_test_object)
     assert message in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_confirmation_email_unconfirmed(
+    test_app: Flask, client: FlaskClient, auth: AuthActions
+) -> None:
+    """Test user is moved from confirmed as False to True.
+
+    :param test_app:    Test ``Flask`` app object.
+    :param client:      App's test-client API.
+    :param auth:        Handle authorization with test app.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    with mail.record_messages() as outbox:
+        auth.register(user_test_object)
+        response = client.get("auth/unconfirmed")
+        assert b"A confirmation email has been sent." in response.data
+        with test_app.app_context():
+            user = User.query.filter_by(
+                username=user_test_object.username
+            ).first()
+            assert user.confirmed is False
+            auth.follow_token_route(outbox[0].html, follow_redirects=True)
+            assert user.confirmed is True
+
+
+@pytest.mark.usefixtures("init_db")
+def test_confirmation_email_confirmed(
+    test_app: Flask, auth: AuthActions
+) -> None:
+    """Test user redirected when already confirmed.
+
+    :param test_app:    Test ``Flask`` app object.
+    :param auth:        Handle authorization with test app.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    with mail.record_messages() as outbox:
+        auth.register(user_test_object)
+        with test_app.app_context():
+            user = User.query.filter_by(
+                username=user_test_object.username
+            ).first()
+            user.confirmed = True
+            db.session.commit()
+            response = auth.follow_token_route(
+                outbox[0].html, follow_redirects=True
+            )
+            assert b"Account already confirmed. Please login." in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_confirmation_email_expired(
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+) -> None:
+    """Test user denied when confirmation is expired. Allow resend.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app:    Test ``Flask`` app object.
+    :param client:      App's test-client API.
+    :param auth:        Handle authorization with test app.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    with mail.record_messages() as outbox:
+        auth.register(user_test_object)
+        with test_app.app_context():
+            route = auth.parse_token_route(outbox[0].html)
+            token = route.replace("http://localhost/auth", "")
+            serializer = URLSafeTimedSerializer(test_app.config["SECRET_KEY"])
+            confirm_token = functools.partial(
+                serializer.loads,
+                token,
+                salt=test_app.config["SECURITY_PASSWORD_SALT"],
+                max_age=1,
+            )
+            monkeypatch.setattr(
+                "app.routes.confirm_token", lambda _: confirm_token()
+            )
+            response = client.get(route, follow_redirects=True)
+            assert b"invalid or has expired." in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_login_confirmed(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+) -> None:
+    """Test login functionality once user is verified.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param client:          Flask client testing helper.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    with test_app.app_context():
+        user = User.query.filter_by(username=user_test_object.username).first()
+        user.confirmed = True
+        db.session.commit()
+
+    response = auth.login(user_test_object)
+    assert response.headers["Location"] == "http://localhost/"
+    with client:
+        client.get("/")
+        assert current_user.username == user_test_object.username
+
+
+@pytest.mark.usefixtures("init_db")
+def test_confirmation_email_resend(
+    client: FlaskClient, auth: AuthActions
+) -> None:
+    """Test user receives email when requesting resend.
+
+    :param client:      App's test-client API.
+    :param auth:        Handle authorization with test app.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    auth.register(user_test_object)
+    response = client.get("auth/resend", follow_redirects=True)
+    assert b"A new confirmation email has been sent." in response.data

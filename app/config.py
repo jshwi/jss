@@ -16,7 +16,7 @@ env = Env()
 env.read_env()
 
 
-class Config:
+class Config:  # pylint: disable=too-many-public-methods
     """Load environment."""
 
     @property
@@ -129,6 +129,46 @@ class Config:
     def WTF_CSRF_SECRET_KEY(self) -> str:
         """Secret keys for signing CSRF tokens."""
         return env.str("WTF_CSRF_SECRET_KEY", self.SECRET_KEY)
+
+    @property
+    def SECURITY_PASSWORD_SALT(self) -> Optional[str]:
+        """Combined with the unique salt generated for each password."""
+        return env.str("SECURITY_PASSWORD_SALT", default=self.SECRET_KEY)
+
+    @property
+    def MAIL_SERVER(self) -> str:
+        """Mail server to send mail from."""
+        return env.str("MAIL_SERVER", default=None)
+
+    @property
+    def MAIL_PORT(self) -> int:
+        """Mail port to send mail from."""
+        return env.int("MAIL_PORT", default=25)
+
+    @property
+    def MAIL_USE_TLS(self) -> bool:
+        """Use TLS: Defaults to False."""
+        return env.bool("MAIL_USER_TLS", default=False)
+
+    @property
+    def MAIL_USE_SSL(self) -> bool:
+        """Use SSL: Defaults to False."""
+        return env.bool("MAIL_USER_SSL", default=False)
+
+    @property
+    def MAIL_DEBUG(self) -> bool:
+        """Mail debug mode: Default to same as ``FLASK_DEBUG``."""
+        return env.bool("MAIL_DEBUG", default=self.DEBUG)
+
+    @property
+    def MAIL_USERNAME(self) -> Optional[str]:
+        """Username of sender."""
+        return env.str("MAIL_USERNAME", default=None)
+
+    @property
+    def MAIL_PASSWORD(self) -> Optional[str]:
+        """Password of sender."""
+        return env.str("MAIL_PASSWORD", default=None)
 
 
 def init_app(app: Flask) -> None:

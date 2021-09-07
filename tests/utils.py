@@ -9,6 +9,7 @@ Utilities for testing.
 from datetime import datetime
 from typing import Any
 
+from bs4 import BeautifulSoup
 from flask.testing import FlaskClient
 from werkzeug import Response
 from werkzeug.security import generate_password_hash
@@ -125,6 +126,24 @@ class AuthActions:
                 "confirm_password": user_test_object.password,
             },
             follow_redirects=follow_redirects,
+        )
+
+    @staticmethod
+    def parse_token_route(html: str) -> str:
+        """Parse sent for password resets, verification, etc."""
+        return BeautifulSoup(html, features="html.parser").find("a")["href"]
+
+    def follow_token_route(
+        self, html: str, follow_redirects: bool = False
+    ) -> Response:
+        """Follow token sent for password resets, verification, etc.
+
+        :param html:                HTML str object.
+        :param follow_redirects:    Follow redirects.
+        :return:                    Response object.
+        """
+        return self._client.get(
+            self.parse_token_route(html), follow_redirects=follow_redirects
         )
 
 

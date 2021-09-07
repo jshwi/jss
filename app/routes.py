@@ -11,19 +11,27 @@ an outgoing response.
 ``Flask`` can also go the other direction and generate a URL to view
 based on its name and arguments.
 """
+from datetime import datetime
 from typing import Union
 
 from flask import Blueprint, Flask, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
+from itsdangerous import BadSignature
 from werkzeug import Response
 
 from .forms import LoginForm, PostForm, RegistrationForm
+from .mail import send_email
 from .models import Post, User, db
 from .post import get_post
-from .security import admin_required
+from .security import (
+    admin_required,
+    confirm_token,
+    generate_confirmation_token,
+)
 from .user import create_user
 
 _URL_FOR_INDEX = "index"
+_URL_FOR_UNCONFIRMED = "auth.unconfirmed"
 
 views_blueprint = Blueprint("views", __name__)
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
@@ -45,8 +53,24 @@ def register() -> Union[str, Response]:
     """
     form = RegistrationForm()
     if form.validate_on_submit():
-        create_user(form.username.data, form.email.data, form.password.data)
-        return redirect(url_for("auth.login"))
+        user = create_user(
+            form.username.data, form.email.data, form.password.data
+        )
+        login_user(user)
+        send_email(
+            subject="Please verify your email address",
+            recipients=[current_user.email],
+            html=render_template(
+                "email/activate.html",
+                confirm_url=url_for(
+                    "auth.confirm_email",
+                    token=generate_confirmation_token(current_user.email),
+                    _external=True,
+                ),
+            ),
+        )
+        flash("A confirmation email has been sent.")
+        return redirect(url_for(_URL_FOR_UNCONFIRMED))
 
     return render_template("auth/register.html", form=form)
 
@@ -80,7 +104,11 @@ def login() -> Union[str, Response]:
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect(url_for("index"))
+            if current_user.confirmed:
+                return redirect(url_for("index"))
+
+            flash("You have not verified your account.")
+            return redirect(url_for(_URL_FOR_UNCONFIRMED))
 
         flash("Invalid username or password.")
 
@@ -187,6 +215,71 @@ def delete(id: int) -> Response:
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for(_URL_FOR_INDEX))
+
+
+@auth_blueprint.route("/<token>", methods=["GET"])
+@login_required
+def confirm_email(token: str) -> Response:
+    """Confirm each individual user registering with their email.
+
+    There is no view for this route and so the user will be redirected
+    to the index page.
+
+    :param token:   Encrypted token to verify correct user.
+    :return:        Response object redirect to index view.
+    """
+    try:
+        email = confirm_token(token)
+        user = User.query.filter_by(email=email).first()
+        if user.confirmed:
+            flash("Account already confirmed. Please login.")
+        else:
+            user.confirmed = True
+            user.confirmed_on = datetime.now()
+            db.session.add(user)
+            db.session.commit()
+            flash("Your account has been verified.")
+
+    except BadSignature:
+        flash("The confirmation link is invalid or has expired.")
+
+    return redirect(url_for("index"))
+
+
+@auth_blueprint.route("/unconfirmed", methods=["GET"])
+@login_required
+def unconfirmed() -> str:
+    """Unconfirmed email route.
+
+    :return: Rendered auth/unconfirmed template.
+    """
+    return render_template("auth/unconfirmed.html")
+
+
+@auth_blueprint.route("/resend", methods=["GET"])
+@login_required
+def resend_confirmation() -> Response:
+    """Resend verification email.
+
+    There is no view for this route and so the user will be redirected
+    to the auth/unconfirmed view.
+
+    :return: Response object redirect to auth/unconfirmed view.
+    """
+    send_email(
+        subject="Please verify your email address",
+        recipients=[current_user.email],
+        html=render_template(
+            "email/activate.html",
+            confirm_url=url_for(
+                "auth.confirm_email",
+                token=generate_confirmation_token(current_user.email),
+                _external=True,
+            ),
+        ),
+    )
+    flash("A new confirmation email has been sent.")
+    return redirect(url_for(_URL_FOR_UNCONFIRMED))
 
 
 def init_app(app: Flask) -> None:

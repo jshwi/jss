@@ -45,6 +45,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("SECRET_KEY", "testing")
     monkeypatch.setenv("MAIL_SUBJECT_PREFIX", "[JSS]: ")
     monkeypatch.setenv("ADMINS", f"{ADMIN_USER_EMAIL},{MAIN_USER_EMAIL}")
+    monkeypatch.setenv("DEFAULT_MAIL_SENDER", "no-reply@test.com")
     return create_app()
 
 
