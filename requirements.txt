@@ -76,6 +76,7 @@ py==1.10.0
 pyaud==3.2.7
 pycparser==2.20
 pygments==2.8.1
+pyjwt==2.1.0
 pylint==2.11.1
 pyparsing==2.4.7
 pytest-cov==2.12.1

@@ -74,3 +74,20 @@ class PostForm(FlaskForm):
         render_kw={"rows": 24, "cols": 168},
     )
     submit = SubmitField("Submit")
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    """Form for user to fill out so they can reset their password."""
+
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Request Password Reset")
+
+
+class ResetPasswordForm(FlaskForm):
+    """Form for user to confirm their new password."""
+
+    password = PasswordField("Password", validators=[DataRequired()])
+    confirm_password = PasswordField(
+        "Confirm Password", validators=[DataRequired(), EqualTo("password")]
+    )
+    submit = SubmitField("Reset Password")

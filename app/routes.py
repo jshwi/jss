@@ -17,9 +17,16 @@ from typing import Union
 from flask import Blueprint, Flask, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from itsdangerous import BadSignature
+from jwt import InvalidTokenError
 from werkzeug import Response
 
-from .forms import LoginForm, PostForm, RegistrationForm
+from .forms import (
+    LoginForm,
+    PostForm,
+    RegistrationForm,
+    ResetPasswordForm,
+    ResetPasswordRequestForm,
+)
 from .mail import send_email
 from .models import Post, User, db
 from .post import get_post
@@ -27,6 +34,8 @@ from .security import (
     admin_required,
     confirm_token,
     generate_confirmation_token,
+    generate_reset_password_token,
+    get_requested_reset_password_user,
 )
 from .user import create_user
 
@@ -280,6 +289,77 @@ def resend_confirmation() -> Response:
     )
     flash("A new confirmation email has been sent.")
     return redirect(url_for(_URL_FOR_UNCONFIRMED))
+
+
+@auth_blueprint.route("/request_password_reset", methods=["GET", "POST"])
+def request_password_reset() -> Union[str, Response]:
+    """Allow user to reset their password.
+
+    Once the request password form is filled in with the user's email
+    (if the email address is in the database) send an email with a link
+    that leads to the reset password page.
+
+    :return:        Rendered auth/request_password_reset template on
+                    GET or invalid email POST. Response object redirect
+                    to login view on successful email POST.
+    """
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is None:
+            flash("An account with that email address doesn't exist.")
+        else:
+            send_email(
+                subject="Password reset",
+                recipients=[user.email],
+                html=render_template(
+                    "email/reset_password.html",
+                    username=user.username,
+                    token=generate_reset_password_token(user.id),
+                ),
+            )
+            flash(
+                "Please check your inbox for instructions on how to reset "
+                "your password"
+            )
+            return redirect(url_for("auth.login"))
+
+    return render_template("auth/request_password_reset.html", form=form)
+
+
+@auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token: str) -> Union[str, Response]:
+    """This route contains the token securely sent to the user's inbox.
+
+    When the token is decrypted, it will return the user's email address
+    (if it is valid), and the correct user will be retrieved from the
+    database to complete the password reset.
+
+    :param token:   Unique token generated from user's email address.
+    :return:        Rendered auth/reset_password template on GET or
+                    invalid token POST. Response object redirect to
+                    index view on successful token POST.
+    """
+    form = ResetPasswordForm()
+    try:
+        # error can be raised here for a bad token...
+        user = get_requested_reset_password_user(token)
+
+        # ...or here if the token is redundant
+        if current_user.is_authenticated:
+            raise InvalidTokenError
+
+    except InvalidTokenError:
+        flash("The confirmation link is invalid or has expired.")
+        return redirect(url_for("index"))
+
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash("Your password has been reset.")
+        return redirect(url_for("auth.login"))
+
+    return render_template("auth/reset_password.html", form=form)
 
 
 def init_app(app: Flask) -> None:

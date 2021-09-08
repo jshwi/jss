@@ -29,6 +29,7 @@ POST_BODY = "test\nbody"
 POST_AUTHOR_ID = 1
 POST_CREATED = datetime(2018, 1, 1, 0, 0, 0)
 MAIN_USER_REGISTERED_ON = datetime(2018, 1, 1, 0, 0, 1)
+INVALID_OR_EXPIRED = "invalid or has expired."
 
 
 class UserTestObject:
@@ -79,6 +80,7 @@ class AuthActions:
     register_route = f"{prefix}/register"
     login_route = f"{prefix}/login"
     logout_route = f"{prefix}/logout"
+    request_password_reset_route = f"{prefix}/request_password_reset"
 
     def __init__(self, client: FlaskClient) -> None:
         self._client = client
@@ -144,6 +146,21 @@ class AuthActions:
         """
         return self._client.get(
             self.parse_token_route(html), follow_redirects=follow_redirects
+        )
+
+    def request_password_reset(
+        self, email: str, follow_redirects: bool = False
+    ) -> Response:
+        """Request user password reset.
+
+        :param email:               Email to request reset with.
+        :param follow_redirects:    Follow redirects.
+        :return:                    Response object.
+        """
+        return self._client.post(
+            self.request_password_reset_route,
+            data={"email": email},
+            follow_redirects=follow_redirects,
         )
 
 

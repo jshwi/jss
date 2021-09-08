@@ -21,6 +21,7 @@ from .utils import (
     ADMIN_USER_EMAIL,
     ADMIN_USER_PASSWORD,
     ADMIN_USER_USERNAME,
+    INVALID_OR_EXPIRED,
     MAIN_USER_EMAIL,
     MAIN_USER_PASSWORD,
     MAIN_USER_USERNAME,
@@ -730,7 +731,7 @@ def test_confirmation_email_expired(
                 "app.routes.confirm_token", lambda _: confirm_token()
             )
             response = client.get(route, follow_redirects=True)
-            assert b"invalid or has expired." in response.data
+            assert INVALID_OR_EXPIRED in response.data.decode()
 
 
 @pytest.mark.usefixtures("init_db")
@@ -778,3 +779,131 @@ def test_confirmation_email_resend(
     auth.register(user_test_object)
     response = client.get("auth/resend", follow_redirects=True)
     assert b"A new confirmation email has been sent." in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_request_password_reset_email(
+    auth: AuthActions, add_test_user: Callable[[UserTestObject], None]
+) -> None:
+    """Test that the correct email is sent to user for password reset.
+
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    with mail.record_messages() as outbox:
+        auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
+
+    response = auth.follow_token_route(outbox[0].html, follow_redirects=True)
+    assert b"Reset Password" in response.data
+    assert b"Please enter your new password" in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_bad_token(
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+) -> None:
+    """Test user denied when jwt for resetting password is expired.
+
+    :param monkeypatch:     Mock patch environment and attributes.
+    :param test_app:        Test ``Flask`` app object.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    with test_app.app_context():
+        with mail.record_messages() as outbox:
+            monkeypatch.setattr(
+                "app.routes.generate_reset_password_token",
+                lambda *_, **__: "bad_token",
+            )
+            auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
+
+        response = auth.follow_token_route(
+            outbox[0].html, follow_redirects=True
+        )
+        assert INVALID_OR_EXPIRED in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+def test_email_does_not_exist(auth: AuthActions) -> None:
+    """Test user notified when email does not exist for password reset.
+
+    :param auth: Handle authorization with test app.
+    """
+    response = auth.request_password_reset(MAIN_USER_EMAIL)
+    assert (
+        b"An account with that email address doesn&#39;t exist"
+        in response.data
+    )
+
+
+@pytest.mark.usefixtures("init_db")
+def test_redundant_token(
+    test_app: Flask,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+) -> None:
+    """Test user notified that them being logged in has voided token.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    with test_app.app_context():
+        with mail.record_messages() as outbox:
+            auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
+
+        auth.login(user_test_object)
+        response = auth.follow_token_route(
+            outbox[0].html, follow_redirects=True
+        )
+        assert INVALID_OR_EXPIRED in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+def test_reset_password(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[[UserTestObject], None],
+) -> None:
+    """Test the password reset process.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param client:          App's test-client API.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    with mail.record_messages() as outbox:
+        auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
+
+    with test_app.app_context():
+        user = User.query.filter_by(username=user_test_object.username).first()
+        assert user.check_password(MAIN_USER_PASSWORD)
+        client.post(
+            auth.parse_token_route(outbox[0].html),
+            data={
+                "password": OTHER_USER_PASSWORD,
+                "confirm_password": OTHER_USER_PASSWORD,
+            },
+        )
+        assert not user.check_password(MAIN_USER_PASSWORD)
+        assert user.check_password(OTHER_USER_PASSWORD)

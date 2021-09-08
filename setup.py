@@ -31,6 +31,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
+        "appdirs==1.4.4",
         "click==8.0.1",
         "email-validator==1.1.3",
         "environs==9.3.3",
@@ -46,6 +47,7 @@ setup(
         "gunicorn==20.1.0",
         "itsdangerous==2.0.1",
         "psycopg2==2.9.1",
+        "pyjwt==2.1.0",
         "sqlalchemy-utils==0.37.8",
         "werkzeug==2.0.1",
     ],

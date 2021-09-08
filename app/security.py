@@ -5,14 +5,17 @@ app.security
 Define app's security functionality.
 """
 import functools
+from time import time
 from typing import Any, Callable, Union
 
+import jwt
 from flask import current_app
 from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
 from werkzeug import Response
 
 from .extensions import login_manager
+from .models import User
 
 
 def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
@@ -63,3 +66,29 @@ def confirm_token(token: str, max_age: int = 3600) -> str:
         salt=current_app.config["SECURITY_PASSWORD_SALT"],
         max_age=max_age,
     )
+
+
+def generate_reset_password_token(user_id: int, max_age: int = 600) -> str:
+    """Generate a hashed token leading to the reset password route.
+
+    :param user_id: The ID of the user requesting a password reset.
+    :param max_age: The maximum time the token is valid for.
+    :return:        A unique token hashed from user's ID.
+    """
+    return jwt.encode(
+        {"reset_password": user_id, "exp": time() + max_age},
+        current_app.config["SECRET_KEY"],
+        algorithm="HS256",
+    )
+
+
+def get_requested_reset_password_user(token: str) -> User:
+    """Decode the user's token and return the user model.
+
+    :param token:   Token to decrypt.
+    :return:        User, if the token is valid, else None.
+    """
+    id = jwt.decode(
+        token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
+    )["reset_password"]
+    return User.query.get(id)
