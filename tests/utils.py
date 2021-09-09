@@ -6,8 +6,10 @@ Utilities for testing.
 """
 # pylint: disable=too-few-public-methods,disable=invalid-name
 # pylint: disable=too-many-instance-attributes
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, Tuple
 
 from bs4 import BeautifulSoup
 from flask.testing import FlaskClient
@@ -30,6 +32,10 @@ POST_AUTHOR_ID = 1
 POST_CREATED = datetime(2018, 1, 1, 0, 0, 0)
 MAIN_USER_REGISTERED_ON = datetime(2018, 1, 1, 0, 0, 1)
 INVALID_OR_EXPIRED = "invalid or has expired."
+MAIL_SERVER = "localhost"
+MAIL_USERNAME = MAIN_USER_USERNAME
+MAIL_PASSWORD = "unique"
+MAIL_PORT = 25
 
 
 class UserTestObject:
@@ -169,6 +175,11 @@ class Recorder:
 
     def __init__(self) -> None:
         self.called = False
+        self.args: Tuple[Any, ...] = ()
+        self.kwargs: Dict[Any, Any] = {}
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    def __call__(self, *args: Any, **kwargs: Any) -> Recorder:
         self.called = True
+        self.args = args
+        self.kwargs = kwargs
+        return self

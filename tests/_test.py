@@ -5,7 +5,8 @@ tests._test
 # pylint: disable=too-many-arguments,too-many-lines
 import functools
 import json
-from typing import Callable, List
+import logging
+from typing import Callable, List, Optional
 
 import pytest
 from flask import Flask, session
@@ -14,6 +15,7 @@ from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
 
 from app.extensions import mail
+from app.log import smtp_handler
 from app.mail import send_email
 from app.models import Post, User, db
 
@@ -22,6 +24,10 @@ from .utils import (
     ADMIN_USER_PASSWORD,
     ADMIN_USER_USERNAME,
     INVALID_OR_EXPIRED,
+    MAIL_PASSWORD,
+    MAIL_PORT,
+    MAIL_SERVER,
+    MAIL_USERNAME,
     MAIN_USER_EMAIL,
     MAIN_USER_PASSWORD,
     MAIN_USER_USERNAME,
@@ -907,3 +913,40 @@ def test_reset_password(
         )
         assert not user.check_password(MAIN_USER_PASSWORD)
         assert user.check_password(OTHER_USER_PASSWORD)
+
+
+@pytest.mark.parametrize("use_tls,secure", [(False, None), (True, ())])
+def test_get_smtp_handler(
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    use_tls: bool,
+    secure: Optional[tuple],
+) -> None:
+    """Test correct values passed to ``SMTPHandler``.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app:    Test ``Flask`` app object.
+    :param use_tls:     True or False.
+    :param secure:      Tuple if TLS True, None if TLS False.
+    """
+    test_app.debug = False
+    test_app.config["MAIL_SERVER"] = MAIL_SERVER
+    test_app.config["MAIL_USERNAME"] = MAIL_USERNAME
+    test_app.config["MAIL_PASSWORD"] = MAIL_PASSWORD
+    test_app.config["MAIL_USE_TLS"] = use_tls
+    test_app.config["MAIL_PORT"] = MAIL_PORT
+    test_app.config["ADMINS"] = [MAIL_USERNAME]
+    state = Recorder()
+    state.loglevel = 0  # type: ignore
+    state.setLevel = lambda x: x  # type: ignore
+    state.setFormatter = lambda x: x  # type: ignore
+    state.formatter = logging.Formatter()  # type: ignore
+    monkeypatch.setattr("app.log.SMTPHandler", state)
+    smtp_handler(test_app)
+    # noinspection PyUnresolvedReferences
+    kwargs = state.kwargs  # type: ignore  # pylint: disable=no-member
+    assert kwargs["mailhost"] == (MAIL_SERVER, MAIL_PORT)
+    assert kwargs["fromaddr"] == f"no-reply@{MAIL_SERVER}"
+    assert kwargs["toaddrs"] == [MAIL_USERNAME]
+    assert kwargs["credentials"] == (MAIL_USERNAME, MAIL_PASSWORD)
+    assert kwargs["secure"] == secure
