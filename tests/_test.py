@@ -4,7 +4,7 @@ tests._test
 """
 # pylint: disable=too-many-arguments,too-many-lines
 import json
-from typing import Callable
+from typing import Callable, List
 
 import pytest
 from flask import Flask, g, session
@@ -478,8 +478,8 @@ def test_create_command(
     :param monkeypatch:     Mock patch environment and attributes.
     """
     state = Recorder()
-    monkeypatch.setattr("app.cli.command", state)
-    runner.invoke(args=["create", "command"])
+    monkeypatch.setattr("app.cli.create_user_cli", state)
+    runner.invoke(args=["create", "user"])
     assert state.called
 
 
@@ -528,3 +528,82 @@ def test_send_mail(test_app: Flask, sync: bool) -> None:
     assert outbox[0].recipients == recipients
     assert outbox[0].html == html
     assert outbox[0].sender == sender
+
+
+@pytest.mark.usefixtures("init_db")
+def test_create_user_no_exist(
+    test_app: Flask,
+    runner: FlaskCliRunner,
+    patch_getpass: Callable[[List[str]], None],
+) -> None:
+    """Test creation of a new user that doesn't exist.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param runner:          Fixture derived from the ``create_app``
+                            factory fixture used to call the ``init-db``
+                            command by name.
+    :param patch_getpass:   Patch getpass to receive list of passwords.
+    """
+    patch_getpass([MAIN_USER_PASSWORD, MAIN_USER_PASSWORD])
+    user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}"
+    response = runner.invoke(args=["create", "user"], input=user_input)
+    assert "user successfully created" in response.output
+    with test_app.app_context():
+        user = User.query.filter_by(username=MAIN_USER_USERNAME).first()
+        assert user.check_password(MAIN_USER_PASSWORD)
+
+
+@pytest.mark.usefixtures("init_db")
+def test_create_user_exists(
+    runner: FlaskCliRunner, add_test_user: Callable[[UserTestObject], None]
+) -> None:
+    """Test creation of a new user that exists.
+
+    :param runner:  Fixture derived from the ``create_app`` factory
+                    fixture used to call the ``init-db`` command by
+                    name.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    response = runner.invoke(args=["create", "user"], input=MAIN_USER_USERNAME)
+    assert "username is taken" in response.output
+
+
+@pytest.mark.usefixtures("init_db")
+def test_create_user_email_exists(
+    runner: FlaskCliRunner, add_test_user: Callable[[UserTestObject], None]
+) -> None:
+    """Test creation of a new user who's email is already registered.
+
+    :param runner:  Fixture derived from the ``create_app`` factory
+                    fixture used to call the ``init-db`` command by
+                    name.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    user_input = f"{OTHER_USER_EMAIL}\n{MAIN_USER_EMAIL}"
+    add_test_user(user_test_object)
+    response = runner.invoke(args=["create", "user"], input=user_input)
+    assert (
+        "a user with this email address is already registered"
+        in response.output
+    )
+
+
+@pytest.mark.usefixtures("init_db")
+def test_create_user_passwords_no_match(
+    runner: FlaskCliRunner, patch_getpass: Callable[[List[str]], None]
+) -> None:
+    """Test creation of a new user where passwords don't match.
+
+    :param runner:  Fixture derived from the ``create_app`` factory
+                    fixture used to call the ``init-db`` command by
+                    name.
+    """
+    patch_getpass([MAIN_USER_PASSWORD, OTHER_USER_PASSWORD])
+    user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}"
+    response = runner.invoke(args=["create", "user"], input=user_input)
+    assert "passwords do not match: could not add user" in response.output

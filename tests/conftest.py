@@ -7,7 +7,7 @@ configure the application and database for testing instead of using
 local development configuration.
 """
 from pathlib import Path
-from typing import Callable
+from typing import Callable, List
 
 import pytest
 from flask import Flask
@@ -123,3 +123,19 @@ def fixture_auth(client: FlaskClient) -> AuthActions:
                     as a wrapper to change the state of the client.
     """
     return AuthActions(client)
+
+
+@pytest.fixture(name="patch_getpass")
+def fixture_patch_getpass(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Callable[[List[str]], None]:
+    """Patch getpass in the cli module.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :return:            Fixture to use this function.
+    """
+
+    def _patch_getpass(inputs: List[str]) -> None:
+        monkeypatch.setattr("app.user.getpass", lambda _: inputs.pop())
+
+    return _patch_getpass

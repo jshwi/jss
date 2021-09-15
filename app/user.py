@@ -2,6 +2,7 @@
 app.user
 ========
 """
+from getpass import getpass
 from typing import Any
 
 from .models import User, db
@@ -23,3 +24,24 @@ def create_user(
     db.session.add(user)
     db.session.commit()
     return user
+
+
+def create_user_cli() -> None:
+    """Create a new user."""
+    username = input("username: ")
+    if User.query.filter_by(username=username).first() is not None:
+        print("username is taken")
+        return
+
+    email = input("email: ")
+    if User.query.filter_by(email=email).first() is not None:
+        print("a user with this email address is already registered")
+        return
+
+    password = getpass("password: ")
+    if getpass("confirm password: ") != password:
+        print("passwords do not match: could not add user")
+        return
+
+    create_user(username, email, password)
+    print("user successfully created")
