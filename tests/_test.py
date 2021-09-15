@@ -3,12 +3,15 @@ tests._test
 ===========
 """
 # pylint: disable=too-many-arguments,too-many-lines
+import json
 from typing import Callable
 
 import pytest
 from flask import Flask, g, session
 from flask.testing import FlaskClient, FlaskCliRunner
 
+from app.extensions import mail
+from app.mail import send_email
 from app.models import Post, User, db
 
 from .utils import (
@@ -487,3 +490,41 @@ def test_export() -> None:
     assert as_dict["title"] == POST_TITLE
     assert as_dict["body"] == POST_BODY
     assert as_dict["created"] == str(POST_CREATED)
+
+
+@pytest.mark.parametrize("sync", [True, False])
+def test_send_mail(test_app: Flask, sync: bool) -> None:
+    """Test sending of mail by app's email client.
+
+    :param test_app:    Test ``Flask`` app object.
+    :param sync:        Asynchronous: True or False.
+    """
+    subject = "mail subject line"
+    recipients = [MAIN_USER_EMAIL, OTHER_USER_EMAIL]
+    html = "<p>email body<p>"
+    sender = "admin@localhost"
+    data = {
+        "title": POST_TITLE,
+        "body": POST_BODY,
+        "created": f"{POST_CREATED.isoformat()}Z",
+    }
+    attachment = {
+        "filename": "file.json",
+        "content_type": "application/json",
+        "data": json.dumps({"posts": data}, indent=4),
+    }
+    with mail.record_messages() as outbox:
+        with test_app.app_context():
+            send_email(
+                subject=subject,
+                recipients=recipients,
+                html=html,
+                sender=sender,
+                attachments=[attachment],
+                sync=sync,
+            )
+
+    assert outbox[0].subject == f"[JSS]: {subject}"
+    assert outbox[0].recipients == recipients
+    assert outbox[0].html == html
+    assert outbox[0].sender == sender

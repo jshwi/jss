@@ -105,6 +105,16 @@ class Config:
         """Set to False by default: Can be a resource drain."""
         return env.bool("SQlALCHEMY_TRACK_MODIFICATIONS", default=False)
 
+    @property
+    def DEFAULT_MAIL_SENDER(self) -> Optional[str]:
+        """Default mail sender."""
+        return env.str("DEFAULT_MAIL_SENDER", default=None)
+
+    @property
+    def MAIL_SUBJECT_PREFIX(self) -> str:
+        """str object to prefix mail client's subject line with."""
+        return env.str("MAIL_SUBJECT_PREFIX", default="")
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.

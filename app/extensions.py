@@ -7,6 +7,7 @@ Each extension is initialized in the app factory located in app.py.
 from flask import Flask
 from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
@@ -16,6 +17,7 @@ static_digest = FlaskStaticDigest()
 cache = Cache()
 db = SQLAlchemy()
 migrate = Migrate()
+mail = Mail()
 
 
 def init_app(app: Flask) -> None:
@@ -28,3 +30,4 @@ def init_app(app: Flask) -> None:
     cache.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
+    mail.init_app(app)
