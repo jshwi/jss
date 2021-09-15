@@ -115,6 +115,11 @@ class Config:
         """str object to prefix mail client's subject line with."""
         return env.str("MAIL_SUBJECT_PREFIX", default="")
 
+    @property
+    def ADMINS(self) -> Optional[List[str]]:
+        """List of web admins."""
+        return env.list("ADMINS", default=[])
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.

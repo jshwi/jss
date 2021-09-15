@@ -16,7 +16,13 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from app import create_app
 from app.models import Post, User, db
 
-from .utils import AuthActions, PostTestObject, UserTestObject
+from .utils import (
+    ADMIN_USER_EMAIL,
+    MAIN_USER_EMAIL,
+    AuthActions,
+    PostTestObject,
+    UserTestObject,
+)
 
 
 @pytest.fixture(name="test_app")
@@ -38,6 +44,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
     monkeypatch.setenv("SECRET_KEY", "testing")
     monkeypatch.setenv("MAIL_SUBJECT_PREFIX", "[JSS]: ")
+    monkeypatch.setenv("ADMINS", f"{ADMIN_USER_EMAIL},{MAIN_USER_EMAIL}")
     return create_app()
 
 
@@ -65,6 +72,7 @@ def fixture_add_test_user(test_app: Flask) -> Callable[[UserTestObject], None]:
                 username=user_test_object.username,
                 password_hash=user_test_object.password_hash,
                 email=user_test_object.email,
+                admin=user_test_object.admin,
             )
             db.session.add(test_user)
             db.session.commit()

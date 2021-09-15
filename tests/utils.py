@@ -14,6 +14,9 @@ from werkzeug import Response
 from werkzeug.security import generate_password_hash
 
 UPDATE1 = "/1/update"
+ADMIN_USER_USERNAME = "admin"
+ADMIN_USER_EMAIL = "admin@test.com"
+ADMIN_USER_PASSWORD = "pass0"
 MAIN_USER_USERNAME = "main"
 MAIN_USER_EMAIL = "main@test.com"
 MAIN_USER_PASSWORD = "pass1"
@@ -33,14 +36,18 @@ class UserTestObject:
     :param username:    Username of user object.
     :param email:       Email of user object.
     :param password:    Password, for raw text and comparison hash.
+    :param admin:       Is user admin? True or False.
     """
 
-    def __init__(self, username: str, email: str, password: str) -> None:
+    def __init__(
+        self, username: str, email: str, password: str, admin: bool = False
+    ) -> None:
         self.username = username
         self.email = email
         self.password = password
         self.password_hash = generate_password_hash(password)
         self.registered_on = MAIN_USER_REGISTERED_ON
+        self.admin = admin
 
 
 class PostTestObject:

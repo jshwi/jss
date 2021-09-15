@@ -15,3 +15,4 @@ set -o errexit
 set -o nounset
 
 flask db upgrade
+flask create admin
