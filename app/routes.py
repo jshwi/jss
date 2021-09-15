@@ -29,6 +29,7 @@ from werkzeug import Response
 from .models import Post, User, db
 from .post import get_post
 from .security import login_required
+from .user import create_user
 
 _URL_FOR_INDEX = "index"
 
@@ -67,10 +68,7 @@ def register() -> Union[str, Response]:
             error = f"Email {email} is already registered."
 
         if error is None:
-            user = User(username=username, email=email)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
+            create_user(username, email, password)
             return redirect(url_for("auth.login"))
 
         flash(error)

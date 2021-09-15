@@ -45,3 +45,7 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.user
+   :members:
+   :undoc-members:
+   :show-inheritance:
