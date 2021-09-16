@@ -12,8 +12,10 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from app.models import Post, User, db
 
 from .utils import (
+    MAIN_USER_EMAIL,
     MAIN_USER_PASSWORD,
     MAIN_USER_USERNAME,
+    OTHER_USER_EMAIL,
     OTHER_USER_PASSWORD,
     OTHER_USER_USERNAME,
     POST_AUTHOR_ID,
@@ -49,7 +51,9 @@ def test_register(
     :param auth:        Handle authorization with test app.
     """
     assert client.get("/auth/register").status_code == 200
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     response = auth.register(user_test_object)
     assert response.headers["Location"] == "http://localhost/auth/login"
     with test_app.app_context():
@@ -59,18 +63,37 @@ def test_register(
 
 @pytest.mark.usefixtures("init_db")
 @pytest.mark.parametrize(
-    "username,password,message",
+    "username,email,password,message",
     [
-        ("", "", b"Username is required."),
-        ("a", "", b"Password is required."),
-        (MAIN_USER_USERNAME, MAIN_USER_PASSWORD, b"already registered"),
+        ("", "", "", b"Username is required."),
+        (OTHER_USER_USERNAME, "", "", b"Email is required."),
+        ("a", OTHER_USER_EMAIL, "", b"Password is required."),
+        (
+            MAIN_USER_USERNAME,
+            OTHER_USER_EMAIL,
+            MAIN_USER_PASSWORD,
+            b"already registered",
+        ),
+        (
+            OTHER_USER_USERNAME,
+            MAIN_USER_EMAIL,
+            MAIN_USER_PASSWORD,
+            b"already registered",
+        ),
     ],
-    ids=["no-username", "no-password", "name-taken"],
+    ids=[
+        "no-username",
+        "no-email",
+        "no-password",
+        "name-taken",
+        "email-taken",
+    ],
 )
 def test_register_validate_input(
     auth: AuthActions,
     add_test_user: Callable[[UserTestObject], None],
     username: str,
+    email: str,
     password: str,
     message: str,
 ) -> None:
@@ -82,8 +105,10 @@ def test_register_validate_input(
     :param password:        The test password input.
     :param message:         The expected message for the response.
     """
-    registered = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
-    registering = UserTestObject(username, password)
+    registered = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    registering = UserTestObject(username, email, password)
     add_test_user(registered)
     response = auth.register(registering)
     assert message in response.data
@@ -101,7 +126,9 @@ def test_login(
     :param auth:            Handle authorization with test app.
     :param add_test_user:   Add user to test database.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     add_test_user(user_test_object)
     response = auth.login(user_test_object)
     assert response.headers["Location"] == "http://localhost/"
@@ -133,9 +160,11 @@ def test_login_validate_input(
     :param username:        Parametrized incorrect username
     :param password:        Parametrized incorrect password
     """
-    registered_user = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    registered_user = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     add_test_user(registered_user)
-    test_user = UserTestObject(username, password)
+    test_user = UserTestObject(username, OTHER_USER_EMAIL, password)
     response = auth.login(test_user)
     assert b"Invalid username or password" in response.data
 
@@ -147,7 +176,9 @@ def test_logout(client: FlaskClient, auth: AuthActions) -> None:
     :param client:  Client for testing app.
     :param auth:    Handle authorization with test app.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     auth.login(user_test_object)
     with client:
         auth.logout()
@@ -179,7 +210,9 @@ def test_index(
     response = client.get("/")
     assert b"Log In" in response.data
     assert b"Register" in response.data
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     post_test_object = PostTestObject(
         POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
     )
@@ -237,9 +270,11 @@ def test_author_required(
     :param add_test_user:   Add user to test database.
     :param add_test_post:   Add post to test database.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     other_user_test_object = UserTestObject(
-        OTHER_USER_USERNAME, OTHER_USER_PASSWORD
+        OTHER_USER_USERNAME, OTHER_USER_EMAIL, OTHER_USER_PASSWORD
     )
     add_test_user(user_test_object)
     add_test_user(other_user_test_object)
@@ -279,7 +314,9 @@ def test_exists_required(
     :param add_test_user:   Add user to test database.
     :param add_test_post:   Add post to test database.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     post_test_object = PostTestObject(
         POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
     )
@@ -307,7 +344,9 @@ def test_create(
     :param auth:            Handle authorization with test app.
     :param add_test_user:   Add user to test database.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     add_test_user(user_test_object)
     auth.login(user_test_object)
     assert client.get("/create").status_code == 200
@@ -333,7 +372,9 @@ def test_update(
     :param add_test_user:   Add user to test database.
     :param add_test_post:   Add post to test database.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     created_post = PostTestObject(
         POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
     )
@@ -370,7 +411,9 @@ def test_create_update_validate(
     :param add_test_post:   Add post to test database.
     :param route:           Parametrized route path.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     add_test_user(user_test_object)
     post_test_object = PostTestObject(
         POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
@@ -405,7 +448,9 @@ def test_delete(
     :param add_test_user:   Add user to test database.
     :param add_test_post:   Add post to test database.
     """
-    user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
     add_test_user(user_test_object)
     post_test_object = PostTestObject(
         POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED

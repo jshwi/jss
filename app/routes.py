@@ -53,16 +53,21 @@ def register() -> Union[str, Response]:
     if request.method == "POST":
         error = None
         username = request.form["username"]
+        email = request.form["email"]
         password = request.form["password"]
         if not username:
             error = "Username is required."
+        elif not email:
+            error = "Email is required."
         elif not password:
             error = "Password is required."
         elif User.query.filter_by(username=username).first() is not None:
             error = f"User {username} is already registered."
+        elif User.query.filter_by(email=email).first() is not None:
+            error = f"Email {email} is already registered."
 
         if error is None:
-            user = User(username=username)
+            user = User(username=username, email=email)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()

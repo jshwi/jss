@@ -15,8 +15,10 @@ from werkzeug.security import generate_password_hash
 
 UPDATE1 = "/1/update"
 MAIN_USER_USERNAME = "main"
+MAIN_USER_EMAIL = "main@test.com"
 MAIN_USER_PASSWORD = "pass1"
 OTHER_USER_USERNAME = "other"
+OTHER_USER_EMAIL = "other@test.com"
 OTHER_USER_PASSWORD = "pass2"
 POST_TITLE = "test title"
 POST_BODY = "test\nbody"
@@ -29,11 +31,13 @@ class UserTestObject:
     """Test model attributes.
 
     :param username:    Username of user object.
+    :param email:       Email of user object.
     :param password:    Password, for raw text and comparison hash.
     """
 
-    def __init__(self, username: str, password: str) -> None:
+    def __init__(self, username: str, email: str, password: str) -> None:
         self.username = username
+        self.email = email
         self.password = password
         self.password_hash = generate_password_hash(password)
         self.registered_on = MAIN_USER_REGISTERED_ON
@@ -102,6 +106,7 @@ class AuthActions:
             self.register_route,
             data={
                 "username": user_test_object.username,
+                "email": user_test_object.email,
                 "password": user_test_object.password,
             },
         )
