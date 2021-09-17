@@ -1,10 +1,15 @@
 <article class="post">
     <header>
         <div>
-            <img src="{{ post.author.avatar(36) }}" alt="avatar">
+            <a href="{{ url_for('views.profile', username=post.author.username) }}">
+                <img src="{{ post.author.avatar(36) }}" alt="avatar">
+            </a>
             <h1>{{ post.title }}</h1>
             <div class="about">
-                by {{ post.author.username }}
+                by
+                <a href="{{ url_for('views.profile', username=post.author.username) }}">
+                    {{ post.author.username }}
+                </a>
                 on {{ post.created.strftime("%Y-%m-%d") }}
             </div>
         </div>

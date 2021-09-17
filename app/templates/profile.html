@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block header %}
+    <h1>{% block title %}{{ user.username }}{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+    <h1><img src="{{ user.avatar(36) }}" alt="avatar"></h1>
+    {% if user.about_me %}
+        <p>{{ user.about_me }}</p>
+    {% endif %}
+    {% if user.last_seen %}
+        <p>Last seen on: {{ user.last_seen }}</p>
+    {% endif %}
+    <hr>
+    {% for post in posts %}
+        {% include "subs/post.html" %}
+        {% if not loop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

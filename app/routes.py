@@ -362,6 +362,18 @@ def reset_password(token: str) -> Union[str, Response]:
     return render_template("auth/reset_password.html", form=form)
 
 
+@views_blueprint.route("/profile/<username>", methods=["GET", "POST"])
+def profile(username: str) -> str:
+    """Render user's profile page.
+
+    :param username:    Username of registered user.
+    :return:            Rendered profile template.
+    """
+    user = User.query.filter_by(username=username).first()
+    posts = Post.query.filter_by(user_id=user.id)
+    return render_template("profile.html", user=user, posts=posts)
+
+
 def init_app(app: Flask) -> None:
     """Load the app with views views.
 

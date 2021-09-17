@@ -184,7 +184,7 @@ def test_index(
     response = client.get("/").data.decode()
     assert "Log Out" in response
     assert post_test_object.title in response
-    assert f"by {user_test_object.username}" in response
+    assert user_test_object.username in response
     assert str(post_test_object.created).split()[0] in response
     assert post_test_object.body in response
     assert 'href="/1/update"' in response
@@ -960,3 +960,19 @@ def test_avatar() -> None:
         "https://gravatar.com/avatar/"
         "5b37040e6200edb3c7f409e994076872?d=identicon&s=128"
     )
+
+
+@pytest.mark.usefixtures("init_db")
+def test_profile_page(client: FlaskClient, add_test_user: Callable[..., None]):
+    """Test response when visiting profile page of existing user.
+
+    :param client:          App's test-client API.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    response = client.get(f"/profile/{MAIN_USER_USERNAME}")
+    assert b'src="https://gravatar.com/avatar/' in response.data
+    assert b"Last seen on:" in response.data
