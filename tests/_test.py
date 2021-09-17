@@ -950,3 +950,13 @@ def test_get_smtp_handler(
     assert kwargs["toaddrs"] == [MAIL_USERNAME]
     assert kwargs["credentials"] == (MAIL_USERNAME, MAIL_PASSWORD)
     assert kwargs["secure"] == secure
+
+
+def test_avatar() -> None:
+    """Test generated avatar URL for expected value."""
+    # noinspection PyArgumentList
+    user = User(username=ADMIN_USER_USERNAME, email=ADMIN_USER_EMAIL)
+    assert user.avatar(128) == (
+        "https://gravatar.com/avatar/"
+        "5b37040e6200edb3c7f409e994076872?d=identicon&s=128"
+    )

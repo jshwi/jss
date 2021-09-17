@@ -8,6 +8,7 @@ Define app's database models.
 from __future__ import annotations
 
 from datetime import datetime
+from hashlib import md5
 from typing import Dict
 
 from flask_login import UserMixin
@@ -64,6 +65,15 @@ class User(UserMixin, _BaseModel):  # type: ignore
         :return:            Attempt matches hash: True or False.
         """
         return check_password_hash(self.password_hash, password)
+
+    def avatar(self, size: int) -> str:
+        """Generate unique avatar for user derived from email hash.
+
+        :param size:    Size of the avatar.
+        :return:        URL leading to avatar for img link.
+        """
+        digest = md5(self.email.lower().encode()).hexdigest()
+        return f"https://gravatar.com/avatar/{digest}?d=identicon&s={size}"
 
 
 class Post(_BaseModel):

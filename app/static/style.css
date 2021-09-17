@@ -132,3 +132,6 @@ input[type=submit] {
     align-self: start;
     min-width: 10em;
 }
+caption {
+    text-align: left;
+}
