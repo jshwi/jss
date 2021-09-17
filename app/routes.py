@@ -386,6 +386,16 @@ def post_page(id: int) -> str:
     return render_template("post.html", post=post)
 
 
+@views_blueprint.before_request
+def before_request() -> None:
+    """Add user's login date and time before first request."""
+    if current_user.is_authenticated:
+        current_user.last_seen = (  # pylint: disable=assigning-non-slot
+            datetime.now()
+        )
+        db.session.commit()
+
+
 def init_app(app: Flask) -> None:
     """Load the app with views views.
 
