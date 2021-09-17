@@ -3,6 +3,9 @@
     <h1>{% block title %}{{ user.username }}{% endblock %}</h1>
 {% endblock %}
 {% block content %}
+    {% if user == current_user %}
+        <p><a href="{{ url_for('views.edit_profile') }}">Edit</a></p>
+    {% endif %}
     <h1><img src="{{ user.avatar(36) }}" alt="avatar"></h1>
     {% if user.about_me %}
         <p>{{ user.about_me }}</p>

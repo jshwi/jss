@@ -5,7 +5,7 @@ tests.utils
 Utilities for testing.
 """
 # pylint: disable=too-few-public-methods,disable=invalid-name
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes,too-many-arguments
 from __future__ import annotations
 
 from datetime import datetime
@@ -36,6 +36,7 @@ MAIL_SERVER = "localhost"
 MAIL_USERNAME = MAIN_USER_USERNAME
 MAIL_PASSWORD = "unique"
 MAIL_PORT = 25
+PROFILE_EDIT = "/profile/edit"
 
 
 class UserTestObject:
@@ -48,7 +49,12 @@ class UserTestObject:
     """
 
     def __init__(
-        self, username: str, email: str, password: str, admin: bool = False
+        self,
+        username: str,
+        email: str,
+        password: str,
+        admin: bool = False,
+        confirmed=False,
     ) -> None:
         self.username = username
         self.email = email
@@ -56,6 +62,7 @@ class UserTestObject:
         self.password_hash = generate_password_hash(password)
         self.registered_on = MAIN_USER_REGISTERED_ON
         self.admin = admin
+        self.confirmed = confirmed
 
 
 class PostTestObject:

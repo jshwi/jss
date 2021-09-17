@@ -38,6 +38,7 @@ from .utils import (
     POST_BODY,
     POST_CREATED,
     POST_TITLE,
+    PROFILE_EDIT,
     UPDATE1,
     AuthActions,
     PostTestObject,
@@ -1001,3 +1002,55 @@ def test_post_page(
     response = client.get("/post/1")
     assert f"<h1>{POST_TITLE}</h1>" in response.data.decode()
     assert POST_BODY in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+def test_edit_profile(
+    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+) -> None:
+    """Test edit profile page.
+
+    :param client:          App's test-client API.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
+    )
+    add_test_user(user_test_object)
+    auth.login(user_test_object)
+    response = client.get(PROFILE_EDIT, follow_redirects=True)
+    assert b"Edit Profile" in response.data
+    assert b"Profile" in response.data
+    assert b"Log Out" in response.data
+    assert b"Edit Profile" in response.data
+    assert MAIN_USER_USERNAME in response.data.decode()
+    assert b"About me" in response.data
+    response = client.post(
+        PROFILE_EDIT,
+        data={"username": OTHER_USER_USERNAME, "about_me": "testing about me"},
+    )
+    assert f'value="{OTHER_USER_USERNAME}">' in response.data.decode()
+    assert b"testing about me" in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_unconfirmed(
+    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+) -> None:
+    """Test when unconfirmed user tries to enter restricted view.
+
+    :param client:          App's test-client API.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    auth.login(user_test_object)
+    response = client.get(PROFILE_EDIT, follow_redirects=True)
+    assert b"Account Verification Pending" in response.data
+    assert b"You have not verified your account" in response.data
+    assert b"Please check your inbox " in response.data
+    assert b"or junk folder for a confirmation link." in response.data
+    assert b"Didn't get the email?" in response.data
+    assert b"Resend" in response.data

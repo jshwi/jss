@@ -21,6 +21,7 @@ from jwt import InvalidTokenError
 from werkzeug import Response
 
 from .forms import (
+    EditProfile,
     LoginForm,
     PostForm,
     RegistrationForm,
@@ -33,14 +34,17 @@ from .post import get_post
 from .security import (
     admin_required,
     confirm_token,
+    confirmation_required,
     generate_confirmation_token,
     generate_reset_password_token,
     get_requested_reset_password_user,
 )
 from .user import create_user
 
+_TEMPLATE_INDEX = "index.html"
 _URL_FOR_INDEX = "index"
 _URL_FOR_UNCONFIRMED = "auth.unconfirmed"
+_URL_FOR_PROFILE = "views.profile"
 
 views_blueprint = Blueprint("views", __name__)
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
@@ -394,6 +398,34 @@ def before_request() -> None:
             datetime.now()
         )
         db.session.commit()
+
+
+@views_blueprint.route("/profile/edit", methods=["GET", "POST"])
+@login_required
+@confirmation_required
+def edit_profile() -> Union[str, Response]:
+    """Edit a user's personal profile page.
+
+    :return:    Rendered profile/edit template on GET. Response object
+                redirect to index view on successful POST.
+    """
+    form = EditProfile(
+        username=current_user.username, about_me=current_user.about_me
+    )
+    if form.validate_on_submit():
+        current_user.username = (  # pylint: disable=assigning-non-slot
+            form.username.data
+        )
+        current_user.about_me = (  # pylint: disable=assigning-non-slot
+            form.about_me.data
+        )
+        db.session.commit()
+        flash("Your changes have been saved.")
+        redirect(url_for("views.profile", username=current_user.username))
+
+    form.username.data = current_user.username
+    form.about_me.data = current_user.about_me
+    return render_template("user/edit_profile.html", form=form)
 
 
 def init_app(app: Flask) -> None:

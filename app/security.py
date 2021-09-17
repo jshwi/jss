@@ -9,7 +9,7 @@ from time import time
 from typing import Any, Callable, Union
 
 import jwt
-from flask import current_app
+from flask import current_app, redirect, url_for
 from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
 from werkzeug import Response
@@ -35,6 +35,27 @@ def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
     def _wrapped_view(*args: Any, **kwargs: Any) -> Response:
         if not current_user.admin:
             return login_manager.unauthorized()
+
+        return view(*args, **kwargs)
+
+    return _wrapped_view
+
+
+def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
+    """Handle views that require a verified logged in user.
+
+    The new function checks if a user if confirmed or not and redirects
+    The user to the auth/unconfirmed page otherwise. If a confirmed user
+    is loaded the original view is called and continues normally.
+
+    :param view:    View function to wrap.
+    :return:        The wrapped function supplied to this decorator.
+    """
+
+    @functools.wraps(view)
+    def _wrapped_view(*args: Any, **kwargs: Any) -> Union[str, Response]:
+        if not current_user.confirmed:
+            return redirect(url_for("auth.unconfirmed"))
 
         return view(*args, **kwargs)
 
