@@ -4,7 +4,9 @@
             <a href="{{ url_for('views.profile', username=post.author.username) }}">
                 <img src="{{ post.author.avatar(36) }}" alt="avatar">
             </a>
-            <h1>{{ post.title }}</h1>
+            <h1>
+                <a href="{{ url_for('views.post_page', id=post.id) }}">{{ post.title }}</a>
+            </h1>
             <div class="about">
                 by
                 <a href="{{ url_for('views.profile', username=post.author.username) }}">

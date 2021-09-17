@@ -374,6 +374,18 @@ def profile(username: str) -> str:
     return render_template("profile.html", user=user, posts=posts)
 
 
+# noinspection PyShadowingBuiltins
+@views_blueprint.route("/post/<int:id>", methods=["GET"])
+def post_page(id: int) -> str:
+    """Render post page for selected post ID.
+
+    :param id:  ID of post to display full page on.
+    :return:    Rendered post template.
+    """
+    post = get_post(id, checkauthor=False)
+    return render_template("post.html", post=post)
+
+
 def init_app(app: Flask) -> None:
     """Load the app with views views.
 

@@ -976,3 +976,28 @@ def test_profile_page(client: FlaskClient, add_test_user: Callable[..., None]):
     response = client.get(f"/profile/{MAIN_USER_USERNAME}")
     assert b'src="https://gravatar.com/avatar/' in response.data
     assert b"Last seen on:" in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_post_page(
+    client: FlaskClient,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+) -> None:
+    """Test for correct contents in post page response.
+
+    :param client:          App's test-client API.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    post_test_object = PostTestObject(
+        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+    )
+    add_test_user(user_test_object)
+    add_test_post(post_test_object)
+    response = client.get("/post/1")
+    assert f"<h1>{POST_TITLE}</h1>" in response.data.decode()
+    assert POST_BODY in response.data.decode()
