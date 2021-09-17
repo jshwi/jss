@@ -24,6 +24,9 @@ from .utils import (
     ADMIN_USER_PASSWORD,
     ADMIN_USER_USERNAME,
     INVALID_OR_EXPIRED,
+    LAST_USER_EMAIL,
+    LAST_USER_PASSWORD,
+    LAST_USER_USERNAME,
     MAIL_PASSWORD,
     MAIL_PORT,
     MAIL_SERVER,
@@ -34,10 +37,22 @@ from .utils import (
     OTHER_USER_EMAIL,
     OTHER_USER_PASSWORD,
     OTHER_USER_USERNAME,
-    POST_AUTHOR_ID,
-    POST_BODY,
-    POST_CREATED,
-    POST_TITLE,
+    POST_AUTHOR_ID_1,
+    POST_AUTHOR_ID_2,
+    POST_AUTHOR_ID_3,
+    POST_AUTHOR_ID_4,
+    POST_BODY_1,
+    POST_BODY_2,
+    POST_BODY_3,
+    POST_BODY_4,
+    POST_CREATED_1,
+    POST_CREATED_2,
+    POST_CREATED_3,
+    POST_CREATED_4,
+    POST_TITLE_1,
+    POST_TITLE_2,
+    POST_TITLE_3,
+    POST_TITLE_4,
     PROFILE_EDIT,
     UPDATE1,
     AuthActions,
@@ -177,7 +192,7 @@ def test_index(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     post_test_object = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_user(user_test_object)
     add_test_post(post_test_object)
@@ -242,7 +257,7 @@ def test_author_required(
     add_test_user(user_test_object)
     add_test_user(other_user_test_object)
     post_test_object = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_post(post_test_object)
     # change the post author to another author
@@ -281,7 +296,7 @@ def test_exists_required(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     post_test_object = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_user(user_test_object)
     add_test_post(post_test_object)
@@ -313,7 +328,7 @@ def test_create(
     add_test_user(user_test_object)
     auth.login(user_test_object)
     assert client.get("/create").status_code == 200
-    client.post("/create", data={"title": POST_TITLE, "body": POST_BODY})
+    client.post("/create", data={"title": POST_TITLE_1, "body": POST_BODY_1})
     with test_app.app_context():
         count = Post.query.count()
         assert count == 1
@@ -339,10 +354,10 @@ def test_update(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
     )
     created_post = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     updated_post = PostTestObject(
-        "updated title", "updated body", POST_AUTHOR_ID, POST_CREATED
+        "updated title", "updated body", POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_user(user_test_object)
     add_test_post(created_post)
@@ -381,7 +396,7 @@ def test_delete(
     )
     add_test_user(user_test_object)
     post_test_object = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_post(post_test_object)
     auth.login(user_test_object)
@@ -417,11 +432,11 @@ def test_create_command(
 
 def test_export() -> None:
     """Test export (to dict_ function for models."""
-    post = Post(title=POST_TITLE, body=POST_BODY, created=POST_CREATED)
+    post = Post(title=POST_TITLE_1, body=POST_BODY_1, created=POST_CREATED_1)
     as_dict = post.export()
-    assert as_dict["title"] == POST_TITLE
-    assert as_dict["body"] == POST_BODY
-    assert as_dict["created"] == str(POST_CREATED)
+    assert as_dict["title"] == POST_TITLE_1
+    assert as_dict["body"] == POST_BODY_1
+    assert as_dict["created"] == str(POST_CREATED_1)
 
 
 @pytest.mark.parametrize("sync", [True, False])
@@ -436,9 +451,9 @@ def test_send_mail(test_app: Flask, sync: bool) -> None:
     html = "<p>email body<p>"
     sender = "admin@localhost"
     data = {
-        "title": POST_TITLE,
-        "body": POST_BODY,
-        "created": f"{POST_CREATED.isoformat()}Z",
+        "title": POST_TITLE_1,
+        "body": POST_BODY_1,
+        "created": f"{POST_CREATED_1.isoformat()}Z",
     }
     attachment = {
         "filename": "file.json",
@@ -995,13 +1010,13 @@ def test_post_page(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     post_test_object = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_user(user_test_object)
     add_test_post(post_test_object)
     response = client.get("/post/1")
-    assert f"<h1>{POST_TITLE}</h1>" in response.data.decode()
-    assert POST_BODY in response.data.decode()
+    assert f"<h1>{POST_TITLE_1}</h1>" in response.data.decode()
+    assert POST_BODY_1 in response.data.decode()
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1028,8 +1043,9 @@ def test_edit_profile(
     response = client.post(
         PROFILE_EDIT,
         data={"username": OTHER_USER_USERNAME, "about_me": "testing about me"},
+        follow_redirects=True,
     )
-    assert f'value="{OTHER_USER_USERNAME}">' in response.data.decode()
+    assert OTHER_USER_USERNAME in response.data.decode()
     assert b"testing about me" in response.data
 
 
@@ -1054,3 +1070,154 @@ def test_unconfirmed(
     assert b"or junk folder for a confirmation link." in response.data
     assert b"Didn't get the email?" in response.data
     assert b"Resend" in response.data
+
+
+# noinspection PyArgumentList
+@pytest.mark.usefixtures("init_db")
+def test_follow(test_app: Flask, add_test_user: Callable[..., None]) -> None:
+    """Test functionality of user follows.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param add_test_user:   Add user to test database.
+    """
+    with test_app.app_context():
+        user_test_object_1 = UserTestObject(
+            ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
+        )
+        user_test_object_2 = UserTestObject(
+            MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        )
+        add_test_user(user_test_object_1, user_test_object_2)
+        user_1 = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
+        user_2 = User.query.filter_by(username=MAIN_USER_USERNAME).first()
+        assert user_1.followed.all() == []
+        assert user_1.followers.all() == []
+        user_1.follow(user_2)
+        db.session.commit()
+        assert user_1.is_following(user_2)
+        assert user_1.followed.count() == 1
+        assert user_1.followed.first().username == MAIN_USER_USERNAME
+        assert user_2.followers.count() == 1
+        assert user_2.followers.first().username == ADMIN_USER_USERNAME
+        user_1.unfollow(user_2)
+        db.session.commit()
+        assert not user_1.is_following(user_2)
+        assert user_1.followed.count() == 0
+        assert user_2.followers.count() == 0
+
+
+# noinspection PyArgumentList
+@pytest.mark.usefixtures("init_db")
+def test_follow_posts(  # pylint: disable=too-many-locals
+    test_app: Flask,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+) -> None:
+    """Test functionality of post follows.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    with test_app.app_context():
+        # create four users
+        user_test_object_1 = UserTestObject(
+            ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
+        )
+        user_test_object_2 = UserTestObject(
+            MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        )
+        user_test_object_3 = UserTestObject(
+            OTHER_USER_USERNAME, OTHER_USER_EMAIL, OTHER_USER_PASSWORD
+        )
+        user_test_object_4 = UserTestObject(
+            LAST_USER_USERNAME, LAST_USER_EMAIL, LAST_USER_PASSWORD
+        )
+        add_test_user(
+            user_test_object_1,
+            user_test_object_2,
+            user_test_object_3,
+            user_test_object_4,
+        )
+        post_test_object_1 = PostTestObject(
+            POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
+        )
+        post_test_object_2 = PostTestObject(
+            POST_TITLE_2, POST_BODY_2, POST_AUTHOR_ID_2, POST_CREATED_4
+        )
+        post_test_object_3 = PostTestObject(
+            POST_TITLE_3, POST_BODY_3, POST_AUTHOR_ID_3, POST_CREATED_3
+        )
+        post_test_object_4 = PostTestObject(
+            POST_TITLE_4, POST_BODY_4, POST_AUTHOR_ID_4, POST_CREATED_2
+        )
+        add_test_post(
+            post_test_object_1,
+            post_test_object_2,
+            post_test_object_3,
+            post_test_object_4,
+        )
+        user_1 = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
+        user_2 = User.query.filter_by(username=MAIN_USER_USERNAME).first()
+        user_3 = User.query.filter_by(username=OTHER_USER_USERNAME).first()
+        user_4 = User.query.filter_by(username=LAST_USER_USERNAME).first()
+        post_1 = Post.query.filter_by(title=POST_TITLE_1).first()
+        post_2 = Post.query.filter_by(title=POST_TITLE_2).first()
+        post_3 = Post.query.filter_by(title=POST_TITLE_3).first()
+        post_4 = Post.query.filter_by(title=POST_TITLE_4).first()
+
+        # setup the followers
+        user_1.follow(user_2)
+        user_1.follow(user_4)
+        user_2.follow(user_3)
+        user_3.follow(user_4)
+        db.session.commit()
+
+        # check the followed posts of each user
+        followed_1 = user_1.followed_posts().all()
+        followed_2 = user_2.followed_posts().all()
+        followed_3 = user_3.followed_posts().all()
+        followed_4 = user_4.followed_posts().all()
+        assert followed_1 == [post_2, post_4, post_1]
+        assert followed_2 == [post_2, post_3]
+        assert followed_3 == [post_3, post_4]
+        assert followed_4 == [post_4]
+
+
+@pytest.mark.usefixtures("init_db")
+def test_post_follow_unfollow_routes(
+    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+):
+    """Test ``POST`` request to follow and unfollow a user.
+
+    :param client:          App's test-client API.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    # create and log in test users
+    user_test_object_1 = UserTestObject(
+        ADMIN_USER_USERNAME,
+        ADMIN_USER_EMAIL,
+        ADMIN_USER_PASSWORD,
+        confirmed=True,
+    )
+    user_test_object_2 = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
+    )
+    add_test_user(user_test_object_1, user_test_object_2)
+    auth.login(user_test_object_1)
+    auth.login(user_test_object_2)
+    response = client.post(
+        f"/follow/{user_test_object_2.username}", follow_redirects=True
+    )
+    assert (
+        f"You are now following {user_test_object_2.username}"
+        in response.data.decode()
+    )
+    response = client.post(
+        f"/unfollow/{user_test_object_2.username}", follow_redirects=True
+    )
+    assert (
+        f"You are no longer following {MAIN_USER_USERNAME}"
+        in response.data.decode()
+    )

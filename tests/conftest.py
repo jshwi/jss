@@ -60,7 +60,7 @@ def fixture_init_db(test_app: Flask) -> None:
 
 
 @pytest.fixture(name="add_test_user")
-def fixture_add_test_user(test_app: Flask) -> Callable[[UserTestObject], None]:
+def fixture_add_test_user(test_app: Flask) -> Callable[..., None]:
     """Add a user object to the database.
 
     :param test_app:    Test ``Flask`` app object.
@@ -68,39 +68,41 @@ def fixture_add_test_user(test_app: Flask) -> Callable[[UserTestObject], None]:
     """
 
     # noinspection PyArgumentList
-    def _add_test_user(user_test_object: UserTestObject) -> None:
+    def _add_test_user(*user_test_objects: UserTestObject) -> None:
         with test_app.app_context():
-            test_user = User(
-                username=user_test_object.username,
-                password_hash=user_test_object.password_hash,
-                email=user_test_object.email,
-                admin=user_test_object.admin,
-                confirmed=user_test_object.confirmed,
-            )
-            db.session.add(test_user)
-            db.session.commit()
+            for user_test_object in user_test_objects:
+                test_user = User(
+                    username=user_test_object.username,
+                    password_hash=user_test_object.password_hash,
+                    email=user_test_object.email,
+                    admin=user_test_object.admin,
+                    confirmed=user_test_object.confirmed,
+                )
+                db.session.add(test_user)
+                db.session.commit()
 
     return _add_test_user
 
 
 @pytest.fixture(name="add_test_post")
-def fixture_add_test_post(test_app: Flask) -> Callable[[PostTestObject], None]:
+def fixture_add_test_post(test_app: Flask) -> Callable[..., None]:
     """Add a post object to the database.
 
     :param test_app:    Test ``Flask`` app object.
     :return:            Function for using this fixture.
     """
 
-    def _add_test_post(post_test_object: PostTestObject) -> None:
+    def _add_test_post(*post_test_objects: PostTestObject) -> None:
         with test_app.app_context():
-            post = Post(
-                title=post_test_object.title,
-                body=post_test_object.body,
-                user_id=post_test_object.user_id,
-                created=post_test_object.created,
-            )
-            db.session.add(post)
-            db.session.commit()
+            for post_test_object in post_test_objects:
+                post = Post(
+                    title=post_test_object.title,
+                    body=post_test_object.body,
+                    user_id=post_test_object.user_id,
+                    created=post_test_object.created,
+                )
+                db.session.add(post)
+                db.session.commit()
 
     return _add_test_post
 

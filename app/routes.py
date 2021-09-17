@@ -22,6 +22,7 @@ from werkzeug import Response
 
 from .forms import (
     EditProfile,
+    EmptyForm,
     LoginForm,
     PostForm,
     RegistrationForm,
@@ -375,7 +376,8 @@ def profile(username: str) -> str:
     """
     user = User.query.filter_by(username=username).first()
     posts = Post.query.filter_by(user_id=user.id)
-    return render_template("profile.html", user=user, posts=posts)
+    form = EmptyForm()
+    return render_template("profile.html", user=user, posts=posts, form=form)
 
 
 # noinspection PyShadowingBuiltins
@@ -421,11 +423,59 @@ def edit_profile() -> Union[str, Response]:
         )
         db.session.commit()
         flash("Your changes have been saved.")
-        redirect(url_for("views.profile", username=current_user.username))
+        return redirect(
+            url_for(_URL_FOR_PROFILE, username=current_user.username)
+        )
 
     form.username.data = current_user.username
     form.about_me.data = current_user.about_me
     return render_template("user/edit_profile.html", form=form)
+
+
+@views_blueprint.route("/follow/<username>", methods=["POST"])
+@login_required
+@confirmation_required
+def follow(username: str) -> Response:
+    """Add a user model to follow to the current user model.
+
+    There is no view for this route and so the user will be redirected
+    to the profile view.
+
+    :param username:    User to follow.
+    :return:            Response object redirect to profile view of
+                        user that has been followed.
+    """
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        current_user.follow(user)
+        db.session.commit()
+        flash(f"You are now following {username}")
+
+    return redirect(url_for(_URL_FOR_PROFILE, username=username))
+
+
+@views_blueprint.route("/unfollow/<username>", methods=["POST"])
+@login_required
+@confirmation_required
+def unfollow(username: str) -> Response:
+    """Remove a user model to unfollow from the current user model.
+
+    There is no view for this route and so the user will be redirected
+    to the profile view.
+
+    :param username:    User to unfollow.
+    :return:            Response object redirect to profile view of
+                        user that has been unfollowed.
+    """
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        current_user.unfollow(user)
+        db.session.commit()
+        flash(f"You are no longer following {username}")
+
+    return redirect(url_for(_URL_FOR_PROFILE, username=username))
 
 
 def init_app(app: Flask) -> None:

@@ -3,8 +3,23 @@
     <h1>{% block title %}{{ user.username }}{% endblock %}</h1>
 {% endblock %}
 {% block content %}
-    {% if user == current_user %}
-        <p><a href="{{ url_for('views.edit_profile') }}">Edit</a></p>
+    {% if current_user.is_authenticated %}
+        <p>{{ user.followers.count() }} followers, {{ user.followed.count() }}
+            following.</p>
+        {% if user == current_user %}
+            <p><a href="{{ url_for('views.edit_profile') }}">Edit</a></p>
+        {% elif not current_user.is_following(user) %}
+            <form action="{{ url_for('views.follow', username=user.username) }}"
+                  method="post">
+                {{ form.hidden_tag() }}{{ form.submit(value='Follow') }}
+            </form>
+        {% else %}
+            <form action="{{ url_for('views.unfollow', username=user.username) }}"
+                  method="post">
+                {{ form.hidden_tag() }}
+                {{ form.submit(value='Unfollow') }}
+            </form>
+        {% endif %}
     {% endif %}
     <h1><img src="{{ user.avatar(36) }}" alt="avatar"></h1>
     {% if user.about_me %}

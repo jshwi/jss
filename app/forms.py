@@ -105,3 +105,9 @@ class EditProfile(FlaskForm):
     username = StringField("username", validators=[DataRequired()])
     about_me = TextAreaField("About me", validators=[Length(min=0, max=140)])
     submit = SubmitField("Submit")
+
+
+class EmptyForm(FlaskForm):
+    """Empty form: Submit only."""
+
+    submit = SubmitField("Submit")

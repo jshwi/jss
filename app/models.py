@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from hashlib import md5
-from typing import Dict
+from typing import Dict, List
 
 from flask_login import UserMixin
 from sqlalchemy_utils import generic_repr
@@ -18,6 +18,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from .extensions import db
 
 _USER_ID = "user.id"
+
+followers = db.Table(
+    "followers",
+    db.Column("follower_id", db.Integer, db.ForeignKey(_USER_ID)),
+    db.Column("followed_id", db.Integer, db.ForeignKey(_USER_ID)),
+)
 
 
 @generic_repr("id")
@@ -50,6 +56,14 @@ class User(UserMixin, _BaseModel):  # type: ignore
     confirmed_on = db.Column(db.DateTime)
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    followed = db.relationship(
+        "User",
+        secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref("followers", lazy="dynamic"),
+        lazy="dynamic",
+    )
 
     def set_password(self, password: str) -> None:
         """Hash and store a new user password.
@@ -74,6 +88,46 @@ class User(UserMixin, _BaseModel):  # type: ignore
         """
         digest = md5(self.email.lower().encode()).hexdigest()
         return f"https://gravatar.com/avatar/{digest}?d=identicon&s={size}"
+
+    def follow(self, user: User) -> None:
+        """Follow another user if not already following.
+
+        :param user: User model object of user to follow.
+        """
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user: User) -> None:
+        """Unfollow another user if already following.
+
+        :param user: User model object of user to unfollow.
+        """
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user: User) -> bool:
+        """Check whether following another user.
+
+        :param user:    User model object of user to check if following.
+        :return:        Following the user? True or False.
+        """
+        return (
+            self.followed.filter(followers.c.followed_id == user.id).count()
+            > 0
+        )
+
+    def followed_posts(self) -> List[Post]:
+        """Get all posts that the user is following.
+
+        :return:    List of posts that the user is following in
+                    descending order.
+        """
+        followed = Post.query.join(
+            followers, (followers.c.followed_id == Post.user_id)
+        ).filter(followers.c.follower_id == self.id)
+        own = Post.query.filter_by(user_id=self.id)
+        # noinspection PyUnresolvedReferences
+        return followed.union(own).order_by(Post.created.desc())
 
 
 class Post(_BaseModel):
