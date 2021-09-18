@@ -3,6 +3,7 @@ app.forms
 =========
 """
 # pylint: disable=too-few-public-methods
+from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
@@ -74,7 +75,7 @@ class PostForm(FlaskForm):
     """Form for blog posts."""
 
     title = StringField("Title", validators=[DataRequired()])
-    body = TextAreaField(
+    body = PageDownField(
         "Body",
         validators=[DataRequired()],
         render_kw={"rows": 24, "cols": 168},

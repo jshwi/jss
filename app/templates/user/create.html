@@ -5,6 +5,7 @@
 {% block content %}
     <form method="post">
         {{ form.hidden_tag() }}
+        {{ pagedown.include_pagedown() }}
         <p>
             {{ form.title.label }}<br>
             {{ form.title(size=168) }}<br>

@@ -41,6 +41,8 @@ setup(
         "flask-login==0.5.0",
         "flask-mail==0.9.1",
         "flask-migrate==3.1.0",
+        "flask-misaka==1.0.0",
+        "flask-pagedown==0.4.0",
         "flask-sqlalchemy==2.5.1",
         "flask-static-digest==0.2.1",
         "flask-wtf==0.15.1",

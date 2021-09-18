@@ -2,8 +2,4 @@
 {% block header %}
     <h1>{% block title %}{{ post.title }}{% endblock %}</h1>
 {% endblock %}
-{% block content %}
-    <article class="post">
-        <p class="body">{{ post.body }}</p>
-    </article>
-{% endblock %}
+{% block content %}{{ post.body|markdown }}{% endblock %}

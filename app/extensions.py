@@ -10,6 +10,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
+from flask_misaka import Misaka
+from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
 from flask_wtf.csrf import CSRFProtect
@@ -22,6 +24,8 @@ migrate = Migrate()
 mail = Mail()
 login_manager = LoginManager()
 csrf_protect = CSRFProtect()
+markdown = Misaka(fenced_code=True)
+page_down = PageDown()
 
 
 def init_app(app: Flask) -> None:
@@ -37,3 +41,5 @@ def init_app(app: Flask) -> None:
     mail.init_app(app)
     login_manager.init_app(app)
     csrf_protect.init_app(app)
+    markdown.init_app(app)
+    page_down.init_app(app)

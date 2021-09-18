@@ -412,7 +412,8 @@ def edit_profile() -> Union[str, Response]:
                 redirect to index view on successful POST.
     """
     form = EditProfile(
-        username=current_user.username, about_me=current_user.about_me
+        username=current_user.username,  # pylint: disable=assigning-non-slot
+        about_me=current_user.about_me,  # pylint: disable=assigning-non-slot
     )
     if form.validate_on_submit():
         current_user.username = (  # pylint: disable=assigning-non-slot
