@@ -5,6 +5,7 @@ app.extensions
 Each extension is initialized in the app factory located in app.py.
 """
 from flask import Flask
+from flask_bootstrap import Bootstrap
 from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -26,6 +27,7 @@ login_manager = LoginManager()
 csrf_protect = CSRFProtect()
 markdown = Misaka(fenced_code=True)
 page_down = PageDown()
+bootstrap = Bootstrap()
 
 
 def init_app(app: Flask) -> None:
@@ -43,3 +45,4 @@ def init_app(app: Flask) -> None:
     csrf_protect.init_app(app)
     markdown.init_app(app)
     page_down.init_app(app)
+    bootstrap.init_app(app)

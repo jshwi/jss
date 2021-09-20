@@ -36,6 +36,7 @@ setup(
         "email-validator==1.1.3",
         "environs==9.3.3",
         "flask==2.0.1",
+        "flask-bootstrap==3.3.7.1",
         "flask-caching==1.10.1",
         "flask-debugtoolbar==0.11.0",
         "flask-login==0.5.0",

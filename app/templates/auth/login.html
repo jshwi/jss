@@ -1,15 +1,15 @@
-{% extends "base.html" %}
-{% block header %}
-    <h1>{% block title %}Log In{% endblock %}</h1>
-{% endblock %}
-{% block content %}
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>{{ form.username.label }}<br>{{ form.username(size=32) }}</p>
-        <p><a href="{{ url_for('auth.request_password_reset') }}">Forgot
-            password?</a></p>
-        <p>{{ form.password.label }}<br>{{ form.password(size=32) }}</p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
-    </form>
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block header %}<h1>{% block title %}Sign In{% endblock %}</h1>{% endblock %}
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    <br>
+    <p>New User? <a href="{{ url_for('auth.register') }}">Click to
+        Register!</a></p>
+    <p><a href="{{ url_for('auth.request_password_reset') }}">Forgot
+        password?</a></p>
 {% endblock %}

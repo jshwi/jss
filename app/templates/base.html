@@ -1,28 +1,59 @@
-<!DOCTYPE html>
-<title>{% block title %}{% endblock %} - JSS</title>
-<link rel="stylesheet"
-      href="{{ static_url_for('static', filename='style.css') }}">
-<link rel="stylesheet"
-      href="{{ static_url_for('static', filename='darkreader.css') }}">
-<nav>
-    <h1><a href="{{ url_for('index') }}">JSS</a></h1>
-    <ul>
-        {% if current_user.is_anonymous %}
-            <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-            <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-        {% else %}
-            <li><span>{{ current_user.username }}</span></li>
-            <li>
-                <a href="{{ url_for('views.profile', username=current_user.username) }}">Profile</a>
-            </li>
-            <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-        {% endif %}
-    </ul>
-</nav>
-<section class="content">
-    <header>{% block header %}{% endblock %}</header>
-    {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-    {% endfor %}
-    {% block content %}{% endblock %}
-</section>
+{% extends 'bootstrap/base.html' %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet"
+          href="{{ static_url_for('static', filename='darkreader.css') }}">
+{% endblock %}
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                        data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1"
+                        aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('index') }}">JSS</a>
+            </div>
+            <div class="collapse navbar-collapse"
+                 id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_anonymous %}
+                        <li>
+                            <a href="{{ url_for('auth.register') }}">Register</a>
+                        </li>
+                        <li><a href="{{ url_for('auth.login') }}">Login</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{{ url_for('views.profile', username=current_user.username) }}">{{ current_user.username }}</a>
+                        </li>
+                        <li><a href="{{ url_for('auth.logout') }}">Logout</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info"
+                         role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <header>{% block header %}{% endblock %}</header>
+        {% block app_content %}{% endblock %}
+    </div>
+{% endblock %}

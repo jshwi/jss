@@ -1,24 +1,14 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 {% block header %}
-    <h1>{% block title %}Edit "{{ post.title }}"{% endblock %}</h1>
-{% endblock %}
-{% block content %}
-    <form method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.title.label }}<br>
-            {{ form.title(size=168) }}<br>
-        </p>
-        <p>
-            {{ form.body.label }}<br>
-            {{ form.body(size=64) }}<br>
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <hr>
-    <form action="{{ url_for('views.delete', id=post.id) }}" method="post">
-        {{ form.hidden_tag() }}
-        <input class="danger" type="submit" value="Delete"
-               onclick="return confirm('Are you sure?');">
-    </form>
+    <h1>{% block title %}
+        Edit Post
+        <form action="{{ url_for('views.delete', id=post.id) }}" method="post">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.submit, value="Delete", onclick="return confirm('Are you sure?');" ) }}
+        </form>
+    {% endblock %}</h1>{% endblock %}
+{% block app_content %}
+    {{ pagedown.include_pagedown() }}
+    {{ wtf.quick_form(form) }}
 {% endblock %}

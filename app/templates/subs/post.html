@@ -1,23 +1,6 @@
-<article class="post">
-    <header>
-        <div>
-            <a href="{{ url_for('views.profile', username=post.author.username) }}">
-                <img src="{{ post.author.avatar(36) }}" alt="avatar">
-            </a>
-            <h1>
-                <a href="{{ url_for('views.post_page', id=post.id) }}">{{ post.title }}</a>
-            </h1>
-            <div class="about">
-                by
-                <a href="{{ url_for('views.profile', username=post.author.username) }}">
-                    {{ post.author.username }}
-                </a>
-                on {{ post.created.strftime("%Y-%m-%d") }}
-            </div>
-        </div>
-        {% if current_user.id == post.user_id %}
-            <a class="action" href="{{ url_for('views.update', id=post.id) }}">Edit</a>
-        {% endif %}
-    </header>
-    <p class="body">{{ post.body|markdown }}</p>
-</article>
+<table class="table table-hover">
+    <tr>
+        <td style="width: 150px">{% include "subs/user.html"%}</td>
+        <td>{% include "subs/article.html" %}</td>
+    </tr>
+</table>

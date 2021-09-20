@@ -1,8 +1,16 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 {% block header %}
     <h1>{% block title %}{{ user.username }}{% endblock %}</h1>
 {% endblock %}
-{% block content %}
+{% block app_content %}
+    <h1><img src="{{ user.avatar(70) }}" alt="avatar"></h1>
+    {% if user.about_me %}
+        <p>{{ user.about_me }}</p>
+    {% endif %}
+    {% if user.last_seen %}
+        <p>Last seen on: {{ user.last_seen }}</p>
+    {% endif %}
     {% if current_user.is_authenticated %}
         <p>{{ user.followers.count() }} followers, {{ user.followed.count() }}
             following.</p>
@@ -11,26 +19,20 @@
         {% elif not current_user.is_following(user) %}
             <form action="{{ url_for('views.follow', username=user.username) }}"
                   method="post">
-                {{ form.hidden_tag() }}{{ form.submit(value='Follow') }}
+                {{ form.hidden_tag() }}
+                {{ wtf.form_field(form.submit, value="Follow") }}
             </form>
         {% else %}
             <form action="{{ url_for('views.unfollow', username=user.username) }}"
                   method="post">
                 {{ form.hidden_tag() }}
-                {{ form.submit(value='Unfollow') }}
+                {{ wtf.form_field(form.submit, value="Unfollow") }}
             </form>
         {% endif %}
     {% endif %}
-    <h1><img src="{{ user.avatar(36) }}" alt="avatar"></h1>
-    {% if user.about_me %}
-        <p>{{ user.about_me }}</p>
-    {% endif %}
-    {% if user.last_seen %}
-        <p>Last seen on: {{ user.last_seen }}</p>
-    {% endif %}
     <hr>
     {% for post in posts %}
-        {% include "subs/post.html" %}
+        {% include "subs/article.html" %}
         {% if not loop.last %}
             <hr>
         {% endif %}

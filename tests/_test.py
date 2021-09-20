@@ -186,7 +186,7 @@ def test_index(
     :param add_test_post:   Add post to test database.
     """
     response = client.get("/")
-    assert b"Log In" in response.data
+    assert b"Login" in response.data
     assert b"Register" in response.data
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -198,10 +198,10 @@ def test_index(
     add_test_post(post_test_object)
     auth.login(user_test_object)
     response = client.get("/").data.decode()
-    assert "Log Out" in response
+    assert "Logout" in response
     assert post_test_object.title in response
     assert user_test_object.username in response
-    assert str(post_test_object.created).split()[0] in response
+    assert "01/01/2018" in response
     assert post_test_object.body in response
     assert 'href="/1/update"' in response
 
@@ -1036,7 +1036,7 @@ def test_edit_profile(
     response = client.get(PROFILE_EDIT, follow_redirects=True)
     assert b"Edit Profile" in response.data
     assert b"Profile" in response.data
-    assert b"Log Out" in response.data
+    assert b"Logout" in response.data
     assert b"Edit Profile" in response.data
     assert MAIN_USER_USERNAME in response.data.decode()
     assert b"About me" in response.data

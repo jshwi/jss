@@ -1,19 +1,10 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 {% block header %}
     <h1>{% block title %}New Post{% endblock %}</h1>
 {% endblock %}
-{% block content %}
-    <form method="post">
-        {{ form.hidden_tag() }}
-        {{ pagedown.include_pagedown() }}
-        <p>
-            {{ form.title.label }}<br>
-            {{ form.title(size=168) }}<br>
-        </p>
-        <p>
-            {{ form.body.label }}<br>
-            {{ form.body() }}<br>
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+{% block app_content %}
+    <br>
+    {{ pagedown.include_pagedown() }}
+    {{ wtf.quick_form(form) }}
 {% endblock %}

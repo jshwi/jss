@@ -76,9 +76,7 @@ class PostForm(FlaskForm):
 
     title = StringField("Title", validators=[DataRequired()])
     body = PageDownField(
-        "Body",
-        validators=[DataRequired()],
-        render_kw={"rows": 24, "cols": 168},
+        "Body", validators=[DataRequired()], render_kw={"rows": 12}
     )
     submit = SubmitField("Submit")
 
