@@ -170,6 +170,11 @@ class Config:  # pylint: disable=too-many-public-methods
         """Password of sender."""
         return env.str("MAIL_PASSWORD", default=None)
 
+    @property
+    def POSTS_PER_PAGE(self) -> int:
+        """Posts to paginate per page."""
+        return env.int("POSTS_PER_PAGE", default=25)
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.

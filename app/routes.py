@@ -31,7 +31,7 @@ from .forms import (
 )
 from .mail import send_email
 from .models import Post, User, db
-from .post import get_post
+from .post import get_post, render_post_nav_template
 from .security import (
     admin_required,
     confirm_token,
@@ -119,7 +119,7 @@ def login() -> Union[str, Response]:
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             if current_user.confirmed:
-                return redirect(url_for("index"))
+                return redirect(url_for(_URL_FOR_INDEX))
 
             flash("You have not verified your account.")
             return redirect(url_for(_URL_FOR_UNCONFIRMED))
@@ -144,7 +144,7 @@ def logout() -> Response:
     :return: Response object redirect to index view.
     """
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for(_URL_FOR_INDEX))
 
 
 @views_blueprint.route("/", methods=["GET", "POST"])
@@ -159,8 +159,11 @@ def index() -> str:
     :return: Rendered index template.
     """
     # noinspection PyUnresolvedReferences
-    posts = Post.query.order_by(Post.created.desc())
-    return render_template("index.html", posts=posts)
+    return render_post_nav_template(
+        Post.query.order_by(Post.created.desc()),
+        _TEMPLATE_INDEX,
+        _URL_FOR_INDEX,
+    )
 
 
 @views_blueprint.route("/create", methods=["GET", "POST"])
@@ -257,7 +260,7 @@ def confirm_email(token: str) -> Response:
     except BadSignature:
         flash("The confirmation link is invalid or has expired.")
 
-    return redirect(url_for("index"))
+    return redirect(url_for(_URL_FOR_INDEX))
 
 
 @auth_blueprint.route("/unconfirmed", methods=["GET"])
@@ -356,7 +359,7 @@ def reset_password(token: str) -> Union[str, Response]:
 
     except InvalidTokenError:
         flash("The confirmation link is invalid or has expired.")
-        return redirect(url_for("index"))
+        return redirect(url_for(_URL_FOR_INDEX))
 
     if form.validate_on_submit():
         user.set_password(form.password.data)
@@ -375,9 +378,16 @@ def profile(username: str) -> str:
     :return:            Rendered profile template.
     """
     user = User.query.filter_by(username=username).first()
-    posts = Post.query.filter_by(user_id=user.id)
     form = EmptyForm()
-    return render_template("profile.html", user=user, posts=posts, form=form)
+    # noinspection PyUnresolvedReferences
+    return render_post_nav_template(
+        user.posts.order_by(Post.created.desc()),
+        "profile.html",
+        _URL_FOR_PROFILE,
+        username=username,
+        user=user,
+        form=form,
+    )
 
 
 # noinspection PyShadowingBuiltins
@@ -486,4 +496,4 @@ def init_app(app: Flask) -> None:
     """
     app.register_blueprint(views_blueprint)
     app.register_blueprint(auth_blueprint)
-    app.add_url_rule("/", endpoint="index")
+    app.add_url_rule("/", endpoint=_URL_FOR_INDEX)
