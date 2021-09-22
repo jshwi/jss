@@ -2,11 +2,17 @@
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+    <link rel="stylesheet"
           href="{{ static_url_for('static', filename='darkreader.css') }}">
 {% endblock %}
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/python.min.js"></script>
+    <!--suppress JSUnresolvedFunction, JSUnresolvedVariable -->
+    <script>hljs.highlightAll()</script>
 {% endblock %}
 {% block navbar %}
     <nav class="navbar navbar-default">
