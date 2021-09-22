@@ -12,6 +12,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_misaka import Misaka
+from flask_moment import Moment
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
@@ -28,6 +29,7 @@ csrf_protect = CSRFProtect()
 markdown = Misaka(fenced_code=True)
 page_down = PageDown()
 bootstrap = Bootstrap()
+moment = Moment()
 
 
 def init_app(app: Flask) -> None:
@@ -46,3 +48,4 @@ def init_app(app: Flask) -> None:
     markdown.init_app(app)
     page_down.init_app(app)
     bootstrap.init_app(app)
+    moment.init_app(app)

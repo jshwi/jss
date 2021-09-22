@@ -4,6 +4,10 @@
     <link rel="stylesheet"
           href="{{ static_url_for('static', filename='darkreader.css') }}">
 {% endblock %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock %}
 {% block navbar %}
     <nav class="navbar navbar-default">
         <div class="container">

@@ -43,6 +43,7 @@ setup(
         "flask-mail==0.9.1",
         "flask-migrate==3.1.0",
         "flask-misaka==1.0.0",
+        "flask-moment==1.0.2",
         "flask-pagedown==0.4.0",
         "flask-sqlalchemy==2.5.1",
         "flask-static-digest==0.2.1",

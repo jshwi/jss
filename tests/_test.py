@@ -201,7 +201,6 @@ def test_index(
     assert "Logout" in response
     assert post_test_object.title in response
     assert user_test_object.username in response
-    assert "01/01/2018" in response
     assert post_test_object.body in response
     assert 'href="/1/update"' in response
 
@@ -991,7 +990,6 @@ def test_profile_page(client: FlaskClient, add_test_user: Callable[..., None]):
     add_test_user(user_test_object)
     response = client.get(f"/profile/{MAIN_USER_USERNAME}")
     assert b'src="https://gravatar.com/avatar/' in response.data
-    assert b"Last seen on:" in response.data
 
 
 @pytest.mark.usefixtures("init_db")
