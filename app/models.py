@@ -7,9 +7,11 @@ Define app's database models.
 # pylint: disable=too-few-public-methods
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from hashlib import md5
-from typing import Dict, List
+from time import time
+from typing import Any, Dict, List
 
 from flask_login import UserMixin
 from sqlalchemy_utils import generic_repr
@@ -63,6 +65,22 @@ class User(UserMixin, _BaseModel):  # type: ignore
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref("followers", lazy="dynamic"),
         lazy="dynamic",
+    )
+    messages_sent = db.relationship(
+        "Message",
+        foreign_keys="Message.sender_id",
+        backref="author",
+        lazy="dynamic",
+    )
+    messages_received = db.relationship(
+        "Message",
+        foreign_keys="Message.recipient_id",
+        backref="recipient",
+        lazy="dynamic",
+    )
+    last_message_read_time = db.Column(db.DateTime)
+    notifications = db.relationship(
+        "Notification", backref="user", lazy="dynamic"
     )
 
     def set_password(self, password: str) -> None:
@@ -129,6 +147,31 @@ class User(UserMixin, _BaseModel):  # type: ignore
         # noinspection PyUnresolvedReferences
         return followed.union(own).order_by(Post.created.desc())
 
+    def new_messages(self) -> int:
+        """Get the number of new (unread) messages delivered to user.
+
+        :return: Number of new messages delivered to user.
+        """
+        last_read_time = self.last_message_read_time or datetime(1000, 1, 1)
+        return (
+            Message.query.filter_by(recipient=self)
+            .filter(Message.created > last_read_time)
+            .count()
+        )
+
+    def add_notifications(self, name: str, data: Any) -> Notification:
+        """Add user's notifications to database.
+
+        :param name:    Name of the database key.
+        :param data:    Saved data.
+        :return:        Instantiated ``Notification`` database model.
+        """
+        self.notifications.filter_by(name=name).delete()
+        notification = Notification(name=name, user=self)
+        notification.set_mapping(data)
+        db.session.commit()
+        return notification
+
 
 class Post(_BaseModel):
     """Database schema for posts."""
@@ -138,3 +181,37 @@ class Post(_BaseModel):
     body = db.Column(db.String)
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+
+
+class Message(_BaseModel):
+    """Database schema for user messages."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+    recipient_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+    body = db.Column(db.String(140))
+    created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+
+class Notification(_BaseModel):
+    """Database schema for notifications."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    timestamp = db.Column(db.Float, index=True, default=time)
+    mapping = db.Column(db.Text)
+
+    def set_mapping(self, mapping: Dict[str, Any]) -> None:
+        """Set ``dict`` object as ``str`` (JSON).
+
+        :param mapping: Set object as str.
+        """
+        self.mapping = json.dumps(mapping)
+
+    def get_mapping(self) -> Dict[str, Any]:
+        """Get dict representation of JSON data.
+
+        :return: Dict object of notification data.
+        """
+        return json.loads(self.mapping)

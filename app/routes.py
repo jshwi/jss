@@ -14,7 +14,16 @@ based on its name and arguments.
 from datetime import datetime
 from typing import Union
 
-from flask import Blueprint, Flask, flash, redirect, render_template, url_for
+from flask import (
+    Blueprint,
+    Flask,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required, login_user, logout_user
 from itsdangerous import BadSignature
 from jwt import InvalidTokenError
@@ -24,13 +33,14 @@ from .forms import (
     EditProfile,
     EmptyForm,
     LoginForm,
+    MessageForm,
     PostForm,
     RegistrationForm,
     ResetPasswordForm,
     ResetPasswordRequestForm,
 )
 from .mail import send_email
-from .models import Post, User, db
+from .models import Message, Notification, Post, User, db
 from .post import get_post, render_post_nav_template
 from .security import (
     admin_required,
@@ -487,6 +497,72 @@ def unfollow(username: str) -> Response:
         flash(f"You are no longer following {username}")
 
     return redirect(url_for(_URL_FOR_PROFILE, username=username))
+
+
+@views_blueprint.route("/send_message/<recipient>", methods=["GET", "POST"])
+@login_required
+@confirmation_required
+def send_message(recipient: str) -> Union[str, Response]:
+    """Send IM to another user.
+
+    :return:    Rendered user/send_message template on GET. Response
+                object redirect to recipient's view on successful POST.
+    """
+    user = User.query.filter_by(username=recipient).first()
+    form = MessageForm()
+    if form.validate_on_submit():
+        message = Message(
+            author=current_user, recipient=user, body=form.message.data
+        )
+        db.session.add(message)
+        user.add_notifications("unread_message_count", user.new_messages())
+        db.session.commit()
+        flash("Your message has been sent.")
+        return redirect(url_for("views.profile", username=recipient))
+
+    return render_template(
+        "user/send_message.html", form=form, recipient=recipient
+    )
+
+
+# noinspection PyUnresolvedReferences
+@views_blueprint.route("/messages")
+@login_required
+@confirmation_required
+def messages() -> str:
+    """View received messages delivered to logged in user.
+
+    :return: Rendered user/messages template to view received messages.
+    """
+    # pylint: disable=assigning-non-slot
+    current_user.last_message_read_time = datetime.utcnow()
+    current_user.add_notifications("unread_message_count", 0)
+    db.session.commit()
+    return render_post_nav_template(
+        current_user.messages_received.order_by(Message.created.desc()),
+        "user/messages.html",
+        "views.messages",
+    )
+
+
+@views_blueprint.route("/notifications")
+@login_required
+def notifications() -> Response:
+    """Retrieve notifications for logged in user.
+
+    :return: Response containing JSON payload.
+    """
+    since = request.args.get("since", 0.0, type=float)
+    # noinspection PyUnresolvedReferences
+    query = current_user.notifications.filter(
+        Notification.timestamp > since
+    ).order_by(Notification.timestamp.asc())
+    return jsonify(
+        [
+            {"name": q.name, "data": q.get_mapping(), "timestamp": q.timestamp}
+            for q in query
+        ]
+    )
 
 
 def init_app(app: Flask) -> None:

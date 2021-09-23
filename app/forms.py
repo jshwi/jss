@@ -110,3 +110,12 @@ class EmptyForm(FlaskForm):
     """Empty form: Submit only."""
 
     submit = SubmitField("Submit")
+
+
+class MessageForm(FlaskForm):
+    """Form for IM."""
+
+    message = TextAreaField(
+        "Message", validators=[DataRequired(), Length(min=0, max=140)]
+    )
+    submit = SubmitField("Submit")

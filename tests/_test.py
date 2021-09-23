@@ -1219,3 +1219,49 @@ def test_post_follow_unfollow_routes(
         f"You are no longer following {MAIN_USER_USERNAME}"
         in response.data.decode()
     )
+
+
+@pytest.mark.usefixtures("init_db")
+def test_send_message(
+    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+) -> None:
+    """Test sending of personal messages from one user to another.
+
+    :param client:          App's test-client API.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object_1 = UserTestObject(
+        ADMIN_USER_USERNAME,
+        ADMIN_USER_EMAIL,
+        ADMIN_USER_PASSWORD,
+        confirmed=True,
+    )
+    user_test_object_2 = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
+    )
+    add_test_user(user_test_object_1, user_test_object_2)
+    auth.login(user_test_object_1)
+    response = client.post(
+        f"/send_message/{user_test_object_2.username}",
+        data={"message": f"test message from {user_test_object_1.username}"},
+        follow_redirects=True,
+    )
+    assert b"Your message has been sent." in response.data
+    response = client.get(f"/send_message/{user_test_object_2.username}")
+    assert (
+        f"Send Message to {user_test_object_2.username}"
+        in response.data.decode()
+    )
+    auth.logout()
+    auth.login(user_test_object_2)
+    response = client.get("/notifications")
+    if response.json is not None:
+        obj = response.json[0]
+        assert all(i in obj for i in ["data", "name", "timestamp"])
+        assert all(i in obj.values() for i in [1, "unread_message_count"])
+        response = client.get("/messages")
+        assert (
+            f"test message from {user_test_object_1.username}"
+            in response.data.decode()
+        )

@@ -4,7 +4,7 @@ app.shell
 """
 from flask import Flask
 
-from .models import Post, User, db
+from .models import Message, Notification, Post, User, db
 
 
 def register_models(app: Flask) -> None:
@@ -12,7 +12,15 @@ def register_models(app: Flask) -> None:
 
     :param app: Flask app.
     """
-    app.shell_context_processor(lambda: {"db": db, "User": User, "Post": Post})
+    app.shell_context_processor(
+        lambda: {
+            "db": db,
+            "User": User,
+            "Post": Post,
+            "Message": Message,
+            "Notification": Notification,
+        }
+    )
 
 
 def init_app(app: Flask) -> None:
