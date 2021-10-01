@@ -89,7 +89,7 @@ USER jss
 ENTRYPOINT ["./entrypoint.sh"]
 
 # ================================ Nginx ===============================
-FROM nginx:1.19-alpine as nginx
+FROM nginx:1.21.3-alpine as nginx
 
 # replace system-wide nginx configuration with prepared config in this
 # repository
