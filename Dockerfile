@@ -1,5 +1,5 @@
 # ============================ Environment =============================
-FROM python:3.8-slim-buster AS environment
+FROM python:3.9.7-slim-buster AS environment
 
 # add user to run entry point under
 # set new user's $HOME as WORKDIR
