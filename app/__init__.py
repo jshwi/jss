@@ -8,7 +8,7 @@ from flask import Flask
 
 from . import cli, config, deps, exceptions, extensions, log, routes, shell
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 
 def create_app() -> Flask:
