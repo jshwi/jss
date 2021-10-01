@@ -4,7 +4,7 @@ app.shell
 """
 from flask import Flask
 
-from .models import Message, Notification, Post, User, db
+from .models import Message, Notification, Post, Task, User, db
 
 
 def register_models(app: Flask) -> None:
@@ -19,6 +19,7 @@ def register_models(app: Flask) -> None:
             "Post": Post,
             "Message": Message,
             "Notification": Notification,
+            "Task": Task,
         }
     )
 

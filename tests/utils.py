@@ -16,6 +16,8 @@ from flask.testing import FlaskClient
 from werkzeug import Response
 from werkzeug.security import generate_password_hash
 
+from app.models import User
+
 UPDATE1 = "/1/update"
 ADMIN_USER_USERNAME = "admin"
 ADMIN_USER_EMAIL = "admin@test.com"
@@ -52,6 +54,11 @@ MAIL_USERNAME = MAIN_USER_USERNAME
 MAIL_PASSWORD = "unique"
 MAIL_PORT = 25
 PROFILE_EDIT = "/profile/edit"
+TASK_ID = 123
+TASK_NAME = "export_posts"
+TASK_DESCRIPTION = "Exporting posts..."
+MISC_PROGRESS_INT = 37
+APP_MODELS_JOB_FETCH = "app.models.Job.fetch"
 
 
 class UserTestObject:
@@ -96,6 +103,25 @@ class PostTestObject:
         self.body = body
         self.user_id = user_id
         self.created = created
+
+
+class TaskTestObject:
+    """Test model attributes.
+
+    :param id:          ID of the task.
+    :param name:        Name of the task.
+    :param description: description of the task.
+    :param user:        User initiating the task.
+    """
+
+    def __init__(
+        self, id: int, name: str, description: str, user: User
+    ) -> None:
+        self.id = id
+        self.name = name
+        self.description = description
+        self.user_id = user.id
+        self.complete = False
 
 
 class AuthActions:

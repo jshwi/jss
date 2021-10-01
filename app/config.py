@@ -175,6 +175,11 @@ class Config:  # pylint: disable=too-many-public-methods
         """Posts to paginate per page."""
         return env.int("POSTS_PER_PAGE", default=25)
 
+    @property
+    def REDIS_URL(self) -> str:
+        """URL to ``Redis`` server."""
+        return env.str("REDIS_URL", default="redis://")
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.

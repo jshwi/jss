@@ -52,6 +52,8 @@ setup(
         "itsdangerous==2.0.1",
         "psycopg2==2.9.1",
         "pyjwt==2.1.0",
+        "redis==3.5.3",
+        "rq==1.10.0",
         "sqlalchemy-utils==0.37.8",
         "werkzeug==2.0.1",
     ],

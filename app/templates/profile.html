@@ -17,6 +17,13 @@
             following.</p>
         {% if user == current_user %}
             <p><a href="{{ url_for('views.edit_profile') }}">Edit</a></p>
+            {% if not current_user.get_task_in_progress('export_posts') %}
+                <p>
+                    <a href="{{ url_for('views.export_posts') }}">
+                        Export posts
+                    </a>
+                </p>
+            {% endif %}
         {% else %}
             <p>
                 <a href="{{ url_for('views.send_message', recipient=user.username) }}">Send

@@ -486,7 +486,7 @@ def unfollow(username: str) -> Response:
     to the profile view.
 
     :param username:    User to unfollow.
-    :return:            Response object redirect to profile view of
+    :return:            response object redirect to profile view of
                         user that has been unfollowed.
     """
     form = EmptyForm()
@@ -518,7 +518,7 @@ def send_message(recipient: str) -> Union[str, Response]:
         user.add_notifications("unread_message_count", user.new_messages())
         db.session.commit()
         flash("Your message has been sent.")
-        return redirect(url_for("views.profile", username=recipient))
+        return redirect(url_for(_URL_FOR_PROFILE, username=recipient))
 
     return render_template(
         "user/send_message.html", form=form, recipient=recipient
@@ -563,6 +563,27 @@ def notifications() -> Response:
             for q in query
         ]
     )
+
+
+@views_blueprint.route("/export_posts")
+@login_required
+@confirmation_required
+def export_posts() -> Response:
+    """Redirect user to /export_posts route which triggers event.
+
+    There is no view for this route and so the user will be redirected
+    to the profile view.
+
+    :return:    response object redirect to profile view of user that
+                has requested the post export (current user).
+    """
+    if current_user.get_task_in_progress("export_posts"):
+        flash("An export task is already in progress")
+    else:
+        current_user.launch_task("export_posts", "Exporting posts...")
+        db.session.commit()
+
+    return redirect(url_for(_URL_FOR_PROFILE, username=current_user.username))
 
 
 def init_app(app: Flask) -> None:

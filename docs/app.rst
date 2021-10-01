@@ -13,6 +13,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.deps
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.exceptions
    :members:
    :undoc-members:
@@ -50,6 +54,10 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.shell
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.tasks
    :members:
    :undoc-members:
    :show-inheritance:

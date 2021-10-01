@@ -14,18 +14,19 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from app import create_app
-from app.models import Post, User, db
+from app.models import Post, Task, User, db
 
 from .utils import (
     ADMIN_USER_EMAIL,
     MAIN_USER_EMAIL,
     AuthActions,
     PostTestObject,
+    TaskTestObject,
     UserTestObject,
 )
 
 
-@pytest.fixture(name="test_app")
+@pytest.fixture(name="test_app", autouse=True)
 def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     """Create an instance of the ``Flask`` app with testing environment.
 
@@ -105,6 +106,29 @@ def fixture_add_test_post(test_app: Flask) -> Callable[..., None]:
                 db.session.commit()
 
     return _add_test_post
+
+
+@pytest.fixture(name="add_test_task")
+def fixture_add_test_task(test_app: Flask) -> Callable[..., None]:
+    """Add a task object to the database.
+
+    :param test_app:    Test ``Flask`` app object.
+    :return:            Function for using this fixture.
+    """
+
+    def _add_test_task(*task_test_objects: TaskTestObject) -> None:
+        with test_app.app_context():
+            for post_test_object in task_test_objects:
+                task = Task(
+                    id=post_test_object.id,
+                    name=post_test_object.name,
+                    description=post_test_object.description,
+                    user_id=post_test_object.user_id,
+                )
+                db.session.add(task)
+                db.session.commit()
+
+    return _add_test_task
 
 
 @pytest.fixture(name="client")

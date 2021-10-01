@@ -93,11 +93,13 @@ python-dotenv==0.19.0
 pytz==2021.1
 readme-renderer==29.0
 readmetester==1.0.1
+redis==3.5.3
 regex==2021.9.24
 requests-toolbelt==0.9.1
 requests==2.26.0
 restview==2.9.2
 rfc3986==1.5.0
+rq==1.10.0
 secretstorage==3.3.1
 six==1.16.0
 snowballstemmer==2.1.0
