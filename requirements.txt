@@ -19,7 +19,7 @@ click==8.0.1
 codecov==2.1.12
 colorama==0.4.4
 coverage==5.5
-cryptography==3.4.8
+cryptography==35.0.0
 decorator==5.1.0
 dnspython==2.1.0
 docformatter==1.4
@@ -74,7 +74,7 @@ pickleshare==0.7.5
 pipfile-requirements==0.3.0
 pkginfo==1.7.1
 platformdirs==2.4.0
-pluggy==0.13.1
+pluggy==1.0.0
 prompt-toolkit==3.0.20
 psycopg2==2.9.1
 ptyprocess==0.7.0
@@ -88,13 +88,13 @@ pyparsing==2.4.7
 pytest-cov==2.12.1
 pytest-randomly==3.10.1
 pytest-sugar==0.9.4
-pytest==6.2.4
+pytest==6.2.5
 python-dotenv==0.19.0
 pytz==2021.1
-readme-renderer==29.0
+readme-renderer==30.0
 readmetester==1.0.1
 redis==3.5.3
-regex==2021.9.24
+regex==2021.9.30
 requests-toolbelt==0.9.1
 requests==2.26.0
 restview==2.9.2
@@ -131,4 +131,4 @@ webencodings==0.5.1
 werkzeug==2.0.1
 wrapt==1.12.1
 wtforms==2.3.3
-zipp==3.5.1
+zipp==3.6.0
