@@ -48,6 +48,7 @@ COPY wsgi.py wsgi.py
 
 # prepare entry point script
 COPY scripts/entrypoint.sh entrypoint.sh
+COPY scripts/release.sh release.sh
 RUN chmod 755 entrypoint.sh
 
 # allow access to server on port 5000
@@ -89,7 +90,7 @@ USER jss
 ENTRYPOINT ["./entrypoint.sh"]
 
 # ================================ Nginx ===============================
-FROM nginx:1.21.3-alpine as nginx
+FROM nginx:1.19-alpine as nginx
 
 # replace system-wide nginx configuration with prepared config in this
 # repository

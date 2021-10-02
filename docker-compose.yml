@@ -11,6 +11,11 @@ services:
     env_file: .env
     environment:
       FLASK_ENV: production
+      DATABASE_URL: postgresql://jss:jss@db:5432/jss
+      FLASK_SKIP_DOTENV: 1
+      SQL_HOST: db
+      SQL_PORT: 5432
+      DATABASE: postgres
     depends_on:
       - db
 
@@ -24,6 +29,16 @@ services:
       - "5000:5000"
     environment:
       FLASK_ENV: development
+      DATABASE_URL: postgresql://jss:jss@db:5432/jss
+      SECRET_KEY: dev
+      SEND_FILE_MAX_AGE_DEFAULT: 0
+      DEFAULT_MAIL_SENDER: admin@localhost
+      ADMINS: admin@localhost
+      FLASK_SKIP_DOTENV: 1
+      SQL_HOST: db
+      SQL_PORT: 5432
+      DATABASE: postgres
+
     env_file: .env
     depends_on:
       - db

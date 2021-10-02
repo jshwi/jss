@@ -10,7 +10,7 @@
 #
 #        AUTHOR:  Stephen Whitlock (jshwi), stephen@jshwisolutions.com
 #       CREATED:  22/09/21 16:15:44
-#      REVISION:  0.1.0
+#      REVISION:  0.1.1
 #=======================================================================
 set -o errexit
 set -o nounset
@@ -21,10 +21,6 @@ while ! nc -z "$SQL_HOST" "$SQL_PORT"; do
 done
 
 echo "PostgreSQL started"
-if [ "$FLASK_ENV" = "production" ]; then
-  ./.venv/bin/pipenv run flask db upgrade
-else
-  ./.venv/bin/pipenv run flask create db
-fi
+./.venv/bin/pipenv run bash release.sh
 
 exec "$@"
