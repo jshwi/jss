@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.0.0...HEAD)
 ------------------------------------------------------------------------
 ### Fixed
+- Adds `page_name` block to base.html
 - Removes form data from title
 
 [1.0.0](https://github.com/jshwi/jss/releases/tag/v1.0.0) - 2021-10-02

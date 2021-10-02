@@ -1,5 +1,3 @@
 {% extends "base.html" %}
-{% block header %}
-    <h1>{% block title %}{{ post.title }}{% endblock %}</h1>
-{% endblock %}
+{% block page_name %}{{ post.title }}{% endblock %}
 {% block app_content %}{{ post.body|markdown }}{% endblock %}

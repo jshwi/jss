@@ -1,6 +1,6 @@
 {% extends "base.html" %}
+{% block page_name %}Messages{% endblock %}
 {% block app_content %}
-    <h1>Messages</h1>
     {% for post in posts %}
         {% include 'subs/post.html' %}
     {% endfor %}

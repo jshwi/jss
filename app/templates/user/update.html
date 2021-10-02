@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block header %}
-    <h1>{% block title %}
-        Edit Post
-    {% endblock %}</h1>{% endblock %}
+    <h1>{% block title %}Edit Post{% endblock %}</h1>{% endblock %}
 {% block app_content %}
     <form action="{{ url_for('views.delete', id=post.id) }}" method="post">
         {{ form.hidden_tag() }}

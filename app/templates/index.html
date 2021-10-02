@@ -1,11 +1,9 @@
 {% extends "base.html" %}
-{% block header %}
-    <h1>{% block title %}Posts{% endblock %}</h1>
+{% block page_name %}Posts{% endblock %}
+{% block app_content %}
     {% if current_user.is_authenticated and current_user.admin %}
         <a class="action" href="{{ url_for('views.create') }}">New</a>
     {% endif %}
-{% endblock %}
-{% block app_content %}
     {% for post in posts %}
         {% include "subs/post.html" %}
     {% endfor %}
