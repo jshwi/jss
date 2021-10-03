@@ -168,7 +168,6 @@ def index() -> str:
 
     :return: Rendered index template.
     """
-    # noinspection PyUnresolvedReferences
     return render_post_nav_template(
         Post.query.order_by(Post.created.desc()),
         _TEMPLATE_INDEX,
@@ -219,6 +218,7 @@ def update(id: int) -> Union[str, Response]:
     if form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
+        post.edited = datetime.utcnow()
         db.session.commit()
         return redirect(url_for(_URL_FOR_INDEX))
 
@@ -588,6 +588,25 @@ def export_posts() -> Response:
         db.session.commit()
 
     return redirect(url_for(_URL_FOR_PROFILE, username=current_user.username))
+
+
+@views_blueprint.route("/<int:id>/version/<int:revision>")
+@login_required
+@admin_required
+def version(id: int, revision: int) -> Union[str, Response]:
+    """Rewind versioned post that corresponds to the provided post ID.
+
+    :param id:          The post's ID.
+    :param revision:    Version to revert to.
+    :return:            Rendered update template on GET or failed POST.
+                        Response object redirect to index view on
+                        successful update POST.
+    """
+    post = get_post(id)
+    post.versions[revision].revert()
+    post.edited = datetime.utcnow()
+    db.session.commit()
+    return redirect(url_for(_URL_FOR_INDEX))
 
 
 def init_app(app: Flask) -> None:

@@ -1541,6 +1541,7 @@ def test_export_posts(
         dict(
             body=post_test_object.body,
             created=str(post_test_object.created),
+            edited="None",
             id="1",
             title=post_test_object.title,
             user_id="1",
@@ -1553,7 +1554,9 @@ def test_export_posts(
     attachment = outbox.attachments[0]
     assert attachment.filename == "posts.json"
     assert attachment.content_type == "application/json"
-    assert attachment.data == json.dumps({"posts": post_obj}, indent=4)
+    assert attachment.data == json.dumps(
+        {"posts": post_obj}, indent=4, sort_keys=True
+    )
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1576,3 +1579,42 @@ def test_export_posts_err(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr("app.tasks._set_task_progress", _set_task_progress)
     app.tasks.export_posts(1)
+
+
+@pytest.mark.usefixtures("init_db")
+def test_versions(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+) -> None:
+    """Test versioning of posts route.
+
+    :param test_app:        Test ``Flask`` app object.
+    :param client:          App's test-client API.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param add_test_post:   Add post to test database.
+    """
+    user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME,
+        ADMIN_USER_EMAIL,
+        ADMIN_USER_PASSWORD,
+        admin=True,
+        confirmed=True,
+    )
+    post_test_object = PostTestObject(
+        "v1-title", "v1-body", POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    add_test_user(user_test_object)
+    add_test_post(post_test_object)
+    auth.login(user_test_object)
+    with test_app.app_context():
+        post = Post.query.get(1)
+        post.title = "v2-title"
+        post.body = "v2-body"
+        db.session.commit()
+
+    assert b"v1" in client.get("/1/version/0", follow_redirects=True).data
+    assert b"v2" in client.get("/1/version/1", follow_redirects=True).data

@@ -1,3 +1,11 @@
 {% extends "base.html" %}
 {% block page_name %}{{ post.title }}{% endblock %}
-{% block app_content %}{{ post.body|markdown }}{% endblock %}
+{% block app_content %}
+    <p class="small">
+        Posted: {{ moment(post.created).format("h:mmA DD/MM/YYYY") }}
+        {% if post.edited %}
+            (Edited: {{ moment(post.edited).format("h:mmA DD/MM/YYYY") }})
+        {% endif %}
+    </p>
+    {{ post.body|markdown }}
+{% endblock %}

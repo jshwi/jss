@@ -20,12 +20,15 @@ from redis import RedisError
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
 from sqlalchemy.orm import RelationshipProperty
+from sqlalchemy_continuum import make_versioned
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .extensions import db
 
 _USER_ID = "user.id"
+
+make_versioned(user_cls=None)
 
 followers = db.Table(
     "followers",
@@ -227,11 +230,14 @@ class User(UserMixin, _BaseModel):  # type: ignore
 class Post(_BaseModel):
     """Database schema for posts."""
 
+    __versioned__: Dict[Any, Any] = {}
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String)
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+    edited = db.Column(db.DateTime, default=None)
 
 
 class Message(_BaseModel):
@@ -297,3 +303,6 @@ class Task(_BaseModel):
         """
         job = self.get_rq_job()
         return 100 if job is None else job.meta.get("progress", 0)
+
+
+db.configure_mappers()
