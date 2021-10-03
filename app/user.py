@@ -86,6 +86,7 @@ def create_admin_cli() -> None:
             email=current_app.config["ADMINS"][0],
             password=os.environ["ADMIN_SECRET"],
             admin=True,
+            authorized=True,
         )
         print("admin successfully created")
 

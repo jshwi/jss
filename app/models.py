@@ -67,6 +67,7 @@ class User(UserMixin, _BaseModel):  # type: ignore
     confirmed_on = db.Column(db.DateTime)
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    authorized = db.Column(db.Boolean, default=False)
     followed: RelationshipProperty = db.relationship(
         "User",
         secondary=followers,
