@@ -268,7 +268,7 @@ class Notification(_BaseModel):
         return json.loads(self.mapping)
 
 
-class Task(db.Model):
+class Task(_BaseModel):
     """Database schema for background tasks."""
 
     id = db.Column(db.String(36), primary_key=True)
