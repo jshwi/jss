@@ -19,6 +19,7 @@ from flask_sqlalchemy import BaseQuery
 from redis import RedisError
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
+from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -63,7 +64,7 @@ class User(UserMixin, _BaseModel):  # type: ignore
     confirmed_on = db.Column(db.DateTime)
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    followed = db.relationship(
+    followed: RelationshipProperty = db.relationship(
         "User",
         secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -173,7 +174,9 @@ class User(UserMixin, _BaseModel):  # type: ignore
         :return:        Instantiated ``Notification`` database model.
         """
         self.notifications.filter_by(name=name).delete()
-        notification = Notification(name=name, user=self)
+
+        # `user` is a backref for `Task` and not defined as a column
+        notification = Notification(name=name, user=self)  # type: ignore
         notification.set_mapping(data)
         db.session.commit()
         return notification
@@ -193,7 +196,11 @@ class User(UserMixin, _BaseModel):  # type: ignore
             f"app.tasks.{name}", self.id, *args, **kwargs
         )
         task = Task(
-            id=rq_job.get_id(), name=name, description=description, user=self
+            id=rq_job.get_id(),
+            name=name,
+            description=description,
+            # `user` is a backref and not defined as a column
+            user=self,  # type: ignore
         )
         db.session.add(task)
         return task

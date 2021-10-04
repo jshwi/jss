@@ -54,7 +54,7 @@ MAIL_USERNAME = MAIN_USER_USERNAME
 MAIL_PASSWORD = "unique"
 MAIL_PORT = 25
 PROFILE_EDIT = "/profile/edit"
-TASK_ID = 123
+TASK_ID = "123"
 TASK_NAME = "export_posts"
 TASK_DESCRIPTION = "Exporting posts..."
 MISC_PROGRESS_INT = 37
@@ -115,7 +115,7 @@ class TaskTestObject:
     """
 
     def __init__(
-        self, id: int, name: str, description: str, user: User
+        self, id: str, name: str, description: str, user: User
     ) -> None:
         self.id = id
         self.name = name

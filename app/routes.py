@@ -512,7 +512,11 @@ def send_message(recipient: str) -> Union[str, Response]:
     form = MessageForm()
     if form.validate_on_submit():
         message = Message(
-            author=current_user, recipient=user, body=form.message.data
+            # `author` and `recipient` are backrefs in `User` and are
+            # not defined as columns
+            author=current_user,  # type: ignore
+            recipient=user,  # type: ignore
+            body=form.message.data,
         )
         db.session.add(message)
         user.add_notifications("unread_message_count", user.new_messages())
