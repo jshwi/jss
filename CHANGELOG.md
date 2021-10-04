@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.0.1...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- Adds `403 Forbidden` page
 - Adds `User.authorized`
 - Adds versioning for posts
 

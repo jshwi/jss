@@ -17,5 +17,5 @@ def init_app(app: Flask) -> None:
         # noinspection PyUnresolvedReferences
         return render_template(f"error/{error_code}.html"), error_code
 
-    for errcode in [400, 401, 404, 405, 500]:
+    for errcode in [400, 401, 403, 404, 405, 500]:
         app.errorhandler(errcode)(render_error)
