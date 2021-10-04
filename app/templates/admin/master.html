@@ -1,0 +1,6 @@
+{% extends 'admin/base.html' %}
+{% block head_css %}
+    {{ super() }}
+    <link rel="stylesheet"
+          href="{{ static_url_for('static', filename='darkreader.css') }}">
+{% endblock %}

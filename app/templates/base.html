@@ -72,6 +72,9 @@
                         <li><a href="{{ url_for('auth.login') }}">Login</a>
                         </li>
                     {% else %}
+                        {% if current_user.admin %}
+                            <li><a href="/admin">Console</a></li>
+                        {% endif %}
                         <li>
                             <a href="{{ url_for('views.messages') }}">
                                 Messages

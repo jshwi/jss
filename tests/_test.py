@@ -1618,3 +1618,33 @@ def test_versions(
 
     assert b"v1" in client.get("/1/version/0", follow_redirects=True).data
     assert b"v2" in client.get("/1/version/1", follow_redirects=True).data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_admin_access_control(
+    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+) -> None:
+    """Test access to admin console restricted to admin user.
+
+    :param client:          App's test-client API.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    admin_user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME,
+        ADMIN_USER_EMAIL,
+        ADMIN_USER_PASSWORD,
+        admin=True,
+        confirmed=True,
+    )
+    regular_user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
+    )
+    add_test_user(admin_user_test_object, regular_user_test_object)
+    auth.login(admin_user_test_object)
+    assert client.get("/admin", follow_redirects=True).status_code == 200
+    assert client.get("/admin/user", follow_redirects=True).status_code == 200
+    auth.logout()
+    auth.login(regular_user_test_object)
+    assert client.get("/admin", follow_redirects=True).status_code == 401
+    assert client.get("/admin/user", follow_redirects=True).status_code == 403

@@ -5,6 +5,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.admin
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.cli
    :members:
    :undoc-members:

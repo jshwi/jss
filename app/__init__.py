@@ -6,7 +6,17 @@ Application factory.
 """
 from flask import Flask
 
-from . import cli, config, deps, exceptions, extensions, log, routes, shell
+from . import (
+    admin,
+    cli,
+    config,
+    deps,
+    exceptions,
+    extensions,
+    log,
+    routes,
+    shell,
+)
 
 __version__ = "1.0.1"
 
@@ -26,4 +36,5 @@ def create_app() -> Flask:
     exceptions.init_app(app)
     shell.init_app(app)
     cli.init_app(app)
+    admin.init_app(app)
     return app
