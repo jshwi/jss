@@ -34,7 +34,7 @@ setup(
         "appdirs==1.4.4",
         "click==8.0.1",
         "email-validator==1.1.3",
-        "environs==9.3.3",
+        "environs==9.3.4",
         "flask==2.0.1",
         "flask-bootstrap==3.3.7.1",
         "flask-caching==1.10.1",
