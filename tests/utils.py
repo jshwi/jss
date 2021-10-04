@@ -22,15 +22,18 @@ UPDATE1 = "/1/update"
 ADMIN_USER_USERNAME = "admin"
 ADMIN_USER_EMAIL = "admin@test.com"
 ADMIN_USER_PASSWORD = "pass0"
+AUTHORIZED_USER_USERNAME = "authorized"
+AUTHORIZED_USER_EMAIL = "authorized@test.com"
+AUTHORIZED_USER_PASSWORD = "pass1"
 MAIN_USER_USERNAME = "main"
 MAIN_USER_EMAIL = "main@test.com"
-MAIN_USER_PASSWORD = "pass1"
+MAIN_USER_PASSWORD = "pass2"
 OTHER_USER_USERNAME = "other"
 OTHER_USER_EMAIL = "other@test.com"
-OTHER_USER_PASSWORD = "pass2"
+OTHER_USER_PASSWORD = "pass3"
 LAST_USER_USERNAME = "last"
 LAST_USER_EMAIL = "last@test.com"
-LAST_USER_PASSWORD = "pass3"
+LAST_USER_PASSWORD = "pass4"
 POST_TITLE_1 = "test title 1"
 POST_BODY_1 = "test 1\nbody 1"
 POST_AUTHOR_ID_1 = 1
@@ -68,6 +71,7 @@ class UserTestObject:
     :param email:       Email of user object.
     :param password:    Password, for raw text and comparison hash.
     :param admin:       Is user admin? True or False.
+    :param authorized:  Is user authorized? True or False.
     """
 
     def __init__(
@@ -76,6 +80,7 @@ class UserTestObject:
         email: str,
         password: str,
         admin: bool = False,
+        authorized=False,
         confirmed=False,
     ) -> None:
         self.username = username
@@ -84,6 +89,7 @@ class UserTestObject:
         self.password_hash = generate_password_hash(password)
         self.registered_on = MAIN_USER_REGISTERED_ON
         self.admin = admin
+        self.authorized = authorized
         self.confirmed = confirmed
 
 

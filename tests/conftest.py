@@ -77,6 +77,7 @@ def fixture_add_test_user(test_app: Flask) -> Callable[..., None]:
                     password_hash=user_test_object.password_hash,
                     email=user_test_object.email,
                     admin=user_test_object.admin,
+                    authorized=user_test_object.authorized,
                     confirmed=user_test_object.confirmed,
                 )
                 db.session.add(test_user)

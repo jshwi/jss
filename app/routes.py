@@ -43,7 +43,7 @@ from .mail import send_email
 from .models import Message, Notification, Post, User, db
 from .post import get_post, render_post_nav_template
 from .security import (
-    admin_required,
+    authorization_required,
     confirm_token,
     confirmation_required,
     generate_confirmation_token,
@@ -177,7 +177,7 @@ def index() -> str:
 
 @views_blueprint.route("/create", methods=["GET", "POST"])
 @login_required
-@admin_required
+@authorization_required
 def create() -> Union[str, Response]:
     """Create a post.
 
@@ -205,7 +205,7 @@ def create() -> Union[str, Response]:
 
 @views_blueprint.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
-@admin_required
+@authorization_required
 def update(id: int) -> Union[str, Response]:
     """Update post that corresponds to the provided post ID.
 
@@ -227,7 +227,7 @@ def update(id: int) -> Union[str, Response]:
 
 @views_blueprint.route("/<int:id>/delete", methods=["POST"])
 @login_required
-@admin_required
+@authorization_required
 def delete(id: int) -> Response:
     """Delete post by post's ID.
 
@@ -592,7 +592,7 @@ def export_posts() -> Response:
 
 @views_blueprint.route("/<int:id>/version/<int:revision>")
 @login_required
-@admin_required
+@authorization_required
 def version(id: int, revision: int) -> Union[str, Response]:
     """Rewind versioned post that corresponds to the provided post ID.
 

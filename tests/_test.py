@@ -25,6 +25,9 @@ from .utils import (
     ADMIN_USER_PASSWORD,
     ADMIN_USER_USERNAME,
     APP_MODELS_JOB_FETCH,
+    AUTHORIZED_USER_EMAIL,
+    AUTHORIZED_USER_PASSWORD,
+    AUTHORIZED_USER_USERNAME,
     INVALID_OR_EXPIRED,
     LAST_USER_EMAIL,
     LAST_USER_PASSWORD,
@@ -255,7 +258,10 @@ def test_author_required(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
     )
     other_user_test_object = UserTestObject(
         OTHER_USER_USERNAME, OTHER_USER_EMAIL, OTHER_USER_PASSWORD
@@ -299,7 +305,10 @@ def test_exists_required(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
     )
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
@@ -329,7 +338,10 @@ def test_create(
     :param add_test_user:   Add user to test database.
     """
     user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
     )
     add_test_user(user_test_object)
     auth.login(user_test_object)
@@ -357,7 +369,10 @@ def test_update(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
     )
     created_post = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
@@ -398,7 +413,10 @@ def test_delete(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
     )
     add_test_user(user_test_object)
     post_test_object = PostTestObject(
@@ -1598,10 +1616,10 @@ def test_versions(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME,
-        ADMIN_USER_EMAIL,
-        ADMIN_USER_PASSWORD,
-        admin=True,
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
         confirmed=True,
     )
     post_test_object = PostTestObject(

@@ -41,6 +41,27 @@ def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
     return _wrapped_view
 
 
+def authorization_required(view: Callable[..., Any]) -> Callable[..., Any]:
+    """Handle views that require an authorized user be signed in.
+
+    The new function checks if an authorized user is loaded and returns
+    a ``401 Unauthorized`` error otherwise. If an authorized user is
+    loaded the original view is called and continues normally.
+
+    :param view:    View function to wrap.
+    :return:        The wrapped function supplied to this decorator.
+    """
+
+    @functools.wraps(view)
+    def _wrapped_view(*args: Any, **kwargs: Any) -> Response:
+        if not current_user.authorized:
+            return login_manager.unauthorized()
+
+        return view(*args, **kwargs)
+
+    return _wrapped_view
+
+
 def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
     """Handle views that require a verified logged in user.
 
