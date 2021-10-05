@@ -42,7 +42,7 @@ flask-shell-ipython==0.4.1
 flask-sqlalchemy==2.5.1
 flask-static-digest==0.2.1
 flask-wtf==0.15.1
-flask==2.0.1
+flask==2.0.2
 flynt==0.69
 gunicorn==20.1.0
 idna==3.2
@@ -55,7 +55,7 @@ isort==5.9.3
 itsdangerous==2.0.1
 jedi==0.18.0
 jeepney==0.7.1
-jinja2==3.0.1
+jinja2==3.0.2
 keyring==23.2.1
 lazy-object-proxy==1.6.0
 mako==1.1.5
