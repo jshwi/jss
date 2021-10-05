@@ -5,7 +5,7 @@ app.admin
 from flask import Flask
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib import sqla
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 from .extensions import db
 from .models import Message, Notification, Post, Task, User
@@ -26,6 +26,7 @@ class MyAdminIndexView(AdminIndexView):
     """Custom index view that handles login / registration."""
 
     @expose("/")
+    @login_required
     @admin_required
     def index(self):
         """Implement ``admin_required`` in place of method."""

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.1.1...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- Fixes crash from occurring when user accesses /admin route whilst not logged in
+
 
 [1.1.1](https://github.com/jshwi/jss/releases/tag/v1.1.1) - 2021-10-04
 ------------------------------------------------------------------------

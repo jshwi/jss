@@ -21,8 +21,10 @@ from app.mail import send_email
 from app.models import Post, User, db
 
 from .utils import (
+    ADMIN_ROUTE,
     ADMIN_USER_EMAIL,
     ADMIN_USER_PASSWORD,
+    ADMIN_USER_ROUTE,
     ADMIN_USER_USERNAME,
     APP_MODELS_JOB_FETCH,
     AUTHORIZED_USER_EMAIL,
@@ -1660,9 +1662,31 @@ def test_admin_access_control(
     )
     add_test_user(admin_user_test_object, regular_user_test_object)
     auth.login(admin_user_test_object)
-    assert client.get("/admin", follow_redirects=True).status_code == 200
-    assert client.get("/admin/user", follow_redirects=True).status_code == 200
+    assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 200
+    assert (
+        client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 200
+    )
     auth.logout()
     auth.login(regular_user_test_object)
-    assert client.get("/admin", follow_redirects=True).status_code == 401
-    assert client.get("/admin/user", follow_redirects=True).status_code == 403
+    assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 401
+    assert (
+        client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 403
+    )
+
+
+@pytest.mark.usefixtures("init_db")
+def test_admin_access_without_login(client: FlaskClient) -> None:
+    """Asserts that the ``AnonymousUserMixin`` error will not be raised.
+
+    This commit fixes the following error causing app to crash if user
+    is not logged in:
+
+        AttributeError:
+        'AnonymousUserMixin' object has no attribute 'admin'
+
+    :param client:App's test-client API.
+    """
+    assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 401
+    assert (
+        client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 403
+    )
