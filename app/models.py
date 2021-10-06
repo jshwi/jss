@@ -53,7 +53,7 @@ class _BaseModel(db.Model):
         }
 
 
-class User(UserMixin, _BaseModel):  # type: ignore
+class User(UserMixin, _BaseModel):
     """Database schema for users."""
 
     id = db.Column(db.Integer, primary_key=True)

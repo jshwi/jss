@@ -18,7 +18,7 @@ from werkzeug.security import generate_password_hash
 
 from app.models import User
 
-UPDATE1 = "/1/update"
+UPDATE1 = "/1/update/"
 ADMIN_USER_USERNAME = "admin"
 ADMIN_USER_EMAIL = "admin@test.com"
 ADMIN_USER_PASSWORD = "pass0"
@@ -46,6 +46,10 @@ POST_AUTHOR_ID_3 = 3
 POST_TITLE_4 = "test title 4"
 POST_BODY_4 = "test 4\nbody 4"
 POST_AUTHOR_ID_4 = 4
+POST_TITLE_V1 = "title-v1"
+POST_TITLE_V2 = "body-v1"
+POST_BODY_V1 = "title-v2"
+POST_BODY_V2 = "body-v2"
 POST_CREATED_1 = datetime(2018, 1, 1, 0, 0, 1)
 POST_CREATED_2 = datetime(2018, 1, 1, 0, 0, 2)
 POST_CREATED_3 = datetime(2018, 1, 1, 0, 0, 3)

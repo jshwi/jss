@@ -1,5 +1,10 @@
 {% extends "base.html" %}
-{% block page_name %}{{ post.title }}{% endblock %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% set title = post.title %}
+{% if revision is defined %}
+    {% set title = "%s (v%s)"|format(title, revision + 1) %}
+{% endif %}
+{% block page_name %}{{ title }}{% endblock %}
 {% block app_content %}
     <p class="small">
         Posted: {{ moment(post.created).format("h:mmA DD/MM/YYYY") }}
@@ -8,4 +13,10 @@
         {% endif %}
     </p>
     {{ post.body|markdown }}
+    {% if revision is defined %}
+        <form action="{{ url_for('views.update', id=id, revision=revision) }}"
+              method="get">
+            {{ wtf.form_field(form.submit, value="Restore") }}
+        </form>
+    {% endif %}
 {% endblock %}

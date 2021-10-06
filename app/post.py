@@ -4,7 +4,7 @@ app.post
 
 Helper function(s) for user posting.
 """
-from typing import Any
+from typing import Any, Optional
 
 from flask import abort, current_app, render_template, request, url_for
 from flask_login import current_user
@@ -13,7 +13,9 @@ from flask_sqlalchemy import BaseQuery
 from .models import Post
 
 
-def get_post(id: int, checkauthor: bool = True) -> Post:
+def get_post(
+    id: int, version: Optional[int] = None, checkauthor: bool = True
+) -> Post:
     """Get post by post's ID.
 
     Check if the author matches the logged in user. To keep the code DRY
@@ -36,12 +38,22 @@ def get_post(id: int, checkauthor: bool = True) -> Post:
     user doesn't matter, because they are not modifying the post.
 
     :param id:              The post's ID.
+    :param version:         If provided populate session object with
+                            version.
     :param checkauthor:    Rule whether to check for author ID.
     :return:                Post's connection object.
     """
     post = Post.query.get(id)
     if post is None:
         abort(404, f"Post id {id} doesn't exist.")
+
+    if version is not None:
+        try:
+            post_version = post.versions[version]
+            post.title = post_version.title
+            post.body = post_version.body
+        except IndexError:
+            abort(404)
 
     if checkauthor and post.user_id != current_user.id:
         abort(403)

@@ -54,6 +54,8 @@ from .utils import (
     POST_BODY_2,
     POST_BODY_3,
     POST_BODY_4,
+    POST_BODY_V1,
+    POST_BODY_V2,
     POST_CREATED_1,
     POST_CREATED_2,
     POST_CREATED_3,
@@ -62,6 +64,8 @@ from .utils import (
     POST_TITLE_2,
     POST_TITLE_3,
     POST_TITLE_4,
+    POST_TITLE_V1,
+    POST_TITLE_V2,
     PROFILE_EDIT,
     TASK_DESCRIPTION,
     TASK_ID,
@@ -202,7 +206,11 @@ def test_index(
     assert b"Login" in response.data
     assert b"Register" in response.data
     user_test_object = UserTestObject(
-        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+        MAIN_USER_USERNAME,
+        MAIN_USER_EMAIL,
+        MAIN_USER_PASSWORD,
+        confirmed=True,
+        authorized=True,
     )
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
@@ -215,7 +223,7 @@ def test_index(
     assert post_test_object.title in response
     assert user_test_object.username in response
     assert post_test_object.body in response
-    assert 'href="/1/update"' in response
+    assert 'href="/1/update/"' in response
 
 
 @pytest.mark.parametrize("route", ["/create", UPDATE1, "/1/delete"])
@@ -232,7 +240,7 @@ def test_login_required(client: FlaskClient, route: str) -> None:
     :param client:  Client for testing app.
     :param route:   Parametrized route path.
     """
-    response = client.post(route)
+    response = client.post(route, follow_redirects=True)
     assert response.status_code == 401
 
 
@@ -283,7 +291,7 @@ def test_author_required(
 
     auth.login(user_test_object)
     # current user cannot modify other user's post
-    assert client.post(UPDATE1).status_code == 403
+    assert client.post(UPDATE1, follow_redirects=True).status_code == 403
     assert client.post("/1/delete").status_code == 403
 
     # current user doesn't see edit link
@@ -319,7 +327,7 @@ def test_exists_required(
     add_test_user(user_test_object)
     add_test_post(post_test_object)
     auth.login(user_test_object)
-    response = client.post(route)
+    response = client.post(route, follow_redirects=True)
     assert response.status_code == 404
 
 
@@ -386,7 +394,7 @@ def test_update(
     add_test_user(user_test_object)
     add_test_post(created_post)
     auth.login(user_test_object)
-    assert client.get(UPDATE1).status_code == 200
+    assert client.get(UPDATE1, follow_redirects=True).status_code == 200
     client.post(
         UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
     )
@@ -657,7 +665,7 @@ def test_admin_required(
     )
     add_test_user(user_test_object)
     auth.login(user_test_object)
-    response = client.post(route)
+    response = client.post(route, follow_redirects=True)
     assert response.status_code == 401
 
 
@@ -1626,15 +1634,15 @@ def test_versions(
         confirmed=True,
     )
     post_test_object = PostTestObject(
-        "v1-title", "v1-body", POST_AUTHOR_ID_1, POST_CREATED_1
+        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_user(user_test_object)
     add_test_post(post_test_object)
     auth.login(user_test_object)
     with test_app.app_context():
         post = Post.query.get(1)
-        post.title = "v2-title"
-        post.body = "v2-body"
+        post.title = POST_TITLE_V2
+        post.body = POST_BODY_V2
         db.session.commit()
 
     assert b"v1" in client.get("/1/version/0", follow_redirects=True).data
@@ -1869,3 +1877,71 @@ def test_reserved_usernames(
     )
     response = auth.register(user_test_object)
     assert b"Username is taken" in response.data
+
+
+@pytest.mark.usefixtures("init_db")
+def test_versions_update(
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+) -> None:
+    """Test versioning of posts route when passing revision to update.
+
+    :param client: App's test-client API.
+    :param auth: Handle authorization with test app.
+    :param add_test_user: Add user to test database.
+    :param add_test_post: Add post to test database.
+    """
+    user_test_object = UserTestObject(
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
+        confirmed=True,
+    )
+    created_post = PostTestObject(
+        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    updated_post = PostTestObject(
+        POST_TITLE_V2, POST_BODY_V2, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    add_test_user(user_test_object)
+    add_test_post(created_post)
+    auth.login(user_test_object)
+    client.post(
+        UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
+    )
+    response = client.get("/1/update/0")
+    assert created_post.title in response.data.decode()
+    assert created_post.body in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+def test_versioning_handle_index_error(
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+) -> None:
+    """Test versioning route when passing to large a revision to update.
+
+    :param client: App's test-client API.
+    :param auth: Handle authorization with test app.
+    :param add_test_user: Add user to test database.
+    :param add_test_post: Add post to test database.
+    """
+    user_test_object = UserTestObject(
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
+        confirmed=True,
+    )
+    created_post = PostTestObject(
+        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    add_test_user(user_test_object)
+    add_test_post(created_post)
+    auth.login(user_test_object)
+    assert client.get("/1/update/1").status_code == 404

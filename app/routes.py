@@ -12,7 +12,7 @@ an outgoing response.
 based on its name and arguments.
 """
 from datetime import datetime
-from typing import Union
+from typing import Optional, Union
 
 from flask import (
     Blueprint,
@@ -203,17 +203,22 @@ def create() -> Union[str, Response]:
     return render_template("user/create.html", form=form)
 
 
-@views_blueprint.route("/<int:id>/update", methods=["GET", "POST"])
+@views_blueprint.route("/<int:id>/update/", methods=["GET", "POST"])
+@views_blueprint.route(
+    "/<int:id>/update/<int:revision>", methods=["GET", "POST"]
+)
 @login_required
 @authorization_required
-def update(id: int) -> Union[str, Response]:
+def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
     """Update post that corresponds to the provided post ID.
 
-    :param id:  The post's ID.
-    :return:    Rendered update template on GET or failed POST. Response
-                object redirect to index view on successful update POST.
+    :param id:          The post's ID.
+    :param revision:    Version to revert to.
+    :return:            Rendered update template on GET or failed POST.
+                        Response object redirect to index view on
+                        successful update POST.
     """
-    post = get_post(id)
+    post = get_post(id, revision)
     form = PostForm(title=post.title, body=post.body)
     if form.validate_on_submit():
         post.title = form.title.data
@@ -613,11 +618,11 @@ def version(id: int, revision: int) -> Union[str, Response]:
                         Response object redirect to index view on
                         successful update POST.
     """
-    post = get_post(id)
-    post.versions[revision].revert()
-    post.edited = datetime.utcnow()
-    db.session.commit()
-    return redirect(url_for(_URL_FOR_INDEX))
+    post = get_post(id, revision)
+    form = EmptyForm()
+    return render_template(
+        "post.html", post=post, id=id, revision=revision, form=form
+    )
 
 
 def init_app(app: Flask) -> None:
