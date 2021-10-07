@@ -6,10 +6,9 @@ Helper function(s) for user posting.
 """
 from typing import Any
 
-from flask import current_app, render_template, request, url_for
+from flask import abort, current_app, render_template, request, url_for
 from flask_login import current_user
 from flask_sqlalchemy import BaseQuery
-from werkzeug import exceptions
 
 from .models import Post
 
@@ -42,10 +41,10 @@ def get_post(id: int, checkauthor: bool = True) -> Post:
     """
     post = Post.query.get(id)
     if post is None:
-        exceptions.abort(404, f"Post id {id} doesn't exist.")
+        abort(404, f"Post id {id} doesn't exist.")
 
     if checkauthor and post.user_id != current_user.id:
-        exceptions.abort(403)
+        abort(403)
 
     return post
 
