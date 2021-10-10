@@ -6,7 +6,7 @@ tests._test
 import functools
 import json
 import logging
-from typing import Callable, List, Optional
+from typing import Callable, Dict, List, Optional
 
 import pytest
 from flask import Flask, session
@@ -1690,3 +1690,59 @@ def test_admin_access_without_login(client: FlaskClient) -> None:
     assert (
         client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 403
     )
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize(
+    "method,data,bad_route",
+    [
+        ("get", {}, "profile/noname"),
+        ("post", {}, "follow/noname"),
+        ("post", {}, "unfollow/noname"),
+        ("post", {"message": "testing"}, "send_message/noname"),
+    ],
+)
+def test_inspect_profile_no_user(
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
+    method: str,
+    data: Dict[str, str],
+    bad_route: str,
+) -> None:
+    """Assert that unhandled error is not raised for user routes.
+
+    This commit fixes the following error:
+
+        AttributeError: 'NoneType' object has no attribute 'posts'
+
+    If a non existing user is searched, prior to this commit, the route
+    will use methods belonging to the user (assigned None).
+
+    Prefer to handle the exception and return a ``404: Not Found`` error
+    instead.
+
+    e.g.  Use ``User.query.filter_by(username=username).first_or_404()``
+    instead of ``User.query.filter_by(username=username).first()``
+
+    :param client:          App's test-client API.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    :param method:          Method for interacting with route.
+    :param data:            Data to write to form.
+    :param bad_route:       Route containing reference to non-existing
+                            user.
+    """
+    admin_user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME,
+        ADMIN_USER_EMAIL,
+        ADMIN_USER_PASSWORD,
+        admin=True,
+        confirmed=True,
+    )
+    add_test_user(admin_user_test_object)
+    auth.login(admin_user_test_object)
+    response = getattr(client, method)(
+        bad_route, data=data, follow_redirects=True
+    )
+    assert response.status_code == 404

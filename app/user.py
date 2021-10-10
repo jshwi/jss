@@ -49,7 +49,7 @@ def create_user_override(
         password,
         confirmed=True,
         confirmed_on=datetime.now(),
-        **kwargs
+        **kwargs,
     )
 
 

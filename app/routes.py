@@ -387,7 +387,7 @@ def profile(username: str) -> str:
     :param username:    Username of registered user.
     :return:            Rendered profile template.
     """
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(username=username).first_or_404()
     form = EmptyForm()
     # noinspection PyUnresolvedReferences
     return render_post_nav_template(
@@ -468,7 +468,7 @@ def follow(username: str) -> Response:
     """
     form = EmptyForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first_or_404()
         current_user.follow(user)
         db.session.commit()
         flash(f"You are now following {username}")
@@ -491,7 +491,7 @@ def unfollow(username: str) -> Response:
     """
     form = EmptyForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first_or_404()
         current_user.unfollow(user)
         db.session.commit()
         flash(f"You are no longer following {username}")
@@ -508,7 +508,7 @@ def send_message(recipient: str) -> Union[str, Response]:
     :return:    Rendered user/send_message template on GET. Response
                 object redirect to recipient's view on successful POST.
     """
-    user = User.query.filter_by(username=recipient).first()
+    user = User.query.filter_by(username=recipient).first_or_404()
     form = MessageForm()
     if form.validate_on_submit():
         message = Message(
