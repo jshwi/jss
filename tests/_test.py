@@ -1746,3 +1746,100 @@ def test_inspect_profile_no_user(
         bad_route, data=data, follow_redirects=True
     )
     assert response.status_code == 404
+
+
+@pytest.mark.usefixtures("init_db")
+def test_user_name_change_accessible(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
+) -> None:
+    """Test that even after name-change user is accessible by old name.
+
+    Only valid if the old name has not already been adopted by someone
+    else.
+
+    :param client:          App's test-client API.
+    :param auth:            Handle authorization with test app.
+    :param add_test_user:   Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
+    )
+    add_test_user(user_test_object)
+    auth.login(user_test_object)
+
+    # assert that user's profile is available via profile route
+    with test_app.app_context():
+        user = User.resolve_all_names(MAIN_USER_USERNAME)
+        assert user.id == 1
+
+    response = client.get(f"/profile/{MAIN_USER_USERNAME}")
+    assert MAIN_USER_USERNAME in response.data.decode()
+
+    # assert that name change is successful
+    client.post(
+        PROFILE_EDIT,
+        data={"username": OTHER_USER_USERNAME},
+        follow_redirects=True,
+    )
+    with test_app.app_context():
+        user = User.resolve_all_names(OTHER_USER_USERNAME)
+        assert user.id == 1
+
+    response = client.get(f"/profile/{MAIN_USER_USERNAME}")
+    assert response.status_code != 404
+    assert OTHER_USER_USERNAME in response.data.decode()
+
+    # assert that user can be referenced by their old username
+    # they're new name shows up in their profile page
+    # the old username is still attached to the same user id
+    with test_app.app_context():
+        user = User.resolve_all_names(MAIN_USER_USERNAME)
+        assert user.id == 1
+
+    response = client.get(f"/profile/{MAIN_USER_USERNAME}")
+    assert OTHER_USER_USERNAME in response.data.decode()
+
+    # assert that od name is now a valid choice for a new user
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME,
+        "unique@test.com",
+        MAIN_USER_PASSWORD,
+        confirmed=True,
+    )
+    add_test_user(user_test_object)
+    auth.login(user_test_object)
+
+    # assert that user's profile is available via profile route
+    with test_app.app_context():
+        user = User.resolve_all_names(MAIN_USER_USERNAME)
+        assert user.id == 2
+
+    response = client.get(f"/profile/{MAIN_USER_USERNAME}")
+    assert MAIN_USER_USERNAME in response.data.decode()
+
+    # assert that name change is successful for second user
+    client.post(
+        PROFILE_EDIT,
+        data={"username": LAST_USER_USERNAME},
+        follow_redirects=True,
+    )
+    with test_app.app_context():
+        user = User.resolve_all_names(LAST_USER_USERNAME)
+        assert user.id == 2
+
+    response = client.get(f"/profile/{LAST_USER_USERNAME}")
+    assert LAST_USER_USERNAME in response.data.decode()
+
+    # assert that the latest user can be referenced by the old username
+    # they're new name shows up in their profile page
+    # the old username is still attached to the same user id
+    with test_app.app_context():
+        user = User.resolve_all_names(MAIN_USER_USERNAME)
+        assert user.id == 2
+
+    response = client.get(f"/profile/{MAIN_USER_USERNAME}")
+    assert response.status_code != 404
+    assert LAST_USER_USERNAME in response.data.decode()

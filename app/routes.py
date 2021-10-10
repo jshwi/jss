@@ -40,7 +40,7 @@ from .forms import (
     ResetPasswordRequestForm,
 )
 from .mail import send_email
-from .models import Message, Notification, Post, User, db
+from .models import Message, Notification, Post, User, Usernames, db
 from .post import get_post, render_post_nav_template
 from .security import (
     authorization_required,
@@ -381,13 +381,16 @@ def reset_password(token: str) -> Union[str, Response]:
 
 
 @views_blueprint.route("/profile/<username>", methods=["GET", "POST"])
-def profile(username: str) -> str:
+def profile(username: str) -> Union[str, Response]:
     """Render user's profile page.
 
     :param username:    Username of registered user.
     :return:            Rendered profile template.
     """
-    user = User.query.filter_by(username=username).first_or_404()
+    user = User.resolve_all_names(username=username)
+    if user.username != username:
+        return redirect(url_for(_URL_FOR_PROFILE, username=user.username))
+
     form = EmptyForm()
     # noinspection PyUnresolvedReferences
     return render_post_nav_template(
@@ -431,6 +434,7 @@ def edit_profile() -> Union[str, Response]:
     :return:    Rendered profile/edit template on GET. Response object
                 redirect to index view on successful POST.
     """
+    old_username = current_user.username
     form = EditProfile(
         username=current_user.username,  # pylint: disable=assigning-non-slot
         about_me=current_user.about_me,  # pylint: disable=assigning-non-slot
@@ -444,6 +448,13 @@ def edit_profile() -> Union[str, Response]:
         )
         db.session.commit()
         flash("Your changes have been saved.")
+        if old_username != current_user.username:
+            usernames = Usernames(
+                username=old_username, user_id=current_user.id
+            )
+            db.session.add(usernames)
+            db.session.commit()
+
         return redirect(
             url_for(_URL_FOR_PROFILE, username=current_user.username)
         )

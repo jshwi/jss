@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.1.2...HEAD)
 ------------------------------------------------------------------------
+### Added
+- Allows user with changed name to be referenced by old name
+
 ### Fixed
 - Returns ``404: Not Found`` for non-existing user
 

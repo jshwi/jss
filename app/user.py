@@ -10,7 +10,7 @@ from typing import Any
 from flask import current_app
 
 from .extensions import login_manager
-from .models import User, db
+from .models import User, Usernames, db
 
 
 def create_user(
@@ -28,6 +28,10 @@ def create_user(
     user = User(username=username, email=email, **kwargs)
     user.set_password(password)
     db.session.add(user)
+    db.session.commit()
+    user = User.resolve_all_names(username=username)
+    usernames = Usernames(username=user.username, user_id=user.id)
+    db.session.add(usernames)
     db.session.commit()
     return user
 

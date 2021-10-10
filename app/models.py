@@ -227,6 +227,26 @@ class User(UserMixin, _BaseModel):  # type: ignore
             name=name, user=self, complete=False
         ).first()
 
+    @classmethod
+    def resolve_all_names(cls, username: str) -> User:
+        """Manage retrieval of ``User`` object by their username.
+
+        :param username:    Username to search for user under.
+        :raise HTTPError:   Raise ``404: Not Found`` if name not
+                            resolved.
+        :return:            User object.
+        """
+        user = cls.query.filter_by(username=username).first()
+        if user is None:
+            usernames = (
+                Usernames.query.filter_by(username=username)
+                .order_by(Usernames.id.desc())
+                .first_or_404()
+            )
+            return cls.query.get(usernames.user_id)
+
+        return user
+
 
 class Post(_BaseModel):
     """Database schema for posts."""
@@ -304,6 +324,14 @@ class Task(_BaseModel):
         """
         job = self.get_rq_job()
         return 100 if job is None else job.meta.get("progress", 0)
+
+
+class Usernames(_BaseModel):
+    """Database schema for username changes."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
 
 
 db.configure_mappers()
