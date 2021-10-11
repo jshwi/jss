@@ -12,10 +12,10 @@ black==21.7b0
 bleach==4.1.0
 blinker==1.4
 bump2version==1.0.1
-certifi==2021.5.30
+certifi==2021.10.8
 cffi==1.14.6
 charset-normalizer==2.0.6
-click==8.0.1
+click==8.0.3
 codecov==2.1.12
 colorama==0.4.4
 coverage[toml]==6.0
@@ -92,12 +92,12 @@ pytest-randomly==3.10.1
 pytest-sugar==0.9.4
 pytest-xdist==2.4.0
 pytest==6.2.5
-python-dotenv==0.19.0
+python-dotenv==0.19.1
 pytz==2021.3
 readme-renderer==30.0
 readmetester==1.0.1
 redis==3.5.3
-regex==2021.9.30
+regex==2021.10.8
 requests-toolbelt==0.9.1
 requests==2.26.0
 restview==2.9.2

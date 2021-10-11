@@ -32,7 +32,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "appdirs==1.4.4",
-        "click==8.0.1",
+        "click==8.0.3",
         "email-validator==1.1.3",
         "environs==9.3.4",
         "flask==2.0.2",
