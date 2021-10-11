@@ -15,6 +15,7 @@ from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
 from redis import RedisError
 
+from app import config
 from app.extensions import mail
 from app.log import smtp_handler
 from app.mail import send_email
@@ -1843,3 +1844,28 @@ def test_user_name_change_accessible(
     response = client.get(f"/profile/{MAIN_USER_USERNAME}")
     assert response.status_code != 404
     assert LAST_USER_USERNAME in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+def test_reserved_usernames(
+    monkeypatch: pytest.MonkeyPatch, test_app: Flask, auth: AuthActions
+) -> None:
+    """Test that reserved names behave as taken names would in register.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param auth:        Handle authorization with test app.
+    :param test_app:    Test ``Flask`` app object.
+    """
+    monkeypatch.setenv("RESERVED_USERNAMES", "reserved1,reserved2")
+    config.init_app(test_app)
+    assert test_app.config["RESERVED_USERNAMES"] == ["reserved1", "reserved2"]
+    user_test_object = UserTestObject(
+        "reserved1", MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    response = auth.register(user_test_object)
+    assert b"Username is taken" in response.data
+    user_test_object = UserTestObject(
+        "reserved2", MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    response = auth.register(user_test_object)
+    assert b"Username is taken" in response.data

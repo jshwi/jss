@@ -180,6 +180,11 @@ class Config:  # pylint: disable=too-many-public-methods
         """URL to ``Redis`` server."""
         return env.str("REDIS_URL", default="redis://")
 
+    @property
+    def RESERVED_USERNAMES(self) -> List[str]:
+        """List of names that cannot be registered the standard way."""
+        return env.list("RESERVED_USERNAMES", default=[])
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.

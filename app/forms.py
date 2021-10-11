@@ -3,6 +3,7 @@ app.forms
 =========
 """
 # pylint: disable=too-few-public-methods
+from flask import current_app
 from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm
 from wtforms import (
@@ -44,7 +45,8 @@ class RegistrationForm(FlaskForm):
                             ``validate_username``
         """
         user = User.query.filter_by(username=username.data).first()
-        if user is not None:
+        reserved = username.data in current_app.config["RESERVED_USERNAMES"]
+        if user is not None or reserved:
             raise ValidationError("Username is taken")
 
     # noinspection PyMethodMayBeStatic
