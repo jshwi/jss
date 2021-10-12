@@ -630,6 +630,9 @@ def init_app(app: Flask) -> None:
 
     :param app: App to register blueprints with.
     """
+    app.jinja_env.trim_blocks = True
+    app.jinja_env.lstrip_blocks = True
+    app.jinja_env.strip_trailing_newlines = False
     app.register_blueprint(views_blueprint)
     app.register_blueprint(auth_blueprint)
     app.add_url_rule("/", endpoint=_URL_FOR_INDEX)

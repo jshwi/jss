@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Restores version through /update
 
+### Changed
+- Configures `app.jinja_env`
+
 [1.3.0](https://github.com/jshwi/jss/releases/tag/v1.3.0) - 2021-10-11
 ------------------------------------------------------------------------
 ### Added
