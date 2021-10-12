@@ -6,6 +6,7 @@ tests._test
 import functools
 import json
 import logging
+from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 import pytest
@@ -31,10 +32,14 @@ from .utils import (
     AUTHORIZED_USER_EMAIL,
     AUTHORIZED_USER_PASSWORD,
     AUTHORIZED_USER_USERNAME,
+    COPYRIGHT_AUTHOR,
+    COPYRIGHT_EMAIL,
+    COPYRIGHT_YEAR,
     INVALID_OR_EXPIRED,
     LAST_USER_EMAIL,
     LAST_USER_PASSWORD,
     LAST_USER_USERNAME,
+    LICENSE,
     MAIL_PASSWORD,
     MAIL_PORT,
     MAIL_SERVER,
@@ -67,6 +72,7 @@ from .utils import (
     POST_TITLE_V1,
     POST_TITLE_V2,
     PROFILE_EDIT,
+    SETUP_FILE,
     TASK_DESCRIPTION,
     TASK_ID,
     TASK_NAME,
@@ -1945,3 +1951,29 @@ def test_versioning_handle_index_error(
     add_test_post(created_post)
     auth.login(user_test_object)
     assert client.get("/1/update/1").status_code == 404
+
+
+def test_config_copyright(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, test_app: Flask
+) -> None:
+    """Test parsing of metadata from project root.
+
+    :param tmp_path:    Create and return temporary ``Path`` object.
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app:    Test ``Flask`` app object.
+    """
+    license_file = tmp_path / "LICENSE"
+    setup_file = tmp_path / "setup.py"
+    with open(license_file, "w", encoding="utf-8") as fout:
+        fout.write(LICENSE)
+
+    with open(setup_file, "w", encoding="utf-8") as fout:
+        fout.write(SETUP_FILE)
+
+    monkeypatch.setenv("LICENSE", str(license_file))
+    monkeypatch.setenv("SETUP_FILE", str(setup_file))
+    config.init_app(test_app)
+    assert test_app.config["LICENSE"] == license_file
+    assert test_app.config["COPYRIGHT_YEAR"] == COPYRIGHT_YEAR
+    assert test_app.config["COPYRIGHT_AUTHOR"] == COPYRIGHT_AUTHOR
+    assert test_app.config["COPYRIGHT_EMAIL"] == COPYRIGHT_EMAIL

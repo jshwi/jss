@@ -6,6 +6,8 @@ Most configuration is set via environment variables as per
 https://12factor.net/config:
 """
 # pylint: disable=invalid-name
+import datetime
+from pathlib import Path
 from typing import List, Optional
 
 from environs import Env
@@ -189,6 +191,89 @@ class Config:  # pylint: disable=too-many-public-methods
     def BRAND(self) -> str:
         """Display in navbar and on browser tabs."""
         return env.str("BRAND", default="")
+
+    @property
+    def LICENSE(self) -> Path:
+        """Path to LICENSE file."""
+        return env.path(
+            "LICENSE",
+            default=Path(__file__).absolute().parent.parent / "LICENSE",
+        )
+
+    @property
+    def SETUP_FILE(self) -> Path:
+        """Path to LICENSE file."""
+        return env.path(
+            "SETUP_FILE",
+            default=Path(__file__).absolute().parent.parent / "setup.py",
+        )
+
+    @property
+    def COPYRIGHT(self) -> Optional[str]:
+        """Return the copyright line from LICENSE else None."""
+        declaration = None
+        if self.LICENSE.is_file():
+            with open(self.LICENSE, encoding="utf-8") as fin:
+                for line in fin.read().splitlines():
+                    if "Copyright" in line:
+                        declaration = line
+
+        return env.str("COPYRIGHT", default=declaration)
+
+    @property
+    def COPYRIGHT_YEAR(self) -> str:
+        """Get the copyright year for this app.
+
+        Default is the current year if no LICENSE can be found.
+        If a license can be found the default year is parsed from it.
+
+        If ``COPYRIGHT_YEAR`` environment variables is set, then that
+        is returned.
+        """
+        year = datetime.datetime.now().strftime("%Y")
+        if self.COPYRIGHT is not None:
+            year = self.COPYRIGHT.split()[2]
+
+        return env.str("COPYRIGHT_YEAR", default=year)
+
+    @property
+    def COPYRIGHT_AUTHOR(self) -> str:
+        """Get the copyright author for this app.
+
+        Default an empty str if no LICENSE can be found.
+        If a license can be found the default is parsed from it.
+
+        If ``COPYRIGHT_AUTHOR`` environment variables is set, then that
+        is returned.
+        """
+        author = ""
+        if self.COPYRIGHT is not None:
+            author = " ".join(self.COPYRIGHT.split()[3:])
+
+        return env.str("COPYRIGHT_AUTHOR", default=author)
+
+    @property
+    def COPYRIGHT_EMAIL(self) -> str:
+        """Get the copyright author's email for this app.
+
+        Default an empty str if no setup file can be found.
+        If a setup file can be found the default is parsed from it.
+
+        If ``COPYRIGHT_EMAIL`` environment variables is set, then that
+        is returned.
+        """
+        email = ""
+        if self.SETUP_FILE.is_file():
+            with open(self.SETUP_FILE, encoding="utf-8") as fin:
+                for line in fin.read().splitlines():
+                    if "author_email" in line:
+                        email = (
+                            line.split("=")[1]
+                            .replace('"', "")
+                            .replace(",", "")
+                        )
+
+        return env.str("COPYRIGHT_EMAIL", default=email)
 
 
 def init_app(app: Flask) -> None:

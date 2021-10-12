@@ -121,5 +121,15 @@
         {% endwith %}
         <header><h1>{% block header %}{{ self.page_name() }}{% endblock %}</h1></header>
         {% block app_content %}{% endblock %}
+        {% block footer %}
+           <div class="container">
+              <div id="footer">
+                   <p>
+                       &copy; {{ config["COPYRIGHT_YEAR"] }},
+                       <a href="mailto:{{ config["COPYRIGHT_EMAIL"] }}">{{ config["COPYRIGHT_AUTHOR"] }}</a>
+                   </p>
+              </div>
+           </div>
+        {% endblock %}
     </div>
 {% endblock %}

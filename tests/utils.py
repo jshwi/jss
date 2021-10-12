@@ -68,6 +68,63 @@ MISC_PROGRESS_INT = 37
 APP_MODELS_JOB_FETCH = "app.models.Job.fetch"
 ADMIN_ROUTE = "/admin"
 ADMIN_USER_ROUTE = "/admin/user"
+COPYRIGHT_YEAR = "2021"
+COPYRIGHT_AUTHOR = "John Doe"
+COPYRIGHT_EMAIL = "john.doe@test.com"
+LICENSE = f"""\
+MIT License
+
+Copyright (c) {COPYRIGHT_YEAR} {COPYRIGHT_AUTHOR}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+SETUP_FILE = f"""\
+from setuptools import setup, find_packages
+
+with open("README.rst") as file:
+    README = file.read()
+
+
+setup(
+    name="package",
+    version="0.1.0",
+    description="A package",
+    long_description=README,
+    long_description_content_type="text/x-rst",
+    author="John Doe",
+    author_email="{COPYRIGHT_EMAIL}",
+    url="https://github.com/does_not/exist",
+    license="MIT",
+    platforms="GNU/Linux",
+    classifiers=[
+        "Programming Language :: Python :: 3.8",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: POSIX :: Linux",
+    ],
+    keywords=["python3.8"],
+    packages=find_packages(exclude=["tests"]),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=["flask==2.0.2"],
+    python_requires=">=3.8",
+)
+"""
 
 
 class UserTestObject:

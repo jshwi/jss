@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.4.0...HEAD)
 ------------------------------------------------------------------------
+### Added
+- Adds footer
+- Adds `LICENSE` to config
+- Adds`SETUP_FILE` to config
+- Adds `COPYRIGHT` to config
+- Adds `COPYRIGHT_YEAR` to config
+- Adds `COPYRIGHT_AUTHOR` to config
+- Adds `COPYRIGHT_EMAIL` to config
+
 ### Changed
 - Removes `app.post` for `Post` class method
 
