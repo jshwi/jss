@@ -30,7 +30,7 @@ class MyAdminIndexView(AdminIndexView):
     @expose("/")
     @login_required
     @admin_required
-    def index(self):
+    def index(self) -> str:
         """Requires user be logged in as admin."""
         return super().index()
 

@@ -8,7 +8,7 @@ import functools
 import json
 import logging
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import pytest
 from flask import Flask, session
@@ -1013,7 +1013,9 @@ def test_avatar() -> None:
 
 
 @pytest.mark.usefixtures("init_db")
-def test_profile_page(client: FlaskClient, add_test_user: Callable[..., None]):
+def test_profile_page(
+    client: FlaskClient, add_test_user: Callable[..., None]
+) -> None:
     """Test response when visiting profile page of existing user.
 
     :param client: App's test-client API.
@@ -1218,7 +1220,7 @@ def test_follow_posts(
 @pytest.mark.usefixtures("init_db")
 def test_post_follow_unfollow_routes(
     client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
-):
+) -> None:
     """Test ``POST`` request to follow and unfollow a user.
 
     :param client: App's test-client API.
@@ -1492,7 +1494,7 @@ def test_get_tasks_in_progress_error_raised(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
     )
 
-    def _fetch(*_, **__):
+    def _fetch(*_: Any, **__: Any) -> None:
         raise RedisError("test Redis error")
 
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, _fetch)
