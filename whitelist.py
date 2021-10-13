@@ -1,5 +1,6 @@
 _.ADMINS  # unused property (app/config.py:118)
 _.BCRYPT_LOG_ROUNDS  # unused property (app/config.py:52)
+_.BRAND  # unused property (app/config.py:188)
 _.CACHE_TYPE  # unused property (app/config.py:93)
 _.DEBUG_TB_ENABLED  # unused property (app/config.py:57)
 _.DEBUG_TB_INTERCEPT_REDIRECTS  # unused property (app/config.py:62)

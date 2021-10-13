@@ -185,6 +185,11 @@ class Config:  # pylint: disable=too-many-public-methods
         """List of names that cannot be registered the standard way."""
         return env.list("RESERVED_USERNAMES", default=[])
 
+    @property
+    def BRAND(self) -> str:
+        """Display in navbar and on browser tabs."""
+        return env.str("BRAND", default="")
+
 
 def init_app(app: Flask) -> None:
     """Register ``Config`` object.
