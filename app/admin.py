@@ -1,6 +1,8 @@
 """
 app.admin
 =========
+
+Admin page initialized with models for reading and writing.
 """
 from flask import Flask
 from flask_admin import Admin, AdminIndexView, expose
@@ -29,25 +31,26 @@ class MyAdminIndexView(AdminIndexView):
     @login_required
     @admin_required
     def index(self):
-        """Implement ``admin_required`` in place of method."""
+        """Requires user be logged in as admin."""
         return super().index()
 
 
 def init_app(app: Flask) -> None:
     """Add models to admin view.
 
-    Not consistent with the application factory pattern for flask
+    Not consistent with the application factory pattern for ``Flask``
     extensions, however, the ``Admin`` object does not integrate into
-    the application well as a global singleton. While running
-    ``pytest``, ``Admin`` will be called multiple times and the
-    following will be raised:
+    the application well as a global singleton.
+
+    While running ``pytest``, ``Admin`` will be called multiple times
+    and the following will be raised:
 
         ValueError: The name 'user' is already registered for a
         different blueprint. Use 'name=' to provide a unique name.
 
     See https://stackoverflow.com/questions/18002750
 
-    :param app: App object.
+    :param app: Application factory object.
     """
     admin = Admin(
         app,

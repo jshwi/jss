@@ -130,11 +130,11 @@ setup(
 class UserTestObject:
     """Test model attributes.
 
-    :param username:    Username of user object.
-    :param email:       Email of user object.
-    :param password:    Password, for raw text and comparison hash.
-    :param admin:       Is user admin? True or False.
-    :param authorized:  Is user authorized? True or False.
+    :param username: Username of user object.
+    :param email: Email of user object.
+    :param password: Password, for raw text and comparison hash.
+    :param admin: Is user admin? True or False.
+    :param authorized: Is user authorized? True or False.
     """
 
     def __init__(
@@ -159,10 +159,10 @@ class UserTestObject:
 class PostTestObject:
     """Test model attributes.
 
-    :param title:       Title of the post.
-    :param body:        Main content of the post..
-    :param user_id:   ID of the user who made the post.
-    :param created:     When the post was created.
+    :param title: Title of the post.
+    :param body: Main content of the post..
+    :param user_id: ID of the user who made the post.
+    :param created: When the post was created.
     """
 
     def __init__(
@@ -177,10 +177,10 @@ class PostTestObject:
 class TaskTestObject:
     """Test model attributes.
 
-    :param id:          ID of the task.
-    :param name:        Name of the task.
+    :param id: ID of the task.
+    :param name: Name of the task.
     :param description: description of the task.
-    :param user:        User initiating the task.
+    :param user: User initiating the task.
     """
 
     def __init__(
@@ -213,9 +213,9 @@ class AuthActions:
     ) -> Response:
         """Set client to the login state.
 
-        :param user_test_object:    Attributes possessed by user.
-        :param follow_redirects:    Follow redirects.
-        :return:                    Response object.
+        :param user_test_object: Attributes possessed by user.
+        :param follow_redirects: Follow redirects.
+        :return: Response object.
         """
         return self._client.post(
             self.login_route,
@@ -238,9 +238,9 @@ class AuthActions:
     ) -> Response:
         """Register a user.
 
-        :param user_test_object:    Attributes possessed by user.
-        :param follow_redirects:    Follow redirects.
-        :return:                    Response object.
+        :param user_test_object: Attributes possessed by user.
+        :param follow_redirects: Follow redirects.
+        :return: Response object.
         """
         return self._client.post(
             self.register_route,
@@ -263,9 +263,9 @@ class AuthActions:
     ) -> Response:
         """Follow token sent for password resets, verification, etc.
 
-        :param html:                HTML str object.
-        :param follow_redirects:    Follow redirects.
-        :return:                    Response object.
+        :param html: HTML str object.
+        :param follow_redirects: Follow redirects.
+        :return: Response object.
         """
         return self._client.get(
             self.parse_token_route(html), follow_redirects=follow_redirects
@@ -276,9 +276,9 @@ class AuthActions:
     ) -> Response:
         """Request user password reset.
 
-        :param email:               Email to request reset with.
-        :param follow_redirects:    Follow redirects.
-        :return:                    Response object.
+        :param email: Email to request reset with.
+        :param follow_redirects: Follow redirects.
+        :return: Response object.
         """
         return self._client.post(
             self.request_password_reset_route,

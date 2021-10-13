@@ -224,10 +224,10 @@ class Config:
     def COPYRIGHT_YEAR(self) -> str:
         """Get the copyright year for this app.
 
-        Default is the current year if no LICENSE can be found.
-        If a license can be found the default year is parsed from it.
+        Default is the current year if no LICENSE can be found. If
+        LICENSE can be found the default year is parsed from it.
 
-        If ``COPYRIGHT_YEAR`` environment variables is set, then that
+        If ``COPYRIGHT_YEAR`` environment variables is set then that
         is returned.
         """
         year = datetime.datetime.now().strftime("%Y")
@@ -240,10 +240,10 @@ class Config:
     def COPYRIGHT_AUTHOR(self) -> str:
         """Get the copyright author for this app.
 
-        Default an empty str if no LICENSE can be found.
-        If a license can be found the default is parsed from it.
+        Default is an empty str if no LICENSE can be found. If LICENSE
+        can be found the default is parsed from it.
 
-        If ``COPYRIGHT_AUTHOR`` environment variables is set, then that
+        If ``COPYRIGHT_AUTHOR`` environment variables is set then that
         is returned.
         """
         author = ""
@@ -256,7 +256,7 @@ class Config:
     def COPYRIGHT_EMAIL(self) -> str:
         """Get the copyright author's email for this app.
 
-        Default an empty str if no setup file can be found.
+        Default is an empty str if no setup file can be found.
         If a setup file can be found the default is parsed from it.
 
         If ``COPYRIGHT_EMAIL`` environment variables is set, then that
@@ -277,8 +277,15 @@ class Config:
 
 
 def init_app(app: Flask) -> None:
-    """Register ``Config`` object.
+    """Register config for ``Flask`` app.
 
-    :param app: App object.
+    Accessible within app as ``current_app.config["CONFIG_KEY"]``
+    through application context, or ``app.config["CONFIG_KEY"]`` if
+    passed to a function as an arg such as this one.
+
+    While using ``Jinja`` templates config is accessible simply through
+    {{ config["CONFIG_KEY"] }}.
+
+    :param app: Application factory object.
     """
     app.config.from_object(Config())

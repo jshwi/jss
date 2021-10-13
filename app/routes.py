@@ -71,9 +71,8 @@ def register() -> Union[str, Response]:
     either create the new user and go to login page or show the form
     again with an error message.
 
-    :return:    Rendered register template on GET, or POST with error.
-                Response object redirect to login view on successful
-                POST.
+    :return: Rendered register template on GET, or POST with error.
+        Response object redirect to login view on successful POST.
     """
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -119,9 +118,8 @@ def login() -> Union[str, Response]:
     At the beginning of each request if a user is logged in their
     information should be loaded and made available to other views.
 
-    :return:    Rendered login template on GET or failed login POST.
-                Response object redirect to index view on successful
-                login POST.
+    :return: Rendered login template on GET or failed login POST.
+        Response object redirect to index view on successful login POST.
     """
     form = LoginForm()
     if form.validate_on_submit():
@@ -201,8 +199,8 @@ def create() -> Union[str, Response]:
     data is validated and either the form is displayed (and the post is
     added to the database) or an error is shown.
 
-    :return:    Rendered create template on GET or failed POST. Response
-                object redirect to index view on successful POST.
+    :return: Rendered create template on GET or failed POST. Response
+        object redirect to index view on successful POST.
     """
     form = PostForm()
     if form.validate_on_submit():
@@ -225,11 +223,10 @@ def create() -> Union[str, Response]:
 def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
     """Update post that corresponds to the provided post ID.
 
-    :param id:          The post's ID.
-    :param revision:    Version to revert to.
-    :return:            Rendered update template on GET or failed POST.
-                        Response object redirect to index view on
-                        successful update POST.
+    :param id: The post's ID.
+    :param revision: Version to revert to.
+    :return: Rendered update template on GET or failed POST. Response
+        object redirect to index view on successful update POST.
     """
     post = Post.get_post(id, revision)
     form = PostForm(title=post.title, body=post.body)
@@ -253,8 +250,8 @@ def delete(id: int) -> Response:
     template it will only handle the ``POST`` method and then redirect
     to the index view.
 
-    :param id:  The post's ID.
-    :return:    Response object redirect to index view.
+    :param id: The post's ID.
+    :return: Response object redirect to index view.
     """
     post = Post.get_post(id)
     db.session.delete(post)
@@ -270,8 +267,8 @@ def confirm_email(token: str) -> Response:
     There is no view for this route and so the user will be redirected
     to the index page.
 
-    :param token:   Encrypted token to verify correct user.
-    :return:        Response object redirect to index view.
+    :param token: Encrypted token to verify correct user.
+    :return: Response object redirect to index view.
     """
     try:
         email = confirm_token(token)
@@ -335,9 +332,9 @@ def request_password_reset() -> Union[str, Response]:
     (if the email address is in the database) send an email with a link
     that leads to the reset password page.
 
-    :return:        Rendered auth/request_password_reset template on
-                    GET or invalid email POST. Response object redirect
-                    to login view on successful email POST.
+    :return: Rendered auth/request_password_reset template on GET or
+        invalid email POST. Response object redirect to login view on
+        successful email POST.
     """
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
@@ -371,10 +368,10 @@ def reset_password(token: str) -> Union[str, Response]:
     (if it is valid), and the correct user will be retrieved from the
     database to complete the password reset.
 
-    :param token:   Unique token generated from user's email address.
-    :return:        Rendered auth/reset_password template on GET or
-                    invalid token POST. Response object redirect to
-                    index view on successful token POST.
+    :param token: Unique token generated from user's email address.
+    :return: Rendered auth/reset_password template on GET or invalid
+        token POST. Response object redirect to index view on successful
+        token POST.
     """
     form = ResetPasswordForm()
     try:
@@ -402,8 +399,8 @@ def reset_password(token: str) -> Union[str, Response]:
 def profile(username: str) -> Union[str, Response]:
     """Render user's profile page.
 
-    :param username:    Username of registered user.
-    :return:            Rendered profile template.
+    :param username: Username of registered user.
+    :return: Rendered profile template.
     """
     user = User.resolve_all_names(username=username)
     if user.username != username:
@@ -437,8 +434,8 @@ def profile(username: str) -> Union[str, Response]:
 def post_page(id: int) -> str:
     """Render post page for selected post ID.
 
-    :param id:  ID of post to display full page on.
-    :return:    Rendered post template.
+    :param id: ID of post to display full page on.
+    :return: Rendered post template.
     """
     post = Post.get_post(id, checkauthor=False)
     return render_template("public/post.html", post=post)
@@ -460,8 +457,8 @@ def before_request() -> None:
 def edit_profile() -> Union[str, Response]:
     """Edit a user's personal profile page.
 
-    :return:    Rendered profile/edit template on GET. Response object
-                redirect to index view on successful POST.
+    :return: Rendered profile/edit template on GET. Response object
+        redirect to index view on successful POST.
     """
     old_username = current_user.username
     form = EditProfile(
@@ -501,9 +498,9 @@ def follow(username: str) -> Response:
     There is no view for this route and so the user will be redirected
     to the profile view.
 
-    :param username:    User to follow.
-    :return:            Response object redirect to profile view of
-                        user that has been followed.
+    :param username: User to follow.
+    :return: Response object redirect to profile view of user that has
+        been followed.
     """
     form = EmptyForm()
     if form.validate_on_submit():
@@ -524,9 +521,9 @@ def unfollow(username: str) -> Response:
     There is no view for this route and so the user will be redirected
     to the profile view.
 
-    :param username:    User to unfollow.
-    :return:            response object redirect to profile view of
-                        user that has been unfollowed.
+    :param username: User to unfollow.
+    :return: response object redirect to profile view of user that has
+        been unfollowed.
     """
     form = EmptyForm()
     if form.validate_on_submit():
@@ -544,8 +541,8 @@ def unfollow(username: str) -> Response:
 def send_message(recipient: str) -> Union[str, Response]:
     """Send IM to another user.
 
-    :return:    Rendered user/send_message template on GET. Response
-                object redirect to recipient's view on successful POST.
+    :return: Rendered user/send_message template on GET. Response object
+        redirect to recipient's view on successful POST.
     """
     user = User.query.filter_by(username=recipient).first_or_404()
     form = MessageForm()
@@ -627,8 +624,8 @@ def export_posts() -> Response:
     There is no view for this route and so the user will be redirected
     to the profile view.
 
-    :return:    response object redirect to profile view of user that
-                has requested the post export (current user).
+    :return: response object redirect to profile view of user that has
+        requested the post export (current user).
     """
     if current_user.get_task_in_progress("export_posts"):
         flash("An export task is already in progress")
@@ -645,11 +642,10 @@ def export_posts() -> Response:
 def version(id: int, revision: int) -> Union[str, Response]:
     """Rewind versioned post that corresponds to the provided post ID.
 
-    :param id:          The post's ID.
-    :param revision:    Version to revert to.
-    :return:            Rendered update template on GET or failed POST.
-                        Response object redirect to index view on
-                        successful update POST.
+    :param id: The post's ID.
+    :param revision: Version to revert to.
+    :return: Rendered update template on GET or failed POST. Response
+        object redirect to index view on successful update POST.
     """
     post = Post.get_post(id, revision)
     form = EmptyForm()
@@ -661,7 +657,7 @@ def version(id: int, revision: int) -> Union[str, Response]:
 def init_app(app: Flask) -> None:
     """Load the app with views views.
 
-    :param app: App to register blueprints with.
+    :param app: Application factory object.
     """
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True

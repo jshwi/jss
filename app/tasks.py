@@ -1,6 +1,8 @@
 """
 app.tasks
 =========
+
+Setup app's background task functionality.
 """
 import json
 import sys

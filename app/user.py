@@ -1,6 +1,8 @@
 """
 app.user
 ========
+
+Functionality for user's of the app.
 """
 import os
 from datetime import datetime
@@ -18,11 +20,11 @@ def create_user(
 ) -> User:
     """Instantiate a new user, add user to the database, and return.
 
-    :param username:    New user's username.
-    :param email:       New user's email address.
-    :param password:    New user's password.
-    :param kwargs:      Non-mandatory keyword arguments to pas to model.
-    :return:            New ``User`` object.
+    :param username: New user's username.
+    :param email: New user's email address.
+    :param password: New user's password.
+    :param kwargs: Non-mandatory keyword arguments to pas to model.
+    :return: New ``User`` object.
     """
     user = User(username=username, email=email, **kwargs)
     user.set_password(password)
@@ -40,11 +42,11 @@ def create_user_override(
 ) -> User:
     """Create a new user and confirm them automatically.
 
-    :param username:    New user's username.
-    :param email:       New user's email address.
-    :param password:    New user's password.
-    :param kwargs:      Additional keyword args to pass to user model.
-    :return:            New ``User`` object.
+    :param username: New user's username.
+    :param email: New user's email address.
+    :param password: New user's password.
+    :param kwargs: Additional keyword args to pass to user model.
+    :return: New ``User`` object.
     """
     return create_user(
         username,
@@ -98,7 +100,7 @@ def create_admin_cli() -> None:
 def user_login(id: int) -> User:
     """Wrap the user object.
 
-    :param id:  User id to get.
-    :return:    Returned user object.
+    :param id: User id to get.
+    :return: Returned user object.
     """
     return User.query.get(id)

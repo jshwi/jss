@@ -1,6 +1,8 @@
 """
 app.mail
 ========
+
+Setup app's mailer.
 """
 from threading import Thread
 from typing import Any, Dict, Iterable, Optional
@@ -58,9 +60,9 @@ def send_email(
         * data:         the raw file data
 
     :param attachments: Iterable of kwargs to construct attachment.
-    :param sync:        Don't thread if True: Defaults to False.
-    :param kwargs:      Keyword args to pass to ``Message``:
-                        See ``flask_mail.Message``.
+    :param sync: Don't thread if True: Defaults to False.
+    :param kwargs: Keyword args to pass to ``Message``:
+        See ``flask_mail.Message``.
     """
     # noinspection PyProtectedMember
     # pylint: disable=protected-access

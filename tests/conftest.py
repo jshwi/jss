@@ -2,8 +2,8 @@
 tests.conftest
 ==============
 
-The ``test_app`` fixture will call the factory and pass ``test_config`` to
-configure the application and database for testing instead of using
+The ``test_app`` fixture will call the factory and pass ``test_config``
+to configure the application and database for testing instead of using
 local development configuration.
 """
 from pathlib import Path
@@ -37,9 +37,9 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     changes some internal behaviour so it is easier to test and other
     extensions can also use the flag to make testing them easier.
 
-    :param tmp_path:    Create and return temporary directory.
+    :param tmp_path: Create and return temporary directory.
     :param monkeypatch: Mock patch environment and attributes.
-    :param:             Test ``Flask`` app object.
+    :param: Test ``Flask`` app object.
     """
     monkeypatch.setenv("FLASK_ENV", "testing")
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
@@ -64,8 +64,8 @@ def fixture_init_db(test_app: Flask) -> None:
 def fixture_add_test_user(test_app: Flask) -> Callable[..., None]:
     """Add a user object to the database.
 
-    :param test_app:    Test ``Flask`` app object.
-    :return:            Function for using this fixture.
+    :param test_app: Test ``Flask`` app object.
+    :return: Function for using this fixture.
     """
 
     def _add_test_user(*user_test_objects: UserTestObject) -> None:
@@ -89,8 +89,8 @@ def fixture_add_test_user(test_app: Flask) -> Callable[..., None]:
 def fixture_add_test_post(test_app: Flask) -> Callable[..., None]:
     """Add a post object to the database.
 
-    :param test_app:    Test ``Flask`` app object.
-    :return:            Function for using this fixture.
+    :param test_app: Test ``Flask`` app object.
+    :return: Function for using this fixture.
     """
 
     def _add_test_post(*post_test_objects: PostTestObject) -> None:
@@ -112,8 +112,8 @@ def fixture_add_test_post(test_app: Flask) -> Callable[..., None]:
 def fixture_add_test_task(test_app: Flask) -> Callable[..., None]:
     """Add a task object to the database.
 
-    :param test_app:    Test ``Flask`` app object.
-    :return:            Function for using this fixture.
+    :param test_app: Test ``Flask`` app object.
+    :return: Function for using this fixture.
     """
 
     def _add_test_task(*task_test_objects: TaskTestObject) -> None:
@@ -135,8 +135,8 @@ def fixture_add_test_task(test_app: Flask) -> Callable[..., None]:
 def fixture_client(test_app: Flask) -> FlaskClient:
     """Make requests to the application without running the server.
 
-    :param test_app:    Test ``Flask`` app object.
-    :return:            Client for testing app.
+    :param test_app: Test ``Flask`` app object.
+    :return: Client for testing app.
     """
     return test_app.test_client()
 
@@ -145,8 +145,8 @@ def fixture_client(test_app: Flask) -> FlaskClient:
 def fixture_runner(test_app: Flask) -> FlaskCliRunner:
     """Creates a runner that can call the registered commands.
 
-    :param test_app:    Test ``Flask`` app object.
-    :return:            Cli runner for testing app.
+    :param test_app: Test ``Flask`` app object.
+    :return: Cli runner for testing app.
     """
     return test_app.test_cli_runner()
 
@@ -155,9 +155,9 @@ def fixture_runner(test_app: Flask) -> FlaskCliRunner:
 def fixture_auth(client: FlaskClient) -> AuthActions:
     """Handle authorization with test app.
 
-    :param client:  Client for testing app.
-    :return:        Instantiated ``AuthActions`` object - a class acting
-                    as a wrapper to change the state of the client.
+    :param client: Client for testing app.
+    :return: Instantiated ``AuthActions`` object - a class acting as a
+        wrapper to change the state of the client.
     """
     return AuthActions(client)
 
@@ -169,7 +169,7 @@ def fixture_patch_getpass(
     """Patch getpass in the cli module.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :return:            Fixture to use this function.
+    :return: Fixture to use this function.
     """
 
     def _patch_getpass(inputs: List[str]) -> None:

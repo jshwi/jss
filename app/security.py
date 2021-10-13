@@ -27,8 +27,8 @@ def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
     ``401 Unauthorized`` error otherwise. If an admin user is loaded the
     original view is called and continues normally.
 
-    :param view:    View function to wrap.
-    :return:        The wrapped function supplied to this decorator.
+    :param view: View function to wrap.
+    :return: The wrapped function supplied to this decorator.
     """
 
     @functools.wraps(view)
@@ -48,8 +48,8 @@ def authorization_required(view: Callable[..., Any]) -> Callable[..., Any]:
     a ``401 Unauthorized`` error otherwise. If an authorized user is
     loaded the original view is called and continues normally.
 
-    :param view:    View function to wrap.
-    :return:        The wrapped function supplied to this decorator.
+    :param view: View function to wrap.
+    :return: The wrapped function supplied to this decorator.
     """
 
     @functools.wraps(view)
@@ -69,8 +69,8 @@ def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
     The user to the auth/unconfirmed page otherwise. If a confirmed user
     is loaded the original view is called and continues normally.
 
-    :param view:    View function to wrap.
-    :return:        The wrapped function supplied to this decorator.
+    :param view: View function to wrap.
+    :return: The wrapped function supplied to this decorator.
     """
 
     @functools.wraps(view)
@@ -86,8 +86,8 @@ def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
 def generate_confirmation_token(email: str) -> Union[str, bytes]:
     """Generate unique token for verifying new user's email.
 
-    :param email:   Email of recipient.
-    :return:        Unique token for user to authenticate with.
+    :param email: Email of recipient.
+    :return: Unique token for user to authenticate with.
     """
     serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
     return serializer.dumps(
@@ -98,9 +98,9 @@ def generate_confirmation_token(email: str) -> Union[str, bytes]:
 def confirm_token(token: str, max_age: int = 3600) -> str:
     """Confirm token for verifying new user's email.
 
-    :param token:   Token to serialize with secret key.
+    :param token: Token to serialize with secret key.
     :param max_age: Max age of token before considered invalid.
-    :return:        Return user's email if valid.
+    :return: Return user's email if valid.
     """
     serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
     return serializer.loads(
@@ -115,7 +115,7 @@ def generate_reset_password_token(user_id: int, max_age: int = 600) -> str:
 
     :param user_id: The ID of the user requesting a password reset.
     :param max_age: The maximum time the token is valid for.
-    :return:        A unique token hashed from user's ID.
+    :return: A unique token hashed from user's ID.
     """
     return jwt.encode(
         {"reset_password": user_id, "exp": time() + max_age},
@@ -127,8 +127,8 @@ def generate_reset_password_token(user_id: int, max_age: int = 600) -> str:
 def get_requested_reset_password_user(token: str) -> User:
     """Decode the user's token and return the user model.
 
-    :param token:   Token to decrypt.
-    :return:        User, if the token is valid, else None.
+    :param token: Token to decrypt.
+    :return: User, if the token is valid, else None.
     """
     id = jwt.decode(
         token, current_app.config["SECRET_KEY"], algorithms=["HS256"]

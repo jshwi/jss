@@ -1,6 +1,8 @@
 """
 app.logging
 ===========
+
+Register custom app loggers.
 """
 import logging
 from logging.handlers import RotatingFileHandler, SMTPHandler
@@ -17,8 +19,8 @@ formatter = logging.Formatter(
 def smtp_handler(app: Flask) -> None:
     """Configure an SMTP handler for error reporting.
 
-    :param app: App to register handler with.
-    :return:    SMTPHandler if not in debug and vars are set, else None.
+    :param app: Application factory object.
+    :return: SMTPHandler if not in debug and vars are set, else None.
     """
     server = app.config["MAIL_SERVER"]
     username = app.config["MAIL_USERNAME"]
@@ -47,8 +49,8 @@ def smtp_handler(app: Flask) -> None:
 def file_handler(app: Flask) -> None:
     """Add handler to write logs to rotating file.
 
-    :param app: App to register handler with.
-    :return:    Rotating file handler.
+    :param app: Application factory object.
+    :return: Rotating file handler.
     """
     logfile = (
         Path(appdirs.user_log_dir(app.name, opinion=False)) / f"{app.name}.log"
@@ -63,7 +65,7 @@ def file_handler(app: Flask) -> None:
 def init_app(app: Flask) -> None:
     """Add handlers to app logger.
 
-    :param app: App to register handler with.
+    :param app: Application factory object.
     """
     smtp_handler(app)
     file_handler(app)

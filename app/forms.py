@@ -1,6 +1,9 @@
 """
 app.forms
 =========
+
+All classes derived from ``FlaskForm`` imported from ``Flask-WTF``.
+``Flask-WTF`` is a ``Flask`` extension built on top of ``WTForms``.
 """
 from flask import current_app
 from flask_pagedown.fields import PageDownField
@@ -38,10 +41,10 @@ class RegistrationForm(FlaskForm):
     def validate_username(  # pylint: disable=no-self-use
         self, username: StringField
     ) -> None:
-        """WTForms invokes the pattern against the property.
+        """WTForms validates methods prefixed with ``validate_``.
 
-        :param username:    Username will be validated for
-                            ``validate_username``
+        :param username: Username to check validity for.
+        :raise: ValidationError if username already exists.
         """
         user = User.query.filter_by(username=username.data).first()
         reserved = username.data in current_app.config["RESERVED_USERNAMES"]
@@ -52,9 +55,10 @@ class RegistrationForm(FlaskForm):
     def validate_email(  # pylint: disable=no-self-use
         self, email: StringField
     ) -> None:
-        """WTForms invokes the pattern against the property.
+        """WTForms validates methods prefixed with ``validate_``.
 
-        :param email: Email will be validated for ``validate_email``
+        :param email: Email to check validity for.
+        :raise: ValidationError if user with email already exists.
         """
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
@@ -73,7 +77,7 @@ class LoginForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    """Form for blog posts."""
+    """Form for creating new ``Post`` objects."""
 
     title = StringField("Title", validators=[DataRequired()])
     body = PageDownField(
@@ -83,14 +87,14 @@ class PostForm(FlaskForm):
 
 
 class ResetPasswordRequestForm(FlaskForm):
-    """Form for user to fill out so they can reset their password."""
+    """Form for requesting a reset email for an existing user."""
 
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Request Password Reset")
 
 
 class ResetPasswordForm(FlaskForm):
-    """Form for user to confirm their new password."""
+    """Form for resetting an existing user's password."""
 
     password = PasswordField("Password", validators=[DataRequired()])
     confirm_password = PasswordField(
@@ -100,7 +104,7 @@ class ResetPasswordForm(FlaskForm):
 
 
 class EditProfile(FlaskForm):
-    """Form for user to edit their personal profile page."""
+    """Form for editing an existing user's profile page."""
 
     username = StringField("username", validators=[DataRequired()])
     about_me = TextAreaField("About me", validators=[Length(min=0, max=140)])
@@ -114,7 +118,7 @@ class EmptyForm(FlaskForm):
 
 
 class MessageForm(FlaskForm):
-    """Form for IM."""
+    """Form for creating new ``Message`` objects."""
 
     message = TextAreaField(
         "Message", validators=[DataRequired(), Length(min=0, max=140)]

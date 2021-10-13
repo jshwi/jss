@@ -105,16 +105,16 @@ class User(UserMixin, _BaseModel):
     def check_password(self, password: str) -> bool:
         """Match entered password against existing password hash.
 
-        :param password:    User's password attempt.
-        :return:            Attempt matches hash: True or False.
+        :param password: User's password attempt.
+        :return: Attempt matches hash: True or False.
         """
         return check_password_hash(self.password_hash, password)
 
     def avatar(self, size: int) -> str:
         """Generate unique avatar for user derived from email hash.
 
-        :param size:    Size of the avatar.
-        :return:        URL leading to avatar for img link.
+        :param size: Size of the avatar.
+        :return: URL leading to avatar for img link.
         """
         digest = md5(self.email.lower().encode()).hexdigest()
         return f"https://gravatar.com/avatar/{digest}?d=identicon&s={size}"
@@ -138,8 +138,8 @@ class User(UserMixin, _BaseModel):
     def is_following(self, user: User) -> bool:
         """Check whether following another user.
 
-        :param user:    User model object of user to check if following.
-        :return:        Following the user? True or False.
+        :param user: User model object of user to check if following.
+        :return: Following the user? True or False.
         """
         return (
             self.followed.filter(followers.c.followed_id == user.id).count()
@@ -149,8 +149,8 @@ class User(UserMixin, _BaseModel):
     def followed_posts(self) -> List[Post]:
         """Get all posts that the user is following.
 
-        :return:    List of posts that the user is following in
-                    descending order.
+        :return: List of posts that the user is following in descending
+            order.
         """
         followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)
@@ -173,9 +173,9 @@ class User(UserMixin, _BaseModel):
     def add_notifications(self, name: str, data: Any) -> Notification:
         """Add user's notifications to database.
 
-        :param name:    Name of the database key.
-        :param data:    Saved data.
-        :return:        Instantiated ``Notification`` database model.
+        :param name: Name of the database key.
+        :param data: Saved data.
+        :return: Instantiated ``Notification`` database model.
         """
         self.notifications.filter_by(name=name).delete()
 
@@ -190,11 +190,11 @@ class User(UserMixin, _BaseModel):
     ) -> Task:
         """Launch a user triggered task.
 
-        :param name:        Name of the task.
+        :param name: Name of the task.
         :param description: Friendly description of task.
-        :param args:        Misc positional arguments to pass to `Task`.
-        :param kwargs:      Misc keyword arguments to pass to `Task`.
-        :return:            Instantiated `Task` object.
+        :param args: Misc positional arguments to pass to `Task`.
+        :param kwargs: Misc keyword arguments to pass to `Task`.
+        :return: Instantiated `Task` object.
         """
         rq_job = current_app.task_queue.enqueue(  # type: ignore
             f"app.tasks.{name}", self.id, *args, **kwargs
@@ -212,16 +212,16 @@ class User(UserMixin, _BaseModel):
     def get_tasks_in_progress(self) -> List[BaseQuery]:
         """Get the currently running tasks triggered by user.
 
-        :return:    List of ``BaseQuery`` objects returned as running
-                    tasks.
+        :return: List of ``BaseQuery`` objects returned as running
+            tasks.
         """
         return Task.query.filter_by(user=self, complete=False).all()
 
     def get_task_in_progress(self, name: str) -> Optional[BaseQuery]:
         """Return first task currently running under this user.
 
-        :param name:    Name of running task.
-        :return:        First running task retrieved.
+        :param name: Name of running task.
+        :return: First running task retrieved.
         """
         return Task.query.filter_by(
             name=name, user=self, complete=False
@@ -231,10 +231,9 @@ class User(UserMixin, _BaseModel):
     def resolve_all_names(cls, username: str) -> User:
         """Manage retrieval of ``User`` object by their username.
 
-        :param username:    Username to search for user under.
-        :raise HTTPError:   Raise ``404: Not Found`` if name not
-                            resolved.
-        :return:            User object.
+        :param username: Username to search for user under.
+        :raise HTTPError: Raise ``404: Not Found`` if name not resolved.
+        :return: User object.
         """
         user = cls.query.filter_by(username=username).first()
         if user is None:
@@ -263,9 +262,11 @@ class Post(_BaseModel):
     def get_version(self, index: int) -> Optional[ModelBuilder]:
         """Get version of post by index.
 
-        :param index:   Index of version beginning with 0.
-        :return:        PostVersion object if within index range, else
-                        None.
+        If no version can be returned a ``404: Not Found`` error will
+        abort instead of raising an ``IndexError``.
+
+        :param index: Index of version beginning with 0.
+        :return: PostVersion object if within index range, else None.
         """
         try:
             return self.versions[index]
@@ -276,33 +277,32 @@ class Post(_BaseModel):
     def get_post(
         cls, id: int, version: Optional[int] = None, checkauthor: bool = True
     ) -> Post:
-        """Get post by post's ID.
+        """Get post by post's ID or abort with ``404: Not Found.``
 
-        Check if the author matches the logged in user  To keep the code
-        DRY this can get the post and call it from each view.
+        Standard behaviour would be to return None, so do not bypass
+        silently.
 
-        ``exceptions.abort`` will raise a special exception that
-        returns an HTTP status code. It takes an optional message to
-        show with the error, otherwise a default message is used.
-
-            - 404: "Not Found"
-            - 403: "Forbidden
-            - 401: "Unauthorized"
-
-        This will redirect to the login page instead of returning that
-        status.
+        If a version number is provided find version by index. This is
+        a different search to getting post by ID, as database starts at
+        1, but index always starts at 0. If no version can be returned
+        a ``404: Not Found`` error will abort instead of raising an
+        ``IndexError``. Assign post attributes title and body to the
+        yielded ``Post`` object. The ``PostVersion`` cannot be returned
+        for a restore as it is a different object and will not save
+        when committing database changes.
 
         The ``checkauthor`` argument is defined so that the function can
-        be used to get a post without checking the author. This would be
-        useful if we wrote a view to show an individual post on a page
-        where the user doesn't matter, because they are not modifying
-        the post.
+         be used to get a post without checking the author. This would
+         be useful if we wrote a view to show an individual post on a
+         page where the user doesn't matter, because they are not
+         modifying the post. If the logged in author does not own the
+         post abort with ``403: Forbidden``.
 
-        :param id:          The post's ID.
-        :param version:     If provided populate session object with
-                            version.
-        :param checkauthor: Rule whether to check for author ID.
-        :return:            Post's connection object.
+         :param id: The post's ID.
+         :param version: If provided populate session object with
+             version.
+         :param checkauthor: Rule whether to check for author ID.
+         :return: Post's connection object.
         """
         post = cls.query.filter_by(id=id).first_or_404()
         if version is not None:

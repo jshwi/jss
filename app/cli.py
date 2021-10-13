@@ -13,26 +13,30 @@ from .user import create_admin_cli, create_user_cli
 
 @click.group()
 def create() -> None:
-    """App init methods."""
+    """App init methods called with ``flask create <subcommand>``.
+
+    Group functions are registered as decorators, and this will decorate
+    its subcommands, not ``click``.
+    """
 
 
 @create.command("user")
 @with_appcontext
 def create_user() -> None:
-    """Create a new user with cli instead of forms."""
+    """Create a new user with the commandline instead of web form."""
     create_user_cli()
 
 
 @create.command("admin")
 @with_appcontext
 def create_admin() -> None:
-    """Create a new user with cli instead of forms."""
+    """Create a new admin with the commandline instead of web form."""
     create_admin_cli()
 
 
 def init_app(app: Flask) -> None:
-    """Initialize the app cli.
+    """Initialize the app commandline.
 
-    :param app: App object.
+    :param app: Application factory object.
     """
     app.cli.add_command(create)

@@ -2,7 +2,7 @@
 app.extensions
 ==============
 
-Each extension is initialized in the app factory located in app.py.
+Each extension is initialized with ``init_app`` method.
 """
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -35,7 +35,7 @@ moment = Moment()
 def init_app(app: Flask) -> None:
     """Register ``Flask`` extensions.
 
-    :param app: App object.
+    :param app: Application factory object.
     """
     debug_toolbar.init_app(app)
     static_digest.init_app(app)

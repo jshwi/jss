@@ -1,6 +1,8 @@
 """
 app.shell
 =========
+
+Define attributes regarding use of ``flask shell``.
 """
 from flask import Flask
 
@@ -8,9 +10,9 @@ from .models import Message, Notification, Post, Task, User, Usernames, db
 
 
 def register_models(app: Flask) -> None:
-    """Make database models accessible to the ``Flash`` shell.
+    """Make database models accessible to the ``Flask`` shell.
 
-    :param app: Flask app.
+    :param app: Application factory object.
     """
     app.shell_context_processor(
         lambda: {
@@ -28,6 +30,6 @@ def register_models(app: Flask) -> None:
 def init_app(app: Flask) -> None:
     """Register shell context objects.
 
-    :param app: Flask app.
+    :param app: Application factory object.
     """
     register_models(app)
