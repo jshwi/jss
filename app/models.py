@@ -13,14 +13,15 @@ from hashlib import md5
 from time import time
 from typing import Any, Dict, List, Optional
 
-from flask import current_app
-from flask_login import UserMixin
+from flask import abort, current_app
+from flask_login import UserMixin, current_user
 from flask_sqlalchemy import BaseQuery
 from redis import RedisError
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
 from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy_continuum import make_versioned
+from sqlalchemy_continuum.model_builder import ModelBuilder
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -259,6 +260,62 @@ class Post(_BaseModel):
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
     edited = db.Column(db.DateTime, default=None)
+
+    def get_version(self, index: int) -> Optional[ModelBuilder]:
+        """Get version of post by index.
+
+        :param index:   Index of version beginning with 0.
+        :return:        PostVersion object if within index range, else
+                        None.
+        """
+        try:
+            return self.versions[index]
+        except IndexError:
+            return abort(404)
+
+    @classmethod
+    def get_post(
+        cls, id: int, version: Optional[int] = None, checkauthor: bool = True
+    ) -> Post:
+        """Get post by post's ID.
+
+        Check if the author matches the logged in user  To keep the code
+        DRY this can get the post and call it from each view.
+
+        ``exceptions.abort`` will raise a special exception that
+        returns an HTTP status code. It takes an optional message to
+        show with the error, otherwise a default message is used.
+
+            - 404: "Not Found"
+            - 403: "Forbidden
+            - 401: "Unauthorized"
+
+        This will redirect to the login page instead of returning that
+        status.
+
+        The ``checkauthor`` argument is defined so that the function can
+        be used to get a post without checking the author. This would be
+        useful if we wrote a view to show an individual post on a page
+        where the user doesn't matter, because they are not modifying
+        the post.
+
+        :param id:          The post's ID.
+        :param version:     If provided populate session object with
+                            version.
+        :param checkauthor: Rule whether to check for author ID.
+        :return:            Post's connection object.
+        """
+        post = cls.query.filter_by(id=id).first_or_404()
+        if version is not None:
+            post_version = post.get_version(version)
+            if post_version is not None:
+                post.title = post_version.title
+                post.body = post_version.body
+
+        if checkauthor and post.user_id != current_user.id:
+            abort(403)
+
+        return post
 
 
 class Message(_BaseModel):

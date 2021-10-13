@@ -41,7 +41,7 @@ from .forms import (
 )
 from .mail import send_email
 from .models import Message, Notification, Post, User, Usernames, db
-from .post import get_post, render_post_nav_template
+from .post import render_post_nav_template
 from .security import (
     authorization_required,
     confirm_token,
@@ -218,7 +218,7 @@ def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
                         Response object redirect to index view on
                         successful update POST.
     """
-    post = get_post(id, revision)
+    post = Post.get_post(id, revision)
     form = PostForm(title=post.title, body=post.body)
     if form.validate_on_submit():
         post.title = form.title.data
@@ -243,7 +243,7 @@ def delete(id: int) -> Response:
     :param id:  The post's ID.
     :return:    Response object redirect to index view.
     """
-    post = get_post(id)
+    post = Post.get_post(id)
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for(_URL_FOR_INDEX))
@@ -416,7 +416,7 @@ def post_page(id: int) -> str:
     :param id:  ID of post to display full page on.
     :return:    Rendered post template.
     """
-    post = get_post(id, checkauthor=False)
+    post = Post.get_post(id, checkauthor=False)
     return render_template("post.html", post=post)
 
 
@@ -618,7 +618,7 @@ def version(id: int, revision: int) -> Union[str, Response]:
                         Response object redirect to index view on
                         successful update POST.
     """
-    post = get_post(id, revision)
+    post = Post.get_post(id, revision)
     form = EmptyForm()
     return render_template(
         "post.html", post=post, id=id, revision=revision, form=form
