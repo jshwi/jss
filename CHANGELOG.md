@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.5.0...HEAD)
 ------------------------------------------------------------------------
+### Added
+- Adds favicon
 
 [1.5.0](https://github.com/jshwi/jss/releases/tag/v1.5.0) - 2021-10-15
 ------------------------------------------------------------------------

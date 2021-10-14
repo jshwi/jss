@@ -4,6 +4,8 @@
     {{ super() }}
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+    <link rel="shortcut icon"
+          href="{{ static_url_for("static", filename="favicon.ico") }}">
     <link rel="stylesheet"
           href="{{ static_url_for('static', filename='darkreader.css') }}">
 {% endblock %}
