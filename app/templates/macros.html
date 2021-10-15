@@ -1,0 +1,9 @@
+{% macro profile(author) %}
+    {{ url_for("views.profile", username=author.username) }}
+{% endmacro %}
+{% macro avatar(author) %}
+    <img src="{{ author.avatar(70) }}" alt="{{ author.username }}"/>
+{% endmacro %}
+{% macro timestamp(datetime) %}
+    {{ moment(datetime).format("h:mmA DD/MM/YYYY") }}
+{% endmacro %}

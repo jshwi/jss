@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% import "macros.html" as macros with context %}
 {% set title = post.title %}
 {% if revision is defined %}
     {% set title = "%s (v%s)"|format(title, revision + 1) %}
@@ -7,9 +8,9 @@
 {% block page_name %}{{ title }}{% endblock %}
 {% block app_content %}
     <p class="small">
-        Posted: {{ moment(post.created).format("h:mmA DD/MM/YYYY") }}
+        Posted: {{ macros.timestamp(post.created) }}
         {% if post.edited %}
-            (Edited: {{ moment(post.edited).format("h:mmA DD/MM/YYYY") }})
+            (Edited: {{ macros.timestamp(post.edited) }})
         {% endif %}
     </p>
     {{ post.body|markdown }}

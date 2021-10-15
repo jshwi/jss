@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% import "macros.html" as macros with context %}
 {% block posts %}
     {% for post in posts %}
         <table class="table table-hover">
             <tr>
                 <td style="width: 150px">
-                    <a href="{{ url_for('views.profile', username=post.author.username) }}">
-                        <img src="{{ post.author.avatar(70) }}" alt="{{ post.author.username }}"/>
+                    <a href="{{ macros.profile(post.author) }}">
+                        {{ macros.avatar(post.author) }}
                     </a>
                     <div class="about">
-                        <a href="{{ url_for('views.profile', username=post.author.username) }}">{{ post.author.username }}</a>
+                        <a href="{{ macros.profile(post.author) }}">{{ post.author.username }}</a>
                         <br>
-                        {{ moment(post.created).format("h:mmA DD/MM/YYYY") }}
+                        {{ macros.timestamp(post.created) }}
                     </div>
                     {% if current_user.id == post.user_id %}
                         <a class="action" href="{{ url_for('views.update', id=post.id) }}">Edit</a>

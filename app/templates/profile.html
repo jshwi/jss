@@ -1,14 +1,15 @@
 {% extends "posts.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% import "macros.html" as macros with context %}
 {% block page_name %}{{ user.username }}{% endblock %}
 {% block app_content %}
-    <h1><img src="{{ user.avatar(70) }}" alt="avatar"></h1>
+    {{ macros.avatar(user) }}
     {% if user.about_me %}
         <p>{{ user.about_me }}</p>
     {% endif %}
     {% if user.last_seen %}
         <p>Last seen
-            on: {{ moment(user.last_seen).format("h:mmA DD/MM/YYYY") }}</p>
+            on: {{ macros.timestamp(user.last_seen) }}</p>
     {% endif %}
     {% if current_user.is_authenticated %}
         <p>{{ user.followers.count() }} followers, {{ user.followed.count() }}
