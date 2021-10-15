@@ -17,6 +17,7 @@ from typing import Optional, Union
 from flask import (
     Blueprint,
     Flask,
+    current_app,
     flash,
     jsonify,
     redirect,
@@ -41,7 +42,6 @@ from .forms import (
 )
 from .mail import send_email
 from .models import Message, Notification, Post, User, Usernames, db
-from .post import render_post_nav_template
 from .security import (
     authorization_required,
     confirm_token,
@@ -157,6 +157,7 @@ def logout() -> Response:
     return redirect(url_for(_URL_FOR_INDEX))
 
 
+# noinspection DuplicatedCode
 @views_blueprint.route("/", methods=["GET", "POST"])
 def index() -> str:
     """App's index page.
@@ -168,10 +169,22 @@ def index() -> str:
 
     :return: Rendered index template.
     """
-    return render_post_nav_template(
-        Post.query.order_by(Post.created.desc()),
+    page = request.args.get("page", 1, type=int)
+    query = Post.query.order_by(Post.created.desc())
+    posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+    return render_template(
         _TEMPLATE_INDEX,
-        _URL_FOR_INDEX,
+        posts=posts,
+        next_url=(
+            url_for(_URL_FOR_INDEX, page=posts.next_num)
+            if posts.has_next
+            else None
+        ),
+        prev_url=(
+            url_for(_URL_FOR_INDEX, page=posts.prev_num)
+            if posts.has_prev
+            else None
+        ),
     )
 
 
@@ -397,14 +410,26 @@ def profile(username: str) -> Union[str, Response]:
         return redirect(url_for(_URL_FOR_PROFILE, username=user.username))
 
     form = EmptyForm()
-    # noinspection PyUnresolvedReferences
-    return render_post_nav_template(
-        user.posts.order_by(Post.created.desc()),
+    user = User.query.filter_by(username=username).first()
+    page = request.args.get("page", 1, type=int)
+    query = user.posts.order_by(Post.created.desc())
+    posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+    return render_template(
         "public/profile.html",
-        _URL_FOR_PROFILE,
+        posts=posts,
         username=username,
         user=user,
         form=form,
+        next_url=(
+            url_for(_URL_FOR_PROFILE, username=username, page=posts.next_num)
+            if posts.has_next
+            else None
+        ),
+        prev_url=(
+            url_for(_URL_FOR_PROFILE, username=username, page=posts.prev_num)
+            if posts.has_prev
+            else None
+        ),
     )
 
 
@@ -558,10 +583,22 @@ def messages() -> str:
     current_user.last_message_read_time = datetime.utcnow()
     current_user.add_notifications("unread_message_count", 0)
     db.session.commit()
-    return render_post_nav_template(
-        current_user.messages_received.order_by(Message.created.desc()),
+    page = request.args.get("page", 1, type=int)
+    query = current_user.messages_received.order_by(Message.created.desc())
+    posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+    return render_template(
         "user/messages.html",
-        "views.messages",
+        posts=posts,
+        next_url=(
+            url_for("views.messages", page=posts.next_num)
+            if posts.has_next
+            else None
+        ),
+        prev_url=(
+            url_for("views.messages", page=posts.prev_num)
+            if posts.has_prev
+            else None
+        ),
     )
 
 

@@ -45,10 +45,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.post
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.routes
    :members:
    :undoc-members:

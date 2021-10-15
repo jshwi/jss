@@ -8,7 +8,7 @@ this is the base template for pages displaying posts #}
 {% block posts %}
 
     {# iterate over posts and display #}
-    {% for post in posts %}
+    {% for post in posts.items %}
 
         {# table consists of poster's summary and post #}
         {# if user logged in is also the poster, edit options will be included in summary #}
