@@ -52,7 +52,7 @@ from .security import (
 )
 from .user import create_user
 
-_TEMPLATE_INDEX = "index.html"
+_TEMPLATE_INDEX = "public/index.html"
 _URL_FOR_INDEX = "index"
 _URL_FOR_UNCONFIRMED = "auth.unconfirmed"
 _URL_FOR_PROFILE = "views.profile"
@@ -400,7 +400,7 @@ def profile(username: str) -> Union[str, Response]:
     # noinspection PyUnresolvedReferences
     return render_post_nav_template(
         user.posts.order_by(Post.created.desc()),
-        "profile.html",
+        "public/profile.html",
         _URL_FOR_PROFILE,
         username=username,
         user=user,
@@ -417,7 +417,7 @@ def post_page(id: int) -> str:
     :return:    Rendered post template.
     """
     post = Post.get_post(id, checkauthor=False)
-    return render_template("post.html", post=post)
+    return render_template("public/post.html", post=post)
 
 
 @views_blueprint.before_request
@@ -621,7 +621,7 @@ def version(id: int, revision: int) -> Union[str, Response]:
     post = Post.get_post(id, revision)
     form = EmptyForm()
     return render_template(
-        "post.html", post=post, id=id, revision=revision, form=form
+        "public/post.html", post=post, id=id, revision=revision, form=form
     )
 
 
