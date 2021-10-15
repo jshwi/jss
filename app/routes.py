@@ -52,7 +52,6 @@ from .security import (
 )
 from .user import create_user
 
-_TEMPLATE_INDEX = "public/index.html"
 _URL_FOR_INDEX = "index"
 _URL_FOR_UNCONFIRMED = "auth.unconfirmed"
 _URL_FOR_PROFILE = "views.profile"
@@ -171,7 +170,7 @@ def index() -> str:
     query = Post.query.order_by(Post.created.desc())
     posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
-        _TEMPLATE_INDEX,
+        "public/index.html",
         posts=posts,
         next_url=(
             url_for(_URL_FOR_INDEX, page=posts.next_num)
