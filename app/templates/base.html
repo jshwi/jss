@@ -123,6 +123,7 @@
         {% endwith %}
         <header><h1>{% block header %}{{ self.page_name() }}{% endblock %}</h1></header>
         {% block app_content %}{% endblock %}
+        {% block posts %}{% endblock %}
         {% block footer %}
            <div class="container">
               <div id="footer">

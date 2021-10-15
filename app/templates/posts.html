@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block posts %}
+    {% for post in posts %}
+        <table class="table table-hover">
+            <tr>
+                <td style="width: 150px">
+                    <a href="{{ url_for('views.profile', username=post.author.username) }}">
+                        <img src="{{ post.author.avatar(70) }}" alt="{{ post.author.username }}"/>
+                    </a>
+                    <div class="about">
+                        <a href="{{ url_for('views.profile', username=post.author.username) }}">{{ post.author.username }}</a>
+                        <br>
+                        {{ moment(post.created).format("h:mmA DD/MM/YYYY") }}
+                    </div>
+                    {% if current_user.id == post.user_id %}
+                        <a class="action" href="{{ url_for('views.update', id=post.id) }}">Edit</a>
+                    {% endif %}
+                    <br>
+                    {% if current_user.id == post.user_id and post.versions.count() > 1 %}
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle"
+                               data-toggle="dropdown">Versions<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                {% for version in post.versions.all() %}
+                                    {% set label = "v%s"|format(loop.index) %}
+                                    {% if loop.last %}
+                                        {% set label = "%s: This revision"|format(label) %}
+                                    {% elif loop.index == loop.length - 1 %}
+                                        {% set label = "%s: Previous revision"|format(label) %}
+                                    {% endif %}
+                                    <li>
+                                        <a href="{{ url_for('views.version', id=post.id, revision=loop.index0) }}">{{ label }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    <h1><a href="{{ url_for('views.post_page', id=post.id) }}">{{ post.title }}</a></h1>
+                    {{ post.body| markdown }}
+                </td>
+            </tr>
+        </table>
+    {% endfor %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Newer posts
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older posts <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

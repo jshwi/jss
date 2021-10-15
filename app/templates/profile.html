@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "posts.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block page_name %}{{ user.username }}{% endblock %}
 {% block app_content %}
@@ -41,12 +41,4 @@
             {% endif %}
         {% endif %}
     {% endif %}
-    <hr>
-    {% for post in posts %}
-        {% include "subs/article.html" %}
-        {% if not loop.last %}
-            <hr>
-        {% endif %}
-    {% endfor %}
-    {% include "subs/pagination.html" %}
 {% endblock %}
