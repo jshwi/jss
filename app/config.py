@@ -5,7 +5,7 @@ app.config
 Most configuration is set via environment variables as per
 https://12factor.net/config:
 """
-# pylint: disable=invalid-name
+# pylint: disable=too-many-public-methods,invalid-name
 import datetime
 from pathlib import Path
 from typing import List, Optional
@@ -18,7 +18,7 @@ env = Env()
 env.read_env()
 
 
-class Config:  # pylint: disable=too-many-public-methods
+class Config:
     """Load environment."""
 
     @property

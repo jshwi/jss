@@ -2,7 +2,8 @@
 tests._test
 ===========
 """
-# pylint: disable=too-many-arguments,too-many-lines
+# pylint: disable=too-many-arguments,too-many-lines,too-many-locals
+# pylint: disable=import-outside-toplevel
 import functools
 import json
 import logging
@@ -1000,8 +1001,7 @@ def test_get_smtp_handler(
     state.formatter = logging.Formatter()  # type: ignore
     monkeypatch.setattr("app.log.SMTPHandler", state)
     smtp_handler(test_app)
-    # noinspection PyUnresolvedReferences
-    kwargs = state.kwargs  # type: ignore  # pylint: disable=no-member
+    kwargs = state.kwargs
     assert kwargs["mailhost"] == (MAIL_SERVER, MAIL_PORT)
     assert kwargs["fromaddr"] == f"no-reply@{MAIL_SERVER}"
     assert kwargs["toaddrs"] == [MAIL_USERNAME]
@@ -1011,7 +1011,6 @@ def test_get_smtp_handler(
 
 def test_avatar() -> None:
     """Test generated avatar URL for expected value."""
-    # noinspection PyArgumentList
     user = User(username=ADMIN_USER_USERNAME, email=ADMIN_USER_EMAIL)
     assert user.avatar(128) == (
         "https://gravatar.com/avatar/"
@@ -1112,7 +1111,6 @@ def test_unconfirmed(
     assert b"Resend" in response.data
 
 
-# noinspection PyArgumentList
 @pytest.mark.usefixtures("init_db")
 def test_follow(test_app: Flask, add_test_user: Callable[..., None]) -> None:
     """Test functionality of user follows.
@@ -1146,9 +1144,8 @@ def test_follow(test_app: Flask, add_test_user: Callable[..., None]) -> None:
         assert user_2.followers.count() == 0
 
 
-# noinspection PyArgumentList
 @pytest.mark.usefixtures("init_db")
-def test_follow_posts(  # pylint: disable=too-many-locals
+def test_follow_posts(
     test_app: Flask,
     add_test_user: Callable[..., None],
     add_test_post: Callable[..., None],
@@ -1389,7 +1386,6 @@ def test_export_post(
         test_app.task_queue.enqueue.get_id = lambda: TASK_ID  # type: ignore
         monkeypatch.setattr("app.models.User.is_authenticated", True)
         monkeypatch.setattr("app.models.db.session.add", session_add)
-        # noinspection PyArgumentList
         user = User(
             username=user_test_object.username, email=user_test_object.email
         )
@@ -1433,7 +1429,6 @@ def test_get_tasks_in_progress_no_task(
     )
     with test_app.app_context():
         add_test_user(user_test_object)
-        # noinspection PyArgumentList
         user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         task_test_object = TaskTestObject(
             TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
@@ -1471,7 +1466,6 @@ def test_get_tasks_in_progress(
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: rq_job)
     with test_app.app_context():
         add_test_user(user_test_object)
-        # noinspection PyArgumentList
         user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         task_test_object = TaskTestObject(
             TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
@@ -1510,7 +1504,6 @@ def test_get_tasks_in_progress_error_raised(
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, _fetch)
     with test_app.app_context():
         add_test_user(user_test_object)
-        # noinspection PyArgumentList
         user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         task_test_object = TaskTestObject(
             TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
@@ -1536,7 +1529,7 @@ def test_export_posts(
     """
     # this needs to imported *after* `monkeypatch.setenv` has patched
     # the environment
-    import app.tasks  # pylint: disable=import-outside-toplevel
+    import app.tasks
 
     # faster than waiting for `mail.record_messages` to sync
     # catch `Message` object passed to `mail.send`
@@ -1551,7 +1544,6 @@ def test_export_posts(
     )
 
     # running outside of `test_app's` context
-    # noinspection PyArgumentList
     test_user = User(
         username=ADMIN_USER_USERNAME,
         password_hash=ADMIN_USER_PASSWORD,
@@ -1604,7 +1596,7 @@ def test_export_posts_err(monkeypatch: pytest.MonkeyPatch) -> None:
     """
     # this needs to imported *after* `monkeypatch.setenv` has patched
     # the environment
-    import app.tasks  # pylint: disable=import-outside-toplevel
+    import app.tasks
 
     monkeypatch.setattr("app.tasks._app.logger.error", lambda *_, **__: None)
 

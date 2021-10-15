@@ -433,7 +433,6 @@ def profile(username: str) -> Union[str, Response]:
     )
 
 
-# noinspection PyShadowingBuiltins
 @views_blueprint.route("/post/<int:id>", methods=["GET"])
 def post_page(id: int) -> str:
     """Render post page for selected post ID.
@@ -466,8 +465,7 @@ def edit_profile() -> Union[str, Response]:
     """
     old_username = current_user.username
     form = EditProfile(
-        username=current_user.username,  # pylint: disable=assigning-non-slot
-        about_me=current_user.about_me,  # pylint: disable=assigning-non-slot
+        username=current_user.username, about_me=current_user.about_me
     )
     if form.validate_on_submit():
         current_user.username = (  # pylint: disable=assigning-non-slot
@@ -570,7 +568,6 @@ def send_message(recipient: str) -> Union[str, Response]:
     )
 
 
-# noinspection PyUnresolvedReferences
 @views_blueprint.route("/messages")
 @login_required
 @confirmation_required
@@ -610,7 +607,6 @@ def notifications() -> Response:
     :return: Response containing JSON payload.
     """
     since = request.args.get("since", 0.0, type=float)
-    # noinspection PyUnresolvedReferences
     query = current_user.notifications.filter(
         Notification.timestamp > since
     ).order_by(Notification.timestamp.asc())

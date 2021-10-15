@@ -156,7 +156,6 @@ class User(UserMixin, _BaseModel):
             followers, (followers.c.followed_id == Post.user_id)
         ).filter(followers.c.follower_id == self.id)
         own = Post.query.filter_by(user_id=self.id)
-        # noinspection PyUnresolvedReferences
         return followed.union(own).order_by(Post.created.desc())
 
     def new_messages(self) -> int:

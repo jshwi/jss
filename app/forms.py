@@ -2,7 +2,6 @@
 app.forms
 =========
 """
-# pylint: disable=too-few-public-methods
 from flask import current_app
 from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm

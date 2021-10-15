@@ -63,7 +63,6 @@ def send_email(
                         See ``flask_mail.Message``.
     """
     # noinspection PyProtectedMember
-    # noinspection PyUnresolvedReferences
     # pylint: disable=protected-access
     app = current_app._get_current_object()  # type: ignore
     subject_prefix = app.config["MAIL_SUBJECT_PREFIX"]
