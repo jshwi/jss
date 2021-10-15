@@ -45,6 +45,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.redirect
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.routes
    :members:
    :undoc-members:

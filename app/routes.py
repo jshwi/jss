@@ -20,7 +20,6 @@ from flask import (
     current_app,
     flash,
     jsonify,
-    redirect,
     render_template,
     request,
     url_for,
@@ -30,6 +29,7 @@ from itsdangerous import BadSignature
 from jwt import InvalidTokenError
 from werkzeug import Response
 
+from . import redirect
 from .forms import (
     EditProfile,
     EmptyForm,
@@ -51,10 +51,6 @@ from .security import (
     get_requested_reset_password_user,
 )
 from .user import create_user
-
-_URL_FOR_INDEX = "index"
-_URL_FOR_UNCONFIRMED = "auth.unconfirmed"
-_URL_FOR_PROFILE = "views.profile"
 
 views_blueprint = Blueprint("views", __name__)
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
@@ -92,7 +88,7 @@ def register() -> Union[str, Response]:
             ),
         )
         flash("A confirmation email has been sent.")
-        return redirect(url_for(_URL_FOR_UNCONFIRMED))
+        return redirect.Auth.unconfirmed()
 
     return render_template("auth/register.html", form=form)
 
@@ -126,10 +122,10 @@ def login() -> Union[str, Response]:
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             if current_user.confirmed:
-                return redirect(url_for(_URL_FOR_INDEX))
+                return redirect.index()
 
             flash("You have not verified your account.")
-            return redirect(url_for(_URL_FOR_UNCONFIRMED))
+            return redirect.Auth.unconfirmed()
 
         flash("Invalid username or password.")
 
@@ -151,7 +147,7 @@ def logout() -> Response:
     :return: Response object redirect to index view.
     """
     logout_user()
-    return redirect(url_for(_URL_FOR_INDEX))
+    return redirect.index()
 
 
 # noinspection DuplicatedCode
@@ -173,14 +169,10 @@ def index() -> str:
         "public/index.html",
         posts=posts,
         next_url=(
-            url_for(_URL_FOR_INDEX, page=posts.next_num)
-            if posts.has_next
-            else None
+            url_for("index", page=posts.next_num) if posts.has_next else None
         ),
         prev_url=(
-            url_for(_URL_FOR_INDEX, page=posts.prev_num)
-            if posts.has_prev
-            else None
+            url_for("index", page=posts.prev_num) if posts.has_prev else None
         ),
     )
 
@@ -208,7 +200,7 @@ def create() -> Union[str, Response]:
         )
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for(_URL_FOR_INDEX))
+        return redirect.index()
 
     return render_template("user/create.html", form=form)
 
@@ -234,7 +226,7 @@ def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
         post.body = form.body.data
         post.edited = datetime.utcnow()
         db.session.commit()
-        return redirect(url_for(_URL_FOR_INDEX))
+        return redirect.index()
 
     return render_template("user/update.html", post=post, form=form)
 
@@ -255,7 +247,7 @@ def delete(id: int) -> Response:
     post = Post.get_post(id)
     db.session.delete(post)
     db.session.commit()
-    return redirect(url_for(_URL_FOR_INDEX))
+    return redirect.index()
 
 
 @auth_blueprint.route("/<token>", methods=["GET"])
@@ -284,7 +276,7 @@ def confirm_email(token: str) -> Response:
     except BadSignature:
         flash("The confirmation link is invalid or has expired.")
 
-    return redirect(url_for(_URL_FOR_INDEX))
+    return redirect.index()
 
 
 @auth_blueprint.route("/unconfirmed", methods=["GET"])
@@ -320,7 +312,7 @@ def resend_confirmation() -> Response:
         ),
     )
     flash("A new confirmation email has been sent.")
-    return redirect(url_for(_URL_FOR_UNCONFIRMED))
+    return redirect.Auth.unconfirmed()
 
 
 @auth_blueprint.route("/request_password_reset", methods=["GET", "POST"])
@@ -354,7 +346,7 @@ def request_password_reset() -> Union[str, Response]:
                 "Please check your inbox for instructions on how to reset "
                 "your password"
             )
-            return redirect(url_for("auth.login"))
+            return redirect.Auth.login()
 
     return render_template("auth/request_password_reset.html", form=form)
 
@@ -383,13 +375,13 @@ def reset_password(token: str) -> Union[str, Response]:
 
     except InvalidTokenError:
         flash("The confirmation link is invalid or has expired.")
-        return redirect(url_for(_URL_FOR_INDEX))
+        return redirect.index()
 
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
         flash("Your password has been reset.")
-        return redirect(url_for("auth.login"))
+        return redirect.Auth.login()
 
     return render_template("auth/reset_password.html", form=form)
 
@@ -403,7 +395,7 @@ def profile(username: str) -> Union[str, Response]:
     """
     user = User.resolve_all_names(username=username)
     if user.username != username:
-        return redirect(url_for(_URL_FOR_PROFILE, username=user.username))
+        return redirect.Views.profile(username=user.username)
 
     form = EmptyForm()
     user = User.query.filter_by(username=username).first()
@@ -417,12 +409,12 @@ def profile(username: str) -> Union[str, Response]:
         user=user,
         form=form,
         next_url=(
-            url_for(_URL_FOR_PROFILE, username=username, page=posts.next_num)
+            url_for("views.profile", username=username, page=posts.next_num)
             if posts.has_next
             else None
         ),
         prev_url=(
-            url_for(_URL_FOR_PROFILE, username=username, page=posts.prev_num)
+            url_for("views.profile", username=username, page=posts.prev_num)
             if posts.has_prev
             else None
         ),
@@ -479,9 +471,7 @@ def edit_profile() -> Union[str, Response]:
             db.session.add(usernames)
             db.session.commit()
 
-        return redirect(
-            url_for(_URL_FOR_PROFILE, username=current_user.username)
-        )
+        return redirect.Views.profile(username=current_user.username)
 
     form.username.data = current_user.username
     form.about_me.data = current_user.about_me
@@ -508,7 +498,7 @@ def follow(username: str) -> Response:
         db.session.commit()
         flash(f"You are now following {username}")
 
-    return redirect(url_for(_URL_FOR_PROFILE, username=username))
+    return redirect.Views.profile(username=username)
 
 
 @views_blueprint.route("/unfollow/<username>", methods=["POST"])
@@ -531,7 +521,7 @@ def unfollow(username: str) -> Response:
         db.session.commit()
         flash(f"You are no longer following {username}")
 
-    return redirect(url_for(_URL_FOR_PROFILE, username=username))
+    return redirect.Views.profile(username=username)
 
 
 @views_blueprint.route("/send_message/<recipient>", methods=["GET", "POST"])
@@ -557,7 +547,7 @@ def send_message(recipient: str) -> Union[str, Response]:
         user.add_notifications("unread_message_count", user.new_messages())
         db.session.commit()
         flash("Your message has been sent.")
-        return redirect(url_for(_URL_FOR_PROFILE, username=recipient))
+        return redirect.Views.profile(username=recipient)
 
     return render_template(
         "user/send_message.html", form=form, recipient=recipient
@@ -632,7 +622,7 @@ def export_posts() -> Response:
         current_user.launch_task("export_posts", "Exporting posts...")
         db.session.commit()
 
-    return redirect(url_for(_URL_FOR_PROFILE, username=current_user.username))
+    return redirect.Views.profile(username=current_user.username)
 
 
 @views_blueprint.route("/<int:id>/version/<int:revision>")
@@ -663,4 +653,4 @@ def init_app(app: Flask) -> None:
     app.jinja_env.strip_trailing_newlines = False
     app.register_blueprint(views_blueprint)
     app.register_blueprint(auth_blueprint)
-    app.add_url_rule("/", endpoint=_URL_FOR_INDEX)
+    app.add_url_rule("/", endpoint="index")
