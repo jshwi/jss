@@ -5,6 +5,5 @@
 {# override `Flask-Admin` CSS with dark mode (equivilent of `styles`) #}
 {% block head_css %}
     {{ super() }}
-    <link rel="stylesheet"
-          href="{{ static_url_for('static', filename='darkreader.css') }}">
+    <link rel="stylesheet" href="{{ static_url_for('static', filename='darkreader.css') }}">
 {% endblock %}

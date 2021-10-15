@@ -19,9 +19,7 @@ this is the base template for pages displaying posts #}
                 <td style="width: 150px">
 
                     {# poster's avatar directs user to their profile #}
-                    <a href="{{ macros.profile(post.author) }}">
-                        {{ macros.avatar(post.author) }}
-                    </a>
+                    <a href="{{ macros.profile(post.author) }}">{{ macros.avatar(post.author) }}</a>
                     <div class="about">
 
                         {# poster's name directs user to their profile #}
@@ -43,31 +41,7 @@ this is the base template for pages displaying posts #}
                     {% if current_user.id == post.user_id and post.versions.count() > 1 %}
 
                         {# dropdown menu of existing versions to roll back to #}
-                        <div class="dropdown">
-
-                            {# dropdown menu of existing versions to roll back to #}
-                            <a href="#" class="dropdown-toggle"
-                               data-toggle="dropdown">Versions<span class="caret"></span></a>
-
-                            {# list of versions to choose from after toggling dropdown #}
-                            <ul class="dropdown-menu" role="menu">
-                                {% for version in post.versions.all() %}
-                                    {% set label = "v%s"|format(loop.index) %}
-                                    {% if loop.last %}
-                                        {# note on current revision #}
-                                        {% set label = "%s: This revision"|format(label) %}
-                                    {% elif loop.index == loop.length - 1 %}
-                                        {# reminder if rewinding to the previous revision #}
-                                        {% set label = "%s: Previous revision"|format(label) %}
-                                    {% endif %}
-
-                                    {# each iteration of all versions #}
-                                    <li>
-                                        <a href="{{ url_for('views.version', id=post.id, revision=loop.index0) }}">{{ label }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                        {{ macros.versions(post) }}
                     {% endif %}
                 </td>
                 <td>
@@ -88,16 +62,12 @@ this is the base template for pages displaying posts #}
 
             {# show link to newer posts on left side with arrow #}
             <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or '#' }}">
-                    <span aria-hidden="true">&larr;</span> Newer posts
-                </a>
+                <a href="{{ prev_url or '#' }}"><span aria-hidden="true">&larr;</span> Newer posts</a>
             </li>
 
             {# show link to older posts on right side with arrow #}
             <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or '#' }}">
-                    Older posts <span aria-hidden="true">&rarr;</span>
-                </a>
+                <a href="{{ next_url or '#' }}">Older posts <span aria-hidden="true">&rarr;</span></a>
             </li>
         </ul>
     </nav>

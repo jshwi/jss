@@ -9,14 +9,9 @@
 {% block app_content %}
 
     {# registration form #}
-    <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
-        </div>
-    </div>
+    <div class="row"><div class="col-md-4">{{ wtf.quick_form(form) }}</div></div>
     <br>
 
     {# leads to login form for existing users #}
-    <p>Already a User? <a href="{{ url_for('auth.login') }}">Click to Sign
-        In!</a></p>
+    <p>Already a User? <a href="{{ url_for('auth.login') }}">Click to Sign In!</a></p>
 {% endblock %}

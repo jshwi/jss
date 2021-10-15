@@ -10,17 +10,11 @@
 {% block styles %}
     {{ super() }}
 
-    {# duplicated in scripts block and not needed #}
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
-
     {# favicon icon for bookmarks and easy reference #}
-    <link rel="shortcut icon"
-          href="{{ static_url_for("static", filename="favicon.ico") }}">
+    <link rel="shortcut icon" href="{{ static_url_for("static", filename="favicon.ico") }}">
 
     {# apply dark-mode from darkreader: https://darkreader.org/ #}
-    <link rel="stylesheet"
-          href="{{ static_url_for('static', filename='darkreader.css') }}">
+    <link rel="stylesheet" href="{{ static_url_for('static', filename='darkreader.css') }}">
 {% endblock %}
 
 {# additional JavaScript functionality #}
@@ -71,86 +65,7 @@
 {% endblock %}
 
 {# for navigating site #}
-{% block navbar %}
-
-    {# from ``Bootstrap`` #}
-    <nav class="navbar navbar-default">
-
-        {# keep contents within centre of the screen #}
-        <div class="container">
-
-            {# navbar header section #}
-            <div class="navbar-header">
-
-                {# toggle button available on mobile devices #}
-                <button type="button" class="navbar-toggle collapsed"
-                        data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1"
-                        aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
-                {# brand links to index page #}
-                <a class="navbar-brand" href="{{ url_for('index') }}">{{ config["BRAND"] }}</a>
-            </div>
-
-            {# collapse on mobile devices: controlled by above #}
-            <div class="collapse navbar-collapse"
-                 id="bs-example-navbar-collapse-1">
-
-                {# links to index page #}
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                </ul>
-
-                {# options to the right of the screen #}
-                <ul class="nav navbar-nav navbar-right">
-
-                    {# visible when user is not logged in #}
-                    {% if current_user.is_anonymous %}
-                        <li>
-                            <a href="{{ url_for('auth.register') }}">Register</a>
-                        </li>
-                        <li><a href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                    {% else %}
-                        {# visible when user is logged in #}
-                        {% if current_user.admin %}
-
-                            {# link to admin console if user has admin #}
-                            <li><a href="/admin">Console</a></li>
-                        {% endif %}
-
-                        {# link messages / number of messages #}
-                        <li>
-                            <a href="{{ url_for('views.messages') }}">
-                                Messages
-                                {% set new_messages = current_user.new_messages() %}
-                                <span id="message_count" class="badge"
-                                      style="visibility: {% if new_messages %}visible
-                                      {% else %}hidden {% endif %};">
-                                    {{ new_messages }}
-                                </span>
-                            </a>
-                        </li>
-
-                        {# link to user's own profile page #}
-                        <li>
-                            <a href="{{ macros.profile(current_user) }}">{{ current_user.username }}</a>
-                        </li>
-
-                        {# option to logout for logged in user #}
-                        <li><a href="{{ url_for('auth.logout') }}">Logout</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-{% endblock %}
+{% block navbar %}{% include "navbar.html" %}{% endblock %}
 
 {# override ``Bootstraps`` content  #}
 {# all inherited content will be sent to the ``app_content`` block #}
@@ -160,30 +75,10 @@
     <div class="container">
 
         {# tasks progress bar #}
-        {% if current_user.is_authenticated %}
-            {% with tasks = current_user.get_tasks_in_progress() %}
-                {% if tasks %}
-                    {% for task in tasks %}
-                        <div class="alert alert-success" role="alert">
-                            {{ task.description }}
-
-                            {# as percentage #}
-                            <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        {% endif %}
+        {{ macros.task_progress() }}
 
         {# all instruction to flash messages will be handled here #}
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-info"
-                         role="alert">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        {{ macros.flash_messages() }}
 
         {# override ``page_name`` to display in the header block #}
         {# declared in the title block #}
@@ -196,11 +91,6 @@
         {% block posts %}{% endblock %}
 
         {# display footer on all pages #}
-        {% block footer %}
-            <footer class="navbar-fixed-bottom small">
-                &copy; {{ config["COPYRIGHT_YEAR"] }},
-                <a href="mailto:{{ config["COPYRIGHT_EMAIL"] }}">{{ config["COPYRIGHT_AUTHOR"] }}</a>
-            </footer>
-        {% endblock %}
+        {% block footer %}{% include "footer.html" %}{% endblock %}
     </div>
 {% endblock %}

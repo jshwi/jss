@@ -5,7 +5,7 @@
     {{ url_for("views.profile", username=author.username) }}
 {% endmacro %}
 
-{# link to avatar of selected user #}
+{# link to avatar of the posting author #}
 {% macro avatar(author) %}
     <img src="{{ author.avatar(70) }}" alt="{{ author.username }}"/>
 {% endmacro %}
@@ -13,4 +13,59 @@
 {# timestamp set client side with formatting #}
 {% macro timestamp(datetime) %}
     {{ moment(datetime).format("h:mmA DD/MM/YYYY") }}
+{% endmacro %}
+
+{# tasks progress bar #}
+{% macro task_progress() %}
+    {% if current_user.is_authenticated %}
+        {% with tasks = current_user.get_tasks_in_progress() %}
+            {% if tasks %}
+                {% for task in tasks %}
+                    <div class="alert alert-success" role="alert">
+                        {{ task.description }}
+
+                        {# as percentage #}
+                        <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    {% endif %}
+{% endmacro %}
+
+{# flashed messages #}
+{% macro flash_messages() %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endmacro %}
+
+{# dropdown menu of existing versions to roll back to #}
+{% macro versions(post) %}
+    <div class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Versions<span class="caret"></span></a>
+
+        {# list of versions to choose from after toggling dropdown #}
+        <ul class="dropdown-menu" role="menu">
+            {% for version in post.versions.all() %}
+                {% set label = "v%s"|format(loop.index) %}
+                {% if loop.last %}
+                    {# note on current revision #}
+                    {% set label = "%s: This revision"|format(label) %}
+                {% elif loop.index == loop.length - 1 %}
+                    {# reminder if rewinding to the previous revision #}
+                    {% set label = "%s: Previous revision"|format(label) %}
+                {% endif %}
+
+                {# each iteration of all versions #}
+                <li>
+                    <a href="{{ url_for('views.version', id=post.id, revision=loop.index0) }}">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endmacro %}
