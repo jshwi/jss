@@ -1,9 +1,16 @@
+{# macros.html #}
+
+{# link to the profile page of posting author #}
 {% macro profile(author) %}
     {{ url_for("views.profile", username=author.username) }}
 {% endmacro %}
+
+{# link to avatar of selected user #}
 {% macro avatar(author) %}
     <img src="{{ author.avatar(70) }}" alt="{{ author.username }}"/>
 {% endmacro %}
+
+{# timestamp set client side with formatting #}
 {% macro timestamp(datetime) %}
     {{ moment(datetime).format("h:mmA DD/MM/YYYY") }}
 {% endmacro %}

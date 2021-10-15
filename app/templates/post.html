@@ -1,19 +1,33 @@
+{# post.html #}
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% import "macros.html" as macros with context %}
+
+{# display version numbers if there are multiple versions #}
+{# user needs to own post to see this information #}
 {% set title = post.title %}
 {% if revision is defined %}
     {% set title = "%s (v%s)"|format(title, revision + 1) %}
 {% endif %}
+
+{# page header and browser tab #}
 {% block page_name %}{{ title }}{% endblock %}
+
+{# page body containing post information #}
 {% block app_content %}
+
+    {# post created and edited times shown in small font #}
     <p class="small">
         Posted: {{ macros.timestamp(post.created) }}
         {% if post.edited %}
             (Edited: {{ macros.timestamp(post.edited) }})
         {% endif %}
     </p>
+
+    {# post body as HTML rendered client side #}
     {{ post.body|markdown }}
+
+    {# if revision has been passed display button to restore version #}
     {% if revision is defined %}
         <form action="{{ url_for('views.update', id=id, revision=revision) }}"
               method="get">

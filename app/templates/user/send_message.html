@@ -1,7 +1,14 @@
+{# user/send_message.html #}
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
+
+{# page header and browser tab #}
 {% block page_name %}Send Message to {{ recipient }}{% endblock %}
+
+{# page body unique to send message view #}
 {% block app_content %}
+
+    {# form for writing message to send to user #}
     <div class="row">
         <div class="col-md-4">
             {{ wtf.quick_form(form) }}

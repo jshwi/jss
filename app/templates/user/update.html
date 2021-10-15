@@ -1,12 +1,23 @@
+{# user/update.html #}
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
+
+{# page header and browser tab #}
 {% block header %}
     <h1>{% block title %}Edit Post{% endblock %}</h1>{% endblock %}
+
+{# page body unique to the updayee view #}
 {% block app_content %}
+
+    {# delete a post #}
     <form action="{{ url_for('views.delete', id=post.id) }}" method="post">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.submit, value="Delete", onclick="return confirm('Are you sure?');" ) }}
     </form>
+
+    {# preview markdown #}
     {{ pagedown.include_pagedown() }}
+
+    {# form, prepopulated with post being edited, to make changes to #}
     {{ wtf.quick_form(form) }}
 {% endblock %}

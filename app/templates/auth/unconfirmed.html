@@ -1,7 +1,14 @@
+{# auth/unconfirmed.html #}
 {% extends "base.html" %}
+
+{# page header and browser tab #}
 {% block page_name %}Account Verification Pending{% endblock %}
+
+{# page body to the unconfirmed view #}
 {% block app_content %}
     <p>Please check your inbox or or junk folder for a confirmation link.</p>
+
+    {# trigger sending of confirmation email #}
     <p>Didn't get the email? <a
             href="{{ url_for('auth.resend_confirmation') }}">Resend</a>.</p>
 {% endblock %}

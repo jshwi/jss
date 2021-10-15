@@ -1,26 +1,48 @@
+{# base.html #}
 {% extends 'bootstrap/base.html' %}
 {% import "macros.html" as macros with context %}
+
+{# override ``page_name`` to display in browser tab #}
+{# browser tab will show ``<page_name> - <config["BRAND"]>`` #}
 <title>{% block title %}{% block page_name %}{% endblock %} - {{ config["BRAND"] }}{% endblock %}</title>
+
+{# source static files #}
 {% block styles %}
     {{ super() }}
+
+    {# duplicated in scripts block and not needed #}
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+
+    {# favicon icon for bookmarks and easy reference #}
     <link rel="shortcut icon"
           href="{{ static_url_for("static", filename="favicon.ico") }}">
+
+    {# apply dark-mode from darkreader: https://darkreader.org/ #}
     <link rel="stylesheet"
           href="{{ static_url_for('static', filename='darkreader.css') }}">
 {% endblock %}
+
+{# additional JavaScript functionality #}
 {% block scripts %}
     {{ super() }}
+
+    {# render user's timezone client side #}
     {{ moment.include_moment() }}
+
+    {# syntax highlighting for fenced markdown code #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/python.min.js"></script>
+
+    {# import JavaScript functions #}
     <script src="{{ static_url_for('static', filename='main.js') }}"></script>
     <!--suppress JSUnresolvedFunction, JSUnresolvedVariable -->
     <script>hljs.highlightAll()</script>
     <!--suppress JSUnresolvedVariable -->
     <script>
       {% if current_user.is_authenticated %}
+
+        // periodically check for messages for logged in user
         $(function () {
           let since = 0
           setInterval(function () {
@@ -47,10 +69,20 @@
       {% endif %}
     </script>
 {% endblock %}
+
+{# for navigating site #}
 {% block navbar %}
+
+    {# from ``Bootstrap`` #}
     <nav class="navbar navbar-default">
+
+        {# keep contents within centre of the screen #}
         <div class="container">
+
+            {# navbar header section #}
             <div class="navbar-header">
+
+                {# toggle button available on mobile devices #}
                 <button type="button" class="navbar-toggle collapsed"
                         data-toggle="collapse"
                         data-target="#bs-example-navbar-collapse-1"
@@ -60,14 +92,24 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+
+                {# brand links to index page #}
                 <a class="navbar-brand" href="{{ url_for('index') }}">{{ config["BRAND"] }}</a>
             </div>
+
+            {# collapse on mobile devices: controlled by above #}
             <div class="collapse navbar-collapse"
                  id="bs-example-navbar-collapse-1">
+
+                {# links to index page #}
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                 </ul>
+
+                {# options to the right of the screen #}
                 <ul class="nav navbar-nav navbar-right">
+
+                    {# visible when user is not logged in #}
                     {% if current_user.is_anonymous %}
                         <li>
                             <a href="{{ url_for('auth.register') }}">Register</a>
@@ -75,9 +117,14 @@
                         <li><a href="{{ url_for('auth.login') }}">Login</a>
                         </li>
                     {% else %}
+                        {# visible when user is logged in #}
                         {% if current_user.admin %}
+
+                            {# link to admin console if user has admin #}
                             <li><a href="/admin">Console</a></li>
                         {% endif %}
+
+                        {# link messages / number of messages #}
                         <li>
                             <a href="{{ url_for('views.messages') }}">
                                 Messages
@@ -89,9 +136,13 @@
                                 </span>
                             </a>
                         </li>
+
+                        {# link to user's own profile page #}
                         <li>
                             <a href="{{ macros.profile(current_user) }}">{{ current_user.username }}</a>
                         </li>
+
+                        {# option to logout for logged in user #}
                         <li><a href="{{ url_for('auth.logout') }}">Logout</a>
                         </li>
                     {% endif %}
@@ -100,20 +151,31 @@
         </div>
     </nav>
 {% endblock %}
+
+{# override ``Bootstraps`` content  #}
+{# all inherited content will be sent to the ``app_content`` block #}
 {% block content %}
+
+    {# keep contents within centre of the screen #}
     <div class="container">
+
+        {# tasks progress bar #}
         {% if current_user.is_authenticated %}
             {% with tasks = current_user.get_tasks_in_progress() %}
                 {% if tasks %}
                     {% for task in tasks %}
                         <div class="alert alert-success" role="alert">
                             {{ task.description }}
+
+                            {# as percentage #}
                             <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
                         </div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
         {% endif %}
+
+        {# all instruction to flash messages will be handled here #}
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
@@ -122,9 +184,18 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+
+        {# override ``page_name`` to display in the header block #}
+        {# declared in the title block #}
         <header><h1>{% block header %}{{ self.page_name() }}{% endblock %}</h1></header>
+
+        {# variable page content to override for each template #}
         {% block app_content %}{% endblock %}
+
+        {# override for pages displaying posts and use as base #}
         {% block posts %}{% endblock %}
+
+        {# display footer on all pages #}
         {% block footer %}
             <footer class="navbar-fixed-bottom small">
                 &copy; {{ config["COPYRIGHT_YEAR"] }},

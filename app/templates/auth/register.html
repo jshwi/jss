@@ -1,13 +1,22 @@
+{# auth/register.html #}
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
+
+{# page header and browser tab #}
 {% block page_name %}Register{% endblock %}
+
+{# page body unique to the register view #}
 {% block app_content %}
+
+    {# registration form #}
     <div class="row">
         <div class="col-md-4">
             {{ wtf.quick_form(form) }}
         </div>
     </div>
     <br>
+
+    {# leads to login form for existing users #}
     <p>Already a User? <a href="{{ url_for('auth.login') }}">Click to Sign
         In!</a></p>
 {% endblock %}

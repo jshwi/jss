@@ -1,4 +1,8 @@
+{# admin/master.html #}
+{# path discoverable through `Flask-Admin` plugin #}
 {% extends 'admin/base.html' %}
+
+{# override `Flask-Admin` CSS with dark mode (equivilent of `styles`) #}
 {% block head_css %}
     {{ super() }}
     <link rel="stylesheet"
