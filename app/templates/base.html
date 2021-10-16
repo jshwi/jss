@@ -126,14 +126,10 @@
         {% block app_content %}{% endblock %}
         {% block posts %}{% endblock %}
         {% block footer %}
-           <div class="container">
-              <div id="footer">
-                   <p>
-                       &copy; {{ config["COPYRIGHT_YEAR"] }},
-                       <a href="mailto:{{ config["COPYRIGHT_EMAIL"] }}">{{ config["COPYRIGHT_AUTHOR"] }}</a>
-                   </p>
-              </div>
-           </div>
+            <footer class="navbar-fixed-bottom small">
+                &copy; {{ config["COPYRIGHT_YEAR"] }},
+                <a href="mailto:{{ config["COPYRIGHT_EMAIL"] }}">{{ config["COPYRIGHT_AUTHOR"] }}</a>
+            </footer>
         {% endblock %}
     </div>
 {% endblock %}

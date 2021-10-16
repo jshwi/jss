@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.6.0...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- Footer pushed to bottom of page
 
 [1.6.0](https://github.com/jshwi/jss/releases/tag/v1.6.0) - 2021-10-15
 ------------------------------------------------------------------------
