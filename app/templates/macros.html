@@ -6,8 +6,8 @@
 {% endmacro %}
 
 {# link to avatar of the posting author #}
-{% macro avatar(author) %}
-    <img src="{{ author.avatar(70) }}" alt="{{ author.username }}"/>
+{% macro avatar(user, size=70) %}
+    <img src="{{ user.avatar(size) }}" alt="{{ user.username }}"/>
 {% endmacro %}
 
 {# timestamp set client side with formatting #}
