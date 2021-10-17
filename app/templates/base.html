@@ -11,10 +11,10 @@
     {{ super() }}
 
     {# favicon icon for bookmarks and easy reference #}
-    <link rel="shortcut icon" href="{{ static_url_for("static", filename="favicon.ico") }}">
+    <link rel="shortcut icon" href="{{ static_url_for("static", filename="img/favicon.ico") }}">
 
     {# apply dark-mode from darkreader: https://darkreader.org/ #}
-    <link rel="stylesheet" href="{{ static_url_for('static', filename='darkreader.css') }}">
+    <link rel="stylesheet" href="{{ static_url_for('static', filename='css/darkreader.css') }}">
 {% endblock %}
 
 {# additional JavaScript functionality #}
@@ -29,7 +29,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/python.min.js"></script>
 
     {# import JavaScript functions #}
-    <script src="{{ static_url_for('static', filename='main.js') }}"></script>
+    <script src="{{ static_url_for('static', filename='js/main.js') }}"></script>
     <!--suppress JSUnresolvedFunction, JSUnresolvedVariable -->
     <script>hljs.highlightAll()</script>
     <!--suppress JSUnresolvedVariable -->
