@@ -95,8 +95,9 @@ def top() -> Navbar:
     # currently logged in
     if current_user.is_authenticated:
         messages = _construct_messages_view()
+        create = View("New", "views.create")
         subgroup = _construct_user_subgroup()
-        navbar.right_items.extend([messages, subgroup])
+        navbar.right_items.extend([messages, create, subgroup])
         return navbar
 
     # the following will be rendered with the navbar if the user is

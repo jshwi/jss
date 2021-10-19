@@ -2,13 +2,6 @@
 {% extends "posts.html" %}
 
 {# page header and browser tab #}
+{# no extra code needed #}
+{# post parameters are passed from Python and sent to the post base block #}
 {% block page_name %}Posts{% endblock %}
-
-{# page body unique to index #}
-{% block app_content %}
-
-    {# logged in and authorized users can create new post #}
-    {% if current_user.is_authenticated and current_user.authorized %}
-        <a class="action" href="{{ url_for('views.create') }}">New</a>
-    {% endif %}
-{% endblock %}

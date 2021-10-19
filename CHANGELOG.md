@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adds dark mode toggle
 
 ### Changed
+- change: Moves `New[Post]` link to navbar
 - Changes nav container to fluid
 - Implements hashed node ID for navbar
 
