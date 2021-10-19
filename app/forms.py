@@ -29,8 +29,12 @@ from .models import User
 class RegistrationForm(FlaskForm):
     """Form for registering a new user."""
 
-    username = StringField("Username", validators=[DataRequired()])
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    username = StringField(
+        "Username", validators=[DataRequired(), Length(max=64)]
+    )
+    email = StringField(
+        "Email", validators=[DataRequired(), Email(), Length(max=120)]
+    )
     password = PasswordField("Password", validators=[DataRequired()])
     confirm_password = PasswordField(
         "Confirm Password", validators=[DataRequired(), EqualTo("password")]

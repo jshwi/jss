@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.6.1...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- Sets max length for username and email in registration form
 
 [1.6.1](https://github.com/jshwi/jss/releases/tag/v1.6.1) - 2021-10-17
 ------------------------------------------------------------------------
