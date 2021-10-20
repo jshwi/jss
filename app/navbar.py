@@ -9,7 +9,35 @@ from flask_nav import register_renderer
 from flask_nav.elements import Subgroup, View
 
 from .extensions import nav
-from .renderers import BadgedView, ListGroup, Navbar, NavbarRenderer, RawUrl
+from .renderers import (
+    BadgedView,
+    ListGroup,
+    Navbar,
+    NavbarRenderer,
+    RawUrl,
+    Toggler,
+)
+
+# apply dark-mode from darkreader: https://darkreader.org/
+# toggle CSS rules in templates/base.html
+# ``onchange`` executes javascript function defined in static/js/main.js
+# stylesheet attribute ``disabled`` is set to ``"disabled"`` by default
+# when toggling dark-mode on, ``toggle_darkreader()`` will set the
+# attribute to ``undefined`` and save the state with the javascript
+# method ``localStorage.setItem`` to be retrieved on page refresh etc
+# with ``localStorage.getItem``
+TOGGLE_DARK_MODE = Toggler(
+    "toggle-darkreader",
+    id="toggle-darkreader",
+    type="checkbox",
+    data_toggle="toggle",
+    data_onstyle="outline-dark",
+    data_offstyle="outline-light",
+    data_style="border",
+    data_on="<i class='bi bi-sun'></i>",
+    data_off="<i class='bi-moon'></i>",
+    onchange="toggle_darkreader()",
+)
 
 
 def _construct_messages_view() -> BadgedView:
@@ -57,6 +85,11 @@ def top() -> Navbar:
     # add the Home view to the navbar
     home = View("Home", "index")
     navbar.items.append(home)
+
+    # anything declared here will be in the navbar regardless of the
+    # state of the current user i.e. ``is_anonymous`` or
+    # ``is_authenticated``
+    navbar.header.append(TOGGLE_DARK_MODE)
 
     # the following will be rendered with the navbar if the user is
     # currently logged in

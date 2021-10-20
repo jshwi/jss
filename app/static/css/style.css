@@ -1,0 +1,11 @@
+/**
+ * style.css
+ * =========
+ * Additional styles; app primarily styled with ``Bootstrap``
+ */
+/* toggle checkbox for light and dark modes */
+.switch {
+    position: relative;
+    top: 8px;
+    padding-right: 5px;
+}

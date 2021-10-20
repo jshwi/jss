@@ -70,6 +70,19 @@ class ListGroup(Subgroup):
     """Register a subgroup of li items that are not part of dropdown."""
 
 
+class Toggler(NavigationItem):
+    """Toggle input item.
+
+    :param text: The text to display as a link and also to display
+        hover-over information.
+    :param kwargs: Parameters to pass to the input tag.
+    """
+
+    def __init__(self, text: str, **kwargs) -> None:
+        self.text = text
+        self.kwargs = kwargs
+
+
 class Navbar(NavigationItem):  # pylint: disable=too-few-public-methods
     """Navbar object parameters.
 
@@ -180,3 +193,12 @@ class NavbarRenderer(BootstrapRenderer):
         div = item.add(tags.div(_class="list-group"))
         div.add(*[self.visit(i) for i in node.items])
         return item
+
+    @staticmethod
+    def visit_Toggler(node: Toggler) -> html_tag:
+        """Render a toggle input item.
+
+        :param node: A ``Toggler`` instance.
+        :return: An ``html_tag`` instance for rendering input item.
+        """
+        return tags.input_(node.text, **node.kwargs)
