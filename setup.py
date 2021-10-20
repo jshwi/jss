@@ -57,7 +57,7 @@ setup(
         "rq==1.10.0",
         "sqlalchemy==1.3.24",
         "sqlalchemy-continuum==1.3.11",
-        "sqlalchemy-utils==0.37.8",
+        "sqlalchemy-utils==0.37.9",
         "werkzeug==2.0.2",
     ],
     python_requires=">=3.8",
