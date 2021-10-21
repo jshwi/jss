@@ -8,6 +8,15 @@ from typing import Tuple
 
 from flask import Flask, render_template
 
+EXCEPTIONS = {
+    400: "Bad Request",
+    401: "Unauthorized",
+    403: "Forbidden",
+    404: "Not Found",
+    405: "Method Not Allowed",
+    500: "Internal Server Error",
+}
+
 
 def init_app(app: Flask) -> None:
     """Register error handlers."""
@@ -21,8 +30,14 @@ def init_app(app: Flask) -> None:
         :return: Tuple consisting of rendered template and error code.
         """
         error_code = getattr(error, "code", 500)
-        # noinspection PyUnresolvedReferences
-        return render_template(f"error/{error_code}.html"), error_code
+        return (
+            render_template(
+                "exception.html",
+                error_code=error_code,
+                exception=EXCEPTIONS[error_code],
+            ),
+            error_code,
+        )
 
     for errcode in [400, 401, 403, 404, 405, 500]:
         app.errorhandler(errcode)(render_error)
