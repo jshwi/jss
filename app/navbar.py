@@ -82,9 +82,10 @@ def top() -> Navbar:
     brand = View(current_app.config["BRAND"], "index")
     navbar = Navbar(brand)
 
-    # add the Home view to the navbar
+    # add the Home view to the navbar if configured to do so
     home = View("Home", "index")
-    navbar.items.append(home)
+    if current_app.config["NAVBAR_HOME"]:
+        navbar.items.append(home)
 
     # anything declared here will be in the navbar regardless of the
     # state of the current user i.e. ``is_anonymous`` or

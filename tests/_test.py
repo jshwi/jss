@@ -1991,3 +1991,27 @@ def test_config_copyright(
     assert test_app.config["COPYRIGHT_YEAR"] == COPYRIGHT_YEAR
     assert test_app.config["COPYRIGHT_AUTHOR"] == COPYRIGHT_AUTHOR
     assert test_app.config["COPYRIGHT_EMAIL"] == COPYRIGHT_EMAIL
+
+
+@pytest.mark.usefixtures("init_db")
+def test_navbar_home_config_switch(
+    monkeypatch: pytest.MonkeyPatch, test_app: Flask, client: FlaskClient
+) -> None:
+    """Test that the navbar Home link appropriately switches on and off.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test ``Flask`` app object.
+    """
+    # with `NAVBAR_HOME` set to False
+    monkeypatch.setenv("NAVBAR_HOME", "0")
+    config.init_app(test_app)
+    assert test_app.config["NAVBAR_HOME"] is False
+    response = client.get("/")
+    assert '<a href="/" title="Home">Home</a>' not in response.data.decode()
+
+    # with `NAVBAR_HOME` set to True
+    monkeypatch.setenv("NAVBAR_HOME", "1")
+    config.init_app(test_app)
+    assert test_app.config["NAVBAR_HOME"] is True
+    response = client.get("/")
+    assert '<a href="/" title="Home">Home</a>' in response.data.decode()

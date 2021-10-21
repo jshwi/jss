@@ -275,6 +275,11 @@ class Config:
 
         return env.str("COPYRIGHT_EMAIL", default=email)
 
+    @property
+    def NAVBAR_HOME(self) -> bool:
+        """Include ``Home`` in navbar as opposed to only the brand."""
+        return env.bool("NAVBAR_HOME", default=True)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.
