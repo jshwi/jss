@@ -11,6 +11,7 @@ from flask_nav.elements import Subgroup, View
 from .extensions import nav
 from .renderers import (
     BadgedView,
+    IconView,
     ListGroup,
     Navbar,
     NavbarRenderer,
@@ -96,8 +97,15 @@ def top() -> Navbar:
     # currently logged in
     if current_user.is_authenticated:
         messages = _construct_messages_view()
-        create = View("New", "views.create")
+        create = IconView("New", "views.create")
         subgroup = _construct_user_subgroup()
+
+        # replace regular text with icon attributes if configured to do
+        # so
+        if current_app.config["NAVBAR_ICONS"]:
+            messages.set_icon("bi-bell")
+            create.set_icon("bi-plus-lg")
+
         navbar.right_items.extend([messages, create, subgroup])
         return navbar
 

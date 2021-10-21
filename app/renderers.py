@@ -12,7 +12,36 @@ from flask_bootstrap.nav import BootstrapRenderer
 from flask_nav.elements import NavigationItem, Subgroup, View
 
 
-class BadgedView(View):
+class IconView(View):
+    """View which can be set to display text or icons.
+
+    For icons to be set to on the app needs to be configured with
+    ``NAVBAR_ICONS`` set to True and an icon span class needs to be
+    passed to the constructor.
+
+    :param text: The text to display as a link and also to display
+        hover-over information.
+    :param endpoint: The target of the link being rendered with
+        ``url_for``.
+    :param kwargs: Keyword arguments to pass to ``url_for``.
+    """
+
+    def __init__(self, text: str, endpoint: str, **kwargs: str) -> None:
+        super().__init__(text, endpoint, **kwargs)
+        self.text = text
+        self.title = text
+        self.aclass = ""
+
+    def set_icon(self, icon: str) -> None:
+        """Override attributes to render an icon instead of text.
+
+        :param icon: Icon attribute.
+        """
+        self.text = tags.span(_class=icon)
+        self.aclass = "btn-lg btn-link"
+
+
+class BadgedView(IconView):
     """``NavigationItem`` to be rendered into HTML.
 
     Parameters outline the rules for rendering HTML through the visitor
@@ -45,6 +74,14 @@ class BadgedView(View):
         self.count = count
         self.badge = badge
         self.badge["class"] = "badge"
+
+    def set_icon(self, icon: str) -> None:
+        """Override attributes to render an icon instead of text.
+
+        :param icon: Icon attribute.
+        """
+        super().set_icon(icon)
+        self.badge["class"] += " icon-badge-notify"
 
 
 class RawUrl(View):
@@ -168,8 +205,9 @@ class NavbarRenderer(BootstrapRenderer):
         """
         item = tags.li()
         anchor = item.add(tags.a(node.text))
+        anchor["title"] = node.title
         anchor["href"] = node.get_url()
-        anchor["title"] = node.text
+        anchor["class"] = node.aclass
 
         # create the badge that will display the number of focused items
         # if the node count is not 0
@@ -202,3 +240,18 @@ class NavbarRenderer(BootstrapRenderer):
         :return: An ``html_tag`` instance for rendering input item.
         """
         return tags.input_(node.text, **node.kwargs)
+
+    @staticmethod
+    def visit_IconView(node: IconView) -> html_tag:
+        """Render a view which can also be set to display icons.
+
+        :param node: The ``IconView`` instance.
+        :return: An ``html_tag`` instance for rendering a list object
+            in an unordered list.
+        """
+        item = tags.li()
+        anchor = item.add(tags.a(node.text))
+        anchor["href"] = node.get_url()
+        anchor["title"] = node.title
+        anchor["class"] = node.aclass
+        return item

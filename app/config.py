@@ -280,6 +280,11 @@ class Config:
         """Include ``Home`` in navbar as opposed to only the brand."""
         return env.bool("NAVBAR_HOME", default=True)
 
+    @property
+    def NAVBAR_ICONS(self) -> bool:
+        """Display certain links in navbar as icons instead of text."""
+        return env.bool("NAVBAR_ICONS", default=False)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

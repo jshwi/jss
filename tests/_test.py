@@ -1258,10 +1258,16 @@ def test_post_follow_unfollow_routes(
 
 @pytest.mark.usefixtures("init_db")
 def test_send_message(
-    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
 ) -> None:
     """Test sending of personal messages from one user to another.
 
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
     :param add_test_user: Add user to test database.
@@ -1291,12 +1297,35 @@ def test_send_message(
     auth.logout()
     auth.login(user_test_object_2)
 
+    # test icon span
+    monkeypatch.setenv("NAVBAR_ICONS", "1")
+    config.init_app(test_app)
+
     # ensure the badge (<span> tag) is displayed when there are messages
     # held for the user
     response = client.get("/")
     assert (
         "        <li>\n"
-        '          <a href="/messages" title="Messages">Messages\n'
+        '          <a class="btn-lg btn-link" href="/messages"'
+        ' title="Messages">\n'
+        '            <span class="bi-bell"></span>\n'
+        '            <span class="badge icon-badge-notify"'
+        ' id="message_count" style="visibility: visible">1'
+        "</span>\n"
+        "          </a>\n"
+        "        </li>\n"
+    ) in response.data.decode()
+
+    # for reliable testing ensure navbar not set to display icons
+    monkeypatch.setenv("NAVBAR_ICONS", "0")
+    config.init_app(test_app)
+
+    # ensure the badge (<span> tag) is displayed when there are messages
+    # held for the user
+    response = client.get("/")
+    assert (
+        "        <li>\n"
+        '          <a class="" href="/messages" title="Messages">Messages\n'
         '            <span class="badge" id="message_count"'
         ' style="visibility: visible">1</span>\n'
         "          </a>\n"
@@ -1321,7 +1350,7 @@ def test_send_message(
     response = client.get("/")
     assert (
         "        <li>\n"
-        '          <a href="/messages" title="Messages">Messages\n'
+        '          <a class="" href="/messages" title="Messages">Messages\n'
         '            <span class="badge" id="message_count"'
         ' style="visibility: disable">0</span>\n'
         "          </a>\n"

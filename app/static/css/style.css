@@ -9,3 +9,12 @@
     top: 8px;
     padding-right: 5px;
 }
+
+/* positioning of notification counter */
+.icon-badge-notify {
+    position: absolute;
+    top: 10px;
+    left: 27px;
+    font-size: 8px;
+    background: red;
+}
