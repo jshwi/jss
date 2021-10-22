@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.6.2...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- Changes nav container to fluid
 - Implements hashed node ID for navbar
 
 [1.6.2](https://github.com/jshwi/jss/releases/tag/v1.6.2) - 2021-10-19

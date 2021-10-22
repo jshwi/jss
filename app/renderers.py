@@ -103,7 +103,7 @@ class NavbarRenderer(BootstrapRenderer):
         """
         node_id = sha1(str(id(node)).encode()).hexdigest()
         root = tags.nav(_class="navbar navbar-default")
-        cont = root.add(tags.div(_class="container"))
+        cont = root.add(tags.div(_class="container-fluid"))
         header = cont.add(tags.div(_class="navbar-header"))
 
         # collapse button
