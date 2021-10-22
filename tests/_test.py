@@ -1290,16 +1290,43 @@ def test_send_message(
     )
     auth.logout()
     auth.login(user_test_object_2)
+
+    # ensure the badge (<span> tag) is displayed when there are messages
+    # held for the user
+    response = client.get("/")
+    assert (
+        "        <li>\n"
+        '          <a href="/messages" title="Messages">Messages\n'
+        '            <span class="badge" id="message_count"'
+        ' style="visibility: visible">1</span>\n'
+        "          </a>\n"
+        "        </li>\n"
+    ) in response.data.decode()
     response = client.get("/notifications")
     if response.json is not None:
         obj = response.json[0]
         assert all(i in obj for i in ["data", "name", "timestamp"])
         assert all(i in obj.values() for i in [1, "unread_message_count"])
+
+        # entering this view will confirm that the messages have been
+        # viewed and there will be no badge with a count displayed
         response = client.get("/messages")
         assert (
             f"test message from {user_test_object_1.username}"
             in response.data.decode()
         )
+
+    # confirm that no message badge is displayed next to the messages
+    # link
+    response = client.get("/")
+    assert (
+        "        <li>\n"
+        '          <a href="/messages" title="Messages">Messages\n'
+        '            <span class="badge" id="message_count"'
+        ' style="visibility: disable">0</span>\n'
+        "          </a>\n"
+        "        </li>\n"
+    ) in response.data.decode()
 
 
 @pytest.mark.usefixtures("init_db")

@@ -45,7 +45,15 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.navbar
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.redirect
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.renderers
    :members:
    :undoc-members:
    :show-inheritance:

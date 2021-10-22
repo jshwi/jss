@@ -33,6 +33,7 @@ setup(
     install_requires=[
         "appdirs==1.4.4",
         "click==8.0.3",
+        "dominate==2.6.0",
         "email-validator==1.1.3",
         "environs==9.3.4",
         "flask==2.0.2",
@@ -45,6 +46,7 @@ setup(
         "flask-migrate==3.1.0",
         "flask-misaka==1.0.0",
         "flask-moment==1.0.2",
+        "flask-nav==0.6",
         "flask-pagedown==0.4.0",
         "flask-sqlalchemy==2.5.1",
         "flask-static-digest==0.2.1",

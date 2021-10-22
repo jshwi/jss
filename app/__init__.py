@@ -28,6 +28,7 @@ Registers:
     * Commandline arguments
     * Admin page, which does not work effectively with ``init_app`` (the
       method, not the module function)
+    * Navbar for rendering DOM Python-side
 """
 from flask import Flask
 
@@ -39,6 +40,7 @@ from . import (
     exceptions,
     extensions,
     log,
+    navbar,
     routes,
     shell,
 )
@@ -64,4 +66,5 @@ def create_app() -> Flask:
     shell.init_app(app)
     cli.init_app(app)
     admin.init_app(app)
+    navbar.init_app(app)
     return app
