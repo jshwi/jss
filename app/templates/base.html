@@ -1,5 +1,5 @@
 {# base.html #}
-{% extends 'bootstrap/base.html' %}
+{% extends "bootstrap/base.html" %}
 {% import "macros.html" as macros with context %}
 
 {# override ``page_name`` to display in browser tab #}
@@ -11,10 +11,10 @@
     {{ super() }}
 
     {# favicon icon for bookmarks and easy reference #}
-    <link rel="shortcut icon" href="{{ static_url_for("static", filename="img/favicon.ico") }}">
+    <link id="favicon" rel="shortcut icon" href="{{ static_url_for("static", filename="img/favicon.ico") }}">
 
     {# apply dark-mode from darkreader: https://darkreader.org/ #}
-    <link rel="stylesheet" href="{{ static_url_for('static', filename='css/darkreader.css') }}">
+    <link id="darkreader" rel="stylesheet" href="{{ static_url_for("static", filename="css/darkreader.css") }}">
 {% endblock %}
 
 {# additional JavaScript functionality #}
@@ -29,9 +29,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/python.min.js"></script>
 
     {# import JavaScript functions #}
-    <script src="{{ static_url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ static_url_for("static", filename="js/main.js") }}"></script>
     <!--suppress JSUnresolvedFunction, JSUnresolvedVariable -->
     <script>hljs.highlightAll()</script>
+
     <!--suppress JSUnresolvedVariable -->
     <script>
       {% if current_user.is_authenticated %}
@@ -40,14 +41,14 @@
         $(function () {
           let since = 0
           setInterval(function () {
-            $.ajax('{{ url_for('views.notifications') }}?since' + since).done(
+            $.ajax("{{ url_for("views.notifications") }}?since" + since).done(
               function (notifications) {
                 for (let i = 0; i < notifications.length; i++) {
                   switch (notifications[i].name) {
-                    case 'unread_message_count':
+                    case "unread_message_count":
                       set_message_count(notifications[i].data)
                       break
-                    case 'task_progress':
+                    case "task_progress":
                       set_task_progress(
                         notifications[i].data.task_id,
                         notifications[i].data.progress

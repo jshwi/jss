@@ -20,22 +20,31 @@
             </button>
 
             {# brand links to index page #}
-            <a class="navbar-brand" href="{{ url_for('index') }}">{{ config["BRAND"] }}</a>
+            <a class="navbar-brand" href="{{ url_for("index") }}">{{ config["BRAND"] }}</a>
         </div>
 
         {# collapse on mobile devices: controlled by above #}
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-            {# links to index page #}
-            <ul class="nav navbar-nav"><li><a href="{{ url_for('index') }}">Home</a></li></ul>
+            {# options to the left of the screen #}
+            <ul class="nav navbar-nav">
+
+                {# links to index page #}
+                <li><a href="{{ url_for("index") }}">Home</a></li>
+            </ul>
 
             {# options to the right of the screen #}
             <ul class="nav navbar-nav navbar-right">
 
-                {# visible when user is not logged in #}
                 {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    {# visible when user is not logged in #}
+
+                    {# register a new user #}
+                    <li><a href="{{ url_for("auth.register") }}">Register</a></li>
+
+                    {# log in and existing user #}
+                    <li><a href="{{ url_for("auth.login") }}">Login</a></li>
+
                 {% else %}
                     {# visible when user is logged in #}
                     {% if current_user.admin %}
@@ -46,7 +55,7 @@
 
                     {# link messages / number of messages #}
                     <li>
-                        <a href="{{ url_for('views.messages') }}">
+                        <a href="{{ url_for("views.messages") }}">
                             Messages
                             {% set new_messages = current_user.new_messages() %}
                             <span id="message_count" class="badge" style="visibility: {% if new_messages %}visible
@@ -58,7 +67,7 @@
                     <li><a href="{{ macros.profile(current_user) }}">{{ current_user.username }}</a></li>
 
                     {# option to logout for logged in user #}
-                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for("auth.logout") }}">Logout</a></li>
                 {% endif %}
             </ul>
         </div>

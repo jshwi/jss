@@ -63,7 +63,7 @@
 
                 {# each iteration of all versions #}
                 <li>
-                    <a href="{{ url_for('views.version', id=post.id, revision=loop.index0) }}">{{ label }}</a>
+                    <a href="{{ url_for("views.version", id=post.id, revision=loop.index0) }}">{{ label }}</a>
                 </li>
             {% endfor %}
         </ul>

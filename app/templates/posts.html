@@ -1,7 +1,7 @@
 {# posts.html
 this is the base template for pages displaying posts #}
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import "bootstrap/wtf.html" as wtf %}
 {% import "macros.html" as macros with context %}
 
 {# overrides empty post block in base template #}
@@ -32,22 +32,22 @@ this is the base template for pages displaying posts #}
                     {% if current_user.id == post.user_id %}
 
                         {# logged in user can edit the post #}
-                        <a class="action" href="{{ url_for('views.update', id=post.id) }}">Edit</a>
+                        <a class="action" href="{{ url_for("views.update", id=post.id) }}">Edit</a>
+
+                        {# logged in user can view and restore versions #}
+                        {# only show dropdown if versions exist #}
+                        {% if post.versions.count() > 1 %}
+
+                            {# dropdown menu of existing versions to roll back to #}
+                            {{ macros.versions(post) }}
+                        {% endif %}
                     {% endif %}
                     <br>
-
-                    {# logged in user can view and restore versions #}
-                    {# only show dropdown if versions exist #}
-                    {% if current_user.id == post.user_id and post.versions.count() > 1 %}
-
-                        {# dropdown menu of existing versions to roll back to #}
-                        {{ macros.versions(post) }}
-                    {% endif %}
                 </td>
                 <td>
 
-                    {# post title links to it's own dedicated page #}
-                    <h1><a href="{{ url_for('views.post_page', id=post.id) }}">{{ post.title }}</a></h1>
+                    {# post title links to its own dedicated page #}
+                    <h1><a href="{{ url_for("views.post_page", id=post.id) }}">{{ post.title }}</a></h1>
 
                     {# post body as HTML rendered client side #}
                     {{ post.body| markdown }}
@@ -62,12 +62,12 @@ this is the base template for pages displaying posts #}
 
             {# show link to newer posts on left side with arrow #}
             <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or '#' }}"><span aria-hidden="true">&larr;</span> Newer posts</a>
+                <a href="{{ prev_url or "#" }}"><span aria-hidden="true">&larr;</span> Newer posts</a>
             </li>
 
             {# show link to older posts on right side with arrow #}
             <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or '#' }}">Older posts <span aria-hidden="true">&rarr;</span></a>
+                <a href="{{ next_url or "#" }}">Older posts <span aria-hidden="true">&rarr;</span></a>
             </li>
         </ul>
     </nav>
