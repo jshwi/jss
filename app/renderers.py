@@ -3,6 +3,7 @@ app.renderers
 =============
 """
 # pylint: disable=invalid-name,too-few-public-methods
+from hashlib import sha1
 from typing import Any, List
 
 from dominate import tags
@@ -100,6 +101,7 @@ class NavbarRenderer(BootstrapRenderer):
         :param node: Navbar object to add to template.
         :return: Rendered HTML.
         """
+        node_id = sha1(str(id(node)).encode()).hexdigest()
         root = tags.nav(_class="navbar navbar-default")
         cont = root.add(tags.div(_class="container"))
         header = cont.add(tags.div(_class="navbar-header"))
@@ -111,7 +113,7 @@ class NavbarRenderer(BootstrapRenderer):
         btn["type"] = "button"
         btn["class"] = "navbar-toggle collapsed"
         btn["data-toggle"] = "collapse"
-        btn["data-target"] = "#bs-example-navbar-collapse-1"
+        btn["data-target"] = f"#{node_id}"
         btn["aria-expanded"] = "false"
         btn["aria-controls"] = "navbar"
         btn.add(tags.span("Toggle navigation", _class="sr-only"))
@@ -130,12 +132,7 @@ class NavbarRenderer(BootstrapRenderer):
 
         # div for collapsible navbar items
         # match ``node_id`` to the collapsible button defined above
-        bar = cont.add(
-            tags.div(
-                _class="navbar-collapse collapse",
-                id="bs-example-navbar-collapse-1",
-            )
-        )
+        bar = cont.add(tags.div(_class="navbar-collapse collapse", id=node_id))
 
         # navbar items
         bar_list = bar.add(tags.ul(_class="nav navbar-nav"))
