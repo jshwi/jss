@@ -285,6 +285,11 @@ class Config:
         """Display certain links in navbar as icons instead of text."""
         return env.bool("NAVBAR_ICONS", default=False)
 
+    @property
+    def NAVBAR_USER_DROPDOWN(self) -> bool:
+        """Display logged in user links as dropdown."""
+        return env.bool("NAVBAR_USER_DROPDOWN", default=False)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

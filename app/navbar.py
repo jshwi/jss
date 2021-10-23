@@ -56,7 +56,16 @@ def _construct_messages_view() -> BadgedView:
 def _construct_user_subgroup() -> Subgroup:
     # construct a ``NavigationItem`` for implementing a group of links
     # in user specifically for a logged in user
-    subgroup = ListGroup(current_user.username)
+    if current_app.config["NAVBAR_USER_DROPDOWN"]:
+
+        # display user's avatar in the dropdown menu button
+        subgroup_title = tags.span()
+        subgroup_title.add(tags.img(src=current_user.avatar(16)))
+        subgroup_title.add(f" {current_user.username}")
+
+        subgroup = Subgroup(subgroup_title)
+    else:
+        subgroup = ListGroup(current_user.username)
 
     # anything declared here will be in the navbar regardless of the
     # state of the current user i.e. admin is True or False.

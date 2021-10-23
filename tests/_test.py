@@ -2044,3 +2044,65 @@ def test_navbar_home_config_switch(
     assert test_app.config["NAVBAR_HOME"] is True
     response = client.get("/")
     assert '<a href="/" title="Home">Home</a>' in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+def test_navbar_user_dropdown_config_switch(
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
+) -> None:
+    """Test that the user dropdown appropriately switches on and off.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test ``Flask`` app object.
+    :param client: App's test-client API.
+    :param auth: Handle authorization with test app.
+    :param add_test_user: Add user to test database.
+    """
+    user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME,
+        ADMIN_USER_EMAIL,
+        ADMIN_USER_PASSWORD,
+        admin=True,
+        authorized=True,
+        confirmed=True,
+    )
+    add_test_user(user_test_object)
+    auth.login(user_test_object)
+
+    common_user_list_items = (
+        "            <li>\n"
+        '              <a href="/admin" title="Console">Console</a>\n'
+        "            </li>\n"
+        "            <li>\n"
+        '              <a href="/profile/admin" title="Profile">Profile</a>\n'
+        "            </li>\n"
+        "            <li>\n"
+        '              <a href="/auth/logout" title="Logout">Logout</a>\n'
+        "            </li>\n"
+    )
+
+    # test user subgroup when dropdown set to False
+    monkeypatch.setenv("NAVBAR_USER_DROPDOWN", "0")
+    config.init_app(test_app)
+    response = client.get("/")
+    expected = (
+        '          <div class="list-group">\n'
+        f"{common_user_list_items}"
+        "          </div>\n"
+    )
+    assert expected in response.data.decode()
+
+    # test user subgroup when dropdown set to True
+    monkeypatch.setenv("NAVBAR_USER_DROPDOWN", "1")
+    config.init_app(test_app)
+    response = client.get("/")
+    expected = (
+        '          <ul class="dropdown-menu">\n'
+        f"{common_user_list_items}"
+        "          </ul>\n"
+    )
+    assert expected in response.data.decode()

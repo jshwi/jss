@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.6.2...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- Adds `NAVBAR_USER_DROPDOWN` to config
 - Adds `NAVBAR_ICONS` to config
 - Adds `NAVBAR_HOME` to config
 - Adds dark mode toggle
