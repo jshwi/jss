@@ -1289,12 +1289,12 @@ def test_send_message(
     add_test_user(user_test_object_1, user_test_object_2)
     auth.login(user_test_object_1)
     response = client.post(
-        f"/send_message/{user_test_object_2.username}",
+        f"/user/send_message/{user_test_object_2.username}",
         data={"message": f"test message from {user_test_object_1.username}"},
         follow_redirects=True,
     )
     assert b"Your message has been sent." in response.data
-    response = client.get(f"/send_message/{user_test_object_2.username}")
+    response = client.get(f"/user/send_message/{user_test_object_2.username}")
     assert (
         f"Send Message to {user_test_object_2.username}"
         in response.data.decode()
@@ -1311,7 +1311,7 @@ def test_send_message(
     response = client.get("/")
     assert (
         "        <li>\n"
-        '          <a class="btn-lg btn-link" href="/messages"'
+        '          <a class="btn-lg btn-link" href="/user/messages"'
         ' title="Messages">\n'
         '            <span class="bi-bell"></span>\n'
         '            <span class="badge icon-badge-notify"'
@@ -1330,13 +1330,14 @@ def test_send_message(
     response = client.get("/")
     assert (
         "        <li>\n"
-        '          <a class="" href="/messages" title="Messages">Messages\n'
+        '          <a class="" href="/user/messages" title="Messages">'
+        "Messages\n"
         '            <span class="badge" id="message_count"'
         ' style="visibility: visible">1</span>\n'
         "          </a>\n"
         "        </li>\n"
     ) in response.data.decode()
-    response = client.get("/notifications")
+    response = client.get("/user/notifications")
     if response.json is not None:
         obj = response.json[0]
         assert all(i in obj for i in ["data", "name", "timestamp"])
@@ -1344,7 +1345,7 @@ def test_send_message(
 
         # entering this view will confirm that the messages have been
         # viewed and there will be no badge with a count displayed
-        response = client.get("/messages")
+        response = client.get("/user/messages")
         assert (
             f"test message from {user_test_object_1.username}"
             in response.data.decode()
@@ -1355,7 +1356,8 @@ def test_send_message(
     response = client.get("/")
     assert (
         "        <li>\n"
-        '          <a class="" href="/messages" title="Messages">Messages\n'
+        '          <a class="" href="/user/messages" title="Messages">'
+        "Messages\n"
         '            <span class="badge" id="message_count"'
         ' style="visibility: disable">0</span>\n'
         "          </a>\n"
@@ -2141,6 +2143,7 @@ def test_static_route_default(
     client: FlaskClient,
     add_test_user: Callable[..., None],
     add_test_post: Callable[..., None],
+    interpolate_routes: Callable[..., None],
     code: int,
     routes: List[str],
 ):
@@ -2149,6 +2152,7 @@ def test_static_route_default(
     :param client: App's test-client API.
     :param add_test_user: Add user to test database.
     :param add_test_post: Add post to test database.
+    :param interpolate_routes: Interpolate route vars with test values.
     :param code: Status code expected.
     :param routes: List of routes with expected status code.
     """
@@ -2160,12 +2164,7 @@ def test_static_route_default(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
     add_test_post(post_test_object)
-    routes = [
-        r.replace("<int:id>", "1")
-        .replace("<int:revision>", "0")
-        .replace("<username>", MAIN_USER_USERNAME)
-        for r in routes
-    ]
+    interpolate_routes(routes, 1, 0, MAIN_USER_USERNAME)
     assert all(
         client.get(r, follow_redirects=True).status_code == code
         for r in routes

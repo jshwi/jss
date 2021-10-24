@@ -50,7 +50,7 @@ def _construct_messages_view() -> BadgedView:
     # visitor class
     badge = tags.span(new_messages, id="message_count")
 
-    return BadgedView("Messages", new_messages, badge, "views.messages")
+    return BadgedView("Messages", new_messages, badge, "user.messages")
 
 
 def _construct_user_subgroup() -> Subgroup:

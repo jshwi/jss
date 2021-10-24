@@ -176,3 +176,23 @@ def fixture_patch_getpass(
         monkeypatch.setattr("app.user.getpass", lambda _: inputs.pop())
 
     return _patch_getpass
+
+
+@pytest.fixture(name="interpolate_routes")
+def fixture_interpolate_routes() -> Callable[..., None]:
+    """Interpolate route fields with values for testing.
+
+    :return: Function for using this fixture.
+    """
+
+    def _interpolate_routes(
+        routes: List[str], post_id: int, revision_id, username: str
+    ) -> None:
+        for count, route in enumerate(routes):
+            routes[count] = (
+                route.replace("<int:id>", str(post_id))
+                .replace("<int:revision>", str(revision_id))
+                .replace("<username>", username)
+            )
+
+    return _interpolate_routes

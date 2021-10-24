@@ -60,7 +60,7 @@ MAIL_SERVER = "localhost"
 MAIL_USERNAME = MAIN_USER_USERNAME
 MAIL_PASSWORD = "unique"
 MAIL_PORT = 25
-PROFILE_EDIT = "/profile/edit"
+PROFILE_EDIT = "/user/profile/edit"
 TASK_ID = "123"
 TASK_NAME = "export_posts"
 TASK_DESCRIPTION = "Exporting posts..."
@@ -148,11 +148,11 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/auth/unconfirmed",
             "/create",
             "/redirect/export_posts",
-            "/messages",
-            "/profile/edit",
-            "/send_message/<recipient>",
-            "/messages",
-            "/notifications",
+            "/user/messages",
+            "/user/profile/edit",
+            "/user/send_message/<recipient>",
+            "/user/messages",
+            "/user/notifications",
             "/<int:id>/update/<int:revision>",
             "/<int:id>/version/<int:revision>",
             "/<int:id>/update/",

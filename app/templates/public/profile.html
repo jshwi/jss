@@ -33,7 +33,7 @@
         {% if user == current_user %}
 
             {# if user is on their own profile page display option to edit it #}
-            <p><a href="{{ url_for('views.edit_profile') }}">Edit</a></p>
+            <p><a href="{{ url_for('user.edit_profile') }}">Edit</a></p>
 
             {# user can start a new task if one isn"t already running #}
             {% if not current_user.get_task_in_progress('export_posts') %}
@@ -41,7 +41,7 @@
             {% endif %}
         {% else %}
             {# option to send a message to other user #}
-            <p><a href="{{ url_for('views.send_message', recipient=user.username) }}">Send private message</a></p>
+            <p><a href="{{ url_for('user.send_message', recipient=user.username) }}">Send private message</a></p>
             {% if not current_user.is_following(user) %}
 
                 {# option to follow user if not already following #}

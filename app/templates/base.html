@@ -62,7 +62,7 @@
         $(function () {
           let since = 0
           setInterval(function () {
-            $.ajax("{{ url_for("views.notifications") }}?since" + since).done(
+            $.ajax("{{ url_for("user.notifications") }}?since" + since).done(
               function (notifications) {
                 for (let i = 0; i < notifications.length; i++) {
                   switch (notifications[i].name) {
