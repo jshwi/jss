@@ -19,6 +19,10 @@ _INDEX = "index"
 class MyModelView(sqla.ModelView):
     """Custom model view that determines accessibility."""
 
+    def __init__(self, model: db.Model, session: db.session) -> None:
+        super().__init__(model, session)
+        self.endpoint = f"{model.__table__}s"
+
     def is_accessible(self) -> None:
         """Only allow access if user is logged in as admin."""
         return current_user.is_authenticated and current_user.admin
