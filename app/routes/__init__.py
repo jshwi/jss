@@ -13,7 +13,7 @@ based on its name and arguments.
 """
 from flask import Flask
 
-from app.routes import auth, post, redirect, user, views
+from app.routes import auth, post, public, redirect, user
 
 
 def init_app(app: Flask) -> None:
@@ -24,7 +24,7 @@ def init_app(app: Flask) -> None:
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.strip_trailing_newlines = False
-    app.register_blueprint(views.blueprint)
+    app.register_blueprint(public.blueprint)
     app.register_blueprint(auth.blueprint)
     app.register_blueprint(user.blueprint)
     app.register_blueprint(post.blueprint)

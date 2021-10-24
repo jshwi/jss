@@ -69,15 +69,15 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.routes.public
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.routes.redirect
    :members:
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.routes.user
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.views
    :members:
    :undoc-members:
    :show-inheritance:
