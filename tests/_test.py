@@ -4,6 +4,7 @@ tests._test
 """
 # pylint: disable=too-many-arguments,too-many-lines,too-many-locals
 # pylint: disable=import-outside-toplevel
+import fnmatch
 import functools
 import json
 import logging
@@ -36,6 +37,7 @@ from .utils import (
     COPYRIGHT_AUTHOR,
     COPYRIGHT_EMAIL,
     COPYRIGHT_YEAR,
+    COVERED_ROUTES,
     INVALID_OR_EXPIRED,
     LAST_USER_EMAIL,
     LAST_USER_PASSWORD,
@@ -74,6 +76,7 @@ from .utils import (
     POST_TITLE_V2,
     PROFILE_EDIT,
     SETUP_FILE,
+    STATUS_CODE_TO_ROUTE_DEFAULT,
     TASK_DESCRIPTION,
     TASK_ID,
     TASK_NAME,
@@ -2106,3 +2109,60 @@ def test_navbar_user_dropdown_config_switch(
         "          </ul>\n"
     )
     assert expected in response.data.decode()
+
+
+def test_all_routes_covered(test_app: Flask) -> None:
+    """Test all routes that need to be tested will be.
+
+    :param test_app: Test ``Flask`` app object.
+    """
+    ignore = ["/admin/*", "/static/*"]
+    exception = ["/admin/"]
+    filter_covered = [
+        r.rule
+        for r in test_app.url_map.iter_rules()
+        if not any(fnmatch.fnmatch(r.rule, i) for i in ignore)
+        or r.rule in exception
+    ]
+    assert "/admin/admin_notification/ajax/lookup/" not in filter_covered
+    assert "/admin/" in filter_covered
+    assert all(r in COVERED_ROUTES for r in filter_covered)
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize(
+    "code,routes", STATUS_CODE_TO_ROUTE_DEFAULT, ids=[200, 401, 405]
+)
+def test_static_route_default(
+    client: FlaskClient,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+    code: int,
+    routes: List[str],
+):
+    """Specifically test all status codes of routes.
+
+    :param client: App's test-client API.
+    :param add_test_user: Add user to test database.
+    :param add_test_post: Add post to test database.
+    :param code: Status code expected.
+    :param routes: List of routes with expected status code.
+    """
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
+    )
+    add_test_user(user_test_object)
+    post_test_object = PostTestObject(
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    add_test_post(post_test_object)
+    routes = [
+        r.replace("<int:id>", "1")
+        .replace("<int:revision>", "0")
+        .replace("<username>", MAIN_USER_USERNAME)
+        for r in routes
+    ]
+    assert all(
+        client.get(r, follow_redirects=True).status_code == code
+        for r in routes
+    )

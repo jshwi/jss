@@ -125,6 +125,45 @@ setup(
     python_requires=">=3.8",
 )
 """
+STATUS_CODE_TO_ROUTE_DEFAULT = [
+    (
+        200,  # all OK
+        [
+            "/",
+            "/auth/login",
+            "/auth/register",
+            "/auth/request_password_reset",
+            "/post/<int:id>",
+            "/profile/<username>",
+            "/auth/logout",
+            "/auth/reset_password/<token>",
+        ],
+    ),
+    (
+        401,  # unauthorized,
+        [
+            "/admin/",
+            "/auth/<token>",
+            "/auth/resend",
+            "/auth/unconfirmed",
+            "/create",
+            "/export_posts",
+            "/messages",
+            "/profile/edit",
+            "/send_message/<recipient>",
+            "/messages",
+            "/notifications",
+            "/<int:id>/update/<int:revision>",
+            "/<int:id>/version/<int:revision>",
+            "/<int:id>/update/",
+        ],
+    ),
+    (
+        405,  # method not allowed
+        ["/follow/<username>", "/unfollow/<username>", "/<int:id>/delete"],
+    ),
+]
+COVERED_ROUTES = [r for _, l in STATUS_CODE_TO_ROUTE_DEFAULT for r in l]
 
 
 class UserTestObject:
