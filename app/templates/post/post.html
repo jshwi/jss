@@ -29,7 +29,7 @@
 
     {# if revision has been passed display button to restore version #}
     {% if revision is defined %}
-        <form action="{{ url_for('views.update', id=id, revision=revision) }}" method="get">
+        <form action="{{ url_for('post.update', id=id, revision=revision) }}" method="get">
             {{ wtf.form_field(form.submit, value="Restore") }}
         </form>
     {% endif %}

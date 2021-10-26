@@ -106,7 +106,7 @@ def top() -> Navbar:
     # currently logged in
     if current_user.is_authenticated:
         messages = _construct_messages_view()
-        create = IconView("New", "views.create")
+        create = IconView("New", "post.create")
         subgroup = _construct_user_subgroup()
 
         # replace regular text with icon attributes if configured to do

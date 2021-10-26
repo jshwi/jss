@@ -18,7 +18,7 @@ from werkzeug.security import generate_password_hash
 
 from app.models import User
 
-UPDATE1 = "/1/update/"
+UPDATE1 = "/post/1/update/"
 ADMIN_USER_USERNAME = "admin"
 ADMIN_USER_EMAIL = "admin@test.com"
 ADMIN_USER_PASSWORD = "pass0"
@@ -133,7 +133,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/auth/login",
             "/auth/register",
             "/auth/request_password_reset",
-            "/post/<int:id>",
+            "/post/post/<int:id>",
             "/profile/<username>",
             "/auth/logout",
             "/auth/reset_password/<token>",
@@ -146,16 +146,16 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/redirect/<token>",
             "/redirect/resend",
             "/auth/unconfirmed",
-            "/create",
+            "/post/create",
             "/redirect/export_posts",
             "/user/messages",
             "/user/profile/edit",
             "/user/send_message/<recipient>",
             "/user/messages",
             "/user/notifications",
-            "/<int:id>/update/<int:revision>",
-            "/<int:id>/version/<int:revision>",
-            "/<int:id>/update/",
+            "/post/<int:id>/update/<int:revision>",
+            "/post/<int:id>/version/<int:revision>",
+            "/post/<int:id>/update/",
         ],
     ),
     (

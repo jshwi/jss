@@ -233,10 +233,12 @@ def test_index(
     assert post_test_object.title in response
     assert user_test_object.username in response
     assert post_test_object.body in response
-    assert 'href="/1/update/"' in response
+    assert 'href="/post/1/update/"' in response
 
 
-@pytest.mark.parametrize("route", ["/create", UPDATE1, "/redirect/1/delete"])
+@pytest.mark.parametrize(
+    "route", ["/post/create", UPDATE1, "/redirect/1/delete"]
+)
 def test_login_required(client: FlaskClient, route: str) -> None:
     """Test requirement that user be logged in to post.
 
@@ -305,7 +307,7 @@ def test_author_required(
     assert client.post("/redirect/1/delete").status_code == 403
 
     # current user doesn't see edit link
-    assert b'href="/1/update"' not in client.get("/").data
+    assert b'href="/post/1/update"' not in client.get("/").data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -366,8 +368,10 @@ def test_create(
     )
     add_test_user(user_test_object)
     auth.login(user_test_object)
-    assert client.get("/create").status_code == 200
-    client.post("/create", data={"title": POST_TITLE_1, "body": POST_BODY_1})
+    assert client.get("/post/create").status_code == 200
+    client.post(
+        "/post/create", data={"title": POST_TITLE_1, "body": POST_BODY_1}
+    )
     with test_app.app_context():
         count = Post.query.count()
         assert count == 1
@@ -644,7 +648,9 @@ def test_404_error(client: FlaskClient) -> None:
 
 
 @pytest.mark.usefixtures("init_db")
-@pytest.mark.parametrize("route", ["/create", UPDATE1, "/redirect/1/delete"])
+@pytest.mark.parametrize(
+    "route", ["/post/create", UPDATE1, "/redirect/1/delete"]
+)
 def test_admin_required(
     client: FlaskClient,
     auth: AuthActions,
@@ -1052,7 +1058,7 @@ def test_post_page(
     )
     add_test_user(user_test_object)
     add_test_post(post_test_object)
-    response = client.get("/post/1")
+    response = client.get("/post/post/1")
     assert f"<h1>{POST_TITLE_1}</h1>" in response.data.decode()
     assert POST_BODY_1 in response.data.decode()
 
@@ -1457,7 +1463,9 @@ def test_export_post(
         app_current_user.get_task_in_progress = lambda _: None  # type: ignore
         app_current_user.username = user_test_object.username
         app_current_user.post = Post.query.get(1)
-        monkeypatch.setattr("app.routes.views.current_user", app_current_user)
+        monkeypatch.setattr(
+            "app.routes.redirect.current_user", app_current_user
+        )
         client.get("/redirect/export_posts", follow_redirects=True)
 
     assert "app.tasks.export_posts" in enqueue.args
@@ -1704,8 +1712,8 @@ def test_versions(
         post.body = POST_BODY_V2
         db.session.commit()
 
-    assert b"v1" in client.get("/1/version/0", follow_redirects=True).data
-    assert b"v2" in client.get("/1/version/1", follow_redirects=True).data
+    assert b"v1" in client.get("/post/1/version/0", follow_redirects=True).data
+    assert b"v2" in client.get("/post/1/version/1", follow_redirects=True).data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1970,7 +1978,7 @@ def test_versions_update(
     client.post(
         UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
     )
-    response = client.get("/1/update/0")
+    response = client.get("/post/1/update/0")
     assert created_post.title in response.data.decode()
     assert created_post.body in response.data.decode()
 
@@ -2002,7 +2010,7 @@ def test_versioning_handle_index_error(
     add_test_user(user_test_object)
     add_test_post(created_post)
     auth.login(user_test_object)
-    assert client.get("/1/update/1").status_code == 404
+    assert client.get("/post/1/update/1").status_code == 404
 
 
 def test_config_copyright(

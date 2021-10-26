@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.7.0...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- Prefixes post routes with /post
 - Prefixes user routes with /user
 - Prefixes redirects with /redirect
 - Updates route names for /admin

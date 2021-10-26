@@ -32,7 +32,7 @@ this is the base template for pages displaying posts #}
                     {% if current_user.id == post.user_id %}
 
                         {# logged in user can edit the post #}
-                        <a class="action" href="{{ url_for("views.update", id=post.id) }}">Edit</a>
+                        <a class="action" href="{{ url_for("post.update", id=post.id) }}">Edit</a>
 
                         {# logged in user can view and restore versions #}
                         {# only show dropdown if versions exist #}
@@ -47,7 +47,7 @@ this is the base template for pages displaying posts #}
                 <td>
 
                     {# post title links to its own dedicated page #}
-                    <h1><a href="{{ url_for("views.post_page", id=post.id) }}">{{ post.title }}</a></h1>
+                    <h1><a href="{{ url_for("post.post_page", id=post.id) }}">{{ post.title }}</a></h1>
 
                     {# post body as HTML rendered client side #}
                     {{ post.body| markdown }}

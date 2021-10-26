@@ -13,7 +13,7 @@ based on its name and arguments.
 """
 from flask import Flask
 
-from app.routes import auth, redirect, user, views
+from app.routes import auth, post, redirect, user, views
 
 
 def init_app(app: Flask) -> None:
@@ -27,5 +27,6 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(views.blueprint)
     app.register_blueprint(auth.blueprint)
     app.register_blueprint(user.blueprint)
+    app.register_blueprint(post.blueprint)
     app.register_blueprint(redirect.blueprint)
     app.add_url_rule("/", endpoint="index")
