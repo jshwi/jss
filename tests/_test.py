@@ -789,7 +789,7 @@ def test_confirmation_email_expired(
                 max_age=1,
             )
             monkeypatch.setattr(
-                "app.routes.confirm_token", lambda _: confirm_token()
+                "app.routes.auth.confirm_token", lambda _: confirm_token()
             )
             response = client.get(route, follow_redirects=True)
             assert INVALID_OR_EXPIRED in response.data.decode()
@@ -884,7 +884,7 @@ def test_bad_token(
     with test_app.app_context():
         with mail.record_messages() as outbox:
             monkeypatch.setattr(
-                "app.routes.generate_reset_password_token",
+                "app.routes.auth.generate_reset_password_token",
                 lambda *_, **__: "bad_token",
             )
             auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
@@ -1397,7 +1397,7 @@ def test_export_post_is_job(
     app_current_user.username = ADMIN_USER_USERNAME  # type: ignore
     with test_app.app_context():
         app_current_user.post = Post.query.get(1)  # type: ignore
-        monkeypatch.setattr("app.routes.current_user", app_current_user)
+        monkeypatch.setattr("app.routes.views.current_user", app_current_user)
         response = client.get("/export_posts", follow_redirects=True)
 
     assert b"An export task is already in progress" in response.data
@@ -1451,7 +1451,7 @@ def test_export_post(
         app_current_user.get_task_in_progress = lambda _: None  # type: ignore
         app_current_user.username = user_test_object.username
         app_current_user.post = Post.query.get(1)
-        monkeypatch.setattr("app.routes.current_user", app_current_user)
+        monkeypatch.setattr("app.routes.views.current_user", app_current_user)
         client.get("/export_posts", follow_redirects=True)
 
     assert "app.tasks.export_posts" in enqueue.args

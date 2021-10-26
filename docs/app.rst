@@ -61,6 +61,14 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.routes.auth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.routes.views
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.security
    :members:
    :undoc-members:
