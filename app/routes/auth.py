@@ -28,10 +28,10 @@ from app.security import (
 )
 from app.user import create_user
 
-auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@auth_blueprint.route("/register", methods=["GET", "POST"])
+@blueprint.route("/register", methods=["GET", "POST"])
 def register() -> Union[str, Response]:
     """Register a new user account.
 
@@ -68,7 +68,7 @@ def register() -> Union[str, Response]:
     return render_template("auth/register.html", form=form)
 
 
-@auth_blueprint.route("/login", methods=["GET", "POST"])
+@blueprint.route("/login", methods=["GET", "POST"])
 def login() -> Union[str, Response]:
     """Log in to an existing account.
 
@@ -107,7 +107,7 @@ def login() -> Union[str, Response]:
     return render_template("auth/login.html", form=form)
 
 
-@auth_blueprint.route("/logout", methods=["GET"])
+@blueprint.route("/logout", methods=["GET"])
 def logout() -> Response:
     """Log user out.
 
@@ -125,7 +125,7 @@ def logout() -> Response:
     return redirect.index()
 
 
-@auth_blueprint.route("/<token>", methods=["GET"])
+@blueprint.route("/<token>", methods=["GET"])
 @login_required
 def confirm_email(token: str) -> Response:
     """Confirm each individual user registering with their email.
@@ -154,7 +154,7 @@ def confirm_email(token: str) -> Response:
     return redirect.index()
 
 
-@auth_blueprint.route("/unconfirmed", methods=["GET"])
+@blueprint.route("/unconfirmed", methods=["GET"])
 @login_required
 def unconfirmed() -> str:
     """Unconfirmed email route.
@@ -164,7 +164,7 @@ def unconfirmed() -> str:
     return render_template("auth/unconfirmed.html")
 
 
-@auth_blueprint.route("/resend", methods=["GET"])
+@blueprint.route("/resend", methods=["GET"])
 @login_required
 def resend_confirmation() -> Response:
     """Resend verification email.
@@ -190,7 +190,7 @@ def resend_confirmation() -> Response:
     return redirect.Auth.unconfirmed()
 
 
-@auth_blueprint.route("/request_password_reset", methods=["GET", "POST"])
+@blueprint.route("/request_password_reset", methods=["GET", "POST"])
 def request_password_reset() -> Union[str, Response]:
     """Allow user to reset their password.
 
@@ -226,7 +226,7 @@ def request_password_reset() -> Union[str, Response]:
     return render_template("auth/request_password_reset.html", form=form)
 
 
-@auth_blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
+@blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token: str) -> Union[str, Response]:
     """This route contains the token securely sent to the user's inbox.
 

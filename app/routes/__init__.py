@@ -24,6 +24,6 @@ def init_app(app: Flask) -> None:
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.strip_trailing_newlines = False
-    app.register_blueprint(views.views_blueprint)
-    app.register_blueprint(auth.auth_blueprint)
+    app.register_blueprint(views.blueprint)
+    app.register_blueprint(auth.blueprint)
     app.add_url_rule("/", endpoint="index")

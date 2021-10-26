@@ -22,11 +22,11 @@ from app.forms import EditProfile, EmptyForm, MessageForm, PostForm
 from app.models import Message, Notification, Post, User, Usernames, db
 from app.security import authorization_required, confirmation_required
 
-views_blueprint = Blueprint("views", __name__)
+blueprint = Blueprint("views", __name__)
 
 
 # noinspection DuplicatedCode
-@views_blueprint.route("/", methods=["GET", "POST"])
+@blueprint.route("/", methods=["GET", "POST"])
 def index() -> str:
     """App's index page.
 
@@ -52,7 +52,7 @@ def index() -> str:
     )
 
 
-@views_blueprint.route("/create", methods=["GET", "POST"])
+@blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 @authorization_required
 def create() -> Union[str, Response]:
@@ -80,10 +80,8 @@ def create() -> Union[str, Response]:
     return render_template("user/create.html", form=form)
 
 
-@views_blueprint.route("/<int:id>/update/", methods=["GET", "POST"])
-@views_blueprint.route(
-    "/<int:id>/update/<int:revision>", methods=["GET", "POST"]
-)
+@blueprint.route("/<int:id>/update/", methods=["GET", "POST"])
+@blueprint.route("/<int:id>/update/<int:revision>", methods=["GET", "POST"])
 @login_required
 @authorization_required
 def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
@@ -106,7 +104,7 @@ def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
     return render_template("user/update.html", post=post, form=form)
 
 
-@views_blueprint.route("/<int:id>/delete", methods=["POST"])
+@blueprint.route("/<int:id>/delete", methods=["POST"])
 @login_required
 @authorization_required
 def delete(id: int) -> Response:
@@ -125,7 +123,7 @@ def delete(id: int) -> Response:
     return redirect.index()
 
 
-@views_blueprint.route("/profile/<username>", methods=["GET", "POST"])
+@blueprint.route("/profile/<username>", methods=["GET", "POST"])
 def profile(username: str) -> Union[str, Response]:
     """Render user's profile page.
 
@@ -160,7 +158,7 @@ def profile(username: str) -> Union[str, Response]:
     )
 
 
-@views_blueprint.route("/post/<int:id>", methods=["GET"])
+@blueprint.route("/post/<int:id>", methods=["GET"])
 def post_page(id: int) -> str:
     """Render post page for selected post ID.
 
@@ -171,7 +169,7 @@ def post_page(id: int) -> str:
     return render_template("public/post.html", post=post)
 
 
-@views_blueprint.before_request
+@blueprint.before_request
 def before_request() -> None:
     """Add user's login date and time before first request."""
     if current_user.is_authenticated:
@@ -181,7 +179,7 @@ def before_request() -> None:
         db.session.commit()
 
 
-@views_blueprint.route("/profile/edit", methods=["GET", "POST"])
+@blueprint.route("/profile/edit", methods=["GET", "POST"])
 @login_required
 @confirmation_required
 def edit_profile() -> Union[str, Response]:
@@ -217,7 +215,7 @@ def edit_profile() -> Union[str, Response]:
     return render_template("user/edit_profile.html", form=form)
 
 
-@views_blueprint.route("/follow/<username>", methods=["POST"])
+@blueprint.route("/follow/<username>", methods=["POST"])
 @login_required
 @confirmation_required
 def follow(username: str) -> Response:
@@ -240,7 +238,7 @@ def follow(username: str) -> Response:
     return redirect.Views.profile(username=username)
 
 
-@views_blueprint.route("/unfollow/<username>", methods=["POST"])
+@blueprint.route("/unfollow/<username>", methods=["POST"])
 @login_required
 @confirmation_required
 def unfollow(username: str) -> Response:
@@ -263,7 +261,7 @@ def unfollow(username: str) -> Response:
     return redirect.Views.profile(username=username)
 
 
-@views_blueprint.route("/send_message/<recipient>", methods=["GET", "POST"])
+@blueprint.route("/send_message/<recipient>", methods=["GET", "POST"])
 @login_required
 @confirmation_required
 def send_message(recipient: str) -> Union[str, Response]:
@@ -293,7 +291,7 @@ def send_message(recipient: str) -> Union[str, Response]:
     )
 
 
-@views_blueprint.route("/messages")
+@blueprint.route("/messages")
 @login_required
 @confirmation_required
 def messages() -> str:
@@ -324,7 +322,7 @@ def messages() -> str:
     )
 
 
-@views_blueprint.route("/notifications")
+@blueprint.route("/notifications")
 @login_required
 def notifications() -> Response:
     """Retrieve notifications for logged in user.
@@ -343,7 +341,7 @@ def notifications() -> Response:
     )
 
 
-@views_blueprint.route("/export_posts")
+@blueprint.route("/export_posts")
 @login_required
 @confirmation_required
 def export_posts() -> Response:
@@ -364,7 +362,7 @@ def export_posts() -> Response:
     return redirect.Views.profile(username=current_user.username)
 
 
-@views_blueprint.route("/<int:id>/version/<int:revision>")
+@blueprint.route("/<int:id>/version/<int:revision>")
 @login_required
 @authorization_required
 def version(id: int, revision: int) -> Union[str, Response]:
