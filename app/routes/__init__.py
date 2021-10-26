@@ -29,8 +29,8 @@ from itsdangerous import BadSignature
 from jwt import InvalidTokenError
 from werkzeug import Response
 
-from . import redirect
-from .forms import (
+from app import redirect
+from app.forms import (
     EditProfile,
     EmptyForm,
     LoginForm,
@@ -40,9 +40,9 @@ from .forms import (
     ResetPasswordForm,
     ResetPasswordRequestForm,
 )
-from .mail import send_email
-from .models import Message, Notification, Post, User, Usernames, db
-from .security import (
+from app.mail import send_email
+from app.models import Message, Notification, Post, User, Usernames, db
+from app.security import (
     authorization_required,
     confirm_token,
     confirmation_required,
@@ -50,7 +50,7 @@ from .security import (
     generate_reset_password_token,
     get_requested_reset_password_user,
 )
-from .user import create_user
+from app.user import create_user
 
 views_blueprint = Blueprint("views", __name__)
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
