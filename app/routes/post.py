@@ -45,15 +45,15 @@ def create() -> Union[str, Response]:
     return render_template("post/create.html", form=form)
 
 
-@blueprint.route("/post/<int:id>", methods=["GET"])
-def post_page(id: int) -> str:
+@blueprint.route("/<int:id>", methods=["GET"])
+def read(id: int) -> str:
     """Render post page for selected post ID.
 
     :param id: ID of post to display full page on.
     :return: Rendered post template.
     """
     post = Post.get_post(id, checkauthor=False)
-    return render_template("post/post.html", post=post)
+    return render_template("post/read.html", post=post)
 
 
 @blueprint.route("/<int:id>/update/", methods=["GET", "POST"])
@@ -94,5 +94,5 @@ def version(id: int, revision: int) -> Union[str, Response]:
     post = Post.get_post(id, revision)
     form = EmptyForm()
     return render_template(
-        "post/post.html", post=post, id=id, revision=revision, form=form
+        "post/read.html", post=post, id=id, revision=revision, form=form
     )

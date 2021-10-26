@@ -133,7 +133,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/auth/login",
             "/auth/register",
             "/auth/request_password_reset",
-            "/post/post/<int:id>",
+            "/post/<int:id>",
             "/profile/<username>",
             "/auth/logout",
             "/auth/reset_password/<token>",

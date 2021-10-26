@@ -1058,7 +1058,7 @@ def test_post_page(
     )
     add_test_user(user_test_object)
     add_test_post(post_test_object)
-    response = client.get("/post/post/1")
+    response = client.get("/post/1")
     assert f"<h1>{POST_TITLE_1}</h1>" in response.data.decode()
     assert POST_BODY_1 in response.data.decode()
 
