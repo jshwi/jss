@@ -6,7 +6,15 @@ Define attributes regarding use of ``flask shell``.
 """
 from flask import Flask
 
-from .models import Message, Notification, Post, Task, User, Usernames, db
+from .utils.models import (
+    Message,
+    Notification,
+    Post,
+    Task,
+    User,
+    Usernames,
+    db,
+)
 
 
 def register_models(app: Flask) -> None:

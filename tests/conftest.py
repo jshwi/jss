@@ -14,7 +14,7 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from app import create_app
-from app.models import Post, Task, User, db
+from app.utils.models import Post, Task, User, db
 
 from .utils import (
     ADMIN_USER_EMAIL,
@@ -173,7 +173,7 @@ def fixture_patch_getpass(
     """
 
     def _patch_getpass(inputs: List[str]) -> None:
-        monkeypatch.setattr("app.user.getpass", lambda _: inputs.pop())
+        monkeypatch.setattr("app.utils.user.getpass", lambda _: inputs.pop())
 
     return _patch_getpass
 

@@ -9,10 +9,10 @@ from flask import Blueprint, render_template
 from flask_login import current_user, login_required
 from werkzeug import Response
 
-from app import redirect
-from app.forms import EmptyForm, PostForm
-from app.models import Post, db
-from app.security import authorization_required
+from app.utils import redirect
+from app.utils.forms import EmptyForm, PostForm
+from app.utils.models import Post, db
+from app.utils.security import authorization_required
 
 blueprint = Blueprint("post", __name__, url_prefix="/post")
 

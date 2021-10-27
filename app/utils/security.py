@@ -14,8 +14,8 @@ from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
 from werkzeug import Response
 
-from .extensions import login_manager
-from .models import User
+from app.extensions import login_manager
+from app.utils.models import User
 
 
 def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:

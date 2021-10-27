@@ -7,9 +7,9 @@ from typing import Union
 from flask import Blueprint, current_app, render_template, request, url_for
 from werkzeug import Response
 
-from app import redirect
-from app.forms import EmptyForm
-from app.models import Post, User
+from app.utils import redirect
+from app.utils.forms import EmptyForm
+from app.utils.models import Post, User
 
 blueprint = Blueprint("views", __name__)
 

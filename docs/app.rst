@@ -33,23 +33,7 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.forms
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.log
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.mail
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.redirect
    :members:
    :undoc-members:
    :show-inheritance:
@@ -81,19 +65,39 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.security
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.shell
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.tasks
+.. automodule:: app.utils
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.user
+.. automodule:: app.utils.forms
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.utils.mail
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.utils.models
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.utils.redirect
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.utils.security
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.utils.tasks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.utils.user
    :members:
    :undoc-members:
    :show-inheritance:

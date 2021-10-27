@@ -25,7 +25,7 @@ from sqlalchemy_continuum.model_builder import ModelBuilder
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .extensions import db
+from app.extensions import db
 
 _USER_ID = "user.id"
 
@@ -197,7 +197,7 @@ class User(UserMixin, _BaseModel):
         :return: Instantiated `Task` object.
         """
         rq_job = current_app.task_queue.enqueue(  # type: ignore
-            f"app.tasks.{name}", self.id, *args, **kwargs
+            f"app.utils.tasks.{name}", self.id, *args, **kwargs
         )
         task = Task(
             id=rq_job.get_id(),

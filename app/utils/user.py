@@ -11,8 +11,8 @@ from typing import Any
 
 from flask import current_app
 
-from .extensions import login_manager
-from .models import User, Usernames, db
+from app.extensions import login_manager
+from app.utils.models import User, Usernames, db
 
 
 def create_user(

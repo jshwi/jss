@@ -21,8 +21,8 @@ from redis import RedisError
 from app import config
 from app.extensions import mail
 from app.log import smtp_handler
-from app.mail import send_email
-from app.models import Post, User, db
+from app.utils.mail import send_email
+from app.utils.models import Post, User, db
 
 from .utils import (
     ADMIN_ROUTE,
@@ -1451,8 +1451,8 @@ def test_export_post(
         test_app.task_queue = Recorder()  # type: ignore
         test_app.task_queue.enqueue = enqueue  # type: ignore
         test_app.task_queue.enqueue.get_id = lambda: TASK_ID  # type: ignore
-        monkeypatch.setattr("app.models.User.is_authenticated", True)
-        monkeypatch.setattr("app.models.db.session.add", session_add)
+        monkeypatch.setattr("app.utils.models.User.is_authenticated", True)
+        monkeypatch.setattr("app.utils.models.db.session.add", session_add)
         user = User(
             username=user_test_object.username, email=user_test_object.email
         )
@@ -1468,7 +1468,7 @@ def test_export_post(
         )
         client.get("/redirect/export_posts", follow_redirects=True)
 
-    assert "app.tasks.export_posts" in enqueue.args
+    assert "app.utils.tasks.export_posts" in enqueue.args
     task = session_add.args[0]
     assert task.id == task_test_object.id
     assert task.name == task_test_object.name
@@ -1598,13 +1598,13 @@ def test_export_posts(
     """
     # this needs to imported *after* `monkeypatch.setenv` has patched
     # the environment
-    import app.tasks
+    import app.utils.tasks
 
     # faster than waiting for `mail.record_messages` to sync
     # catch `Message` object passed to `mail.send`
     mail_send = Recorder()
-    monkeypatch.setattr("app.mail.mail.send", mail_send)
-    monkeypatch.setattr("app.tasks.time.sleep", lambda _: None)
+    monkeypatch.setattr("app.utils.mail.mail.send", mail_send)
+    monkeypatch.setattr("app.utils.tasks.time.sleep", lambda _: None)
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
     )
@@ -1630,8 +1630,8 @@ def test_export_posts(
     job.meta = {}  # type: ignore
     job.save_meta = Recorder()  # type: ignore
     job.get_id = lambda: task_test_object.id  # type: ignore
-    monkeypatch.setattr("app.tasks.get_current_job", lambda: job)
-    app.tasks.export_posts(1)
+    monkeypatch.setattr("app.utils.tasks.get_current_job", lambda: job)
+    app.utils.tasks.export_posts(1)
     outbox = mail_send.args[0]
     post_obj = [
         dict(
@@ -1665,16 +1665,20 @@ def test_export_posts_err(monkeypatch: pytest.MonkeyPatch) -> None:
     """
     # this needs to imported *after* `monkeypatch.setenv` has patched
     # the environment
-    import app.tasks
+    import app.utils.tasks
 
-    monkeypatch.setattr("app.tasks._app.logger.error", lambda *_, **__: None)
+    monkeypatch.setattr(
+        "app.utils.tasks._app.logger.error", lambda *_, **__: None
+    )
 
     def _set_task_progress(progress: int) -> None:
         # fail when not setting func to 100
         assert progress == 100
 
-    monkeypatch.setattr("app.tasks._set_task_progress", _set_task_progress)
-    app.tasks.export_posts(1)
+    monkeypatch.setattr(
+        "app.utils.tasks._set_task_progress", _set_task_progress
+    )
+    app.utils.tasks.export_posts(1)
 
 
 @pytest.mark.usefixtures("init_db")

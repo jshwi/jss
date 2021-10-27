@@ -9,21 +9,21 @@ from flask_login import current_user, login_required, login_user, logout_user
 from jwt import InvalidTokenError
 from werkzeug import Response
 
-from app import redirect
-from app.forms import (
+from app.utils import redirect
+from app.utils.forms import (
     LoginForm,
     RegistrationForm,
     ResetPasswordForm,
     ResetPasswordRequestForm,
 )
-from app.mail import send_email
-from app.models import User, db
-from app.security import (
+from app.utils.mail import send_email
+from app.utils.models import User, db
+from app.utils.security import (
     generate_confirmation_token,
     generate_reset_password_token,
     get_requested_reset_password_user,
 )
-from app.user import create_user
+from app.utils.user import create_user
 
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 

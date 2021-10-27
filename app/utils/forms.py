@@ -23,7 +23,7 @@ from wtforms.validators import (
     ValidationError,
 )
 
-from .models import User
+from app.utils.models import User
 
 
 class RegistrationForm(FlaskForm):

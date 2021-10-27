@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, Optional
 from flask import Flask, current_app
 from flask_mail import Message
 
-from .extensions import mail
+from app.extensions import mail
 
 
 def _send_async_email(app: Flask, msg: Message) -> None:
