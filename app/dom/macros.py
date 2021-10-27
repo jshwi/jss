@@ -16,6 +16,7 @@ from typing import List
 from dominate import tags
 from dominate.tags import html_tag
 from flask import get_flashed_messages, url_for
+from flask_login import current_user
 from markupsafe import Markup
 
 from app.utils.models import Post
@@ -86,5 +87,26 @@ def flash_messages() -> html_tag:
     div = tags.div()
     for message in get_flashed_messages():
         div.add(tags.div(message, cls="alert alert-info", role="alert"))
+
+    return div
+
+
+@macros.register
+def task_progress() -> html_tag:
+    """Display a tasks progress as its percentage through progress bar.
+
+    :return: Task progress display as percentage within
+        ``<div>...</div>`` ``html_tag`` object.
+    """
+    div = tags.div()
+    if current_user.is_authenticated:
+        for task in current_user.get_tasks_in_progress():
+            div.add(
+                tags.div(
+                    task.description,
+                    tags.span(task.get_progress(), id=f"{task.id}-progress"),
+                    cls="alert alert-success",
+                )
+            )
 
     return div

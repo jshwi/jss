@@ -14,21 +14,3 @@
 {% macro timestamp(datetime) %}
     {{ moment(datetime).format("h:mmA DD/MM/YYYY") }}
 {% endmacro %}
-
-{# tasks progress bar #}
-{% macro task_progress() %}
-    {% if current_user.is_authenticated %}
-        {% with tasks = current_user.get_tasks_in_progress() %}
-            {% if tasks %}
-                {% for task in tasks %}
-                    <div class="alert alert-success" role="alert">
-                        {{ task.description }}
-
-                        {# as percentage #}
-                        <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    {% endif %}
-{% endmacro %}
