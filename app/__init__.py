@@ -36,10 +36,10 @@ from . import (
     cli,
     config,
     deps,
+    dom,
     exceptions,
     extensions,
     log,
-    navbar,
     routes,
     shell,
 )
@@ -64,5 +64,5 @@ def create_app() -> Flask:
     exceptions.init_app(app)
     shell.init_app(app)
     cli.init_app(app)
-    navbar.init_app(app)
+    dom.init_app(app)
     return app

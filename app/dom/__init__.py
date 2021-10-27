@@ -1,6 +1,6 @@
 """
-app.navbar
-==========
+app.html
+========
 """
 from dominate import tags
 from flask import Flask, current_app
@@ -8,8 +8,7 @@ from flask_login import current_user
 from flask_nav import register_renderer
 from flask_nav.elements import Subgroup, View
 
-from .extensions import nav
-from .renderers import (
+from app.dom.renderers import (
     BadgedView,
     IconView,
     ListGroup,
@@ -18,6 +17,7 @@ from .renderers import (
     RawUrl,
     Toggler,
 )
+from app.extensions import nav
 
 # apply dark-mode from darkreader: https://darkreader.org/
 # toggle CSS rules in templates/base.html
