@@ -5,10 +5,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.admin
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.cli
    :members:
    :undoc-members:
@@ -58,6 +54,10 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.routes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.routes.admin
    :members:
    :undoc-members:
    :show-inheritance:

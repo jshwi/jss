@@ -33,7 +33,6 @@ Registers:
 from flask import Flask
 
 from . import (
-    admin,
     cli,
     config,
     deps,
@@ -65,6 +64,5 @@ def create_app() -> Flask:
     exceptions.init_app(app)
     shell.init_app(app)
     cli.init_app(app)
-    admin.init_app(app)
     navbar.init_app(app)
     return app

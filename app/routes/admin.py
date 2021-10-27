@@ -9,9 +9,9 @@ from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib import sqla
 from flask_login import current_user, login_required
 
-from .extensions import db
-from .models import Message, Notification, Post, Task, User
-from .security import admin_required
+from app.extensions import db
+from app.models import Message, Notification, Post, Task, User
+from app.security import admin_required
 
 _INDEX = "index"
 
