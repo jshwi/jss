@@ -15,7 +15,7 @@ from typing import List
 
 from dominate import tags
 from dominate.tags import html_tag
-from flask import url_for
+from flask import get_flashed_messages, url_for
 from markupsafe import Markup
 
 from app.utils.models import Post
@@ -72,5 +72,19 @@ def version_dropdown(post: Post) -> html_tag:
         else:
             # all other versions
             a.add(f"v{version_id}")
+
+    return div
+
+
+@macros.register
+def flash_messages() -> html_tag:
+    """Render flashed messages.
+
+    :return: Flashed messages within``<div>...</div>`` as ``html_tag``
+        object.
+    """
+    div = tags.div()
+    for message in get_flashed_messages():
+        div.add(tags.div(message, cls="alert alert-info", role="alert"))
 
     return div
