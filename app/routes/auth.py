@@ -2,12 +2,10 @@
 app.routes.auth
 ===============
 """
-from datetime import datetime
 from typing import Union
 
 from flask import Blueprint, flash, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from itsdangerous import BadSignature
 from jwt import InvalidTokenError
 from werkzeug import Response
 
@@ -21,7 +19,6 @@ from app.forms import (
 from app.mail import send_email
 from app.models import User, db
 from app.security import (
-    confirm_token,
     generate_confirmation_token,
     generate_reset_password_token,
     get_requested_reset_password_user,
@@ -56,7 +53,7 @@ def register() -> Union[str, Response]:
             html=render_template(
                 "email/activate.html",
                 confirm_url=url_for(
-                    "auth.confirm_email",
+                    "redirect.confirm_email",
                     token=generate_confirmation_token(current_user.email),
                     _external=True,
                 ),
@@ -125,35 +122,6 @@ def logout() -> Response:
     return redirect.index()
 
 
-@blueprint.route("/<token>", methods=["GET"])
-@login_required
-def confirm_email(token: str) -> Response:
-    """Confirm each individual user registering with their email.
-
-    There is no view for this route and so the user will be redirected
-    to the index page.
-
-    :param token: Encrypted token to verify correct user.
-    :return: Response object redirect to index view.
-    """
-    try:
-        email = confirm_token(token)
-        user = User.query.filter_by(email=email).first()
-        if user.confirmed:
-            flash("Account already confirmed. Please login.")
-        else:
-            user.confirmed = True
-            user.confirmed_on = datetime.now()
-            db.session.add(user)
-            db.session.commit()
-            flash("Your account has been verified.")
-
-    except BadSignature:
-        flash("The confirmation link is invalid or has expired.")
-
-    return redirect.index()
-
-
 @blueprint.route("/unconfirmed", methods=["GET"])
 @login_required
 def unconfirmed() -> str:
@@ -162,32 +130,6 @@ def unconfirmed() -> str:
     :return: Rendered auth/unconfirmed template.
     """
     return render_template("auth/unconfirmed.html")
-
-
-@blueprint.route("/resend", methods=["GET"])
-@login_required
-def resend_confirmation() -> Response:
-    """Resend verification email.
-
-    There is no view for this route and so the user will be redirected
-    to the auth/unconfirmed view.
-
-    :return: Response object redirect to auth/unconfirmed view.
-    """
-    send_email(
-        subject="Please verify your email address",
-        recipients=[current_user.email],
-        html=render_template(
-            "email/activate.html",
-            confirm_url=url_for(
-                "auth.confirm_email",
-                token=generate_confirmation_token(current_user.email),
-                _external=True,
-            ),
-        ),
-    )
-    flash("A new confirmation email has been sent.")
-    return redirect.Auth.unconfirmed()
 
 
 @blueprint.route("/request_password_reset", methods=["GET", "POST"])

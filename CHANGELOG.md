@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.7.0...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- Prefixes redirects with /redirect
 - Updates route names for /admin
 
 [1.7.0](https://github.com/jshwi/jss/releases/tag/v1.7.0) - 2021-10-24

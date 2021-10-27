@@ -13,7 +13,7 @@ based on its name and arguments.
 """
 from flask import Flask
 
-from app.routes import auth, views
+from app.routes import auth, redirect, views
 
 
 def init_app(app: Flask) -> None:
@@ -26,4 +26,5 @@ def init_app(app: Flask) -> None:
     app.jinja_env.strip_trailing_newlines = False
     app.register_blueprint(views.blueprint)
     app.register_blueprint(auth.blueprint)
+    app.register_blueprint(redirect.blueprint)
     app.add_url_rule("/", endpoint="index")

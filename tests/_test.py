@@ -186,7 +186,7 @@ def test_logout(client: FlaskClient, auth: AuthActions) -> None:
     )
     auth.login(user_test_object)
     with client:
-        auth.logout()
+        client.get("/redirect/logout")
         assert "user_id" not in session
 
 
@@ -236,7 +236,7 @@ def test_index(
     assert 'href="/1/update/"' in response
 
 
-@pytest.mark.parametrize("route", ["/create", UPDATE1, "/1/delete"])
+@pytest.mark.parametrize("route", ["/create", UPDATE1, "/redirect/1/delete"])
 def test_login_required(client: FlaskClient, route: str) -> None:
     """Test requirement that user be logged in to post.
 
@@ -302,7 +302,7 @@ def test_author_required(
     auth.login(user_test_object)
     # current user cannot modify other user's post
     assert client.post(UPDATE1, follow_redirects=True).status_code == 403
-    assert client.post("/1/delete").status_code == 403
+    assert client.post("/redirect/1/delete").status_code == 403
 
     # current user doesn't see edit link
     assert b'href="/1/update"' not in client.get("/").data
@@ -445,7 +445,7 @@ def test_delete(
     )
     add_test_post(post_test_object)
     auth.login(user_test_object)
-    response = client.post("/1/delete")
+    response = client.post("/redirect/1/delete")
     assert response.headers["Location"] == "http://localhost/"
     with test_app.app_context():
         post = Post.query.get(1)
@@ -644,7 +644,7 @@ def test_404_error(client: FlaskClient) -> None:
 
 
 @pytest.mark.usefixtures("init_db")
-@pytest.mark.parametrize("route", ["/create", UPDATE1, "/1/delete"])
+@pytest.mark.parametrize("route", ["/create", UPDATE1, "/redirect/1/delete"])
 def test_admin_required(
     client: FlaskClient,
     auth: AuthActions,
@@ -789,7 +789,7 @@ def test_confirmation_email_expired(
                 max_age=1,
             )
             monkeypatch.setattr(
-                "app.routes.auth.confirm_token", lambda _: confirm_token()
+                "app.routes.redirect.confirm_token", lambda _: confirm_token()
             )
             response = client.get(route, follow_redirects=True)
             assert INVALID_OR_EXPIRED in response.data.decode()
@@ -838,7 +838,7 @@ def test_confirmation_email_resend(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     auth.register(user_test_object)
-    response = client.get("auth/resend", follow_redirects=True)
+    response = client.get("/redirect/resend", follow_redirects=True)
     assert b"A new confirmation email has been sent." in response.data
 
 
@@ -1244,14 +1244,16 @@ def test_post_follow_unfollow_routes(
     auth.login(user_test_object_1)
     auth.login(user_test_object_2)
     response = client.post(
-        f"/follow/{user_test_object_2.username}", follow_redirects=True
+        f"/redirect/follow/{user_test_object_2.username}",
+        follow_redirects=True,
     )
     assert (
         f"You are now following {user_test_object_2.username}"
         in response.data.decode()
     )
     response = client.post(
-        f"/unfollow/{user_test_object_2.username}", follow_redirects=True
+        f"/redirect/unfollow/{user_test_object_2.username}",
+        follow_redirects=True,
     )
     assert (
         f"You are no longer following {MAIN_USER_USERNAME}"
@@ -1297,7 +1299,7 @@ def test_send_message(
         f"Send Message to {user_test_object_2.username}"
         in response.data.decode()
     )
-    auth.logout()
+    client.get("/redirect/logout")
     auth.login(user_test_object_2)
 
     # test icon span
@@ -1397,8 +1399,10 @@ def test_export_post_is_job(
     app_current_user.username = ADMIN_USER_USERNAME  # type: ignore
     with test_app.app_context():
         app_current_user.post = Post.query.get(1)  # type: ignore
-        monkeypatch.setattr("app.routes.views.current_user", app_current_user)
-        response = client.get("/export_posts", follow_redirects=True)
+        monkeypatch.setattr(
+            "app.routes.redirect.current_user", app_current_user
+        )
+        response = client.get("/redirect/export_posts", follow_redirects=True)
 
     assert b"An export task is already in progress" in response.data
 
@@ -1452,7 +1456,7 @@ def test_export_post(
         app_current_user.username = user_test_object.username
         app_current_user.post = Post.query.get(1)
         monkeypatch.setattr("app.routes.views.current_user", app_current_user)
-        client.get("/export_posts", follow_redirects=True)
+        client.get("/redirect/export_posts", follow_redirects=True)
 
     assert "app.tasks.export_posts" in enqueue.args
     task = session_add.args[0]
@@ -1728,7 +1732,7 @@ def test_admin_access_control(
     assert (
         client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 200
     )
-    auth.logout()
+    client.get("/redirect/logout")
     auth.login(regular_user_test_object)
     assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 401
     assert (

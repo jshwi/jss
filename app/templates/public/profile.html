@@ -37,7 +37,7 @@
 
             {# user can start a new task if one isn"t already running #}
             {% if not current_user.get_task_in_progress('export_posts') %}
-                <p><a href="{{ url_for('views.export_posts') }}">Export posts</a></p>
+                <p><a href="{{ url_for('redirect.export_posts') }}">Export posts</a></p>
             {% endif %}
         {% else %}
             {# option to send a message to other user #}
@@ -45,14 +45,14 @@
             {% if not current_user.is_following(user) %}
 
                 {# option to follow user if not already following #}
-                <form action="{{ url_for('views.follow', username=user.username) }}" method="post">
+                <form action="{{ url_for('redirect.follow', username=user.username) }}" method="post">
                     {{ form.hidden_tag() }}
                     {{ wtf.form_field(form.submit, value="Follow") }}
                 </form>
             {% else %}
 
                 {# option to unfollow user if already following #}
-                <form action="{{ url_for('views.unfollow', username=user.username) }}" method="post">
+                <form action="{{ url_for('redirect.unfollow', username=user.username) }}" method="post">
                     {{ form.hidden_tag() }}
                     {{ wtf.form_field(form.submit, value="Unfollow") }}
                 </form>

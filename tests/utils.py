@@ -143,11 +143,11 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
         401,  # unauthorized,
         [
             "/admin/",
-            "/auth/<token>",
-            "/auth/resend",
+            "/redirect/<token>",
+            "/redirect/resend",
             "/auth/unconfirmed",
             "/create",
-            "/export_posts",
+            "/redirect/export_posts",
             "/messages",
             "/profile/edit",
             "/send_message/<recipient>",
@@ -160,7 +160,11 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
     ),
     (
         405,  # method not allowed
-        ["/follow/<username>", "/unfollow/<username>", "/<int:id>/delete"],
+        [
+            "/redirect/follow/<username>",
+            "/redirect/unfollow/<username>",
+            "/redirect/<int:id>/delete",
+        ],
     ),
 ]
 COVERED_ROUTES = [r for _, l in STATUS_CODE_TO_ROUTE_DEFAULT for r in l]
@@ -241,7 +245,6 @@ class AuthActions:
     prefix = "auth"
     register_route = f"{prefix}/register"
     login_route = f"{prefix}/login"
-    logout_route = f"{prefix}/logout"
     request_password_reset_route = f"{prefix}/request_password_reset"
 
     def __init__(self, client: FlaskClient) -> None:
@@ -264,13 +267,6 @@ class AuthActions:
             },
             follow_redirects=follow_redirects,
         )
-
-    def logout(self) -> Response:
-        """Set the client to the logout state.
-
-        :return: Response object.
-        """
-        return self._client.get(self.logout_route)
 
     def register(
         self, user_test_object: UserTestObject, follow_redirects: bool = False
