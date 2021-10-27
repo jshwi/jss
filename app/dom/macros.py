@@ -64,6 +64,7 @@ def version_dropdown(post: Post) -> html_tag:
         if version_id == len(versions):
             # the last version is the current version
             a.add(f"v{version_id}: This revision")
+            a["style"] = "pointer-events: none"
         elif version_id == len(versions) - 1:
             # the version before the current version is highlighted for
             # easy rollback
