@@ -32,7 +32,7 @@ Registers:
 """
 from flask import Flask
 
-from . import (
+from app import (
     cli,
     config,
     deps,

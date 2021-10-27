@@ -6,7 +6,7 @@ Define attributes regarding use of ``flask shell``.
 """
 from flask import Flask
 
-from .utils.models import (
+from app.utils.models import (
     Message,
     Notification,
     Post,

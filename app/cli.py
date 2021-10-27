@@ -8,7 +8,7 @@ import click
 from flask import Flask
 from flask.cli import with_appcontext
 
-from .utils.user import create_admin_cli, create_user_cli
+from app.utils.user import create_admin_cli, create_user_cli
 
 
 @click.group()
