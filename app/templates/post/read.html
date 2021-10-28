@@ -1,7 +1,6 @@
 {# post.html #}
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
-{% import "macros.html" as macros with context %}
 
 {# page header and browser tab #}
 {% block page_name %}{{ dom_text_post_title(post, revision) }}{% endblock %}

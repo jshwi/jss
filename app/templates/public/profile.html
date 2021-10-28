@@ -1,7 +1,6 @@
 {# profile.html #}
 {% extends "posts.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
-{% import "macros.html" as macros with context %}
 
 {# page header and browser tab #}
 {% block page_name %}{{ user.username }}{% endblock %}
@@ -10,7 +9,7 @@
 {% block app_content %}
 
     {# user"s avatar #}
-    {{ macros.avatar(user) }}
+    <img src="{{ user.avatar(70) }}" alt="{{ user.username }}"/>
 
     {# if user"s info has been added, display it #}
     {% if user.about_me %}
@@ -19,7 +18,7 @@
 
     {# when user"s profile has last been seen #}
     {% if user.last_seen %}
-        <p>Last seen on: {{ macros.timestamp(user.last_seen) }}</p>
+        <p>Last seen on: {{ moment(user.last_seen).format("h:mmA DD/MM/YYYY") }}</p>
     {% endif %}
 
     {# user can follow and unfollow user if they are logged in #}
