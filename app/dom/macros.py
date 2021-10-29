@@ -228,3 +228,21 @@ def post_footer_nav(
         a["href"] = "#"
 
     return nav
+
+
+@macros.register
+def post_times(post: Post) -> html_tag:
+    """Display time user created post.
+
+    If user has edited their post show the timestamp for that as well.
+
+    :param post: Post ORM object.
+    :return: Rendered paragraph tag with post's timestamp information.
+    """
+    p = tags.p(
+        "Posted: ", moment(post.created).format(DATETIME_FMT), cls="small"
+    )
+    if post.edited is not None:
+        p.add(tags.br(), "Edited: ", moment(post.edited).format(DATETIME_FMT))
+
+    return p

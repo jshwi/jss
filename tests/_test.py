@@ -417,6 +417,7 @@ def test_update(
     add_test_post(created_post)
     auth.login(user_test_object)
     assert client.get(UPDATE1, follow_redirects=True).status_code == 200
+    assert "Edited" not in client.get("/post/1").data.decode()
     client.post(
         UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
     )
@@ -424,6 +425,8 @@ def test_update(
         post = Post.query.get(1)
         assert post.title == updated_post.title
         assert post.body == updated_post.body
+
+    assert "Edited" in client.get("/post/1").data.decode()
 
 
 @pytest.mark.usefixtures("init_db")

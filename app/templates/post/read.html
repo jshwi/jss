@@ -17,12 +17,7 @@
 {% block app_content %}
 
     {# post created and edited times shown in small font #}
-    <p class="small">
-        Posted: {{ macros.timestamp(post.created) }}
-        {% if post.edited %}
-            (Edited: {{ macros.timestamp(post.edited) }})
-        {% endif %}
-    </p>
+    {{ dom_macros_post_times(post) }}
 
     {# post body as HTML rendered client side #}
     {{ post.body|markdown }}
