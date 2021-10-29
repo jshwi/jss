@@ -57,7 +57,7 @@ def read(id: int) -> Union[str, Response]:
     return render_template("post/read.html", post=post, revision=revision)
 
 
-@blueprint.route("/<int:id>/update/", methods=["GET", "POST"])
+@blueprint.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
 @authorization_required
 def update(id: int) -> Union[str, Response]:

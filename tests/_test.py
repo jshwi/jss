@@ -241,7 +241,7 @@ def test_index(
     assert post_test_object.title in response
     assert user_test_object.username in response
     assert post_test_object.body in response
-    assert 'href="/post/1/update/"' in response
+    assert 'href="/post/1/update"' in response
 
 
 @pytest.mark.parametrize(
@@ -2036,7 +2036,7 @@ def test_versioning_handle_index_error(
     add_test_user(user_test_object)
     add_test_post(created_post)
     auth.login(user_test_object)
-    assert client.get("/post/1/update/?revision=1").status_code == 404
+    assert client.get("/post/1/update?revision=1").status_code == 404
 
 
 def test_config_copyright(

@@ -18,7 +18,7 @@ from werkzeug.security import generate_password_hash
 
 from app.utils.models import User
 
-UPDATE1 = "/post/1/update/"
+UPDATE1 = "/post/1/update"
 ADMIN_USER_USERNAME = "admin"
 ADMIN_USER_EMAIL = "admin@test.com"
 ADMIN_USER_PASSWORD = "pass0"
@@ -155,7 +155,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/user/send_message/<recipient>",
             "/user/messages",
             "/user/notifications",
-            "/post/<int:id>/update/",
+            "/post/<int:id>/update",
         ],
     ),
     (
