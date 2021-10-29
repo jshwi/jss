@@ -3,15 +3,8 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 {% import "macros.html" as macros with context %}
 
-{# display version numbers if there are multiple versions #}
-{# user needs to own post to see this information #}
-{% set title = post.title %}
-{% if revision != -1 %}
-    {% set title = "%s (v%s)"|format(title, revision + 1) %}
-{% endif %}
-
 {# page header and browser tab #}
-{% block page_name %}{{ title }}{% endblock %}
+{% block page_name %}{{ dom_text_post_title(post, revision) }}{% endblock %}
 
 {# page body containing post information #}
 {% block app_content %}
