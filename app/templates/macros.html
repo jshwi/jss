@@ -1,10 +1,5 @@
 {# macros.html #}
 
-{# link to the profile page of posting author #}
-{% macro profile(author) %}
-    {{ url_for("views.profile", username=author.username) }}
-{% endmacro %}
-
 {# link to avatar of the posting author #}
 {% macro avatar(user, size=70) %}
     <img src="{{ user.avatar(size) }}" alt="{{ user.username }}"/>

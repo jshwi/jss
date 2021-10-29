@@ -11,16 +11,20 @@ are registered into context processor they will be wrapped with
 ``Markup``.
 """
 # pylint: disable=invalid-name
-from typing import List
+from typing import List, Union
 
 from dominate import tags
 from dominate.tags import html_tag
 from flask import get_flashed_messages, url_for
 from flask_login import current_user
+from flask_moment import moment
 from markupsafe import Markup
 
-from app.utils.models import Post
+from app.extensions import markdown
+from app.utils.models import Message, Post
 from app.utils.register import RegisterContext
+
+DATETIME_FMT = "h:mmA DD/MM/YYYY"
 
 # reference to this module
 # replace invalid dot notation for function names with underscores
@@ -108,5 +112,83 @@ def task_progress() -> html_tag:
                     cls="alert alert-success",
                 )
             )
+
+    return div
+
+
+@macros.register
+def read_posts(posts: Union[Post, Message]) -> html_tag:
+    """Display posts depending on what post collection is provided.
+
+    :param posts: Post ORM object.
+    :return: Posts within ``<div>...</div>`` ``html_tag`` object.
+    """
+    div = tags.div()
+    for post in posts.items:
+
+        # link to profile of the user who created the current iteration
+        # of posts
+        profile_url = url_for("views.profile", username=post.author.username)
+
+        # this will group each individual post, visibly separated by a
+        # horizontal rule
+        # table will be separated by a left section with user
+        # information and a right section displaying the post
+        table, _ = div.add(tags.table(cls="table table-hover"), tags.tr())
+
+        # user information
+        left_td = table.add(tags.td(style="width: 150px"))
+        left_td.add(
+            # user's avatar linked to their profile
+            tags.a(
+                tags.img(src=post.author.avatar(70), img=post.author.username),
+                href=profile_url,
+            ),
+            # user's bio
+            tags.div(
+                tags.a(post.author.username, href=profile_url),
+                tags.br(),
+                moment(post.created).format(DATETIME_FMT),
+                cls="about",
+            ),
+        )
+
+        # display post
+        right_td = table.add(tags.td())
+        h1 = right_td.add(tags.h1())
+
+        # post title linked to the post's full page
+        a = h1.add(tags.a(href=url_for("post.read", id=post.id)))
+
+        # variable data depending on whether the ``Post/Message``
+        # object is a ``Post`` object and not a ``Message`` object
+        if isinstance(post, Post):
+
+            # variable data depending on whether the user profile loaded
+            # is of a user profile being viewed by another user or a
+            # user profile being viewed by that user
+            a.add(post.title)
+            if (
+                current_user.is_authenticated
+                and current_user.id == post.user_id
+            ):
+
+                # a ``Post`` can be edited by the user who created it
+                left_td.add(
+                    tags.a(
+                        "Edit",
+                        cls="action",
+                        href=url_for("post.update", id=post.id),
+                    )
+                )
+
+                # if the length of versions is more than 1 (1 being the
+                # initial version) then there are other versions that
+                # can be reviewed with the dropdown
+                if post.versions.count() > 1:
+                    left_td.add(version_dropdown(post))
+
+        # display the post content as rendered markdown html
+        right_td.add(tags.div(markdown.render(post.body)))
 
     return div

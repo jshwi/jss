@@ -1,60 +1,12 @@
 {# posts.html
 this is the base template for pages displaying posts #}
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-{% import "macros.html" as macros with context %}
 
 {# overrides empty post block in base template #}
 {% block posts %}
 
     {# iterate over posts and display #}
-    {% for post in posts.items %}
-
-        {# table consists of poster's summary and post #}
-        {# if user logged in is also the poster, edit options will be included in summary #}
-        <table class="table table-hover">
-            <tr>
-
-                {# poster's profile view, to the left of posts #}
-                <td style="width: 150px">
-
-                    {# poster's avatar directs user to their profile #}
-                    <a href="{{ macros.profile(post.author) }}">{{ macros.avatar(post.author) }}</a>
-                    <div class="about">
-
-                        {# poster's name directs user to their profile #}
-                        <a href="{{ macros.profile(post.author) }}">{{ post.author.username }}</a>
-                        <br>
-                        {{ macros.timestamp(post.created) }}
-                    </div>
-
-                    {# logic to apply to poster if they are logged in #}
-                    {% if current_user.id == post.user_id %}
-
-                        {# logged in user can edit the post #}
-                        <a class="action" href="{{ url_for("post.update", id=post.id) }}">Edit</a>
-
-                        {# logged in user can view and restore versions #}
-                        {# only show dropdown if versions exist #}
-                        {% if post.versions.count() > 1 %}
-
-                            {# dropdown menu of existing versions to roll back to #}
-                            {{ dom_macros_version_dropdown(post) }}
-                        {% endif %}
-                    {% endif %}
-                    <br>
-                </td>
-                <td>
-
-                    {# post title links to its own dedicated page #}
-                    <h1><a href="{{ url_for("post.read", id=post.id) }}">{{ post.title }}</a></h1>
-
-                    {# post body as HTML rendered client side #}
-                    {{ post.body| markdown }}
-                </td>
-            </tr>
-        </table>
-    {% endfor %}
+    {{ dom_macros_read_posts(posts) }}
 
     {# posts are listed in descending order: newer posts are on the left #}
     <nav aria-label="...">
