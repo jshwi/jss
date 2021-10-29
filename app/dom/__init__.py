@@ -5,6 +5,7 @@ app.html
 from flask import Flask
 from flask_nav import register_renderer
 
+from app.dom import macros
 from app.dom.navbar import top
 from app.dom.renderers import NavbarRenderer
 from app.extensions import nav

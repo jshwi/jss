@@ -68,6 +68,7 @@ from .utils import (
     POST_BODY_4,
     POST_BODY_V1,
     POST_BODY_V2,
+    POST_BODY_V3,
     POST_CREATED_1,
     POST_CREATED_2,
     POST_CREATED_3,
@@ -78,6 +79,7 @@ from .utils import (
     POST_TITLE_4,
     POST_TITLE_V1,
     POST_TITLE_V2,
+    POST_TITLE_V3,
     PROFILE_EDIT,
     SETUP_FILE,
     STATUS_CODE_TO_ROUTE_DEFAULT,
@@ -2269,3 +2271,66 @@ def test_register_text(monkeypatch: pytest.MonkeyPatch) -> None:
 
     registered = RegisterContext.registered()
     assert registered["dom_text_registered_text"]() == test_str
+
+
+@pytest.mark.usefixtures("init_db")
+def test_version_dropdown(
+    test_app: Flask,
+    client: FlaskClient,
+    auth: AuthActions,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+) -> None:
+    """Test version dropdown.
+
+    Test all 3 variations of unordered list items.
+
+    :param test_app: Test ``Flask`` app object.
+    :param client: App's test-client API.
+    :param auth: Handle authorization with test app.
+    :param add_test_user: Add user to test database.
+    :param add_test_post: Add post to test database.
+    """
+    user_test_object = UserTestObject(
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
+        confirmed=True,
+    )
+    add_test_user(user_test_object)
+    post_test_object = PostTestObject(
+        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    add_test_post(post_test_object)
+    auth.login(user_test_object)
+
+    # create 3 versions (2 other, apart from the original) for all
+    # naming branches
+    with test_app.app_context():
+        post = Post.query.get(1)
+        post.title = POST_TITLE_V2
+        post.body = POST_BODY_V2
+        db.session.commit()
+        post.title = POST_TITLE_V3
+        post.body = POST_BODY_V3
+        db.session.commit()
+
+    response = client.get("/")
+    assert (
+        "        <li>\n"
+        '         <a href="/post/1?revision=0">\n'
+        "          v1\n"
+        "         </a>\n"
+        "        </li>\n"
+        "        <li>\n"
+        '         <a href="/post/1?revision=1">\n'
+        "          v2: Previous revision\n"
+        "         </a>\n"
+        "        </li>\n"
+        "        <li>\n"
+        '         <a href="/post/1?revision=2">\n'
+        "          v3: This revision\n"
+        "         </a>\n"
+        "        </li>\n"
+    ) in response.data.decode()

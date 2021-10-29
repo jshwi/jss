@@ -39,7 +39,7 @@ this is the base template for pages displaying posts #}
                         {% if post.versions.count() > 1 %}
 
                             {# dropdown menu of existing versions to roll back to #}
-                            {{ macros.versions(post) }}
+                            {{ dom_macros_version_dropdown(post) }}
                         {% endif %}
                     {% endif %}
                     <br>

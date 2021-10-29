@@ -21,6 +21,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.dom.macros
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.dom.navbar
    :members:
    :undoc-members:
