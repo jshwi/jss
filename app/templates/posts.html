@@ -14,12 +14,12 @@ this is the base template for pages displaying posts #}
 
             {# show link to newer posts on left side with arrow #}
             <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or "#" }}"><span aria-hidden="true">&larr;</span> Newer posts</a>
+                <a href="{{ prev_url or "#" }}">Newer posts</a>
             </li>
 
             {# show link to older posts on right side with arrow #}
             <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or "#" }}">Older posts <span aria-hidden="true">&rarr;</span></a>
+                <a href="{{ next_url or "#" }}">Older posts</a>
             </li>
         </ul>
     </nav>

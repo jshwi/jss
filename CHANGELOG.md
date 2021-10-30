@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.7.1...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- Removes arrows from post navigation footer
 - Disables `vX: This revision` link in version dropdown
 - Formats rendered HTML
 
