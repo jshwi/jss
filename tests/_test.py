@@ -912,10 +912,7 @@ def test_email_does_not_exist(auth: AuthActions) -> None:
     :param auth: Handle authorization with test app.
     """
     response = auth.request_password_reset(MAIN_USER_EMAIL)
-    assert (
-        b"An account with that email address doesn&#39;t exist"
-        in response.data
-    )
+    assert b"An account with that email address doesn't exist" in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1063,7 +1060,9 @@ def test_post_page(
     add_test_user(user_test_object)
     add_test_post(post_test_object)
     response = client.get("/post/1")
-    assert f"<h1>{POST_TITLE_1}</h1>" in response.data.decode()
+    assert (
+        f"    <h1>\n     {POST_TITLE_1}\n    </h1>\n"
+    ) in response.data.decode()
     assert POST_BODY_1 in response.data.decode()
 
 
@@ -1320,15 +1319,18 @@ def test_send_message(
     # held for the user
     response = client.get("/")
     assert (
-        "        <li>\n"
-        '          <a class="btn-lg btn-link" href="/user/messages"'
+        "      <li>\n"
+        '       <a class="btn-lg btn-link" href="/user/messages"'
         ' title="Messages">\n'
-        '            <span class="bi-bell"></span>\n'
-        '            <span class="badge icon-badge-notify"'
-        ' id="message_count" style="visibility: visible">1'
-        "</span>\n"
-        "          </a>\n"
-        "        </li>\n"
+        '        <span class="bi-bell">\n'
+        "        </span>\n"
+        '        <span class="badge icon-badge-notify" id="message_count"'
+        ' style="visibility: visible">\n'
+        "         1\n"
+        "        </span>\n"
+        "       </a>\n"
+        "      </li>\n"
+        "      <li>\n"
     ) in response.data.decode()
 
     # for reliable testing ensure navbar not set to display icons
@@ -1339,13 +1341,15 @@ def test_send_message(
     # held for the user
     response = client.get("/")
     assert (
-        "        <li>\n"
-        '          <a class="" href="/user/messages" title="Messages">'
-        "Messages\n"
-        '            <span class="badge" id="message_count"'
-        ' style="visibility: visible">1</span>\n'
-        "          </a>\n"
-        "        </li>\n"
+        "      <li>\n"
+        '       <a class="" href="/user/messages" title="Messages">\n'
+        "        Messages\n"
+        '        <span class="badge" id="message_count" '
+        'style="visibility: visible">\n'
+        "         1\n"
+        "        </span>\n"
+        "       </a>\n"
+        "      </li>\n"
     ) in response.data.decode()
     response = client.get("/user/notifications")
     if response.json is not None:
@@ -1365,13 +1369,16 @@ def test_send_message(
     # link
     response = client.get("/")
     assert (
-        "        <li>\n"
-        '          <a class="" href="/user/messages" title="Messages">'
-        "Messages\n"
-        '            <span class="badge" id="message_count"'
-        ' style="visibility: disable">0</span>\n'
-        "          </a>\n"
-        "        </li>\n"
+        "      <li>\n"
+        '       <a class="" href="/user/messages" title="Messages">\n'
+        "        Messages\n"
+        '        <span class="badge" id="message_count"'
+        ' style="visibility: disable">\n'
+        "         0\n"
+        "        </span>\n"
+        "       </a>\n"
+        "      </li>\n"
+        "      <li>\n"
     ) in response.data.decode()
 
 
@@ -2068,7 +2075,10 @@ def test_navbar_home_config_switch(
     config.init_app(test_app)
     assert test_app.config["NAVBAR_HOME"] is True
     response = client.get("/")
-    assert '<a href="/" title="Home">Home</a>' in response.data.decode()
+    assert (
+        '       <a href="/" title="Home">\n        Home\n       </a>\n'
+        in response.data.decode()
+    )
 
 
 @pytest.mark.usefixtures("init_db")
@@ -2098,26 +2108,28 @@ def test_navbar_user_dropdown_config_switch(
     add_test_user(user_test_object)
     auth.login(user_test_object)
 
-    common_user_list_items = (
-        "            <li>\n"
-        '              <a href="/admin" title="Console">Console</a>\n'
-        "            </li>\n"
-        "            <li>\n"
-        '              <a href="/profile/admin" title="Profile">Profile</a>\n'
-        "            </li>\n"
-        "            <li>\n"
-        '              <a href="/auth/logout" title="Logout">Logout</a>\n'
-        "            </li>\n"
-    )
-
     # test user subgroup when dropdown set to False
     monkeypatch.setenv("NAVBAR_USER_DROPDOWN", "0")
     config.init_app(test_app)
     response = client.get("/")
     expected = (
-        '          <div class="list-group">\n'
-        f"{common_user_list_items}"
-        "          </div>\n"
+        '       <div class="list-group">\n'
+        "        <li>\n"
+        '         <a href="/admin" title="Console">\n'
+        "          Console\n"
+        "         </a>\n"
+        "        </li>\n"
+        "        <li>\n"
+        '         <a href="/profile/admin" title="Profile">\n'
+        "          Profile\n"
+        "         </a>\n"
+        "        </li>\n"
+        "        <li>\n"
+        '         <a href="/auth/logout" title="Logout">\n'
+        "          Logout\n"
+        "         </a>\n"
+        "        </li>\n"
+        "       </div>\n"
     )
     assert expected in response.data.decode()
 
@@ -2126,9 +2138,23 @@ def test_navbar_user_dropdown_config_switch(
     config.init_app(test_app)
     response = client.get("/")
     expected = (
-        '          <ul class="dropdown-menu">\n'
-        f"{common_user_list_items}"
-        "          </ul>\n"
+        '       <ul class="dropdown-menu">\n'
+        "        <li>\n"
+        '         <a href="/admin" title="Console">\n'
+        "          Console\n"
+        "         </a>\n"
+        "        </li>\n"
+        "        <li>\n"
+        '         <a href="/profile/admin" title="Profile">\n'
+        "          Profile\n"
+        "         </a>\n"
+        "        </li>\n"
+        "        <li>\n"
+        '         <a href="/auth/logout" title="Logout">\n'
+        "          Logout\n"
+        "         </a>\n"
+        "        </li>\n"
+        "       </ul>\n"
     )
     assert expected in response.data.decode()
 

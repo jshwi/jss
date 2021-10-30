@@ -32,6 +32,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "appdirs==1.4.4",
+        "beautifulsoup4==4.10.0",
         "click==8.0.3",
         "dominate==2.6.0",
         "email-validator==1.1.3",
