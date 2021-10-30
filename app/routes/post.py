@@ -3,14 +3,14 @@ app.routes.post
 ===============
 """
 from datetime import datetime
-from typing import Optional, Union
+from typing import Union
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import current_user, login_required
 from werkzeug import Response
 
 from app.utils import redirect
-from app.utils.forms import EmptyForm, PostForm
+from app.utils.forms import PostForm
 from app.utils.models import Post, db
 from app.utils.security import authorization_required
 
@@ -45,29 +45,29 @@ def create() -> Union[str, Response]:
     return render_template("post/create.html", form=form)
 
 
-@blueprint.route("/<int:id>", methods=["GET"])
-def read(id: int) -> str:
+@blueprint.route("/<int:id>", methods=["GET", "POST"])
+def read(id: int) -> Union[str, Response]:
     """Render post page for selected post ID.
 
     :param id: ID of post to display full page on.
     :return: Rendered post template.
     """
-    post = Post.get_post(id, checkauthor=False)
-    return render_template("post/read.html", post=post)
+    revision = request.args.get("revision", -1, type=int)
+    post = Post.get_post(id, revision, checkauthor=False)
+    return render_template("post/read.html", post=post, revision=revision)
 
 
 @blueprint.route("/<int:id>/update/", methods=["GET", "POST"])
-@blueprint.route("/<int:id>/update/<int:revision>", methods=["GET", "POST"])
 @login_required
 @authorization_required
-def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
+def update(id: int) -> Union[str, Response]:
     """Update post that corresponds to the provided post ID.
 
     :param id: The post's ID.
-    :param revision: Version to revert to.
     :return: Rendered update template on GET or failed POST. Response
         object redirect to index view on successful update POST.
     """
+    revision = request.args.get("revision", -1, type=int)
     post = Post.get_post(id, revision)
     form = PostForm(title=post.title, body=post.body)
     if form.validate_on_submit():
@@ -78,21 +78,3 @@ def update(id: int, revision: Optional[int] = None) -> Union[str, Response]:
         return redirect.index()
 
     return render_template("post/update.html", post=post, form=form)
-
-
-@blueprint.route("/<int:id>/version/<int:revision>")
-@login_required
-@authorization_required
-def version(id: int, revision: int) -> Union[str, Response]:
-    """Rewind versioned post that corresponds to the provided post ID.
-
-    :param id: The post's ID.
-    :param revision: Version to revert to.
-    :return: Rendered update template on GET or failed POST. Response
-        object redirect to index view on successful update POST.
-    """
-    post = Post.get_post(id, revision)
-    form = EmptyForm()
-    return render_template(
-        "post/read.html", post=post, id=id, revision=revision, form=form
-    )

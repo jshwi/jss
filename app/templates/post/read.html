@@ -6,7 +6,7 @@
 {# display version numbers if there are multiple versions #}
 {# user needs to own post to see this information #}
 {% set title = post.title %}
-{% if revision is defined %}
+{% if revision != -1 %}
     {% set title = "%s (v%s)"|format(title, revision + 1) %}
 {% endif %}
 
@@ -28,9 +28,5 @@
     {{ post.body|markdown }}
 
     {# if revision has been passed display button to restore version #}
-    {% if revision is defined %}
-        <form action="{{ url_for('post.update', id=id, revision=revision) }}" method="get">
-            {{ wtf.form_field(form.submit, value="Restore") }}
-        </form>
-    {% endif %}
+    <a class="btn btn-default" href="{{ url_for('post.update', id=post.id, revision=revision) }}" role="button">Restore</a>
 {% endblock %}

@@ -155,8 +155,6 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/user/send_message/<recipient>",
             "/user/messages",
             "/user/notifications",
-            "/post/<int:id>/update/<int:revision>",
-            "/post/<int:id>/version/<int:revision>",
             "/post/<int:id>/update/",
         ],
     ),
@@ -170,6 +168,38 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
     ),
 ]
 COVERED_ROUTES = [r for _, l in STATUS_CODE_TO_ROUTE_DEFAULT for r in l]
+PAGE_1_OF_2_POSTS_POSTS_PER_PAGE_1 = """
+   <nav aria-label="...">
+    <ul class="pager">
+     <li class="previous disabled">
+      <a href="#">
+       Newer posts
+      </a>
+     </li>
+     <li class="next">
+      <a href="/?page=2">
+       Older posts
+      </a>
+     </li>
+    </ul>
+   </nav>
+"""
+PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1 = """
+   <nav aria-label="...">
+    <ul class="pager">
+     <li class="previous">
+      <a href="/?page=1">
+       Newer posts
+      </a>
+     </li>
+     <li class="next disabled">
+      <a href="#">
+       Older posts
+      </a>
+     </li>
+    </ul>
+   </nav>
+"""
 
 
 class UserTestObject:

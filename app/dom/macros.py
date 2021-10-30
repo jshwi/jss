@@ -11,7 +11,7 @@ are registered into context processor they will be wrapped with
 ``Markup``.
 """
 # pylint: disable=invalid-name
-from typing import List, Union
+from typing import List, Optional, Union
 
 from dominate import tags
 from dominate.tags import html_tag
@@ -192,3 +192,39 @@ def read_posts(posts: Union[Post, Message]) -> html_tag:
         right_td.add(tags.div(markdown.render(post.body)))
 
     return div
+
+
+@macros.register
+def post_footer_nav(
+    prev_url: Optional[str], next_url: Optional[str]
+) -> html_tag:
+    """Bottom navbar for newer and older post navigation.
+
+    :param prev_url: URL to previous posts.
+    :param next_url: URL to next posts.
+    :return: Navbar as ``html_tag`` object.
+    """
+    nav = tags.nav(aria_label="...")
+    ul = nav.add(tags.ul(cls="pager"))
+
+    # newer posts
+    li = ul.add(tags.li())
+    a = li.add(tags.a("Newer posts"))
+    if prev_url is not None:
+        li["class"] = "previous"
+        a["href"] = prev_url
+    else:
+        li["class"] = "previous disabled"
+        a["href"] = "#"
+
+    # older posts
+    li = ul.add(tags.li())
+    a = li.add(tags.a("Older posts"))
+    if next_url is not None:
+        li["class"] = "next"
+        a["href"] = next_url
+    else:
+        li["class"] = "next disabled"
+        a["href"] = "#"
+
+    return nav

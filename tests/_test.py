@@ -58,6 +58,8 @@ from .utils import (
     OTHER_USER_EMAIL,
     OTHER_USER_PASSWORD,
     OTHER_USER_USERNAME,
+    PAGE_1_OF_2_POSTS_POSTS_PER_PAGE_1,
+    PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1,
     POST_AUTHOR_ID_1,
     POST_AUTHOR_ID_2,
     POST_AUTHOR_ID_3,
@@ -1729,8 +1731,12 @@ def test_versions(
         post.body = POST_BODY_V2
         db.session.commit()
 
-    assert b"v1" in client.get("/post/1/version/0", follow_redirects=True).data
-    assert b"v2" in client.get("/post/1/version/1", follow_redirects=True).data
+    assert (
+        b"v1" in client.get("/post/1?revision=0", follow_redirects=True).data
+    )
+    assert (
+        b"v2" in client.get("/post/1?revision=01", follow_redirects=True).data
+    )
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1995,7 +2001,7 @@ def test_versions_update(
     client.post(
         UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
     )
-    response = client.get("/post/1/update/0")
+    response = client.get("/post/1/update?revision=0", follow_redirects=True)
     assert created_post.title in response.data.decode()
     assert created_post.body in response.data.decode()
 
@@ -2027,7 +2033,7 @@ def test_versioning_handle_index_error(
     add_test_user(user_test_object)
     add_test_post(created_post)
     auth.login(user_test_object)
-    assert client.get("/post/1/update/1").status_code == 404
+    assert client.get("/post/1/update/?revision=1").status_code == 404
 
 
 def test_config_copyright(
@@ -2334,3 +2340,44 @@ def test_version_dropdown(
         "         </a>\n"
         "        </li>\n"
     ) in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+def test_prev_next_pagination_navbar(
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    client: FlaskClient,
+    add_test_user: Callable[..., None],
+    add_test_post: Callable[..., None],
+) -> None:
+    """Test links are rendered when more than one page exists.
+
+    :param test_app: Test ``Flask`` app object.
+    :param client: App's test-client API.
+    :param add_test_user: Add user to test database.
+    :param add_test_post: Add post to test database.
+    """
+    # every post apart from the first one will add functionality to the
+    # pagination footer navbar
+    monkeypatch.setenv("POSTS_PER_PAGE", "1")
+    config.init_app(test_app)
+    user_test_object = UserTestObject(
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        authorized=True,
+        confirmed=True,
+    )
+    add_test_user(user_test_object)
+    post_test_object = PostTestObject(
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+
+    # add two posts to add an extra page
+    add_test_post(post_test_object, post_test_object)
+
+    response = client.get("/")
+    assert PAGE_1_OF_2_POSTS_POSTS_PER_PAGE_1 in response.data.decode()
+
+    response = client.get("/?page=2")
+    assert PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1 in response.data.decode()

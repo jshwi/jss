@@ -9,18 +9,5 @@ this is the base template for pages displaying posts #}
     {{ dom_macros_read_posts(posts) }}
 
     {# posts are listed in descending order: newer posts are on the left #}
-    <nav aria-label="...">
-        <ul class="pager">
-
-            {# show link to newer posts on left side with arrow #}
-            <li class="previous{% if not prev_url %} disabled{% endif %}">
-                <a href="{{ prev_url or "#" }}">Newer posts</a>
-            </li>
-
-            {# show link to older posts on right side with arrow #}
-            <li class="next{% if not next_url %} disabled{% endif %}">
-                <a href="{{ next_url or "#" }}">Older posts</a>
-            </li>
-        </ul>
-    </nav>
+    {{ dom_macros_post_footer_nav(prev_url, next_url) }}
 {% endblock %}
