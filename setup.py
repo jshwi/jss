@@ -53,6 +53,7 @@ setup(
         "flask-wtf==0.15.1",
         "gunicorn==20.1.0",
         "itsdangerous==2.0.1",
+        "markupsafe==2.0.1",
         "psycopg2==2.9.1",
         "pyjwt==2.3.0",
         "redis==3.5.3",

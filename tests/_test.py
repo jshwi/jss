@@ -12,10 +12,13 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 import pytest
+from dominate import tags
+from dominate.tags import html_tag
 from flask import Flask, session
 from flask.testing import FlaskClient, FlaskCliRunner
 from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
+from markupsafe import Markup
 from redis import RedisError
 
 from app import config
@@ -23,6 +26,7 @@ from app.extensions import mail
 from app.log import smtp_handler
 from app.utils.mail import send_email
 from app.utils.models import Post, User, db
+from app.utils.register import RegisterContext
 
 from .utils import (
     ADMIN_ROUTE,
@@ -2181,3 +2185,61 @@ def test_static_route_default(
         client.get(r, follow_redirects=True).status_code == code
         for r in routes
     )
+
+
+def test_registration_dunders(monkeypatch: pytest.MonkeyPatch):
+    """Test dunder methods with ``Context`` (coverage).
+
+    :param monkeypatch: Mock patch environment and attributes.
+    """
+    monkeypatch.setattr("app.utils.register.RegisterContext", RegisterContext)
+    key = "key"
+    value = "value"
+    self = RegisterContext()
+    assert repr(self) == "<RegisterContext {}>"
+    assert key not in self
+    assert len(self) == 0
+    self[key] = value
+    assert key in self
+    assert len(self) == 1
+    assert self[key] == value
+    del self[key]
+    assert key not in self
+    assert len(self) == 0
+
+
+def test_register_macros(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test "macro" is registered and wrapped with ``Markup``.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    """
+    monkeypatch.setattr("app.utils.register.RegisterContext", RegisterContext)
+    test_tag = tags.div(tags.p(tags.h1("Title")))
+    macros = RegisterContext("dom_macros", Markup)
+
+    @macros.register
+    def registered_macro() -> html_tag:
+        return test_tag
+
+    # the ``register_macros`` function will prefix the key with
+    # ``dom_macros_``
+    registered = RegisterContext.registered()
+    assert registered["dom_macros_registered_macro"]() == Markup(test_tag)
+
+
+def test_register_text(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test text is registered.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    """
+    monkeypatch.setattr("app.utils.register.RegisterContext", RegisterContext)
+    text = RegisterContext("dom_text")
+    assert repr(text) == "<RegisterContext {}>"
+    test_str = "Title"
+
+    @text.register
+    def registered_text() -> str:
+        return test_str
+
+    registered = RegisterContext.registered()
+    assert registered["dom_text_registered_text"]() == test_str
