@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.7.2...HEAD)
 ------------------------------------------------------------------------
 ### Security
+- Removes information disclosure comments
 - Secures cookies
 - Adds security headers
 

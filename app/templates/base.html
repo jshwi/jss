@@ -87,8 +87,6 @@
     <!--suppress JSUnresolvedVariable -->
     <script>
       {% if current_user.is_authenticated %}
-
-        // periodically check for messages for logged in user
         $(function () {
           let since = 0
           setInterval(function () {
