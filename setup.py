@@ -59,6 +59,7 @@ setup(
         "pyjwt==2.3.0",
         "redis==3.5.3",
         "rq==1.10.0",
+        "secure==0.3.0",
         "sqlalchemy==1.3.24",
         "sqlalchemy-continuum==1.3.11",
         "sqlalchemy-utils==0.37.9",

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.7.2...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Adds security headers
 
 [1.7.2](https://github.com/jshwi/jss/releases/tag/v1.7.2) - 2021-11-02
 ------------------------------------------------------------------------

@@ -2384,3 +2384,26 @@ def test_prev_next_pagination_navbar(
 
     response = client.get("/?page=2")
     assert PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1 in response.data.decode()
+
+
+@pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize(
+    "key,value",
+    [
+        ("Strict-Transport-Security", ["max-age=63072000; includeSubdomains"]),
+        ("X-Frame-Options", ["SAMEORIGIN"]),
+        ("X-XSS-Protection", ["0"]),
+        ("X-Content-Type-Options", ["nosniff"]),
+        ("Referrer-Policy", ["no-referrer, strict-origin-when-cross-origin"]),
+        ("Cache-Control", ["no-store"]),
+    ],
+)
+def test_headers(client: FlaskClient, key: str, value: str) -> None:
+    """Assert headers are secure.
+
+    :param client: App's test-client API.
+    :param key: Header key.
+    :param value: Header's value.
+    """
+    response = client.get("/")
+    assert response.headers.getlist(key) == value
