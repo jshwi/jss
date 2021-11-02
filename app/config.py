@@ -290,6 +290,29 @@ class Config:
         """Display logged in user links as dropdown."""
         return env.bool("NAVBAR_USER_DROPDOWN", default=False)
 
+    @property
+    def SESSION_COOKIE_HTTPONLY(self) -> bool:
+        """Set session-cookie HttpOnly parameter; Defaults to True."""
+        return env.bool("SESSION_COOKIE_HTTPONLY", default=True)
+
+    @property
+    def SESSION_COOKIE_SECURE(self) -> bool:
+        """Set session-cookie secure parameter; Defaults to True."""
+        return env.bool("SESSION_COOKIE_SECURE", default=True)
+
+    @property
+    def SESSION_COOKIE_SAMESITE(self) -> str:
+        """Set session-cookie SAMESITE parameter; Defaults to strict."""
+        return env.str("REMEMBER_COOKIE_SAMESITE", default="strict")
+
+    @property
+    def REMEMBER_COOKIE_SECURE(self) -> bool:
+        """Set remember-cookie secure parameter; Defaults to True.
+
+        The cookie for the ``Remember Me`` checkbox in logins.
+        """
+        return env.bool("REMEMBER_COOKIE_SECURE", default=True)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.
