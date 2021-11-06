@@ -122,7 +122,7 @@ def test_register(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     response = auth.register(user_test_object)
-    assert response.headers["Location"] == "http://localhost/auth/unconfirmed"
+    assert response.headers["Location"] == "https://localhost/auth/unconfirmed"
     with test_app.app_context():
         user = User.query.filter_by(username=user_test_object.username).first()
         assert user is not None
@@ -145,7 +145,7 @@ def test_login(
     )
     add_test_user(user_test_object)
     response = auth.login(user_test_object)
-    assert response.headers["Location"] == "http://localhost/auth/unconfirmed"
+    assert response.headers["Location"] == "https://localhost/auth/unconfirmed"
     with client:
         client.get("/")
         assert current_user.username == user_test_object.username
@@ -461,7 +461,7 @@ def test_delete(
     add_test_post(post_test_object)
     auth.login(user_test_object)
     response = client.post("/redirect/1/delete")
-    assert response.headers["Location"] == "http://localhost/"
+    assert response.headers["Location"] == "https://localhost/"
     with test_app.app_context():
         post = Post.query.get(1)
         assert post is None
@@ -797,7 +797,7 @@ def test_confirmation_email_expired(
         auth.register(user_test_object)
         with test_app.app_context():
             route = auth.parse_token_route(outbox[0].html)
-            token = route.replace("http://localhost/auth", "")
+            token = route.replace("https://localhost/auth", "")
             serializer = URLSafeTimedSerializer(test_app.config["SECRET_KEY"])
             confirm_token = functools.partial(
                 serializer.loads,
@@ -836,7 +836,7 @@ def test_login_confirmed(
         db.session.commit()
 
     response = auth.login(user_test_object)
-    assert response.headers["Location"] == "http://localhost/"
+    assert response.headers["Location"] == "https://localhost/"
     with client:
         client.get("/")
         assert current_user.username == user_test_object.username

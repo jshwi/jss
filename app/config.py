@@ -313,6 +313,11 @@ class Config:
         """
         return env.bool("REMEMBER_COOKIE_SECURE", default=True)
 
+    @property
+    def PREFERRED_URL_SCHEME(self) -> str:
+        """HTTPS or HTTP."""
+        return env.str("PREFERRED_URL_SCHEME", default="https")
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

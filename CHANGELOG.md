@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.7.3...HEAD)
 ------------------------------------------------------------------------
+### Added
+Adds `PREFERRED_URL_SCHEME` config; defaults to `"https"`
 
 [1.7.3](https://github.com/jshwi/jss/releases/tag/v1.7.3) - 2021-11-03
 ------------------------------------------------------------------------

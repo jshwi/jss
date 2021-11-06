@@ -80,12 +80,13 @@ pluggy==1.0.0
 prompt-toolkit==3.0.21
 psycopg2==2.9.1
 ptyprocess==0.7.0
-py==1.10.0
+py==1.11.0
 pyaud==3.2.8
-pycparser==2.20
+pycparser==2.21
 pygments==2.8.1
 pyjwt==2.3.0
 pylint==2.11.1
+pyopenssl==21.0.0
 pyparsing==2.4.7
 pytest-cov==3.0.0
 pytest-forked==1.3.0

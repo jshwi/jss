@@ -45,6 +45,7 @@ ipython = "==7.29.0"
 jss = {editable = true, path = "."}
 prompt-toolkit = "==3.0.21"
 pyaud = "==3.2.8"
+pyopenssl = "==21.0.0"
 pytest = "==6.2.5"
 pytest-randomly = "==3.10.1"
 pytest-sugar = "==0.9.4"
