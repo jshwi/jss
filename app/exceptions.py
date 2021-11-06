@@ -7,6 +7,7 @@ Register handling of error-codes and their corresponding pages.
 from typing import Tuple
 
 from flask import Flask, render_template
+from werkzeug.exceptions import HTTPException
 
 EXCEPTIONS = {
     400: "Bad Request",
@@ -21,7 +22,7 @@ EXCEPTIONS = {
 def init_app(app: Flask) -> None:
     """Register error handlers."""
 
-    def render_error(error: Exception) -> Tuple[str, int]:
+    def render_error(error: HTTPException) -> Tuple[str, int]:
         """Render error template.
 
         If a HTTPException, pull the ``code`` attribute; default to 500.
@@ -29,6 +30,9 @@ def init_app(app: Flask) -> None:
         :param error: Exception to catch and render page for.
         :return: Tuple consisting of rendered template and error code.
         """
+        # not considered error for logging as all "errors" will be
+        # emailed
+        app.logger.info(error.description)
         error_code = getattr(error, "code", 500)
         return (
             render_template(
