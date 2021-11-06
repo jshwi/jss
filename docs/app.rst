@@ -73,6 +73,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.routes.report
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.routes.user
    :members:
    :undoc-members:

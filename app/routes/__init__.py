@@ -14,7 +14,7 @@ based on its name and arguments.
 from bs4 import BeautifulSoup
 from flask import Flask, Response
 
-from app.routes import admin, auth, post, public, redirect, user
+from app.routes import admin, auth, post, public, redirect, report, user
 
 
 def format_html(response: Response):
@@ -42,6 +42,7 @@ def init_app(app: Flask) -> None:
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.strip_trailing_newlines = False
+    app.register_blueprint(report.blueprint)
     app.register_blueprint(public.blueprint)
     app.register_blueprint(auth.blueprint)
     app.register_blueprint(user.blueprint)

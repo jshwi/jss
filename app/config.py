@@ -328,6 +328,11 @@ class Config:
         """Do not enforce CSP, report violations only."""
         return env.bool("CSP_REPORT_ONLY", default=True)
 
+    @property
+    def CSP_REPORT_URI(self) -> str:
+        """URI to report CSP violations to."""
+        return env.str("CSP_REPORT_URI", default="/report/csp_violations")
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

@@ -2407,3 +2407,28 @@ def test_headers(client: FlaskClient, key: str, value: str) -> None:
     """
     response = client.get("/")
     assert response.headers.getlist(key) == value
+
+
+def test_csp_report(
+    monkeypatch: pytest.MonkeyPatch, test_app: Flask, client: FlaskClient
+) -> None:
+    """Test response for CSP violations route.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test ``Flask`` app object.
+    :param client: App's test-client API.
+    """
+    with test_app.app_context():
+        captured = Recorder()
+        monkeypatch.setattr(
+            "app.routes.report.current_app.logger.info", captured
+        )
+        application_csp_report = b'{"csp-report":{"report_stuff":"here"}}'
+        response = client.post(
+            "/report/csp_violations", data=application_csp_report
+        )
+        assert response.status_code == 204
+        expected = (
+            '{\n    "csp-report": {\n        "report_stuff": "here"\n    }\n}'
+        )
+        assert expected in captured.args

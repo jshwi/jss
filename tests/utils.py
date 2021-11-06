@@ -164,6 +164,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/redirect/follow/<username>",
             "/redirect/unfollow/<username>",
             "/redirect/<int:id>/delete",
+            "/report/csp_violations",
         ],
     ),
 ]
