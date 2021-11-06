@@ -41,6 +41,7 @@ from app import (
     extensions,
     log,
     routes,
+    security,
     shell,
 )
 
@@ -65,4 +66,5 @@ def create_app() -> Flask:
     shell.init_app(app)
     cli.init_app(app)
     dom.init_app(app)
+    security.init_app(app)
     return app

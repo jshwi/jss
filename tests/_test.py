@@ -2390,12 +2390,12 @@ def test_prev_next_pagination_navbar(
 @pytest.mark.parametrize(
     "key,value",
     [
-        ("Strict-Transport-Security", ["max-age=63072000; includeSubdomains"]),
+        ("Strict-Transport-Security", ["max-age=31556926; includeSubDomains"]),
         ("X-Frame-Options", ["SAMEORIGIN"]),
-        ("X-XSS-Protection", ["0"]),
+        ("X-XSS-Protection", ["1; mode=block"]),
         ("X-Content-Type-Options", ["nosniff"]),
-        ("Referrer-Policy", ["no-referrer, strict-origin-when-cross-origin"]),
-        ("Cache-Control", ["no-store"]),
+        ("Referrer-Policy", ["strict-origin-when-cross-origin"]),
+        ("Cache-Control", []),
     ],
 )
 def test_headers(client: FlaskClient, key: str, value: str) -> None:

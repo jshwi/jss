@@ -17,6 +17,7 @@ from flask_nav import Nav
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
+from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
 
 debug_toolbar = DebugToolbarExtension()
@@ -32,6 +33,7 @@ page_down = PageDown()
 bootstrap = Bootstrap()
 moment = Moment()
 nav = Nav()
+talisman = Talisman()
 
 
 def init_app(app: Flask) -> None:
@@ -52,3 +54,4 @@ def init_app(app: Flask) -> None:
     bootstrap.init_app(app)
     moment.init_app(app)
     nav.init_app(app)
+    talisman.init_app(app)

@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 Adds `PREFERRED_URL_SCHEME` config; defaults to `"https"`
 
+### Security
+Replaces `secure` headers with `Flask-Talisman` headers
+
 [1.7.3](https://github.com/jshwi/jss/releases/tag/v1.7.3) - 2021-11-03
 ------------------------------------------------------------------------
 ### Security

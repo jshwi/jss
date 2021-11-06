@@ -13,7 +13,6 @@ based on its name and arguments.
 """
 from bs4 import BeautifulSoup
 from flask import Flask, Response
-from secure import Secure
 
 from app.routes import admin, auth, post, public, redirect, user
 
@@ -35,17 +34,6 @@ def format_html(response: Response):
     return response
 
 
-def set_secure_headers(response: Response) -> Response:
-    """Add security headers to the response.
-
-    :param response: Response returned from a route.
-    :return: Altered ``Response`` object.
-    """
-    secure_headers = Secure()
-    secure_headers.framework.flask(response)
-    return response
-
-
 def init_app(app: Flask) -> None:
     """Load the app with views views.
 
@@ -62,4 +50,3 @@ def init_app(app: Flask) -> None:
     app.add_url_rule("/", endpoint="index")
     admin.init_app(app)
     app.after_request(format_html)
-    app.after_request(set_secure_headers)

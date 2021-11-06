@@ -42,6 +42,7 @@ flask-pagedown==0.4.0
 flask-shell-ipython==0.4.1
 flask-sqlalchemy==2.5.1
 flask-static-digest==0.2.1
+flask-talisman==0.8.1
 flask-wtf==0.15.1
 flask==2.0.2
 flynt==0.69
@@ -106,7 +107,6 @@ restview==2.9.2
 rfc3986==1.5.0
 rq==1.10.0
 secretstorage==3.3.1
-secure==0.3.0
 six==1.16.0
 snowballstemmer==2.1.0
 soupsieve==2.3

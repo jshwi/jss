@@ -8,7 +8,7 @@ https://12factor.net/config:
 # pylint: disable=too-many-public-methods,invalid-name
 import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 from environs import Env
 from flask import Flask
@@ -317,6 +317,16 @@ class Config:
     def PREFERRED_URL_SCHEME(self) -> str:
         """HTTPS or HTTP."""
         return env.str("PREFERRED_URL_SCHEME", default="https")
+
+    @property
+    def CSP(self) -> Dict[str, Union[str, List[str]]]:
+        """Content Security Policy."""
+        return env.dict("CSP", default={})
+
+    @property
+    def CSP_REPORT_ONLY(self) -> bool:
+        """Do not enforce CSP, report violations only."""
+        return env.bool("CSP_REPORT_ONLY", default=True)
 
 
 def init_app(app: Flask) -> None:
