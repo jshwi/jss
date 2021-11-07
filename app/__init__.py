@@ -45,7 +45,7 @@ from app import (
     shell,
 )
 
-__version__ = "1.7.3"
+__version__ = "1.7.4"
 
 
 def create_app() -> Flask:
