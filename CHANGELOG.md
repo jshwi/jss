@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.7.4...HEAD)
 ------------------------------------------------------------------------
+### Added
+Adds CSP violation reporting
+Adds `PREFERRED_URL_SCHEME` config; defaults to `"https"`
+
+### Fixed
+Logs error descriptions
+
+### Security
+Replaces `secure` headers with `Flask-Talisman` headers
 
 [1.7.4](https://github.com/jshwi/jss/releases/tag/v1.7.4) - 2021-11-08
 ------------------------------------------------------------------------
