@@ -986,32 +986,37 @@ def test_reset_password(
 
 @pytest.mark.parametrize("use_tls,secure", [(False, None), (True, ())])
 def test_get_smtp_handler(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    use_tls: bool,
-    secure: Optional[tuple],
+    monkeypatch: pytest.MonkeyPatch, use_tls: bool, secure: Optional[tuple]
 ) -> None:
     """Test correct values passed to ``SMTPHandler``.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
     :param use_tls: True or False.
     :param secure: Tuple if TLS True, None if TLS False.
     """
-    test_app.debug = False
-    test_app.config["MAIL_SERVER"] = MAIL_SERVER
-    test_app.config["MAIL_USERNAME"] = MAIL_USERNAME
-    test_app.config["MAIL_PASSWORD"] = MAIL_PASSWORD
-    test_app.config["MAIL_USE_TLS"] = use_tls
-    test_app.config["MAIL_PORT"] = MAIL_PORT
-    test_app.config["ADMINS"] = [MAIL_USERNAME]
+    app = Recorder()
+    app.config = {}  # type: ignore
+    app.debug = False  # type: ignore
+    app.config["MAIL_SERVER"] = MAIL_SERVER  # type: ignore
+    app.config["MAIL_USERNAME"] = MAIL_USERNAME  # type: ignore
+    app.config["MAIL_PASSWORD"] = MAIL_PASSWORD  # type: ignore
+    app.config["MAIL_USE_TLS"] = use_tls  # type: ignore
+    app.config["MAIL_PORT"] = MAIL_PORT  # type: ignore
+    app.config["ADMINS"] = [MAIL_USERNAME]  # type: ignore
+    app.logger = Recorder()  # type: ignore
+    app.logger.handlers = []  # type: ignore
+    app.logger.addHandler = (  # type: ignore
+        # pylint: disable=unnecessary-lambda
+        lambda x: app.logger.handlers.append(x)  # type: ignore
+    )
     state = Recorder()
     state.loglevel = 0  # type: ignore
     state.setLevel = lambda x: x  # type: ignore
     state.setFormatter = lambda x: x  # type: ignore
     state.formatter = logging.Formatter()  # type: ignore
     monkeypatch.setattr("app.log.SMTPHandler", state)
-    smtp_handler(test_app)
+    smtp_handler(app)  # type: ignore
+    assert state in app.logger.handlers  # type: ignore
     kwargs = state.kwargs
     assert kwargs["mailhost"] == (MAIL_SERVER, MAIL_PORT)
     assert kwargs["fromaddr"] == f"no-reply@{MAIL_SERVER}"
