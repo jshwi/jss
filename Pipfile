@@ -44,7 +44,7 @@ flask-shell-ipython = "==0.4.1"
 ipython = "==7.29.0"
 jss = {editable = true, path = "."}
 prompt-toolkit = "==3.0.21"
-pyaud = "==3.2.8"
+pyaud = "==3.2.9"
 pyopenssl = "==21.0.0"
 pytest = "==6.2.5"
 pytest-randomly = "==3.10.1"
