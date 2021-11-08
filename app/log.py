@@ -81,4 +81,5 @@ def init_app(app: Flask) -> None:
     """
     smtp_handler(app)
     file_handler(app)
-    integrate_loggers(app)
+    if not app.config["DEBUG"]:
+        integrate_loggers(app)
