@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.8.0...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+Integrates `Flask` logger with `Gunicorn` logger
 
 [1.8.0](https://github.com/jshwi/jss/releases/tag/v1.8.0) - 2021-11-08
 ------------------------------------------------------------------------

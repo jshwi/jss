@@ -62,6 +62,18 @@ def file_handler(app: Flask) -> None:
     app.logger.addHandler(handler)
 
 
+def integrate_loggers(app: Flask) -> None:
+    """Integrate ``Flask`` logger with ``Gunicorn`` logger.
+
+    https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
+
+    :param app: Application factory object.
+    """
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
+
 def init_app(app: Flask) -> None:
     """Add handlers to app logger.
 
@@ -69,3 +81,4 @@ def init_app(app: Flask) -> None:
     """
     smtp_handler(app)
     file_handler(app)
+    integrate_loggers(app)
