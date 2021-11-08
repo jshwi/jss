@@ -66,7 +66,7 @@ def _construct_user_subgroup() -> Subgroup:
 
     # anything declared here will be in the navbar regardless of the
     # state of the current user i.e. admin is True or False.
-    profile = View("Profile", "views.profile", username=current_user.username)
+    profile = View("Profile", "public.profile", username=current_user.username)
     logout = View("Logout", "auth.logout")
 
     # only available to admin user

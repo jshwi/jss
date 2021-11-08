@@ -64,7 +64,7 @@ def edit_profile() -> Union[str, Response]:
             db.session.add(usernames)
             db.session.commit()
 
-        return redirect.Views.profile(username=current_user.username)
+        return redirect.Public.profile(username=current_user.username)
 
     form.username.data = current_user.username
     form.about_me.data = current_user.about_me
@@ -94,7 +94,7 @@ def send_message(recipient: str) -> Union[str, Response]:
         user.add_notifications("unread_message_count", user.new_messages())
         db.session.commit()
         flash("Your message has been sent.")
-        return redirect.Views.profile(username=recipient)
+        return redirect.Public.profile(username=recipient)
 
     return render_template(
         "user/send_message.html", form=form, recipient=recipient

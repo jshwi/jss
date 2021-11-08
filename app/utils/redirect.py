@@ -60,7 +60,7 @@ class Auth(_Redirect):
         return cls.redirect("unconfirmed", **kwargs)
 
 
-class Views(_Redirect):
+class Public(_Redirect):
     """Redirects to public routes."""
 
     @classmethod

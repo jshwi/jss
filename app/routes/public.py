@@ -11,7 +11,7 @@ from app.utils import redirect
 from app.utils.forms import EmptyForm
 from app.utils.models import Post, User
 
-blueprint = Blueprint("views", __name__)
+blueprint = Blueprint("public", __name__)
 
 
 # noinspection DuplicatedCode
@@ -50,7 +50,7 @@ def profile(username: str) -> Union[str, Response]:
     """
     user = User.resolve_all_names(username=username)
     if user.username != username:
-        return redirect.Views.profile(username=user.username)
+        return redirect.Public.profile(username=user.username)
 
     form = EmptyForm()
     user = User.query.filter_by(username=username).first()

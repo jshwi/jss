@@ -128,7 +128,7 @@ def read_posts(posts: Union[Post, Message]) -> html_tag:
 
         # link to profile of the user who created the current iteration
         # of posts
-        profile_url = url_for("views.profile", username=post.author.username)
+        profile_url = url_for("public.profile", username=post.author.username)
 
         # this will group each individual post, visibly separated by a
         # horizontal rule

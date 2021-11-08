@@ -115,7 +115,7 @@ def follow(username: str) -> Response:
         db.session.commit()
         flash(f"You are now following {username}")
 
-    return redirect.Views.profile(username=username)
+    return redirect.Public.profile(username=username)
 
 
 @blueprint.route("/unfollow/<username>", methods=["POST"])
@@ -138,7 +138,7 @@ def unfollow(username: str) -> Response:
         db.session.commit()
         flash(f"You are no longer following {username}")
 
-    return redirect.Views.profile(username=username)
+    return redirect.Public.profile(username=username)
 
 
 @blueprint.route("/export_posts")
@@ -159,4 +159,4 @@ def export_posts() -> Response:
         current_user.launch_task("export_posts", "Exporting posts...")
         db.session.commit()
 
-    return redirect.Views.profile(username=current_user.username)
+    return redirect.Public.profile(username=current_user.username)
