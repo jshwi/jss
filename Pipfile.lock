@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "563e9cf069a67601a4331eaf127c157cc8aed3771589f78bdb8ccb819de9c020"
+            "sha256": "a3060bfc69755bfb3bae60e01904978f7777199476d8c041af47ca9bdb9b18b5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -259,11 +259,11 @@
         },
         "flask-wtf": {
             "hashes": [
-                "sha256:6ff7af73458f182180906a37a783e290bdc8a3817fe4ad17227563137ca285bf",
-                "sha256:ff177185f891302dc253437fe63081e7a46a4e99aca61dfe086fb23e54fff2dc"
+                "sha256:01feccfc395405cea48a3f36c23f0d766e2cc6fd2a5a065ad50ad3e5827ec797",
+                "sha256:872fbb17b5888bfc734edbdcf45bc08fb365ca39f69d25dc752465a455517b28"
             ],
             "index": "pypi",
-            "version": "==0.15.1"
+            "version": "==1.0.0"
         },
         "gunicorn": {
             "hashes": [
@@ -1033,11 +1033,11 @@
         },
         "flask-wtf": {
             "hashes": [
-                "sha256:6ff7af73458f182180906a37a783e290bdc8a3817fe4ad17227563137ca285bf",
-                "sha256:ff177185f891302dc253437fe63081e7a46a4e99aca61dfe086fb23e54fff2dc"
+                "sha256:01feccfc395405cea48a3f36c23f0d766e2cc6fd2a5a065ad50ad3e5827ec797",
+                "sha256:872fbb17b5888bfc734edbdcf45bc08fb365ca39f69d25dc752465a455517b28"
             ],
             "index": "pypi",
-            "version": "==0.15.1"
+            "version": "==1.0.0"
         },
         "flynt": {
             "hashes": [
@@ -1677,6 +1677,10 @@
             ],
             "index": "pypi",
             "version": "==1.10.0"
+        },
+        "sanitized-package": {
+            "editable": true,
+            "path": "."
         },
         "secretstorage": {
             "hashes": [
