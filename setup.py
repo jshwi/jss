@@ -12,7 +12,7 @@ with open("README.rst") as file:
 
 setup(
     name="jss",
-    version="1.7.4",
+    version="1.8.0",
     description="A Flask web application",
     long_description=README,
     long_description_content_type="text/x-rst",
