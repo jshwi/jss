@@ -120,12 +120,12 @@ def messages() -> str:
         "user/messages.html",
         posts=posts,
         next_url=(
-            url_for("views.messages", page=posts.next_num)
+            url_for("user.messages", page=posts.next_num)
             if posts.has_next
             else None
         ),
         prev_url=(
-            url_for("views.messages", page=posts.prev_num)
+            url_for("user.messages", page=posts.prev_num)
             if posts.has_prev
             else None
         ),

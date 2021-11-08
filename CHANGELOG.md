@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.8.1...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+Fixes `url_for` for outdated paths
 
 [1.8.1](https://github.com/jshwi/jss/releases/tag/v1.8.1) - 2021-11-08
 ------------------------------------------------------------------------

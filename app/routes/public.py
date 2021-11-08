@@ -64,12 +64,12 @@ def profile(username: str) -> Union[str, Response]:
         user=user,
         form=form,
         next_url=(
-            url_for("views.profile", username=username, page=posts.next_num)
+            url_for("public.profile", username=username, page=posts.next_num)
             if posts.has_next
             else None
         ),
         prev_url=(
-            url_for("views.profile", username=username, page=posts.prev_num)
+            url_for("public.profile", username=username, page=posts.prev_num)
             if posts.has_prev
             else None
         ),
