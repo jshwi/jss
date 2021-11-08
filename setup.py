@@ -64,6 +64,7 @@ setup(
         "sqlalchemy-continuum==1.3.11",
         "sqlalchemy-utils==0.37.9",
         "werkzeug==2.0.2",
+        "wtforms==3.0.0",
     ],
     python_requires=">=3.8",
 )
