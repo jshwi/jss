@@ -78,7 +78,7 @@ pipfile-requirements==0.3.0
 pkginfo==1.7.1
 platformdirs==2.4.0
 pluggy==1.0.0
-prompt-toolkit==3.0.21
+prompt-toolkit==3.0.22
 psycopg2==2.9.1
 ptyprocess==0.7.0
 py==1.11.0
