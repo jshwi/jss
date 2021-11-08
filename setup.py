@@ -52,7 +52,7 @@ setup(
         "flask-sqlalchemy==2.5.1",
         "flask-static-digest==0.2.1",
         "flask-talisman==0.8.1",
-        "flask-wtf==0.15.1",
+        "flask-wtf==1.0.0",
         "gunicorn==20.1.0",
         "itsdangerous==2.0.1",
         "markupsafe==2.0.1",
