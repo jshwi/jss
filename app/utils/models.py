@@ -39,7 +39,9 @@ followers = db.Table(
 
 
 @generic_repr("id")
-class _BaseModel(db.Model):
+class BaseModel(db.Model):
+    """Base model for which all models in this app are derived."""
+
     __abstract__ = True
 
     def export(self) -> Dict[str, str]:
@@ -54,7 +56,7 @@ class _BaseModel(db.Model):
         }
 
 
-class User(UserMixin, _BaseModel):
+class User(UserMixin, BaseModel):
     """Database schema for users."""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -247,7 +249,7 @@ class User(UserMixin, _BaseModel):
         return user
 
 
-class Post(_BaseModel):
+class Post(BaseModel):
     """Database schema for posts."""
 
     __versioned__: Dict[Any, Any] = {}
@@ -317,7 +319,7 @@ class Post(_BaseModel):
         return post
 
 
-class Message(_BaseModel):
+class Message(BaseModel):
     """Database schema for user messages."""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -327,7 +329,7 @@ class Message(_BaseModel):
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
-class Notification(_BaseModel):
+class Notification(BaseModel):
     """Database schema for notifications."""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -351,7 +353,7 @@ class Notification(_BaseModel):
         return json.loads(self.mapping)
 
 
-class Task(_BaseModel):
+class Task(BaseModel):
     """Database schema for background tasks."""
 
     id = db.Column(db.String(36), primary_key=True)
@@ -382,7 +384,7 @@ class Task(_BaseModel):
         return 100 if job is None else job.meta.get("progress", 0)
 
 
-class Usernames(_BaseModel):
+class Usernames(BaseModel):
     """Database schema for username changes."""
 
     id = db.Column(db.Integer, primary_key=True)

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.8.2...HEAD)
 ------------------------------------------------------------------------
+### Changed
+Moves `app.utils.models._BaseModel` to public scope
+
 ### Fixed
 Changes blueprint name from `views` to `public`
 
