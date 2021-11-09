@@ -9,14 +9,15 @@ Utilities for testing.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Type
 
 from bs4 import BeautifulSoup
+from flask import Flask
 from flask.testing import FlaskClient
 from werkzeug import Response
 from werkzeug.security import generate_password_hash
 
-from app.utils.models import User
+from app.utils.models import BaseModel, Post, Task, User, db
 
 UPDATE1 = "/post/1/update"
 ADMIN_USER_USERNAME = "admin"
@@ -56,6 +57,7 @@ POST_CREATED_1 = datetime(2018, 1, 1, 0, 0, 1)
 POST_CREATED_2 = datetime(2018, 1, 1, 0, 0, 2)
 POST_CREATED_3 = datetime(2018, 1, 1, 0, 0, 3)
 POST_CREATED_4 = datetime(2018, 1, 1, 0, 0, 4)
+MESSAGE_CREATED = datetime(2018, 1, 1, 0, 0, 5)
 MAIN_USER_REGISTERED_ON = datetime(2018, 1, 1, 0, 0, 1)
 INVALID_OR_EXPIRED = "invalid or has expired."
 MAIL_SERVER = "localhost"
@@ -73,6 +75,9 @@ ADMIN_USER_ROUTE = "/admin/users"
 COPYRIGHT_YEAR = "2021"
 COPYRIGHT_AUTHOR = "John Doe"
 COPYRIGHT_EMAIL = "john.doe@test.com"
+SENDER_ID = 1
+RECIPIENT_ID = 2
+BODY = "hello, this is a test message"
 LICENSE = f"""\
 MIT License
 
@@ -372,3 +377,49 @@ class Recorder:
         self.args = args
         self.kwargs = kwargs
         return self
+
+
+class AddTestObjects:
+    """Add test objects to test database.
+
+    :param test_app: Test ``Flask`` app object.
+    """
+
+    def __init__(self, test_app: Flask) -> None:
+        self.test_app = test_app
+
+    def _add_object(
+        self, model: Type[BaseModel], *test_objects: TestObject
+    ) -> None:
+        with self.test_app.app_context():
+            for test_object in test_objects:
+                instance = model()
+                for key, value in vars(test_object).items():
+                    setattr(instance, key, value)
+
+                db.session.add(instance)
+                db.session.commit()
+
+    def add_test_users(self, *user_test_objects: UserTestObject) -> None:
+        """Add user objects to the database.
+
+        :param user_test_objects: Variable number, of any size, of
+            ``user_test_object`` instances.
+        """
+        self._add_object(User, *user_test_objects)
+
+    def add_test_posts(self, *post_test_objects: PostTestObject) -> None:
+        """Add post objects to the database.
+
+        :param post_test_objects: Variable number, of any size, of
+            ``user_test_object`` instances.
+        """
+        self._add_object(Post, *post_test_objects)
+
+    def add_test_tasks(self, *task_test_objects: TaskTestObject) -> None:
+        """Add task objects to the database.
+
+        :param task_test_objects: Variable number, of any size, of
+            ``user_test_object`` instances.
+        """
+        self._add_object(Task, *task_test_objects)

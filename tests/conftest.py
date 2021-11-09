@@ -14,15 +14,13 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from app import create_app
-from app.utils.models import Post, Task, User, db
+from app.utils.models import db
 
 from .utils import (
     ADMIN_USER_EMAIL,
     MAIN_USER_EMAIL,
+    AddTestObjects,
     AuthActions,
-    PostTestObject,
-    TaskTestObject,
-    UserTestObject,
 )
 
 
@@ -58,77 +56,6 @@ def fixture_init_db(test_app: Flask) -> None:
     """
     with test_app.app_context():
         db.create_all()
-
-
-@pytest.fixture(name="add_test_user")
-def fixture_add_test_user(test_app: Flask) -> Callable[..., None]:
-    """Add a user object to the database.
-
-    :param test_app: Test ``Flask`` app object.
-    :return: Function for using this fixture.
-    """
-
-    def _add_test_user(*user_test_objects: UserTestObject) -> None:
-        with test_app.app_context():
-            for user_test_object in user_test_objects:
-                test_user = User(
-                    username=user_test_object.username,
-                    password_hash=user_test_object.password_hash,
-                    email=user_test_object.email,
-                    admin=user_test_object.admin,
-                    authorized=user_test_object.authorized,
-                    confirmed=user_test_object.confirmed,
-                )
-                db.session.add(test_user)
-                db.session.commit()
-
-    return _add_test_user
-
-
-@pytest.fixture(name="add_test_post")
-def fixture_add_test_post(test_app: Flask) -> Callable[..., None]:
-    """Add a post object to the database.
-
-    :param test_app: Test ``Flask`` app object.
-    :return: Function for using this fixture.
-    """
-
-    def _add_test_post(*post_test_objects: PostTestObject) -> None:
-        with test_app.app_context():
-            for post_test_object in post_test_objects:
-                post = Post(
-                    title=post_test_object.title,
-                    body=post_test_object.body,
-                    user_id=post_test_object.user_id,
-                    created=post_test_object.created,
-                )
-                db.session.add(post)
-                db.session.commit()
-
-    return _add_test_post
-
-
-@pytest.fixture(name="add_test_task")
-def fixture_add_test_task(test_app: Flask) -> Callable[..., None]:
-    """Add a task object to the database.
-
-    :param test_app: Test ``Flask`` app object.
-    :return: Function for using this fixture.
-    """
-
-    def _add_test_task(*task_test_objects: TaskTestObject) -> None:
-        with test_app.app_context():
-            for task_test_object in task_test_objects:
-                task = Task(
-                    id=task_test_object.id,
-                    name=task_test_object.name,
-                    description=task_test_object.description,
-                    user_id=task_test_object.user_id,
-                )
-                db.session.add(task)
-                db.session.commit()
-
-    return _add_test_task
 
 
 @pytest.fixture(name="client")
@@ -196,3 +123,13 @@ def fixture_interpolate_routes() -> Callable[..., None]:
             )
 
     return _interpolate_routes
+
+
+@pytest.fixture(name="add_test_objects")
+def fixture_add_test_objects(test_app: Flask) -> AddTestObjects:
+    """Add test objects to test database.
+
+    :param test_app: Test ``Flask`` app object.
+    :return: Instantiated ``AddTestObjects`` class.
+    """
+    return AddTestObjects(test_app)

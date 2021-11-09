@@ -89,6 +89,7 @@ from .utils import (
     TASK_ID,
     TASK_NAME,
     UPDATE1,
+    AddTestObjects,
     AuthActions,
     PostTestObject,
     Recorder,
@@ -130,20 +131,18 @@ def test_register(
 
 @pytest.mark.usefixtures("init_db")
 def test_login(
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test login functionality.
 
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     response = auth.login(user_test_object)
     assert response.headers["Location"] == "https://localhost/auth/unconfirmed"
     with client:
@@ -162,21 +161,21 @@ def test_login(
 )
 def test_login_validate_input(
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
     username: str,
     password: str,
 ) -> None:
     """Test incorrect username and password error messages.
 
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     :param username: Parametrized incorrect username
     :param password: Parametrized incorrect password
     """
     registered_user = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(registered_user)
+    add_test_objects.add_test_users(registered_user)
     test_user = UserTestObject(username, OTHER_USER_EMAIL, password)
     response = auth.login(test_user)
     assert b"Invalid username or password" in response.data
@@ -200,10 +199,7 @@ def test_logout(client: FlaskClient, auth: AuthActions) -> None:
 
 @pytest.mark.usefixtures("init_db")
 def test_index(
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
-    add_test_post: Callable[[PostTestObject], None],
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test login and subsequent requests from the client.
 
@@ -217,8 +213,6 @@ def test_index(
 
     :param client: Client for testing app.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
     """
     response = client.get("/")
     assert b"Login" in response.data
@@ -233,8 +227,8 @@ def test_index(
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(post_test_object)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
     response = client.get("/").data.decode()
     assert "Logout" in response
@@ -269,8 +263,7 @@ def test_author_required(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
-    add_test_post: Callable[[PostTestObject], None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test author's name when required.
 
@@ -285,8 +278,6 @@ def test_author_required(
     :param test_app: Test ``Flask`` app object.
     :param client: Client for testing app.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -297,12 +288,11 @@ def test_author_required(
     other_user_test_object = UserTestObject(
         OTHER_USER_USERNAME, OTHER_USER_EMAIL, OTHER_USER_PASSWORD
     )
-    add_test_user(user_test_object)
-    add_test_user(other_user_test_object)
+    add_test_objects.add_test_users(user_test_object, other_user_test_object)
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_post(post_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     # change the post author to another author
     with test_app.app_context():
         post = Post.query.get(1)
@@ -323,17 +313,14 @@ def test_author_required(
 def test_exists_required(
     client: FlaskClient,
     auth: AuthActions,
+    add_test_objects: AddTestObjects,
     route: str,
-    add_test_user: Callable[[UserTestObject], None],
-    add_test_post: Callable[[PostTestObject], None],
 ) -> None:
     """Test ``404 Not Found`` is returned when a route does not exist.
 
     :param client: Client for testing app.
     :param auth: Handle authorization with test app.
     :param route: Parametrized route path.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -344,8 +331,8 @@ def test_exists_required(
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(post_test_object)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
     response = client.post(route, follow_redirects=True)
     assert response.status_code == 404
@@ -356,7 +343,7 @@ def test_create(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test create view functionality.
 
@@ -366,7 +353,6 @@ def test_create(
     :param test_app: Test ``Flask`` app object.
     :param client: Client for testing app.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -374,7 +360,7 @@ def test_create(
         AUTHORIZED_USER_PASSWORD,
         authorized=True,
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
     assert client.get("/post/create").status_code == 200
     client.post(
@@ -390,16 +376,14 @@ def test_update(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
-    add_test_post: Callable[[PostTestObject], None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test update view modifies the existing data.
 
     :param test_app: Test ``Flask`` app object.
     :param client: Client for testing app.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -413,8 +397,8 @@ def test_update(
     updated_post = PostTestObject(
         "updated title", "updated body", POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(created_post)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(created_post)
     auth.login(user_test_object)
     assert client.get(UPDATE1, follow_redirects=True).status_code == 200
     assert "Edited" not in client.get("/post/1").data.decode()
@@ -434,8 +418,7 @@ def test_delete(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
-    add_test_post: Callable[[PostTestObject], None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test deletion of posts.
 
@@ -445,8 +428,7 @@ def test_delete(
     :param test_app: Test ``Flask`` app object.
     :param client: Client for testing app.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -454,11 +436,11 @@ def test_delete(
         AUTHORIZED_USER_PASSWORD,
         authorized=True,
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_post(post_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
     response = client.post("/redirect/1/delete")
     assert response.headers["Location"] == "https://localhost/"
@@ -573,7 +555,7 @@ def test_create_user_no_exist(
 @pytest.mark.usefixtures("init_db")
 def test_create_user_exists(
     runner: FlaskCliRunner,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
     username: str,
     email: str,
     expected: str,
@@ -586,7 +568,7 @@ def test_create_user_exists(
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     response = runner.invoke(
         args=["create", "user"], input=f"{username}\n{email}\n"
     )
@@ -595,7 +577,7 @@ def test_create_user_exists(
 
 @pytest.mark.usefixtures("init_db")
 def test_create_user_email_exists(
-    runner: FlaskCliRunner, add_test_user: Callable[[UserTestObject], None]
+    runner: FlaskCliRunner, add_test_objects: AddTestObjects
 ) -> None:
     """Test creation of a new user who's email is already registered.
 
@@ -606,7 +588,7 @@ def test_create_user_email_exists(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     user_input = f"{OTHER_USER_EMAIL}\n{MAIN_USER_EMAIL}"
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     response = runner.invoke(args=["create", "user"], input=user_input)
     assert (
         "a user with this email address is already registered"
@@ -665,7 +647,7 @@ def test_404_error(client: FlaskClient) -> None:
 def test_admin_required(
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
     route: str,
 ) -> None:
     """Test requirement that admin user be logged in to post.
@@ -684,7 +666,7 @@ def test_admin_required(
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=False
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
     response = client.post(route, follow_redirects=True)
     assert response.status_code == 401
@@ -701,7 +683,7 @@ def test_admin_required(
 )
 def test_register_invalid_fields(
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
     username: str,
     email: str,
     message: str,
@@ -709,7 +691,7 @@ def test_register_invalid_fields(
     """Test different invalid input and error messages.
 
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     :param username: The test username input.
     :param message: The expected message for the response.
     """
@@ -718,7 +700,7 @@ def test_register_invalid_fields(
         email=MAIN_USER_EMAIL,
         password=MAIN_USER_PASSWORD,
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     new_user_test_object = UserTestObject(username, email, MAIN_USER_PASSWORD)
     response = auth.register(new_user_test_object)
     assert message in response.data
@@ -817,19 +799,19 @@ def test_login_confirmed(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test login functionality once user is verified.
 
     :param test_app: Test ``Flask`` app object.
     :param client: Flask client testing helper.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     with test_app.app_context():
         user = User.query.filter_by(username=user_test_object.username).first()
         user.confirmed = True
@@ -861,17 +843,17 @@ def test_confirmation_email_resend(
 
 @pytest.mark.usefixtures("init_db")
 def test_request_password_reset_email(
-    auth: AuthActions, add_test_user: Callable[[UserTestObject], None]
+    auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test that the correct email is sent to user for password reset.
 
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     with mail.record_messages() as outbox:
         auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
 
@@ -885,19 +867,19 @@ def test_bad_token(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test user denied when jwt for resetting password is expired.
 
     :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test ``Flask`` app object.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     with test_app.app_context():
         with mail.record_messages() as outbox:
             monkeypatch.setattr(
@@ -924,20 +906,18 @@ def test_email_does_not_exist(auth: AuthActions) -> None:
 
 @pytest.mark.usefixtures("init_db")
 def test_redundant_token(
-    test_app: Flask,
-    auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    test_app: Flask, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test user notified that them being logged in has voided token.
 
     :param test_app: Test ``Flask`` app object.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     with test_app.app_context():
         with mail.record_messages() as outbox:
             auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
@@ -954,19 +934,19 @@ def test_reset_password(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[[UserTestObject], None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test the password reset process.
 
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     with mail.record_messages() as outbox:
         auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
 
@@ -1036,32 +1016,29 @@ def test_avatar() -> None:
 
 @pytest.mark.usefixtures("init_db")
 def test_profile_page(
-    client: FlaskClient, add_test_user: Callable[..., None]
+    client: FlaskClient, add_test_objects: AddTestObjects
 ) -> None:
     """Test response when visiting profile page of existing user.
 
     :param client: App's test-client API.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     response = client.get(f"/profile/{MAIN_USER_USERNAME}")
     assert b'src="https://gravatar.com/avatar/' in response.data
 
 
 @pytest.mark.usefixtures("init_db")
 def test_post_page(
-    client: FlaskClient,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    client: FlaskClient, add_test_objects: AddTestObjects
 ) -> None:
     """Test for correct contents in post page response.
 
     :param client: App's test-client API.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -1069,8 +1046,8 @@ def test_post_page(
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(post_test_object)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     response = client.get("/post/1")
     assert (
         f"    <h1>\n     {POST_TITLE_1}\n    </h1>\n"
@@ -1080,17 +1057,17 @@ def test_post_page(
 
 @pytest.mark.usefixtures("init_db")
 def test_edit_profile(
-    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test edit profile page.
 
     :param client: App's test-client API.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
     response = client.get(PROFILE_EDIT, follow_redirects=True)
     assert b"Edit Profile" in response.data
@@ -1110,17 +1087,17 @@ def test_edit_profile(
 
 @pytest.mark.usefixtures("init_db")
 def test_unconfirmed(
-    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test when unconfirmed user tries to enter restricted view.
 
     :param client: App's test-client API.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
     response = client.get(PROFILE_EDIT, follow_redirects=True)
     assert b"Account Verification Pending" in response.data
@@ -1132,11 +1109,11 @@ def test_unconfirmed(
 
 
 @pytest.mark.usefixtures("init_db")
-def test_follow(test_app: Flask, add_test_user: Callable[..., None]) -> None:
+def test_follow(test_app: Flask, add_test_objects: AddTestObjects) -> None:
     """Test functionality of user follows.
 
     :param test_app: Test ``Flask`` app object.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     with test_app.app_context():
         user_test_object_1 = UserTestObject(
@@ -1145,7 +1122,7 @@ def test_follow(test_app: Flask, add_test_user: Callable[..., None]) -> None:
         user_test_object_2 = UserTestObject(
             MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
         )
-        add_test_user(user_test_object_1, user_test_object_2)
+        add_test_objects.add_test_users(user_test_object_1, user_test_object_2)
         user_1 = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         user_2 = User.query.filter_by(username=MAIN_USER_USERNAME).first()
         assert user_1.followed.all() == []
@@ -1166,15 +1143,12 @@ def test_follow(test_app: Flask, add_test_user: Callable[..., None]) -> None:
 
 @pytest.mark.usefixtures("init_db")
 def test_follow_posts(
-    test_app: Flask,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    test_app: Flask, add_test_objects: AddTestObjects
 ) -> None:
     """Test functionality of post follows.
 
     :param test_app: Test ``Flask`` app object.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     with test_app.app_context():
         # create four users
@@ -1190,7 +1164,7 @@ def test_follow_posts(
         user_test_object_4 = UserTestObject(
             LAST_USER_USERNAME, LAST_USER_EMAIL, LAST_USER_PASSWORD
         )
-        add_test_user(
+        add_test_objects.add_test_users(
             user_test_object_1,
             user_test_object_2,
             user_test_object_3,
@@ -1208,7 +1182,7 @@ def test_follow_posts(
         post_test_object_4 = PostTestObject(
             POST_TITLE_4, POST_BODY_4, POST_AUTHOR_ID_4, POST_CREATED_2
         )
-        add_test_post(
+        add_test_objects.add_test_posts(
             post_test_object_1,
             post_test_object_2,
             post_test_object_3,
@@ -1243,13 +1217,13 @@ def test_follow_posts(
 
 @pytest.mark.usefixtures("init_db")
 def test_post_follow_unfollow_routes(
-    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test ``POST`` request to follow and unfollow a user.
 
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     # create and log in test users
     user_test_object_1 = UserTestObject(
@@ -1261,7 +1235,7 @@ def test_post_follow_unfollow_routes(
     user_test_object_2 = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
     )
-    add_test_user(user_test_object_1, user_test_object_2)
+    add_test_objects.add_test_users(user_test_object_1, user_test_object_2)
     auth.login(user_test_object_1)
     auth.login(user_test_object_2)
     response = client.post(
@@ -1288,7 +1262,7 @@ def test_send_message(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test sending of personal messages from one user to another.
 
@@ -1296,7 +1270,7 @@ def test_send_message(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object_1 = UserTestObject(
         ADMIN_USER_USERNAME,
@@ -1307,7 +1281,7 @@ def test_send_message(
     user_test_object_2 = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
     )
-    add_test_user(user_test_object_1, user_test_object_2)
+    add_test_objects.add_test_users(user_test_object_1, user_test_object_2)
     auth.login(user_test_object_1)
     response = client.post(
         f"/user/send_message/{user_test_object_2.username}",
@@ -1400,8 +1374,7 @@ def test_export_post_is_job(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test export post function when a job already exists: is not None.
 
@@ -1409,8 +1382,7 @@ def test_export_post_is_job(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object_1 = UserTestObject(
         ADMIN_USER_USERNAME,
@@ -1421,8 +1393,8 @@ def test_export_post_is_job(
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object_1)
-    add_test_post(post_test_object)
+    add_test_objects.add_test_users(user_test_object_1)
+    add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object_1)
     app_current_user = Recorder()
     app_current_user.is_authenticated = lambda: True  # type: ignore
@@ -1444,8 +1416,7 @@ def test_export_post(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test export post function when a job does not exist: is None.
 
@@ -1453,8 +1424,7 @@ def test_export_post(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME,
@@ -1465,8 +1435,8 @@ def test_export_post(
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(post_test_object)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
     enqueue = Recorder()
     session_add = Recorder()
@@ -1504,8 +1474,7 @@ def test_get_tasks_in_progress_no_task(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_task: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test getting of a task when one does not exist.
 
@@ -1513,19 +1482,18 @@ def test_get_tasks_in_progress_no_task(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_task: Add task to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
     )
     with test_app.app_context():
-        add_test_user(user_test_object)
+        add_test_objects.add_test_users(user_test_object)
         user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         task_test_object = TaskTestObject(
             TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
         )
-        add_test_task(task_test_object)
+        add_test_objects.add_test_tasks(task_test_object)
         auth.login(user_test_object)
         monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: None)
         response = client.get("/")
@@ -1538,8 +1506,7 @@ def test_get_tasks_in_progress(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_task: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test getting of a task when there is a task in the database.
 
@@ -1547,8 +1514,7 @@ def test_get_tasks_in_progress(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_task: Add task to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
@@ -1557,12 +1523,13 @@ def test_get_tasks_in_progress(
     rq_job.meta = {"progress": MISC_PROGRESS_INT}  # type: ignore
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: rq_job)
     with test_app.app_context():
-        add_test_user(user_test_object)
+        # noinspection DuplicatedCode
+        add_test_objects.add_test_users(user_test_object)
         user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         task_test_object = TaskTestObject(
             TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
         )
-        add_test_task(task_test_object)
+        add_test_objects.add_test_tasks(task_test_object)
         auth.login(user_test_object)
         response = client.get("/")
         assert str(MISC_PROGRESS_INT) in response.data.decode()
@@ -1574,8 +1541,7 @@ def test_get_tasks_in_progress_error_raised(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_task: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test getting of a task when an error is raised: 100%, complete.
 
@@ -1583,8 +1549,7 @@ def test_get_tasks_in_progress_error_raised(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_task: Add task to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
@@ -1595,12 +1560,13 @@ def test_get_tasks_in_progress_error_raised(
 
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, _fetch)
     with test_app.app_context():
-        add_test_user(user_test_object)
+        # noinspection DuplicatedCode
+        add_test_objects.add_test_users(user_test_object)
         user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         task_test_object = TaskTestObject(
             TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
         )
-        add_test_task(task_test_object)
+        add_test_objects.add_test_tasks(task_test_object)
         auth.login(user_test_object)
         response = client.get("/")
 
@@ -1609,15 +1575,12 @@ def test_get_tasks_in_progress_error_raised(
 
 @pytest.mark.usefixtures("init_db")
 def test_export_posts(
-    monkeypatch: pytest.MonkeyPatch,
-    add_test_post: Callable[..., None],
-    add_test_task: Callable[..., None],
+    monkeypatch: pytest.MonkeyPatch, add_test_objects: AddTestObjects
 ) -> None:
     """Test data as sent to user when post export requested.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param add_test_post: Add post to test database.
-    :param add_test_task: Add task to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     # this needs to imported *after* `monkeypatch.setenv` has patched
     # the environment
@@ -1643,12 +1606,12 @@ def test_export_posts(
     )
     db.session.add(test_user)
     db.session.commit()
-    add_test_post(post_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     user = User.query.get(1)
     task_test_object = TaskTestObject(
         TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
     )
-    add_test_task(task_test_object)
+    add_test_objects.add_test_tasks(task_test_object)
     job = Recorder()
     job.meta = {}  # type: ignore
     job.save_meta = Recorder()  # type: ignore
@@ -1709,16 +1672,14 @@ def test_versions(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test versioning of posts route.
 
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -1730,8 +1691,8 @@ def test_versions(
     post_test_object = PostTestObject(
         POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(post_test_object)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
     with test_app.app_context():
         post = Post.query.get(1)
@@ -1749,13 +1710,13 @@ def test_versions(
 
 @pytest.mark.usefixtures("init_db")
 def test_admin_access_control(
-    client: FlaskClient, auth: AuthActions, add_test_user: Callable[..., None]
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test access to admin console restricted to admin user.
 
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     admin_user_test_object = UserTestObject(
         ADMIN_USER_USERNAME,
@@ -1767,7 +1728,9 @@ def test_admin_access_control(
     regular_user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
     )
-    add_test_user(admin_user_test_object, regular_user_test_object)
+    add_test_objects.add_test_users(
+        admin_user_test_object, regular_user_test_object
+    )
     auth.login(admin_user_test_object)
     assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 200
     assert (
@@ -1812,7 +1775,7 @@ def test_admin_access_without_login(client: FlaskClient) -> None:
 def test_inspect_profile_no_user(
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
+    add_test_objects: AddTestObjects,
     method: str,
     data: Dict[str, str],
     bad_route: str,
@@ -1834,7 +1797,7 @@ def test_inspect_profile_no_user(
 
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     :param method: Method for interacting with route.
     :param data: Data to write to form.
     :param bad_route: Route containing reference to non-existing user.
@@ -1846,7 +1809,7 @@ def test_inspect_profile_no_user(
         admin=True,
         confirmed=True,
     )
-    add_test_user(admin_user_test_object)
+    add_test_objects.add_test_users(admin_user_test_object)
     auth.login(admin_user_test_object)
     response = getattr(client, method)(
         bad_route, data=data, follow_redirects=True
@@ -1859,7 +1822,7 @@ def test_user_name_change_accessible(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test that even after name-change user is accessible by old name.
 
@@ -1868,12 +1831,12 @@ def test_user_name_change_accessible(
 
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
 
     # assert that user's profile is available via profile route
@@ -1915,7 +1878,7 @@ def test_user_name_change_accessible(
         MAIN_USER_PASSWORD,
         confirmed=True,
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
 
     # assert that user's profile is available via profile route
@@ -1978,17 +1941,13 @@ def test_reserved_usernames(
 
 @pytest.mark.usefixtures("init_db")
 def test_versions_update(
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test versioning of posts route when passing revision to update.
 
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -2003,8 +1962,8 @@ def test_versions_update(
     updated_post = PostTestObject(
         POST_TITLE_V2, POST_BODY_V2, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(created_post)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(created_post)
     auth.login(user_test_object)
     client.post(
         UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
@@ -2016,17 +1975,13 @@ def test_versions_update(
 
 @pytest.mark.usefixtures("init_db")
 def test_versioning_handle_index_error(
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
 ) -> None:
     """Test versioning route when passing to large a revision to update.
 
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -2038,8 +1993,8 @@ def test_versioning_handle_index_error(
     created_post = PostTestObject(
         POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_user(user_test_object)
-    add_test_post(created_post)
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(created_post)
     auth.login(user_test_object)
     assert client.get("/post/1/update?revision=1").status_code == 404
 
@@ -2103,7 +2058,7 @@ def test_navbar_user_dropdown_config_switch(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test that the user dropdown appropriately switches on and off.
 
@@ -2111,7 +2066,7 @@ def test_navbar_user_dropdown_config_switch(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME,
@@ -2121,7 +2076,7 @@ def test_navbar_user_dropdown_config_switch(
         authorized=True,
         confirmed=True,
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
 
     # test user subgroup when dropdown set to False
@@ -2199,8 +2154,7 @@ def test_all_routes_covered(test_app: Flask) -> None:
 )
 def test_static_route_default(
     client: FlaskClient,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    add_test_objects: AddTestObjects,
     interpolate_routes: Callable[..., None],
     code: int,
     routes: List[str],
@@ -2208,8 +2162,7 @@ def test_static_route_default(
     """Specifically test all status codes of routes.
 
     :param client: App's test-client API.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     :param interpolate_routes: Interpolate route vars with test values.
     :param code: Status code expected.
     :param routes: List of routes with expected status code.
@@ -2217,11 +2170,11 @@ def test_static_route_default(
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_post(post_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     interpolate_routes(routes, 1, 0, MAIN_USER_USERNAME)
     assert all(
         client.get(r, follow_redirects=True).status_code == code
@@ -2292,8 +2245,7 @@ def test_version_dropdown(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test version dropdown.
 
@@ -2302,8 +2254,7 @@ def test_version_dropdown(
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
     :param auth: Handle authorization with test app.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -2312,11 +2263,11 @@ def test_version_dropdown(
         authorized=True,
         confirmed=True,
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     post_test_object = PostTestObject(
         POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
-    add_test_post(post_test_object)
+    add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
 
     # create 3 versions (2 other, apart from the original) for all
@@ -2355,15 +2306,13 @@ def test_prev_next_pagination_navbar(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
-    add_test_user: Callable[..., None],
-    add_test_post: Callable[..., None],
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test links are rendered when more than one page exists.
 
     :param test_app: Test ``Flask`` app object.
     :param client: App's test-client API.
-    :param add_test_user: Add user to test database.
-    :param add_test_post: Add post to test database.
+    :param add_test_objects: Add test objects to test database.
     """
     # every post apart from the first one will add functionality to the
     # pagination footer navbar
@@ -2376,13 +2325,13 @@ def test_prev_next_pagination_navbar(
         authorized=True,
         confirmed=True,
     )
-    add_test_user(user_test_object)
+    add_test_objects.add_test_users(user_test_object)
     post_test_object = PostTestObject(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
 
     # add two posts to add an extra page
-    add_test_post(post_test_object, post_test_object)
+    add_test_objects.add_test_posts(post_test_object, post_test_object)
 
     response = client.get("/")
     assert PAGE_1_OF_2_POSTS_POSTS_PER_PAGE_1 in response.data.decode()
