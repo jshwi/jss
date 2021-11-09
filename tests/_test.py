@@ -54,12 +54,12 @@ from .utils import (
     MAIN_USER_EMAIL,
     MAIN_USER_PASSWORD,
     MAIN_USER_USERNAME,
+    MESSAGE_BODY,
+    MESSAGE_CREATED,
     MISC_PROGRESS_INT,
     OTHER_USER_EMAIL,
     OTHER_USER_PASSWORD,
     OTHER_USER_USERNAME,
-    PAGE_1_OF_2_POSTS_POSTS_PER_PAGE_1,
-    PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1,
     POST_AUTHOR_ID_1,
     POST_AUTHOR_ID_2,
     POST_AUTHOR_ID_3,
@@ -83,6 +83,8 @@ from .utils import (
     POST_TITLE_V2,
     POST_TITLE_V3,
     PROFILE_EDIT,
+    RECIPIENT_ID,
+    SENDER_ID,
     SETUP_FILE,
     STATUS_CODE_TO_ROUTE_DEFAULT,
     TASK_DESCRIPTION,
@@ -91,9 +93,11 @@ from .utils import (
     UPDATE1,
     AddTestObjects,
     AuthActions,
+    MessageTestObject,
     PostTestObject,
     Recorder,
     TaskTestObject,
+    TestObject,
     UserTestObject,
 )
 
@@ -2302,11 +2306,42 @@ def test_version_dropdown(
 
 
 @pytest.mark.usefixtures("init_db")
+@pytest.mark.parametrize(
+    "route,test_object,method",
+    [
+        (
+            "/",
+            PostTestObject(
+                POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
+            ),
+            "add_test_posts",
+        ),
+        (
+            f"/profile/{ADMIN_USER_USERNAME}",
+            PostTestObject(
+                POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
+            ),
+            "add_test_posts",
+        ),
+        (
+            "/user/messages",
+            MessageTestObject(
+                SENDER_ID, RECIPIENT_ID, MESSAGE_BODY, MESSAGE_CREATED
+            ),
+            "add_test_messages",
+        ),
+    ],
+    ids=["index", "profile", "messages"],
+)
 def test_prev_next_pagination_navbar(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
+    auth: AuthActions,
     add_test_objects: AddTestObjects,
+    route: str,
+    test_object: TestObject,
+    method: str,
 ) -> None:
     """Test links are rendered when more than one page exists.
 
@@ -2318,26 +2353,41 @@ def test_prev_next_pagination_navbar(
     # pagination footer navbar
     monkeypatch.setenv("POSTS_PER_PAGE", "1")
     config.init_app(test_app)
-    user_test_object = UserTestObject(
+    user_test_object_1 = UserTestObject(
+        ADMIN_USER_USERNAME,
+        ADMIN_USER_EMAIL,
+        ADMIN_USER_PASSWORD,
+        authorized=True,
+        confirmed=True,
+    )
+    user_test_object_2 = UserTestObject(
         AUTHORIZED_USER_USERNAME,
         AUTHORIZED_USER_EMAIL,
         AUTHORIZED_USER_PASSWORD,
         authorized=True,
         confirmed=True,
     )
-    add_test_objects.add_test_users(user_test_object)
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    add_test_objects.add_test_users(user_test_object_1, user_test_object_2)
+    auth.login(user_test_object_1)
+    expected_default = [
+        '<li class="previous disabled">',
+        '<li class="next">',
+        '?page=2"',
+    ]
+    expected_page_2 = [
+        '<li class="previous">',
+        '<li class="next disabled">',
+        '?page=1"',
+    ]
 
     # add two posts to add an extra page
-    add_test_objects.add_test_posts(post_test_object, post_test_object)
+    getattr(add_test_objects, method)(test_object, test_object)
 
-    response = client.get("/")
-    assert PAGE_1_OF_2_POSTS_POSTS_PER_PAGE_1 in response.data.decode()
+    response = client.get(route).data.decode()
+    assert all(i in response for i in expected_default)
 
-    response = client.get("/?page=2")
-    assert PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1 in response.data.decode()
+    response = client.get(f"{route}?page=2").data.decode()
+    assert all(i in response for i in expected_page_2)
 
 
 @pytest.mark.usefixtures("init_db")

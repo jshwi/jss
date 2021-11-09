@@ -17,7 +17,7 @@ from flask.testing import FlaskClient
 from werkzeug import Response
 from werkzeug.security import generate_password_hash
 
-from app.utils.models import BaseModel, Post, Task, User, db
+from app.utils.models import BaseModel, Message, Post, Task, User, db
 
 UPDATE1 = "/post/1/update"
 ADMIN_USER_USERNAME = "admin"
@@ -75,9 +75,9 @@ ADMIN_USER_ROUTE = "/admin/users"
 COPYRIGHT_YEAR = "2021"
 COPYRIGHT_AUTHOR = "John Doe"
 COPYRIGHT_EMAIL = "john.doe@test.com"
-SENDER_ID = 1
-RECIPIENT_ID = 2
-BODY = "hello, this is a test message"
+RECIPIENT_ID = 1
+SENDER_ID = 2
+MESSAGE_BODY = "hello, this is a test message"
 LICENSE = f"""\
 MIT License
 
@@ -278,6 +278,24 @@ class TaskTestObject(TestObject):
         self.complete = False
 
 
+class MessageTestObject(TestObject):
+    """Test model attributes.
+
+    :param sender_id: ID of sender.
+    :param recipient_id: ID of recipient.
+    :param body: Main content of the post..
+    :param created: When the post was created.
+    """
+
+    def __init__(
+        self, sender_id: int, recipient_id: int, body: str, created: datetime
+    ) -> None:
+        self.sender_id = sender_id
+        self.recipient_id = recipient_id
+        self.body = body
+        self.created = created
+
+
 class AuthActions:
     """Handle all the authentication logic.
 
@@ -404,7 +422,7 @@ class AddTestObjects:
         """Add user objects to the database.
 
         :param user_test_objects: Variable number, of any size, of
-            ``user_test_object`` instances.
+            ``UserTestObject`` instances.
         """
         self._add_object(User, *user_test_objects)
 
@@ -412,7 +430,7 @@ class AddTestObjects:
         """Add post objects to the database.
 
         :param post_test_objects: Variable number, of any size, of
-            ``user_test_object`` instances.
+            ``PostTestObject`` instances.
         """
         self._add_object(Post, *post_test_objects)
 
@@ -420,6 +438,16 @@ class AddTestObjects:
         """Add task objects to the database.
 
         :param task_test_objects: Variable number, of any size, of
-            ``user_test_object`` instances.
+            ``TaskTestObject`` instances.
         """
         self._add_object(Task, *task_test_objects)
+
+    def add_test_messages(
+        self, *message_test_objects: MessageTestObject
+    ) -> None:
+        """Add message objects to the database.
+
+        :param message_test_objects: Variable number, of any size, of
+            ``MessageTestObject`` instances.
+        """
+        self._add_object(Message, *message_test_objects)
