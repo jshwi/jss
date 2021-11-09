@@ -203,7 +203,11 @@ PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1 = """
 """
 
 
-class UserTestObject:
+class TestObject:
+    """Base class for all test objects."""
+
+
+class UserTestObject(TestObject):
     """Test model attributes.
 
     :param username: Username of user object.
@@ -232,7 +236,7 @@ class UserTestObject:
         self.confirmed = confirmed
 
 
-class PostTestObject:
+class PostTestObject(TestObject):
     """Test model attributes.
 
     :param title: Title of the post.
@@ -250,7 +254,7 @@ class PostTestObject:
         self.created = created
 
 
-class TaskTestObject:
+class TaskTestObject(TestObject):
     """Test model attributes.
 
     :param id: ID of the task.
