@@ -24,6 +24,7 @@ from redis import RedisError
 from app import config
 from app.extensions import mail
 from app.log import smtp_handler
+from app.utils.csp import ContentSecurityPolicy, CSPType
 from app.utils.mail import send_email
 from app.utils.models import Post, User, db
 from app.utils.register import RegisterContext
@@ -2186,16 +2187,33 @@ def test_static_route_default(
     )
 
 
-def test_registration_dunders(monkeypatch: pytest.MonkeyPatch):
-    """Test dunder methods with ``Context`` (coverage).
+@pytest.mark.parametrize(
+    "attr,obj,expected_repr",
+    [
+        (
+            "app.utils.register.RegisterContext",
+            RegisterContext,
+            "<RegisterContext {}>",
+        ),
+        (
+            "app.utils.csp.ContentSecurityPolicy",
+            ContentSecurityPolicy,
+            "<ContentSecurityPolicy {}>",
+        ),
+    ],
+)
+def test_mutable_mapping_dunders(
+    monkeypatch: pytest.MonkeyPatch, attr, obj, expected_repr
+):
+    """Test ``MutableMapping`` dunder methods (coverage).
 
     :param monkeypatch: Mock patch environment and attributes.
     """
-    monkeypatch.setattr("app.utils.register.RegisterContext", RegisterContext)
+    monkeypatch.setattr(attr, obj)
     key = "key"
     value = "value"
-    self = RegisterContext()
-    assert repr(self) == "<RegisterContext {}>"
+    self = obj()
+    assert repr(self) == expected_repr
     assert key not in self
     assert len(self) == 0
     self[key] = value
@@ -2436,3 +2454,42 @@ def test_csp_report(
             '{\n    "csp-report": {\n        "report_stuff": "here"\n    }\n}'
         )
         assert expected in captured.args
+
+
+@pytest.mark.parametrize(
+    "default,add,expected",
+    [
+        ({}, {}, {}),
+        ({"k": "1"}, {}, {"k": "1"}),
+        ({}, {"k": "2"}, {"k": "2"}),
+        ({"k": "1"}, {"k": ["1"]}, {"k": "1"}),
+        ({"k": "1"}, {"k": "2"}, {"k": ["1", "2"]}),
+        ({"k": "1"}, {"k": ["2"]}, {"k": ["1", "2"]}),
+        ({"k": ["1", "2"]}, {"k": ["3"]}, {"k": ["1", "2", "3"]}),
+        ({"k": ["1", "2"]}, {"k": ["3", "4"]}, {"k": ["1", "2", "3", "4"]}),
+    ],
+    ids=[
+        "0,0,0",
+        "1,0,1",
+        "0,2,2",
+        "1,[1],1",
+        "1,2,1-2",
+        "1,[2],1-2",
+        "1-2,3,1-2-3",
+        "1-2,3,1-2-3,1-2,3-4,1-2-3-4",
+    ],
+)
+def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
+    """Test the ``ContentSecurityPolicy`` object.
+
+    Test the assigning of a default policy, and the addition of any
+    custom configured policy items.
+
+    :param default: The policy to start with.
+    :param add: The configured policy directive to add to the existing
+        policy.
+    :param expected: The expected
+    """
+    csp = ContentSecurityPolicy(default)
+    csp.update_policy(add)
+    assert dict(csp) == expected

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.9.0...HEAD)
 ------------------------------------------------------------------------
+### Added
+`app.utils.csp` with `ContentSecurityPolicy`, `CSPType`, and `CSPValType`
 
 [1.9.0](https://github.com/jshwi/jss/releases/tag/v1.9.0) - 2021-11-10
 ------------------------------------------------------------------------
