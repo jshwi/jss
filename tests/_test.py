@@ -2310,7 +2310,8 @@ def test_version_dropdown(
         "         </a>\n"
         "        </li>\n"
         "        <li>\n"
-        '         <a href="/post/1?revision=2" style="pointer-events: none">\n'
+        '         <a class="current-version-anchor"'
+        ' href="/post/1?revision=2">\n'
         "          v3: This revision\n"
         "         </a>\n"
         "        </li>\n"

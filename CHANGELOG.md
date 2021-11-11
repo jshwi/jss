@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 `app.utils.csp` with `ContentSecurityPolicy`, `CSPType`, and `CSPValType`
 
 ### Security
+Fixes inline style for current version dropdown
 Fixes inline style for notification button
 Renders `moment.js` for inline nonce
 Adds inline nonce for `script-src-elem`

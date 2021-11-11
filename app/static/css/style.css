@@ -23,3 +23,8 @@
 .user-post-td {
     width: 150px;
 }
+
+/* rules for null pointer */
+.current-version-anchor {
+    pointer-events: none;
+}
