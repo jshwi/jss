@@ -211,10 +211,8 @@ class NavbarRenderer(BootstrapRenderer):
 
         # create the badge that will display the number of focused items
         # if the node count is not 0
-        badge = anchor.add(node.badge)
-        badge["style"] = "visibility: disable"
         if node.count:
-            badge["style"] = "visibility: visible"
+            anchor.add(node.badge)
 
         return item
 

@@ -1315,8 +1315,7 @@ def test_send_message(
         ' title="Messages">\n'
         '        <span class="bi-bell">\n'
         "        </span>\n"
-        '        <span class="badge icon-badge-notify" id="message_count"'
-        ' style="visibility: visible">\n'
+        '        <span class="badge icon-badge-notify" id="message_count">\n'
         "         1\n"
         "        </span>\n"
         "       </a>\n"
@@ -1335,8 +1334,7 @@ def test_send_message(
         "      <li>\n"
         '       <a class="" href="/user/messages" title="Messages">\n'
         "        Messages\n"
-        '        <span class="badge" id="message_count" '
-        'style="visibility: visible">\n'
+        '        <span class="badge" id="message_count">\n'
         "         1\n"
         "        </span>\n"
         "       </a>\n"
@@ -1363,10 +1361,6 @@ def test_send_message(
         "      <li>\n"
         '       <a class="" href="/user/messages" title="Messages">\n'
         "        Messages\n"
-        '        <span class="badge" id="message_count"'
-        ' style="visibility: disable">\n'
-        "         0\n"
-        "        </span>\n"
         "       </a>\n"
         "      </li>\n"
         "      <li>\n"
