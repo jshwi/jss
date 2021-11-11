@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 `app.utils.csp` with `ContentSecurityPolicy`, `CSPType`, and `CSPValType`
 
 ### Security
+Renders `moment.js` for inline nonce
 Adds inline nonce for `script-src-elem`
 Moves inline style to app/static/css/static.css for `user-post-td`
 Adds default Content Security Policy

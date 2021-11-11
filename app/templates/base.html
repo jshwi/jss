@@ -69,9 +69,6 @@
 {% block scripts %}
     {{ super() }}
 
-    {# render user's timezone client side #}
-    {{ moment.include_moment() }}
-
     {# syntax highlighting for fenced markdown code #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/python.min.js"></script>
@@ -83,6 +80,50 @@
 
     {# checkbox as toggle switch #}
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+    {# from https://github.com/miguelgrinberg/Flask-Moment #}
+    {# see https://github.com/miguelgrinberg/Flask-Moment/issues/43 #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+
+    <!--suppress JSCheckFunctionSignatures -->
+    <script nonce="{{ csp_nonce() }}">
+        moment.locale("en");
+        function flask_moment_render(elem) {
+            const timestamp = moment(elem.dataset.timestamp);
+            const func = elem.dataset.function;
+            const format = elem.dataset.format;
+            const timestamp2 = elem.dataset.timestamp2;
+            const no_suffix = elem.dataset.nosuffix;
+            const units = elem.dataset.units;
+            let args = [];
+            if (format)
+                args.push(format);
+            if (timestamp2)
+                args.push(moment(timestamp2));
+            if (no_suffix)
+                args.push(no_suffix);
+            if (units)
+                args.push(units);
+            elem.textContent = timestamp[func].apply(timestamp, args);
+            elem.classList.remove('flask-moment');
+            elem.style.display = "";
+        }
+        function flask_moment_render_all() {
+            const moments = document.querySelectorAll('.flask-moment');
+            moments.forEach(function(moment) {
+                flask_moment_render(moment);
+                const refresh = moment.dataset.refresh;
+                if (refresh && refresh > 0) {
+                    (function(elem, interval) {
+                        setInterval(function() {
+                            flask_moment_render(elem);
+                        }, interval);
+                    })(moment, refresh);
+                }
+            })
+        }
+        document.addEventListener("DOMContentLoaded", flask_moment_render_all);
+    </script>
 
     <!--suppress JSUnresolvedVariable -->
     <script nonce="{{ csp_nonce() }}">
