@@ -18,3 +18,8 @@
     font-size: 8px;
     background: red;
 }
+
+/* rules for user/post table data */
+.user-post-td {
+    width: 150px;
+}

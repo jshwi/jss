@@ -137,7 +137,7 @@ def read_posts(posts: Union[Post, Message]) -> html_tag:
         table, _ = div.add(tags.table(cls="table table-hover"), tags.tr())
 
         # user information
-        left_td = table.add(tags.td(style="width: 150px"))
+        left_td = table.add(tags.td(cls="user-post-td"))
         left_td.add(
             # user's avatar linked to their profile
             tags.a(

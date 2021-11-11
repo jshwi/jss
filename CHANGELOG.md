@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 `app.utils.csp` with `ContentSecurityPolicy`, `CSPType`, and `CSPValType`
 
 ### Security
+Moves inline style to app/static/css/static.css for `user-post-td`
 Adds default Content Security Policy
 
 [1.9.0](https://github.com/jshwi/jss/releases/tag/v1.9.0) - 2021-11-10
