@@ -2139,7 +2139,7 @@ def test_all_routes_covered(test_app: Flask) -> None:
 
     :param test_app: Test ``Flask`` app object.
     """
-    ignore = ["/admin/*", "/static/*"]
+    ignore = ["/admin/*", "/static/*", "/_debug_toolbar/*"]
     exception = ["/admin/"]
     filter_covered = [
         r.rule
