@@ -79,13 +79,13 @@
     {# import JavaScript functions #}
     <script src="{{ static_url_for("static", filename="js/main.js") }}"></script>
     <!--suppress JSUnresolvedFunction, JSUnresolvedVariable -->
-    <script>hljs.highlightAll()</script>
+    <script nonce="{{ csp_nonce() }}">hljs.highlightAll()</script>
 
     {# checkbox as toggle switch #}
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 
     <!--suppress JSUnresolvedVariable -->
-    <script>
+    <script nonce="{{ csp_nonce() }}">
       {% if current_user.is_authenticated %}
         $(function () {
           let since = 0
