@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.10.0...HEAD)
 ------------------------------------------------------------------------
+### Security
+Adds default CSP exception for day/night mode
 
 [1.10.0](https://github.com/jshwi/jss/releases/tag/v1.10.0) - 2021-11-12
 ------------------------------------------------------------------------

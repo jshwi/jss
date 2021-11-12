@@ -13,6 +13,7 @@ _CSP: CSPType = {
     "script-src-elem": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
     "img-src": ["'self'", "gravatar.com"],
     "font-src": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
+    "script-src-attr": ["'self'", "'unsafe-inline'"],
 }
 
 
