@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.11.0...HEAD)
 ------------------------------------------------------------------------
 ### Changed
-Replaces inheritance of `BootstrapRenderer` with `Visitor`
+- Replaces inheritance of `BootstrapRenderer` with `Visitor`
 
 [1.11.0](https://github.com/jshwi/jss/releases/tag/v1.11.0) - 2021-11-13
 ------------------------------------------------------------------------

@@ -4,12 +4,12 @@ app.html.renderers
 """
 # pylint: disable=invalid-name,too-few-public-methods
 from hashlib import sha1
-from typing import Any, List
+from typing import Any, List, Optional
 
 from dominate import tags
 from dominate.tags import html_tag
-from flask_bootstrap.nav import BootstrapRenderer
 from flask_nav.elements import NavigationItem, Subgroup, View
+from visitor import Visitor
 
 
 class IconView(View):
@@ -140,8 +140,13 @@ class Navbar(NavigationItem):  # pylint: disable=too-few-public-methods
         self.right_items = right_items or []
 
 
-class NavbarRenderer(BootstrapRenderer):
+class NavbarRenderer(Visitor):
     """Rules for rendering the navbar HTML."""
+
+    def __init__(self, html5: bool = True, id: Optional[int] = None):
+        self.html5 = html5
+        self._in_dropdown = False
+        self.id = id
 
     def visit_Navbar(  # pylint: disable=too-many-locals
         self, node: Navbar
@@ -252,4 +257,46 @@ class NavbarRenderer(BootstrapRenderer):
         anchor["href"] = node.get_url()
         anchor["title"] = node.title
         anchor["class"] = node.aclass
+        return item
+
+    # all the below is from `Flask-Bootstrap.nav.BootstrapRenderer`
+    # cannot be installed at the same time as `Bootstrap-Flask`
+    # in order to avoid to many changes between migration, hard code
+    # this instead of importing
+
+    def visit_Subgroup(self, node: Subgroup) -> html_tag:
+        """Render a subgroup.
+
+        :return: An ``html_tag`` instance for rendering a subgroup.
+        """
+        li = tags.li()
+        if not self._in_dropdown:
+            li["class"] = "dropdown"
+            a = li.add(tags.a(node.title, href="#", _class="dropdown-toggle"))
+            a["data-toggle"] = "dropdown"
+            a["role"] = "button"
+            a["aria-haspopup"] = "true"
+            a["aria-expanded"] = "false"
+            a.add(tags.span(_class="caret"))
+
+            ul = li.add(tags.ul(_class="dropdown-menu"))
+
+            self._in_dropdown = True
+            for item in node.items:
+                ul.add(self.visit(item))
+            self._in_dropdown = False
+
+        return li
+
+    @staticmethod
+    def visit_View(node: View) -> html_tag:
+        """Render a view.
+
+        :return: An ``html_tag`` instance for rendering a view.
+        """
+        item = tags.li()
+        item.add(tags.a(node.text, href=node.get_url(), title=node.text))
+        if node.active:
+            item["class"] = "active"
+
         return item
