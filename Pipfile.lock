@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b8183f6cf7ec5c4971cd8c1f705cf0b8206a5856fef8e1c4f4cd178d3651a8be"
+            "sha256": "f6a79aeb3fb9ab679c9b0f378b415a7f7c13e7ea0b2c8f19a8d9975df15a6956"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -135,11 +135,11 @@
         },
         "environs": {
             "hashes": [
-                "sha256:7412eca2996027a0a1eafd89bbfec872568e7b4ca75fc980817bfd7788cb5a1f",
-                "sha256:eecf57fb1b91f1166a8a16344a3fd12ea55b7a0f233c906d86506bdb40738a0f"
+                "sha256:47128992b854cf7e279e62127100767d765a1ead8d22f355e63c00661550131b",
+                "sha256:f5a3ca00afd32a82e098597c7dc8899bea5ed451d31055e518e8c7681cdf1c2b"
             ],
             "index": "pypi",
-            "version": "==9.3.4"
+            "version": "==9.3.5"
         },
         "flask": {
             "hashes": [
@@ -894,11 +894,11 @@
         },
         "environs": {
             "hashes": [
-                "sha256:7412eca2996027a0a1eafd89bbfec872568e7b4ca75fc980817bfd7788cb5a1f",
-                "sha256:eecf57fb1b91f1166a8a16344a3fd12ea55b7a0f233c906d86506bdb40738a0f"
+                "sha256:47128992b854cf7e279e62127100767d765a1ead8d22f355e63c00661550131b",
+                "sha256:f5a3ca00afd32a82e098597c7dc8899bea5ed451d31055e518e8c7681cdf1c2b"
             ],
             "index": "pypi",
-            "version": "==9.3.4"
+            "version": "==9.3.5"
         },
         "execnet": {
             "hashes": [
