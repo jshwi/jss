@@ -1,6 +1,6 @@
 {# auth/login.html #}
 {% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {# page header and browser tab #}
 {% block page_name %}Sign In{% endblock %}
@@ -9,7 +9,7 @@
 {% block app_content %}
 
     {# login form #}
-    <div class="row"><div class="col-md-4">{{ wtf.quick_form(form) }}</div></div>
+    <div class="row"><div class="col-md-4">{{ wtf.render_form(form) }}</div></div>
     <br>
 
     {# leads to registration route #}

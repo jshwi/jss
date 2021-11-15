@@ -1,6 +1,6 @@
 {# user/create.html #}
 {% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/form.html' as wtf %}
 
 {# page header and browser tab #}
 {% block page_name %}New Post{% endblock %}
@@ -13,5 +13,5 @@
     {{ pagedown.include_pagedown() }}
 
     {# form for entering post #}
-    {{ wtf.quick_form(form) }}
+    {{ wtf.render_form(form) }}
 {% endblock %}

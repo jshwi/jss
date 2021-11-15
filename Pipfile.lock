@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3c53b3e11da0047013f2edc7ecb76f46f9333038f01f233fa6ffe11a437f05b4"
+            "sha256": "8837cc66a3adb7215a30a105489b248797a22ef394b821890fd823ae972671a1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -45,6 +45,14 @@
                 "sha256:471aee25f3992bd325afa3772f1063dbdbbca947a041b8b89466dc00d606f8b6"
             ],
             "version": "==1.4"
+        },
+        "bootstrap-flask": {
+            "hashes": [
+                "sha256:1c47a35b26b2ea2eaa0326b416c557aee77c7802f188055a8cfc4520a5cfdba2",
+                "sha256:74a333756e997f2bb7d2d39a080eb2d1b4fd9da225f6cd5b56f0488ae5fe48ed"
+            ],
+            "index": "pypi",
+            "version": "==1.8.0"
         },
         "cffi": {
             "hashes": [
@@ -163,13 +171,6 @@
             ],
             "index": "pypi",
             "version": "==1.5.8"
-        },
-        "flask-bootstrap": {
-            "hashes": [
-                "sha256:cb08ed940183f6343a64e465e83b3a3f13c53e1baabb8d72b5da4545ef123ac8"
-            ],
-            "index": "pypi",
-            "version": "==3.3.7.1"
         },
         "flask-caching": {
             "hashes": [
@@ -773,6 +774,14 @@
             ],
             "version": "==1.4"
         },
+        "bootstrap-flask": {
+            "hashes": [
+                "sha256:1c47a35b26b2ea2eaa0326b416c557aee77c7802f188055a8cfc4520a5cfdba2",
+                "sha256:74a333756e997f2bb7d2d39a080eb2d1b4fd9da225f6cd5b56f0488ae5fe48ed"
+            ],
+            "index": "pypi",
+            "version": "==1.8.0"
+        },
         "bump2version": {
             "hashes": [
                 "sha256:37f927ea17cde7ae2d7baf832f8e80ce3777624554a653006c9144f8017fe410",
@@ -1042,13 +1051,6 @@
             ],
             "index": "pypi",
             "version": "==1.5.8"
-        },
-        "flask-bootstrap": {
-            "hashes": [
-                "sha256:cb08ed940183f6343a64e465e83b3a3f13c53e1baabb8d72b5da4545ef123ac8"
-            ],
-            "index": "pypi",
-            "version": "==3.3.7.1"
         },
         "flask-caching": {
             "hashes": [
