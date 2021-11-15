@@ -82,7 +82,7 @@ prompt-toolkit==3.0.22
 psycopg2==2.9.2
 ptyprocess==0.7.0
 py==1.11.0
-pyaud==3.2.9
+pyaud==3.2.10
 pycparser==2.21
 pygments==2.8.1
 pyjwt==2.3.0
