@@ -36,7 +36,7 @@ setup(
         "click==8.0.3",
         "dominate==2.6.0",
         "email-validator==1.1.3",
-        "environs==9.3.4",
+        "environs==9.3.5",
         "flask==2.0.2",
         "flask-admin==1.5.8",
         "flask-bootstrap==3.3.7.1",
