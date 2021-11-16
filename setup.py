@@ -54,6 +54,7 @@ setup(
         "flask-talisman==0.8.1",
         "flask-wtf==1.0.0",
         "gunicorn==20.1.0",
+        "hiredis==2.0.0",
         "itsdangerous==2.0.1",
         "markupsafe==2.0.1",
         "psycopg2==2.9.2",
