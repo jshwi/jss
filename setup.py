@@ -59,7 +59,7 @@ setup(
         "markupsafe==2.0.1",
         "psycopg2==2.9.2",
         "pyjwt==2.3.0",
-        "redis==3.5.3",
+        "redis==4.0.0",
         "rq==1.10.0",
         "sqlalchemy==1.3.24",
         "sqlalchemy-continuum==1.3.11",
