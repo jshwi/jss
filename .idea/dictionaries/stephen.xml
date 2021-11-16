@@ -4,9 +4,12 @@
       <w>backrefs</w>
       <w>caplog</w>
       <w>cdnjs</w>
+      <w>cdns</w>
       <w>darkreader</w>
       <w>lstrip</w>
       <w>misaka</w>
+      <w>msapplication</w>
+      <w>webmanifest</w>
     </words>
   </dictionary>
 </component>
