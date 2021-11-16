@@ -209,27 +209,29 @@ def post_footer_nav(
     :return: Navbar as ``html_tag`` object.
     """
     nav = tags.nav(aria_label="...")
-    ul = nav.add(tags.ul(cls="pager"))
+    ul = nav.add(tags.ul(cls="pagination justify-content-center"))
 
     # newer posts
-    li = ul.add(tags.li(cls="previous"))
-    a = li.add(tags.a())
+    li = ul.add(tags.li(cls="page-item"))
+    a = li.add(tags.a(cls="page-link"))
     a.add("Newer posts")
     if prev_url is not None:
         a["href"] = prev_url
     else:
         li["class"] += " disabled"
         a["href"] = "#"
+        a["tabindex"] = "-1"
 
     # older posts
-    li = ul.add(tags.li(cls="next"))
-    a = li.add(tags.a())
+    li = ul.add(tags.li(cls="page-item"))
+    a = li.add(tags.a(cls="page-link"))
     a.add("Older posts")
     if next_url is not None:
         a["href"] = next_url
     else:
         li["class"] += " disabled"
         a["href"] = "#"
+        a["tabindex"] = "-1"
 
     return nav
 

@@ -2369,14 +2369,20 @@ def test_prev_next_pagination_navbar(
     add_test_objects.add_test_users(user_test_object_1, user_test_object_2)
     auth.login(user_test_object_1)
     expected_default = [
-        '<li class="previous disabled">',
-        '<li class="next">',
-        '?page=2"',
+        '<li class="page-item disabled">',
+        '<a class="page-link" href="#" tabindex="-1">',
+        "Newer posts",
+        '<li class="page-item">',
+        "?page=2",
+        "Older posts",
     ]
     expected_page_2 = [
-        '<li class="previous">',
-        '<li class="next disabled">',
-        '?page=1"',
+        '<li class="page-item disabled">',
+        '<a class="page-link" href="#" tabindex="-1">',
+        "Newer posts",
+        '<li class="page-item">',
+        "?page=1",
+        "Older posts",
     ]
 
     # add two posts to add an extra page
