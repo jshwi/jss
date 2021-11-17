@@ -107,19 +107,6 @@ class ListGroup(Subgroup):
     """Register a subgroup of li items that are not part of dropdown."""
 
 
-class Toggler(NavigationItem):
-    """Toggle input item.
-
-    :param text: The text to display as a link and also to display
-        hover-over information.
-    :param kwargs: Parameters to pass to the input tag.
-    """
-
-    def __init__(self, text: str, **kwargs) -> None:
-        self.text = text
-        self.kwargs = kwargs
-
-
 class Navbar(NavigationItem):  # pylint: disable=too-few-public-methods
     """Navbar object parameters.
 
@@ -180,7 +167,20 @@ class NavbarRenderer(Visitor):
         )
 
         label = div_header.add(tags.label(cls="switch pull-right"))
-        label.add(*[self.visit(i) for i in node.header])
+        toggle_dark_mode = label.add(
+            tags.input_(
+                id="toggle-darkreader",
+                type="checkbox",
+                data_toggle="toggle",
+                data_onstyle="outline-dark",
+                data_offstyle="outline-light",
+                data_style="border",
+                data_on="<i class='bi bi-sun'></i>",
+                data_off="<i class='bi-moon'></i>",
+                onchange="toggle_darkreader()",
+            )
+        )
+        toggle_dark_mode.add("toggle-darkreader")
 
         a = div_header.add(
             tags.a(cls="navbar-brand", href=node.title.get_url())
@@ -235,15 +235,6 @@ class NavbarRenderer(Visitor):
         div = li.add(tags.div(cls="list-group"))
         div.add(*[self.visit(i) for i in node.items])
         return li
-
-    @staticmethod
-    def visit_Toggler(node: Toggler) -> html_tag:
-        """Render a toggle input item.
-
-        :param node: A ``Toggler`` instance.
-        :return: An ``html_tag`` instance for rendering input item.
-        """
-        return tags.input_(node.text, **node.kwargs)
 
     @staticmethod
     def visit_IconView(node: IconView) -> html_tag:
