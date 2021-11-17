@@ -12,14 +12,6 @@
     {# favicon icon for bookmarks and easy reference #}
     <link id="favicon" rel="shortcut icon" href="{{ static_url_for("static", filename="img/favicon.ico") }}">
 
-    {# apply dark-mode from darkreader: https://darkreader.org/ #}
-    {# disabled by default (night-mode off) #}
-    <!--suppress HtmlDeprecatedAttribute -->
-    <link id="darkreader"
-          rel="stylesheet"
-          href="{{ static_url_for("static", filename="css/darkreader.css") }}"
-          disabled="disabled">
-
     {# checkbox as toggle switch #}
     <link id="bootstrap-toggle"
           rel="stylesheet"
@@ -72,6 +64,11 @@
     {# syntax highlighting for fenced markdown code #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/python.min.js"></script>
+
+    {# apply dark-mode from darkreader: https://darkreader.org/ #}
+    {# disabled by default (night-mode off) #}
+    <!--suppress HtmlDeprecatedAttribute -->
+    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.40/darkreader.min.js"></script>
 
     {# import JavaScript functions #}
     <script src="{{ static_url_for("static", filename="js/main.js") }}"></script>

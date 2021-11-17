@@ -5,7 +5,10 @@
  */
 const current_theme = localStorage.getItem("theme");
 const toggle_switch = document.querySelector('input[type="checkbox"]');
-const darkreader = document.getElementById("darkreader");
+// noinspection UnnecessaryLocalVariableJS
+const DarkReader = window.DarkReader;
+// noinspection JSUnresolvedFunction
+DarkReader.setFetchMethod(window.fetch);
 
 // trigger on import
 // determine the saved state (if there is one)
@@ -13,7 +16,11 @@ if (current_theme) {
   document.documentElement.setAttribute("data-theme", current_theme);
   if (current_theme === "dark") {
     toggle_switch.checked = true;
-    darkreader.disabled = undefined;
+    DarkReader.enable({
+      brightness: 100,
+      contrast: 90,
+      sepia: 10,
+    });
   }
 }
 
@@ -46,11 +53,15 @@ function toggle_darkreader() {
   if (toggle_switch.checked === true) {
     document.documentElement.setAttribute("data-theme", "dark");
     localStorage.setItem("theme", "dark");
-    darkreader.disabled = undefined;
+    DarkReader.enable({
+      brightness: 100,
+      contrast: 90,
+      sepia: 10,
+    });
   } else {
     document.documentElement.setAttribute("data-theme", "light");
     localStorage.setItem("theme", "light");
-    darkreader.disabled = "disabled";
+    DarkReader.disable();
   }
 }
 

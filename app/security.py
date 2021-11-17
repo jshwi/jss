@@ -8,10 +8,20 @@ from app.extensions import talisman as t
 from app.utils.csp import ContentSecurityPolicy, CSPType
 
 _CSP: CSPType = {
-    "default-src": ["'self'"],
-    "style-src-elem": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
-    "script-src-elem": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
-    "img-src": ["'self'", "gravatar.com"],
+    "default-src": ["'self'", "cdn.jsdelivr.net"],
+    "style-src-elem": [
+        "'self'",
+        "cdnjs.cloudflare.com",
+        "cdn.jsdelivr.net",
+        "'unsafe-inline'",
+    ],
+    "script-src-elem": [
+        "'self'",
+        "cdnjs.cloudflare.com",
+        "cdn.jsdelivr.net",
+        "'unsafe-inline'",
+    ],
+    "img-src": ["'self'", "gravatar.com", "data:"],
     "font-src": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
     "script-src-attr": ["'self'", "'unsafe-inline'"],
 }
@@ -26,4 +36,3 @@ def init_app(app: Flask) -> None:
     t.content_security_policy.update_policy(app.config["CSP"])
     t.content_security_policy_report_only = app.config["CSP_REPORT_ONLY"]
     t.content_security_policy_report_uri = app.config["CSP_REPORT_URI"]
-    t.content_security_policy_nonce_in = ["script-src-elem"]
