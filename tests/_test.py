@@ -2462,3 +2462,13 @@ def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
     csp = ContentSecurityPolicy(default)
     csp.update_policy(add)
     assert dict(csp) == expected
+
+
+@pytest.mark.usefixtures("init_db")
+def test_is_navbar_brand(client: FlaskClient) -> None:
+    """Assert navbar brand is visible.
+
+    :param client: App's test-client API.
+    """
+    response = client.get("/")
+    assert '<a class="navbar-brand" href="/">' in response.data.decode()
