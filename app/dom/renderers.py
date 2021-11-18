@@ -81,7 +81,7 @@ class BadgedView(IconView):
         :param icon: Icon attribute.
         """
         super().set_icon(icon)
-        self.badge["class"] += " icon-badge-notify"
+        self.badge["class"] += " badge-pill badge-primary badge-notify"
 
 
 class RawUrl(View):
@@ -144,35 +144,12 @@ class NavbarRenderer(Visitor):
         :return: Rendered HTML.
         """
         node_id = sha1(str(id(node)).encode()).hexdigest()
-        nav = tags.nav(cls="navbar navbar-default")
-        container = nav.add(tags.div(cls="container-fluid"))
+        nav = tags.nav(cls="navbar navbar-expand-lg navbar-light bg-light")
 
-        # header; div2
-        div_header = container.add(tags.div(cls="navbar-header"))
-        collapse_button = div_header.add(
-            tags.button(
-                type="button",
-                cls="navbar-toggle collapsed",
-                data_toggle="collapse",
-                data_target=f"#{node_id}",
-                aria_expanded="false",
-                aria_controls="navbar",
-            )
-        )
-        collapse_button.add(
-            tags.span("Toggle navigation", cls="sr-only"),
-            tags.span(cls="icon-bar"),  # "hamburger" menu
-            tags.span(cls="icon-bar"),
-            tags.span(cls="icon-bar"),
-        )
-
-        a = div_header.add(
-            tags.a(cls="navbar-brand", href=node.title.get_url())
-        )
+        a = nav.add(tags.a(cls="navbar-brand", href=node.title.get_url()))
         a.add(node.title.text)
 
-        label = div_header.add(tags.label(cls="switch pull-right"))
-        toggle_dark_mode = label.add(
+        toggle_dark_mode = nav.add(
             tags.input_(
                 id="toggle-darkreader",
                 type="checkbox",
@@ -187,11 +164,27 @@ class NavbarRenderer(Visitor):
         )
         toggle_dark_mode.add("toggle-darkreader")
 
-        collapsible_div = container.add(
-            tags.div(cls="navbar-collapse collapse", id=node_id)
+        collapse_button = nav.add(
+            tags.button(
+                cls="navbar-toggler",
+                type="button",
+                data_toggle="collapse",
+                data_target=f"#{node_id}",
+                aria_controls="navbarSupported",
+                aria_expanded="false",
+                aria_label="Toggle navigation",
+            )
+        )
+        collapse_button.add(
+            tags.span("Toggle navigation", cls="sr-only"),
+            tags.span(cls="navbar-toggler-icon"),
         )
 
-        ul = collapsible_div.add(tags.ul(cls="nav navbar-nav"))
+        collapsible_div = nav.add(
+            tags.div(cls="collapse navbar-collapse", id=node_id)
+        )
+
+        ul = collapsible_div.add(tags.ul(cls="navbar-nav mr-auto"))
         ul.add(*[self.visit(i) for i in node.items])
 
         # navbar items to the right
@@ -288,10 +281,10 @@ class NavbarRenderer(Visitor):
 
         :return: An ``html_tag`` instance for rendering a view.
         """
-        li = tags.li()
-        a = li.add(tags.a(href=node.get_url(), title=node.text))
+        li = tags.li(cls="nav-item", href=node.get_url(), title=node.text)
+        a = li.add(tags.a(cls="nav-link", href=node.get_url()))
         a.add(node.text)
         if node.active:
-            li["class"] = "active"
+            li["class"] = "nav-item active"
 
         return li

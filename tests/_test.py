@@ -1317,7 +1317,10 @@ def test_send_message(
                 'title="Messages">'
             ),
             '<span class="bi-bell">',
-            '<span class="badge icon-badge-notify" id="message_count">',
+            (
+                '<span class="badge badge-pill badge-primary badge-notify" '
+                'id="message_count">'
+            ),
             "1",
         ]
     )
@@ -2035,16 +2038,19 @@ def test_navbar_home_config_switch(
     config.init_app(test_app)
     assert test_app.config["NAVBAR_HOME"] is False
     response = client.get("/")
-    assert '<a href="/" title="Home">Home</a>' not in response.data.decode()
+    assert (
+        '<a class="nav-link" href="/"">Home</a>' not in response.data.decode()
+    )
 
     # with `NAVBAR_HOME` set to True
     monkeypatch.setenv("NAVBAR_HOME", "1")
     config.init_app(test_app)
     assert test_app.config["NAVBAR_HOME"] is True
     response = client.get("/")
-    assert all(
-        i in response.data.decode()
-        for i in ['<a href="/" title="Home">', "Home"]
+    assert (
+        '<a class="nav-link" href="/"">Home</a>'
+        not in response.data.decode()
+        in response.data.decode()
     )
 
 
@@ -2083,12 +2089,15 @@ def test_navbar_user_dropdown_config_switch(
         i in response.data.decode()
         for i in [
             '<div class="list-group">',
-            '<a href="/admin" title="Console">',
-            " Console",
-            '<a href="/profile/admin" title="Profile">',
-            " Profile",
-            '<a href="/auth/logout" title="Logout">',
-            " Logout",
+            '<li class="nav-item" href="/admin" title="Console">',
+            '<a class="nav-link" href="/admin">',
+            "Console",
+            '<li class="nav-item" href="/profile/admin" title="Profile">',
+            '<a class="nav-link" href="/profile/admin">',
+            "Profile",
+            '<li class="nav-item" href="/auth/logout" title="Logout">',
+            '<a class="nav-link" href="/auth/logout">',
+            "Logout",
         ]
     )
 
@@ -2100,11 +2109,14 @@ def test_navbar_user_dropdown_config_switch(
         i in response.data.decode()
         for i in [
             '<ul class="dropdown-menu">',
-            '<a href="/admin" title="Console">',
+            '<li class="nav-item" href="/admin" title="Console">',
+            '<a class="nav-link" href="/admin">',
             "Console",
-            '<a href="/profile/admin" title="Profile">',
+            '<li class="nav-item" href="/profile/admin" title="Profile">',
+            '<a class="nav-link" href="/profile/admin">',
             "Profile",
-            '<a href="/auth/logout" title="Logout">',
+            '<li class="nav-item" href="/auth/logout" title="Logout">',
+            '<a class="nav-link" href="/auth/logout">',
             "Logout",
         ]
     )
@@ -2462,13 +2474,3 @@ def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
     csp = ContentSecurityPolicy(default)
     csp.update_policy(add)
     assert dict(csp) == expected
-
-
-@pytest.mark.usefixtures("init_db")
-def test_is_navbar_brand(client: FlaskClient) -> None:
-    """Assert navbar brand is visible.
-
-    :param client: App's test-client API.
-    """
-    response = client.get("/")
-    assert '<a class="navbar-brand" href="/">' in response.data.decode()
