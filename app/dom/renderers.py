@@ -166,6 +166,11 @@ class NavbarRenderer(Visitor):
             tags.span(cls="icon-bar"),
         )
 
+        a = div_header.add(
+            tags.a(cls="navbar-brand", href=node.title.get_url())
+        )
+        a.add(node.title.text)
+
         label = div_header.add(tags.label(cls="switch pull-right"))
         toggle_dark_mode = label.add(
             tags.input_(
@@ -181,11 +186,6 @@ class NavbarRenderer(Visitor):
             )
         )
         toggle_dark_mode.add("toggle-darkreader")
-
-        a = div_header.add(
-            tags.a(cls="navbar-brand", href=node.title.get_url())
-        )
-        a.add(node.title.text)
 
         collapsible_div = container.add(
             tags.div(cls="navbar-collapse collapse", id=node_id)

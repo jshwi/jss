@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.11.0...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- Swaps `navbar-brand` with `toggle-darkreader`
 - Adds `DarkReader` toggle to navbar permanently
 - Replaces inheritance of `BootstrapRenderer` with `Visitor`
 
