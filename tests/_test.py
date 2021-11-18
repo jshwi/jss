@@ -1309,19 +1309,18 @@ def test_send_message(
     # ensure the badge (<span> tag) is displayed when there are messages
     # held for the user
     response = client.get("/")
-    assert (
-        "      <li>\n"
-        '       <a class="btn-lg btn-link" href="/user/messages"'
-        ' title="Messages">\n'
-        '        <span class="bi-bell">\n'
-        "        </span>\n"
-        '        <span class="badge icon-badge-notify" id="message_count">\n'
-        "         1\n"
-        "        </span>\n"
-        "       </a>\n"
-        "      </li>\n"
-        "      <li>\n"
-    ) in response.data.decode()
+    assert all(
+        i in response.data.decode()
+        for i in [
+            (
+                '<a class="btn-lg btn-link" href="/user/messages" '
+                'title="Messages">'
+            ),
+            '<span class="bi-bell">',
+            '<span class="badge icon-badge-notify" id="message_count">',
+            "1",
+        ]
+    )
 
     # for reliable testing ensure navbar not set to display icons
     monkeypatch.setenv("NAVBAR_ICONS", "0")
@@ -1330,16 +1329,15 @@ def test_send_message(
     # ensure the badge (<span> tag) is displayed when there are messages
     # held for the user
     response = client.get("/")
-    assert (
-        "      <li>\n"
-        '       <a class="" href="/user/messages" title="Messages">\n'
-        "        Messages\n"
-        '        <span class="badge" id="message_count">\n'
-        "         1\n"
-        "        </span>\n"
-        "       </a>\n"
-        "      </li>\n"
-    ) in response.data.decode()
+    assert all(
+        i in response.data.decode()
+        for i in [
+            '<a class="" href="/user/messages" title="Messages">',
+            "Messages",
+            '<span class="badge" id="message_count">',
+            " 1",
+        ]
+    )
     response = client.get("/user/notifications")
     if response.json is not None:
         obj = response.json[0]
@@ -1357,14 +1355,13 @@ def test_send_message(
     # confirm that no message badge is displayed next to the messages
     # link
     response = client.get("/")
-    assert (
-        "      <li>\n"
-        '       <a class="" href="/user/messages" title="Messages">\n'
-        "        Messages\n"
-        "       </a>\n"
-        "      </li>\n"
-        "      <li>\n"
-    ) in response.data.decode()
+    assert all(
+        i in response.data.decode()
+        for i in [
+            '<a class="" href="/user/messages" title="Messages">',
+            " Messages",
+        ]
+    )
 
 
 @pytest.mark.usefixtures("init_db")
@@ -2045,9 +2042,9 @@ def test_navbar_home_config_switch(
     config.init_app(test_app)
     assert test_app.config["NAVBAR_HOME"] is True
     response = client.get("/")
-    assert (
-        '       <a href="/" title="Home">\n        Home\n       </a>\n'
-        in response.data.decode()
+    assert all(
+        i in response.data.decode()
+        for i in ['<a href="/" title="Home">', "Home"]
     )
 
 
@@ -2082,51 +2079,35 @@ def test_navbar_user_dropdown_config_switch(
     monkeypatch.setenv("NAVBAR_USER_DROPDOWN", "0")
     config.init_app(test_app)
     response = client.get("/")
-    expected = (
-        '       <div class="list-group">\n'
-        "        <li>\n"
-        '         <a href="/admin" title="Console">\n'
-        "          Console\n"
-        "         </a>\n"
-        "        </li>\n"
-        "        <li>\n"
-        '         <a href="/profile/admin" title="Profile">\n'
-        "          Profile\n"
-        "         </a>\n"
-        "        </li>\n"
-        "        <li>\n"
-        '         <a href="/auth/logout" title="Logout">\n'
-        "          Logout\n"
-        "         </a>\n"
-        "        </li>\n"
-        "       </div>\n"
+    assert all(
+        i in response.data.decode()
+        for i in [
+            '<div class="list-group">',
+            '<a href="/admin" title="Console">',
+            " Console",
+            '<a href="/profile/admin" title="Profile">',
+            " Profile",
+            '<a href="/auth/logout" title="Logout">',
+            " Logout",
+        ]
     )
-    assert expected in response.data.decode()
 
     # test user subgroup when dropdown set to True
     monkeypatch.setenv("NAVBAR_USER_DROPDOWN", "1")
     config.init_app(test_app)
     response = client.get("/")
-    expected = (
-        '       <ul class="dropdown-menu">\n'
-        "        <li>\n"
-        '         <a href="/admin" title="Console">\n'
-        "          Console\n"
-        "         </a>\n"
-        "        </li>\n"
-        "        <li>\n"
-        '         <a href="/profile/admin" title="Profile">\n'
-        "          Profile\n"
-        "         </a>\n"
-        "        </li>\n"
-        "        <li>\n"
-        '         <a href="/auth/logout" title="Logout">\n'
-        "          Logout\n"
-        "         </a>\n"
-        "        </li>\n"
-        "       </ul>\n"
+    assert all(
+        i in response.data.decode()
+        for i in [
+            '<ul class="dropdown-menu">',
+            '<a href="/admin" title="Console">',
+            "Console",
+            '<a href="/profile/admin" title="Profile">',
+            "Profile",
+            '<a href="/auth/logout" title="Logout">',
+            "Logout",
+        ]
     )
-    assert expected in response.data.decode()
 
 
 def test_all_routes_covered(test_app: Flask) -> None:
@@ -2298,24 +2279,17 @@ def test_version_dropdown(
         db.session.commit()
 
     response = client.get("/")
-    assert (
-        "        <li>\n"
-        '         <a href="/post/1?revision=0">\n'
-        "          v1\n"
-        "         </a>\n"
-        "        </li>\n"
-        "        <li>\n"
-        '         <a href="/post/1?revision=1">\n'
-        "          v2: Previous revision\n"
-        "         </a>\n"
-        "        </li>\n"
-        "        <li>\n"
-        '         <a class="current-version-anchor"'
-        ' href="/post/1?revision=2">\n'
-        "          v3: This revision\n"
-        "         </a>\n"
-        "        </li>\n"
-    ) in response.data.decode()
+    assert all(
+        i in response.data.decode()
+        for i in [
+            '<a href="/post/1?revision=0">',
+            "v1",
+            '<a href="/post/1?revision=1">',
+            "v2: Previous revision",
+            '<a class="current-version-anchor" href="/post/1?revision=2">',
+            "v3: This revision",
+        ]
+    )
 
 
 @pytest.mark.usefixtures("init_db")
