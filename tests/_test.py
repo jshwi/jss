@@ -164,7 +164,7 @@ def test_login(
     ],
     ids=["incorrect-username", "incorrect-password"],
 )
-def test_login_validate_input(
+def test_login_validate(
     auth: AuthActions,
     add_test_objects: AddTestObjects,
     username: str,
@@ -1770,6 +1770,7 @@ def test_admin_access_without_login(client: FlaskClient) -> None:
         ("post", {}, "unfollow/noname"),
         ("post", {"message": "testing"}, "send_message/noname"),
     ],
+    ids=["profile", "follow", "unfollow", "send_message"],
 )
 def test_inspect_profile_no_user(
     client: FlaskClient,
@@ -2188,6 +2189,7 @@ def test_static_route_default(
             "<ContentSecurityPolicy {}>",
         ),
     ],
+    ids=["register", "csp"],
 )
 def test_mutable_mapping_dunders(
     monkeypatch: pytest.MonkeyPatch, attr, obj, expected_repr
@@ -2332,7 +2334,7 @@ def test_version_dropdown(
     ],
     ids=["index", "profile", "messages"],
 )
-def test_prev_next_pagination_navbar(
+def test_pagination_nav(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
@@ -2406,6 +2408,14 @@ def test_prev_next_pagination_navbar(
         ("Referrer-Policy", ["strict-origin-when-cross-origin"]),
         ("Cache-Control", []),
     ],
+    ids=[
+        "Strict-Transport-Security",
+        "X-Frame-Options",
+        "X-XSS-Protection",
+        "X-Content-Type-Options",
+        "Referrer-Policy",
+        "Cache-Control",
+    ],
 )
 def test_headers(client: FlaskClient, key: str, value: str) -> None:
     """Assert headers are secure.
@@ -2456,14 +2466,14 @@ def test_csp_report(
         ({"k": ["1", "2"]}, {"k": ["3", "4"]}, {"k": ["1", "2", "3", "4"]}),
     ],
     ids=[
-        "0,0,0",
-        "1,0,1",
-        "0,2,2",
-        "1,[1],1",
-        "1,2,1-2",
-        "1,[2],1-2",
-        "1-2,3,1-2-3",
-        "1-2,3,1-2-3,1-2,3-4,1-2-3-4",
+        "no-fields",
+        "no-add",
+        "only-add",
+        "add-diff-type-no-change",
+        "merge",
+        "merge-one-to-one",
+        "merge-one-to-two",
+        "merge-two-to-two",
     ],
 )
 def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
