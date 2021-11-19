@@ -58,16 +58,12 @@ def version_dropdown(post: Post) -> html_tag:
     :return: ``<div>...</div>`` dropdown as ``html_tag`` object.
     """
     versions: List[Post] = post.versions.all()
-    div = tags.div(
-        tags.a(
-            "Versions",
-            tags.span(cls="caret"),
-            href="#",
-            cls="dropdown-toggle",
-            data_toggle="dropdown",
-        ),
-        cls="dropdown",
+    div = tags.div(cls="dropdown")
+    a = div.add(
+        tags.a(href="#", cls="dropdown-toggle", data_toggle="dropdown")
     )
+    a.add("Versions")
+    a.add(tags.span(cls="caret"))
     ul = div.add(tags.ul(cls="dropdown-menu", role="menu"))
 
     # populate <ul>...</ul>
@@ -106,7 +102,8 @@ def flash_messages() -> html_tag:
     """
     div = tags.div()
     for message in get_flashed_messages():
-        div.add(tags.div(message, cls="alert alert-info", role="alert"))
+        alert = div.add(tags.div(cls="alert alert-info", role="alert"))
+        alert.add(message)
 
     return div
 
@@ -121,13 +118,10 @@ def task_progress() -> html_tag:
     div = tags.div()
     if current_user.is_authenticated:
         for task in current_user.get_tasks_in_progress():
-            div.add(
-                tags.div(
-                    task.description,
-                    tags.span(task.get_progress(), id=f"{task.id}-progress"),
-                    cls="alert alert-success",
-                )
-            )
+            alert = div.add(tags.div(cls="alert alert-success"))
+            alert.add(task.description)
+            span = alert.add(tags.span(id=f"{task.id}-progress"))
+            span.add(task.get_progress())
 
     return div
 
@@ -150,24 +144,18 @@ def read_posts(posts: Union[Post, Message]) -> html_tag:
         # horizontal rule
         # table will be separated by a left section with user
         # information and a right section displaying the post
-        table, _ = div.add(tags.table(cls="table table-hover"), tags.tr())
+        table = div.add(tags.table(cls="table table-hover"))
+        div.add(tags.tr())
 
         # user information
         left_td = table.add(tags.td(cls="user-post-td"))
-        left_td.add(
-            # user's avatar linked to their profile
-            tags.a(
-                tags.img(src=post.author.avatar(70), img=post.author.username),
-                href=profile_url,
-            ),
-            # user's bio
-            tags.div(
-                tags.a(post.author.username, href=profile_url),
-                tags.br(),
-                moment(post.created),
-                cls="about",
-            ),
-        )
+        a = left_td.add(tags.a(href=profile_url))
+        a.add(tags.img(src=post.author.avatar(70), img=post.author.username))
+        user_td = left_td.add(tags.div(cls="about"))
+        a = user_td.add(tags.a(href=profile_url))
+        a.add(post.author.username)
+        user_td.add(tags.br())
+        user_td.add(moment(post.created))
 
         # display post
         right_td = table.add(tags.td())
@@ -190,13 +178,12 @@ def read_posts(posts: Union[Post, Message]) -> html_tag:
             ):
 
                 # a ``Post`` can be edited by the user who created it
-                left_td.add(
+                a = left_td.add(
                     tags.a(
-                        "Edit",
-                        cls="action",
-                        href=url_for("post.update", id=post.id),
+                        cls="action", href=url_for("post.update", id=post.id)
                     )
                 )
+                a.add("Edit")
 
                 # if the length of versions is more than 1 (1 being the
                 # initial version) then there are other versions that
@@ -205,7 +192,8 @@ def read_posts(posts: Union[Post, Message]) -> html_tag:
                     left_td.add(version_dropdown(post))
 
         # display the post content as rendered markdown html
-        right_td.add(tags.div(markdown.render(post.body)))
+        post_td = right_td.add(tags.div())
+        post_td.add(markdown.render(post.body))
 
     return div
 
@@ -224,23 +212,23 @@ def post_footer_nav(
     ul = nav.add(tags.ul(cls="pager"))
 
     # newer posts
-    li = ul.add(tags.li())
-    a = li.add(tags.a("Newer posts"))
+    li = ul.add(tags.li(cls="previous"))
+    a = li.add(tags.a())
+    a.add("Newer posts")
     if prev_url is not None:
-        li["class"] = "previous"
         a["href"] = prev_url
     else:
-        li["class"] = "previous disabled"
+        li["class"] += " disabled"
         a["href"] = "#"
 
     # older posts
-    li = ul.add(tags.li())
-    a = li.add(tags.a("Older posts"))
+    li = ul.add(tags.li(cls="next"))
+    a = li.add(tags.a())
+    a.add("Older posts")
     if next_url is not None:
-        li["class"] = "next"
         a["href"] = next_url
     else:
-        li["class"] = "next disabled"
+        li["class"] += " disabled"
         a["href"] = "#"
 
     return nav
@@ -255,7 +243,9 @@ def post_times(post: Post) -> html_tag:
     :param post: Post ORM object.
     :return: Rendered paragraph tag with post's timestamp information.
     """
-    p = tags.p("Posted: ", moment(post.created), cls="small")
+    p = tags.p(cls="small")
+    p.add("Posted: ")
+    p.add(moment(post.created))
     if post.edited is not None:
         p.add(tags.br(), "Edited: ", moment(post.edited))
 
