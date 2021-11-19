@@ -24,6 +24,11 @@
 
     {# additional style rules #}
     <link id="style" rel="stylesheet" href="{{ static_url_for('static', filename='css/style.css') }}">
+
+    {# syntax-highlighting stylesheet for fenced code blocks #}
+    <link id="syntax-style"
+          rel="stylesheet"
+          href="{{ static_url_for('static', filename='css/highlight/default.css') }}">
 {% endblock %}
 
 {# for navigating site #}

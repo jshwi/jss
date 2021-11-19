@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adds `DarkReader` toggle to navbar permanently
 - Replaces inheritance of `BootstrapRenderer` with `Visitor`
 
+### Fix
+- Fixes fenced code highlighting
+
 [1.11.0](https://github.com/jshwi/jss/releases/tag/v1.11.0) - 2021-11-13
 ------------------------------------------------------------------------
 ### Security
