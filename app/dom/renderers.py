@@ -254,12 +254,12 @@ class NavbarRenderer(Visitor):
 
         :return: An ``html_tag`` instance for rendering a subgroup.
         """
-        li = tags.li(cls="dropdown")
+        li = tags.li(cls="nav-item dropdown")
         if not self._in_dropdown:
             a = li.add(
                 tags.a(
                     href="#",
-                    cls="dropdown-toggle",
+                    cls="nav-link dropdown-toggle",
                     data_toggle="dropdown",
                     role="button",
                     aria_haspopup="true",
@@ -268,7 +268,7 @@ class NavbarRenderer(Visitor):
             )
             a.add(node.title, tags.span(cls="caret"))
 
-            ul = li.add(tags.ul(cls="dropdown-menu"))
+            ul = li.add(tags.ul(cls="dropdown-menu dropdown-menu-right"))
             self._in_dropdown = True
             for item in node.items:
                 ul.add(self.visit(item))

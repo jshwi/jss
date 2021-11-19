@@ -2108,7 +2108,7 @@ def test_navbar_user_dropdown_config_switch(
     assert all(
         i in response.data.decode()
         for i in [
-            '<ul class="dropdown-menu">',
+            '<ul class="dropdown-menu dropdown-menu-right">',
             '<li class="nav-item" href="/admin" title="Console">',
             '<a class="nav-link" href="/admin">',
             "Console",

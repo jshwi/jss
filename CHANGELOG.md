@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Replaces inheritance of `BootstrapRenderer` with `Visitor`
 
 ### Fix
+- Fixes dropdown from displaying left on profile
 - Fixes fenced code highlighting
 
 [1.11.0](https://github.com/jshwi/jss/releases/tag/v1.11.0) - 2021-11-13
