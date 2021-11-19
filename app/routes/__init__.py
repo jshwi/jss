@@ -39,9 +39,6 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
-    app.jinja_env.trim_blocks = True
-    app.jinja_env.lstrip_blocks = True
-    app.jinja_env.strip_trailing_newlines = False
     app.register_blueprint(report.blueprint)
     app.register_blueprint(public.blueprint)
     app.register_blueprint(auth.blueprint)

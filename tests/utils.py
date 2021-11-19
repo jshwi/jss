@@ -58,7 +58,6 @@ POST_CREATED_2 = datetime(2018, 1, 1, 0, 0, 2)
 POST_CREATED_3 = datetime(2018, 1, 1, 0, 0, 3)
 POST_CREATED_4 = datetime(2018, 1, 1, 0, 0, 4)
 MESSAGE_CREATED = datetime(2018, 1, 1, 0, 0, 5)
-MAIN_USER_REGISTERED_ON = datetime(2018, 1, 1, 0, 0, 1)
 INVALID_OR_EXPIRED = "invalid or has expired."
 MAIL_SERVER = "localhost"
 MAIL_USERNAME = MAIN_USER_USERNAME
@@ -174,38 +173,6 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
     ),
 ]
 COVERED_ROUTES = [r for _, l in STATUS_CODE_TO_ROUTE_DEFAULT for r in l]
-PAGE_1_OF_2_POSTS_POSTS_PER_PAGE_1 = """
-   <nav aria-label="...">
-    <ul class="pager">
-     <li class="previous disabled">
-      <a href="#">
-       Newer posts
-      </a>
-     </li>
-     <li class="next">
-      <a href="/?page=2">
-       Older posts
-      </a>
-     </li>
-    </ul>
-   </nav>
-"""
-PAGE_2_OF_2_POSTS_POSTS_PER_PAGE_1 = """
-   <nav aria-label="...">
-    <ul class="pager">
-     <li class="previous">
-      <a href="/?page=1">
-       Newer posts
-      </a>
-     </li>
-     <li class="next disabled">
-      <a href="#">
-       Older posts
-      </a>
-     </li>
-    </ul>
-   </nav>
-"""
 
 
 class TestObject:
@@ -235,7 +202,6 @@ class UserTestObject(TestObject):
         self.email = email
         self.password = password
         self.password_hash = generate_password_hash(password)
-        self.registered_on = MAIN_USER_REGISTERED_ON
         self.admin = admin
         self.authorized = authorized
         self.confirmed = confirmed
@@ -275,7 +241,6 @@ class TaskTestObject(TestObject):
         self.name = name
         self.description = description
         self.user_id = user.id
-        self.complete = False
 
 
 class MessageTestObject(TestObject):
