@@ -2371,18 +2371,18 @@ def test_prev_next_pagination_navbar(
     expected_default = [
         '<li class="page-item disabled">',
         '<a class="page-link" href="#" tabindex="-1">',
-        "Newer posts",
+        "Previous",
         '<li class="page-item">',
         "?page=2",
-        "Older posts",
+        "Next",
     ]
     expected_page_2 = [
         '<li class="page-item disabled">',
         '<a class="page-link" href="#" tabindex="-1">',
-        "Newer posts",
+        "Previous",
         '<li class="page-item">',
         "?page=1",
-        "Older posts",
+        "Next",
     ]
 
     # add two posts to add an extra page

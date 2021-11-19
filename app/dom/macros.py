@@ -214,7 +214,7 @@ def post_footer_nav(
     # newer posts
     li = ul.add(tags.li(cls="page-item"))
     a = li.add(tags.a(cls="page-link"))
-    a.add("Newer posts")
+    a.add("Previous")
     if prev_url is not None:
         a["href"] = prev_url
     else:
@@ -225,7 +225,7 @@ def post_footer_nav(
     # older posts
     li = ul.add(tags.li(cls="page-item"))
     a = li.add(tags.a(cls="page-link"))
-    a.add("Older posts")
+    a.add("Next")
     if next_url is not None:
         a["href"] = next_url
     else:

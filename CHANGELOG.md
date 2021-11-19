@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.11.0...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- Renames pagination links
 - Updates pagination for `Bootstrap 4`
 - Updates navbar for `Bootstrap 4`
 - Swaps `navbar-brand` with `toggle-darkreader`
