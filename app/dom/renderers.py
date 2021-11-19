@@ -149,7 +149,9 @@ class NavbarRenderer(Visitor):
         a = nav.add(tags.a(cls="navbar-brand", href=node.title.get_url()))
         a.add(node.title.text)
 
-        toggle_dark_mode = nav.add(
+        ul_right = nav.add(tags.ul(cls="navbar-nav ml-auto navbar-right"))
+
+        toggle_dark_mode = ul_right.add(
             tags.input_(
                 id="toggle-darkreader",
                 type="checkbox",
@@ -184,14 +186,14 @@ class NavbarRenderer(Visitor):
             tags.div(cls="collapse navbar-collapse", id=node_id)
         )
 
-        ul = collapsible_div.add(tags.ul(cls="navbar-nav mr-auto"))
-        ul.add(*[self.visit(i) for i in node.items])
+        collapsible_ul = collapsible_div.add(tags.ul(cls="navbar-nav mr-auto"))
+        collapsible_ul.add(*[self.visit(i) for i in node.items])
 
         # navbar items to the right
-        ul_right = collapsible_div.add(
-            tags.ul(cls="nav navbar-nav navbar-right")
+        collapsible_ul_right = collapsible_div.add(
+            tags.ul(cls="nav navbar-nav ml-auto")
         )
-        ul_right.add(*[self.visit(i) for i in node.right_items])
+        collapsible_ul_right.add(*[self.visit(i) for i in node.right_items])
 
         # return the configured <nav> element
         return nav

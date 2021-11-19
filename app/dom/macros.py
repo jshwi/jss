@@ -126,6 +126,43 @@ def task_progress() -> html_tag:
     return div
 
 
+def _user_column(post: Union[Post, Message]) -> html_tag:
+    # link to profile of the user who created the current iteration
+    # of posts
+    profile_url = url_for("public.profile", username=post.author.username)
+
+    # user information
+    left_td = tags.div(cls="user-post-td")
+    user_td = left_td.add(tags.div(cls="about"))
+    a = left_td.add(tags.a(href=profile_url))
+    a.add(tags.img(src=post.author.avatar(70), img=post.author.username))
+    a = user_td.add(tags.a(href=profile_url))
+    a.add(post.author.username)
+    user_td.add(tags.br())
+    user_td.add(moment(post.created))
+
+    return left_td
+
+
+def _post_options(post: Post) -> html_tag:
+    right_td = tags.div()
+    if current_user.is_authenticated and current_user.id == post.user_id:
+
+        # a ``Post`` can be edited by the user who created it
+        a = right_td.add(
+            tags.a(cls="action", href=url_for("post.update", id=post.id))
+        )
+        a.add("Edit")
+
+        # if the length of versions is more than 1 (1 being the initial
+        # version) then there are other versions that can be reviewed
+        # with the dropdown
+        if post.versions.count() > 1:
+            right_td.add(version_dropdown(post))
+
+    return right_td
+
+
 @macros.register
 def read_posts(posts: Union[Post, Message]) -> html_tag:
     """Display posts depending on what post collection is provided.
@@ -133,69 +170,39 @@ def read_posts(posts: Union[Post, Message]) -> html_tag:
     :param posts: Post ORM object.
     :return: Posts within ``<div>...</div>`` ``html_tag`` object.
     """
-    div = tags.div()
+    container = tags.div(cls="container")
     for post in posts.items:
-
-        # link to profile of the user who created the current iteration
-        # of posts
-        profile_url = url_for("public.profile", username=post.author.username)
 
         # this will group each individual post, visibly separated by a
         # horizontal rule
         # table will be separated by a left section with user
         # information and a right section displaying the post
-        table = div.add(tags.table(cls="table table-hover"))
-        div.add(tags.tr())
+        container.add(tags.hr())
+        row_div = tags.div(cls="row highlight")
 
-        # user information
-        left_td = table.add(tags.td(cls="user-post-td"))
-        a = left_td.add(tags.a(href=profile_url))
-        a.add(tags.img(src=post.author.avatar(70), img=post.author.username))
-        user_td = left_td.add(tags.div(cls="about"))
-        a = user_td.add(tags.a(href=profile_url))
-        a.add(post.author.username)
-        user_td.add(tags.br())
-        user_td.add(moment(post.created))
-
-        # display post
-        right_td = table.add(tags.td())
-        h1 = right_td.add(tags.h1())
-
-        # post title linked to the post's full page
-        a = h1.add(tags.a(href=url_for("post.read", id=post.id)))
+        title_div = row_div.add(tags.div(cls="col-12 col-md-3"))
 
         # variable data depending on whether the ``Post/Message``
         # object is a ``Post`` object and not a ``Message`` object
         if isinstance(post, Post):
-
-            # variable data depending on whether the user profile loaded
-            # is of a user profile being viewed by another user or a
-            # user profile being viewed by that user
+            h1 = title_div.add(tags.h1(cls="d-flex justify-content-centre"))
+            a = h1.add(tags.a(href=url_for("post.read", id=post.id)))
             a.add(post.title)
-            if (
-                current_user.is_authenticated
-                and current_user.id == post.user_id
-            ):
 
-                # a ``Post`` can be edited by the user who created it
-                a = left_td.add(
-                    tags.a(
-                        cls="action", href=url_for("post.update", id=post.id)
-                    )
-                )
-                a.add("Edit")
+        title_div.add(_user_column(post))
 
-                # if the length of versions is more than 1 (1 being the
-                # initial version) then there are other versions that
-                # can be reviewed with the dropdown
-                if post.versions.count() > 1:
-                    left_td.add(version_dropdown(post))
+        if isinstance(post, Post):
+            title_div.add(_post_options(post))
+
+        body_div = row_div.add(tags.div(cls="col-12 col-md-9"))
 
         # display the post content as rendered markdown html
-        post_td = right_td.add(tags.div())
-        post_td.add(markdown.render(post.body))
+        p = body_div.add(tags.p())
+        p.add(markdown.render(post.body))
 
-    return div
+        container.add(row_div)
+
+    return container
 
 
 @macros.register
