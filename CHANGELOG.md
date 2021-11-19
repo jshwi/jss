@@ -7,67 +7,69 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.11.0...HEAD)
 ------------------------------------------------------------------------
+### Changed
+Replaces inheritance of `BootstrapRenderer` with `Visitor`
 
 [1.11.0](https://github.com/jshwi/jss/releases/tag/v1.11.0) - 2021-11-13
 ------------------------------------------------------------------------
 ### Security
-Adds default CSP exception for day/night mode
+- Adds default CSP exception for day/night mode
 
 [1.10.0](https://github.com/jshwi/jss/releases/tag/v1.10.0) - 2021-11-12
 ------------------------------------------------------------------------
 ### Added
-`app.utils.csp` with `ContentSecurityPolicy`, `CSPType`, and `CSPValType`
+- `app.utils.csp` with `ContentSecurityPolicy`, `CSPType`, and `CSPValType`
 
 ### Security
-Fixes inline style for current version dropdown
-Fixes inline style for notification button
-Renders `moment.js` for inline nonce
-Adds inline nonce for `script-src-elem`
-Moves inline style to app/static/css/static.css for `user-post-td`
-Adds default Content Security Policy
+- Fixes inline style for current version dropdown
+- Fixes inline style for notification button
+- Renders `moment.js` for inline nonce
+- Adds inline nonce for `script-src-elem`
+- Moves inline style to app/static/css/static.css for `user-post-td`
+- Adds default Content Security Policy
 
 [1.9.0](https://github.com/jshwi/jss/releases/tag/v1.9.0) - 2021-11-10
 ------------------------------------------------------------------------
 ### Changed
-Moves `app.utils.models._BaseModel` to public scope
+- Moves `app.utils.models._BaseModel` to public scope
 
 ### Fixed
-Fixes `Flask` without `Gunicorn` debug logging
-Changes blueprint name from `views` to `public`
+- Fixes `Flask` without `Gunicorn` debug logging
+- Changes blueprint name from `views` to `public`
 
 [1.8.2](https://github.com/jshwi/jss/releases/tag/v1.8.2) - 2021-11-09
 ------------------------------------------------------------------------
 ### Fixed
-Fixes `url_for` for outdated paths
+- Fixes `url_for` for outdated paths
 
 [1.8.1](https://github.com/jshwi/jss/releases/tag/v1.8.1) - 2021-11-08
 ------------------------------------------------------------------------
 ### Fixed
-Integrates `Flask` logger with `Gunicorn` logger
+- Integrates `Flask` logger with `Gunicorn` logger
 
 [1.8.0](https://github.com/jshwi/jss/releases/tag/v1.8.0) - 2021-11-08
 ------------------------------------------------------------------------
 ### Added
-Adds CSP violation reporting
-Adds `PREFERRED_URL_SCHEME` config; defaults to `"https"`
+- Adds CSP violation reporting
+- Adds `PREFERRED_URL_SCHEME` config; defaults to `"https"`
 
 ### Fixed
-Logs error descriptions
+- Logs error descriptions
 
 ### Security
-Replaces `secure` headers with `Flask-Talisman` headers
+- Replaces `secure` headers with `Flask-Talisman` headers
 
 [1.7.4](https://github.com/jshwi/jss/releases/tag/v1.7.4) - 2021-11-08
 ------------------------------------------------------------------------
 ### Added
-Adds CSP violation reporting
-Adds `PREFERRED_URL_SCHEME` config; defaults to `"https"`
+- Adds CSP violation reporting
+- Adds `PREFERRED_URL_SCHEME` config; defaults to `"https"`
 
 ### Fixed
-Logs error descriptions
+- Logs error descriptions
 
 ### Security
-Replaces `secure` headers with `Flask-Talisman` headers
+- Replaces `secure` headers with `Flask-Talisman` headers
 
 [1.7.3](https://github.com/jshwi/jss/releases/tag/v1.7.3) - 2021-11-03
 ------------------------------------------------------------------------
