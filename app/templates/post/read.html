@@ -15,5 +15,5 @@
     {{ post.body|markdown }}
 
     {# if revision has been passed display button to restore version #}
-    <a class="btn btn-default" href="{{ url_for('post.update', id=post.id, revision=revision) }}" role="button">Restore</a>
+    <a class="btn btn-primary" href="{{ url_for('post.update', id=post.id, revision=revision) }}" role="button">Restore</a>
 {% endblock %}
