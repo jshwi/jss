@@ -12,7 +12,7 @@
     {# delete a post #}
     <form action="{{ url_for('redirect.delete', id=post.id) }}" method="post">
         {{ form.hidden_tag() }}
-        {{ wtf.render_field(form.submit, value="Delete", onclick="return confirm('Are you sure?');" ) }}
+        {{ wtf.render_field(form.submit, value="Delete", class="btn btn-danger", onclick="return confirm('Are you sure?');" ) }}
     </form>
 
     {# preview markdown #}

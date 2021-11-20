@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.11.0...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- Changes Delete button to `btn-danger`
 - Rounds navbar avatar
 - Aligns navbar items
 - Updates rows for mobile viewing
