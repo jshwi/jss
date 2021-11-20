@@ -27,7 +27,9 @@ def _construct_user_subgroup() -> Subgroup:
     # in user specifically for a logged in user
     if current_app.config["NAVBAR_USER_DROPDOWN"]:
 
-        subgroup = Subgroup(tags.img(src=current_user.avatar(18)))
+        subgroup = Subgroup(
+            tags.img(src=current_user.avatar(18), cls="navbar-avatar")
+        )
     else:
         subgroup = ListGroup(current_user.username)
 

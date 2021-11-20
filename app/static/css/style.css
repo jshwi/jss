@@ -27,6 +27,7 @@
     padding-right: 10px;
 }
 
+/* round the edges of the navbar user menu */
 .navbar-avatar {
 border-radius: 25%;
 -moz-border-radius: 25%;
