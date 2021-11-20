@@ -1,5 +1,9 @@
 {# footer.html #}
-<footer class="fixed-bottom small">
-    &copy; {{ config["COPYRIGHT_YEAR"] }},
-    <a href="mailto:{{ config["COPYRIGHT_EMAIL"] }}">{{ config["COPYRIGHT_AUTHOR"] }}</a>
+<footer class="footer">
+    <div class="modal-footer">
+        <span class="text-muted small">
+            &copy; {{ config["COPYRIGHT_YEAR"] }},
+            <a href="mailto:{{ config["COPYRIGHT_EMAIL"] }}">{{ config["COPYRIGHT_AUTHOR"] }}</a>
+        </span>
+    </div>
 </footer>
