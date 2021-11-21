@@ -12,11 +12,6 @@
     font-size: 14px;
 }
 
-/* rules for user/post table data */
-.user-post-td {
-    width: 150px;
-}
-
 /* rules for null pointer */
 .current-version-anchor {
     pointer-events: none;
@@ -30,4 +25,10 @@
 /* padding between the right-most object and the collapse toggler */
 .navbar-right {
     padding-right: 10px;
+}
+
+.navbar-avatar {
+border-radius: 25%;
+-moz-border-radius: 25%;
+-webkit-border-radius: 25%;
 }

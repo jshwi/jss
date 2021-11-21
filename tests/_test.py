@@ -1313,7 +1313,7 @@ def test_send_message(
         i in response.data.decode()
         for i in [
             (
-                '<a class="btn-lg btn-link" href="/user/messages" '
+                '<a class="nav-link btn-lg btn-link" href="/user/messages" '
                 'title="Messages">'
             ),
             '<span class="bi-bell">',
@@ -1335,7 +1335,7 @@ def test_send_message(
     assert all(
         i in response.data.decode()
         for i in [
-            '<a class="" href="/user/messages" title="Messages">',
+            '<a class="nav-link" href="/user/messages" title="Messages">',
             "Messages",
             '<span class="badge" id="message_count">',
             " 1",
@@ -1361,7 +1361,7 @@ def test_send_message(
     assert all(
         i in response.data.decode()
         for i in [
-            '<a class="" href="/user/messages" title="Messages">',
+            '<a class="nav-link" href="/user/messages" title="Messages">',
             " Messages",
         ]
     )

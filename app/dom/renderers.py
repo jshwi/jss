@@ -30,7 +30,7 @@ class IconView(View):
         super().__init__(text, endpoint, **kwargs)
         self.text = text
         self.title = text
-        self.cls = ""
+        self.cls = "nav-link "
 
     def set_icon(self, icon: str) -> None:
         """Override attributes to render an icon instead of text.
@@ -38,7 +38,7 @@ class IconView(View):
         :param icon: Icon attribute.
         """
         self.text = tags.span(cls=icon)
-        self.cls = "btn-lg btn-link"
+        self.cls += "btn-lg btn-link"
 
 
 class BadgedView(IconView):
@@ -206,7 +206,7 @@ class NavbarRenderer(Visitor):
         :return: An ``html_tag`` instance for rendering a list object
             in an unordered list.
         """
-        li = tags.li()
+        li = tags.li(cls="nav-item")
         a = li.add(tags.a(cls=node.cls, href=node.get_url(), title=node.title))
         a.add(node.text)
 
@@ -226,7 +226,7 @@ class NavbarRenderer(Visitor):
         :return: An ``html_tag`` instance for rendering a list object
             in an unordered list.
         """
-        li = tags.li()
+        li = tags.li(cls="nav-item")
         div = li.add(tags.div(cls="list-group"))
         div.add(*[self.visit(i) for i in node.items])
         return li
@@ -239,7 +239,7 @@ class NavbarRenderer(Visitor):
         :return: An ``html_tag`` instance for rendering a list object
             in an unordered list.
         """
-        li = tags.li()
+        li = tags.li(cls="nav-item")
         a = li.add(tags.a(cls=node.cls, href=node.get_url(), title=node.title))
         a.add(node.text)
         return li
@@ -254,7 +254,7 @@ class NavbarRenderer(Visitor):
 
         :return: An ``html_tag`` instance for rendering a subgroup.
         """
-        li = tags.li(cls="nav-item dropdown")
+        li = tags.li(cls="nav-item")
         if not self._in_dropdown:
             a = li.add(
                 tags.a(

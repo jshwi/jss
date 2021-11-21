@@ -27,12 +27,7 @@ def _construct_user_subgroup() -> Subgroup:
     # in user specifically for a logged in user
     if current_app.config["NAVBAR_USER_DROPDOWN"]:
 
-        # display user's avatar in the dropdown menu button
-        subgroup_title = tags.span()
-        subgroup_title.add(tags.img(src=current_user.avatar(16)))
-        subgroup_title.add(f" {current_user.username}")
-
-        subgroup = Subgroup(subgroup_title)
+        subgroup = Subgroup(tags.img(src=current_user.avatar(18)))
     else:
         subgroup = ListGroup(current_user.username)
 
