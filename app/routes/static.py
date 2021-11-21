@@ -90,3 +90,12 @@ def site_webmanifest() -> Response:
     return send_from.static(
         "site.webmanifest", mimetype="application/manifest+json"
     )
+
+
+@blueprint.route("/browserconfig.xml")
+def browser_config_xml() -> Response:
+    """Serve browser config to the root of the application.
+
+    :return: Response object.
+    """
+    return send_from.static("browserconfig.xml", mimetype="application/xml")
