@@ -79,3 +79,14 @@ def safari_pinned_tab_svg() -> Response:
     :return: Response object.
     """
     return send_from.image("safari-pinned-tab.svg", image_type="svg+xml")
+
+
+@blueprint.route("/site.webmanifest")
+def site_webmanifest() -> Response:
+    """Serve webmanifest to the root of the application.
+
+    :return: Response object.
+    """
+    return send_from.static(
+        "site.webmanifest", mimetype="application/manifest+json"
+    )

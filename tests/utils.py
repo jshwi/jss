@@ -151,6 +151,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/favicon-32x32.png",
             "/mstile-150x150.png",
             "/safari-pinned-tab.svg",
+            "/site.webmanifest",
         ],
     ),
     (
