@@ -8,6 +8,7 @@
 {% block metas %}
     {{ super() }}
 
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 {% endblock %}
@@ -15,9 +16,6 @@
 {# source static files #}
 {% block styles %}
     {{ super() }}
-
-    {# favicon icon for bookmarks and easy reference #}
-    <link id="favicon" rel="shortcut icon" href="{{ static_url_for("static", filename="img/favicon.ico") }}">
 
     {# checkbox as toggle switch #}
     <link id="bootstrap-toggle"

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adds additional meta tags
 
 ### Changed
+- Serves favicon from root of application
 - Adds more mobile-friendly footer
 - Changes Restore button to `btn-primary`
 - Changes Delete button to `btn-danger`

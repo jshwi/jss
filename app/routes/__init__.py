@@ -14,7 +14,16 @@ based on its name and arguments.
 from bs4 import BeautifulSoup
 from flask import Flask, Response
 
-from app.routes import admin, auth, post, public, redirect, report, user
+from app.routes import (
+    admin,
+    auth,
+    post,
+    public,
+    redirect,
+    report,
+    static,
+    user,
+)
 
 
 def format_html(response: Response):
@@ -45,6 +54,7 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(user.blueprint)
     app.register_blueprint(post.blueprint)
     app.register_blueprint(redirect.blueprint)
+    app.register_blueprint(static.blueprint)
     app.add_url_rule("/", endpoint="index")
     admin.init_app(app)
     app.after_request(format_html)
