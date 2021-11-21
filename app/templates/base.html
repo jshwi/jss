@@ -5,6 +5,13 @@
 {# browser tab will show ``<page_name> - <config["BRAND"]>`` #}
 <title>{% block title %}{% block page_name %}{% endblock %} - {{ config["BRAND"] }}{% endblock %}</title>
 
+{% block metas %}
+    {{ super() }}
+
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+{% endblock %}
+
 {# source static files #}
 {% block styles %}
     {{ super() }}
