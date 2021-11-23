@@ -4,9 +4,34 @@ this is the base template for pages displaying posts #}
 
 {# overrides empty post block in base template #}
 {% block posts %}
-
-    {# iterate over posts and display #}
-    {{ dom_macros_read_posts(posts) }}
+    {% for post in posts.items %}
+        <hr/>
+        <div class="row highlight">
+            <div class="col-12 col-md-3">
+                <h1><a href="{{ url_for("post.read", id=post.id) }}">{{ post.title }}</a></h1>
+                <a href="{{ url_for("public.profile", username=post.author.username) }}">
+                    <img src="{{ post.author.avatar(70) }}" alt="{{ post.author.username }}">
+                </a>
+                <div class="about">
+                    <a href="{{ url_for("public.profile", username=post.author.username) }}">
+                        {{ post.author.username }}
+                    </a>
+                    <br>
+                    {{ dom_macros_moment(post.created) }}
+                </div>
+                {% if current_user.id == post.user_id %}
+                    <a class="action" href="{{ url_for("post.update", id=post.id) }}">Edit</a>
+                    {% if post.versions.count() > 1 %}
+                        {{ dom_macros_version_dropdown(post) }}
+                    {% endif %}
+                {% endif %}
+                <br>
+            </div>
+            <div class="col-12 col-md-9">
+                {{ post.body| markdown }}
+            </div>
+        </div>
+    {% endfor %}
 
     {# posts are listed in descending order: newer posts are on the left #}
     {{ dom_macros_post_footer_nav(prev_url, next_url) }}

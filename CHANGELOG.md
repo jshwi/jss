@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.12.0...HEAD)
 ------------------------------------------------------------------------
+### Fix
+Properly renders post markdown
 
 [1.12.0](https://github.com/jshwi/jss/releases/tag/v1.12.0) - 2021-11-22
 ------------------------------------------------------------------------
