@@ -1,12 +1,12 @@
 [clean]
-exclude = ["*.egg*", ".mypy_cache", ".env", "instance"]
+exclude = ["*.egg*", ".mypy_cache", ".env", "instance", "node_modules"]
 
 [logging]
 version = 1
 disable_existing_loggers = true
 
 [indexing]
-exclude = ["whitelist.py", "conf.py", "setup.py", "migrations"]
+exclude = ["whitelist.py", "conf.py", "setup.py", "migrations", "node_modules"]
 
 [packages]
 name = "app"
