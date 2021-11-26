@@ -31,6 +31,6 @@
   "homepage": "https://github.com/jshwi/jss#readme",
   "dependencies": {},
   "devDependencies": {
-    "prettier": "2.4.1"
+    "prettier": "2.5.0"
   }
 }
