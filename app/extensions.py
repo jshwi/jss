@@ -1,24 +1,19 @@
-"""
-app.extensions
-==============
-
-Each extension is initialized in the app factory located in app.py.
-"""
-from flask import Flask
+# -*- coding: utf-8 -*-
+"""Extensions module. Each extension is initialized in the app factory located in app.py."""
+from flask_bcrypt import Bcrypt
 from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
+from flask_wtf.csrf import CSRFProtect
 
-debug_toolbar = DebugToolbarExtension()
-static_digest = FlaskStaticDigest()
+bcrypt = Bcrypt()
+csrf_protect = CSRFProtect()
+login_manager = LoginManager()
+db = SQLAlchemy()
+migrate = Migrate()
 cache = Cache()
-
-
-def init_app(app: Flask) -> None:
-    """Register ``Flask`` extensions.
-
-    :param app: App object.
-    """
-    debug_toolbar.init_app(app)
-    static_digest.init_app(app)
-    cache.init_app(app)
+debug_toolbar = DebugToolbarExtension()
+flask_static_digest = FlaskStaticDigest()

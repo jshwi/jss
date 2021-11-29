@@ -1,51 +1,58 @@
-version: '3.8'
-services:
-  production:
-    build:
-      context: .
-      target: production
-    image: jss-production:0.1.0
-    command: .venv/bin/pipenv run gunicorn --bind 0.0.0.0:5000 wsgi:app
-    expose:
-      - "5000"
-    env_file: .env
-    environment:
-      FLASK_ENV: production
-    depends_on:
-      - db
+version: "3.6"
 
-  development:
+x-build-args: &build_args
+  INSTALL_PYTHON_VERSION: 3.8
+  INSTALL_NODE_VERSION: 8.1.4
+
+x-default-volumes: &default_volumes
+  volumes:
+    - ./:/app
+    - node-modules:/app/node_modules
+    - ./dev.db:/tmp/dev.db
+
+services:
+  flask-dev:
     build:
       context: .
       target: development
-    image: jss-development:0.1.0
-    command: .venv/bin/pipenv run flask run --host 0.0.0.0
+      args:
+        <<: *build_args
+    image: "app-development"
+    ports:
+      - "5000:5000"
+      - "2992:2992"
+    <<: *default_volumes
+
+  flask-prod:
+    build:
+      context: .
+      target: production
+      args:
+        <<: *build_args
+    image: "app-production"
     ports:
       - "5000:5000"
     environment:
-      FLASK_ENV: development
-    env_file: .env
-    depends_on:
-      - db
+      FLASK_ENV: production
+      FLASK_DEBUG: 0
+      LOG_LEVEL: info
+      GUNICORN_WORKERS: 4
+    <<: *default_volumes
 
-  db:
-    image: postgres:13-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      POSTGRES_USER: jss
-      POSTGRES_PASSWORD: jss
-      POSTGRES_DB: jss
-
-  nginx:
+  manage:
     build:
       context: .
-      target: nginx
-    image: jss-nginx:0.1.0
-    ports:
-      - "1337:80"
-    depends_on:
-      - production
+      target: development
+      args:
+        <<: *build_args
+    entrypoint: pipenv run flask
+    environment:
+      FLASK_ENV: production
+      FLASK_DEBUG: 0
+    image: "app-manage"
+    stdin_open: true
+    tty: true
+    <<: *default_volumes
 
 volumes:
-  postgres_data:
+  node-modules:

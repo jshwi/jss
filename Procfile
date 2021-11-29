@@ -1,2 +1,2 @@
-release: chmod u+x scripts/release.sh && ./scripts/release.sh
-web: gunicorn wsgi:app
+release: flask db upgrade
+web: gunicorn app.app:create_app\(\) -b 0.0.0.0:$PORT -w 3

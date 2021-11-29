@@ -30,9 +30,7 @@ from .utils import (
 
 
 @pytest.mark.usefixtures("init_db")
-def test_register(
-    test_app: Flask, client: FlaskClient, auth: AuthActions
-) -> None:
+def test_register(test_app: Flask, client: FlaskClient, auth: AuthActions) -> None:
     """The register view should render successfully on ``GET``.
 
     On ``POST``, with valid form data, it should redirect to the login
@@ -57,8 +55,7 @@ def test_register(
         assert (
             get_db()
             .execute(
-                f"select * from user"
-                f" where username = '{user_test_object.username}'"
+                f"select * from user" f" where username = '{user_test_object.username}'"
             )
             .fetchone()
             is not None
@@ -246,9 +243,7 @@ def test_author_required(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
-    other_user_test_object = UserTestObject(
-        OTHER_USER_USERNAME, OTHER_USER_PASSWORD
-    )
+    other_user_test_object = UserTestObject(OTHER_USER_USERNAME, OTHER_USER_PASSWORD)
     add_test_user(user_test_object)
     add_test_user(other_user_test_object)
     post_test_object = PostTestObject(
@@ -342,9 +337,7 @@ def test_update(
     :param add_test_post:   Add post to test database.
     """
     user_test_object = UserTestObject(MAIN_USER_USERNAME, MAIN_USER_PASSWORD)
-    created_post = PostTestObject(
-        POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED
-    )
+    created_post = PostTestObject(POST_TITLE, POST_BODY, POST_AUTHOR_ID, POST_CREATED)
     updated_post = PostTestObject(
         "updated title", "updated body", POST_AUTHOR_ID, POST_CREATED
     )
@@ -352,9 +345,7 @@ def test_update(
     add_test_post(created_post)
     auth.login(user_test_object)
     assert client.get(UPDATE1).status_code == 200
-    client.post(
-        UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
-    )
+    client.post(UPDATE1, data={"title": updated_post.title, "body": updated_post.body})
     with test_app.app_context():
         db = get_db()
         post = db.execute("SELECT * FROM post WHERE id = 1").fetchone()

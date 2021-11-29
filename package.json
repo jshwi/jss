@@ -1,36 +1,59 @@
 {
-  "name": "jss",
-  "version": "0.1.0",
-  "description": "A Flask web application",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
+  "name": "app",
+  "version": "1.0.0",
+  "description": "A Flask web app",
   "scripts": {
-    "clean": "pyaud clean",
-    "digest": "flask digest compile",
-    "lint": "pyaud lint",
-    "test": "pyaud coverage",
-    "typecheck": "pyaud typecheck",
-    "upgrade": "flask db upgrade"
+    "build": "run-script-os",
+    "build:win32": "SET NODE_ENV=production && webpack --progress --color --optimization-minimize && npm run flask-static-digest",
+    "build:default": "NODE_ENV=production webpack --progress --color --optimization-minimize && npm run flask-static-digest",
+    "start": "run-script-os",
+    "start:win32": "concurrently -n \"WEBPACK,FLASK\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run webpack-watch:win32\" \"npm run flask-server\"",
+    "start:default": "concurrently -n \"WEBPACK,FLASK\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run webpack-watch\" \"npm run flask-server\"",
+    "webpack-watch": "run-script-os",
+    "webpack-watch:win32": "SET NODE_ENV=debug && webpack --mode development --watch",
+    "webpack-watch:default": "NODE_ENV=debug webpack --mode development --watch",
+    "flask-server": "pipenv run flask run --host=0.0.0.0",
+    "flask-static-digest": "pipenv run flask digest compile",
+    "lint": "eslint \"assets/js/*.js\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jshwi/jss.git"
+    "url": "git+https://github.com/jshwi/app.git"
   },
-  "keywords": [
-    "Flask",
-    "web",
-    "application"
-  ],
   "author": "Stephen Whitlock",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jshwi/jss/issues"
+  "engines": {
+    "node": ">=8.1.4"
   },
-  "homepage": "https://github.com/jshwi/jss#readme",
-  "dependencies": {},
+  "bugs": {
+    "url": "https://github.com/jshwi/app/issues"
+  },
+  "homepage": "https://github.com/jshwi/app#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.0",
+    "bootstrap": "^5.0.2",
+    "jquery": "^3.5.1",
+    "@popperjs/core": "^2.9.2"
+  },
   "devDependencies": {
-    "prettier": "2.4.1"
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/eslint-parser": "^7.14.7",
+    "babel-loader": "^8.1.0",
+    "chokidar": "^3.4.2",
+    "concurrently": "^6.0.0",
+    "css-loader": "^5.0.1",
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "file-loader": "^6.1.0",
+    "less": "^4.1.1",
+    "less-loader": "^10.0.0",
+    "mini-css-extract-plugin": "^1.0.0",
+    "raw-loader": "^4.0.1",
+    "run-script-os": "^1.1.1",
+    "url-loader": "^4.1.0",
+    "webpack": "^5.5.1",
+    "webpack-cli": "^4.2.0"
   }
 }

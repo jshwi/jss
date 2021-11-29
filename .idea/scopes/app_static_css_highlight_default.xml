@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="app.static.css.highlight.default" pattern="file:app/static/css/highlight/default.css" />
+</component>

@@ -1,0 +1,3 @@
+# asset build cache will reside here
+*
+!.gitignore

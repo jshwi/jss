@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="docker-compose.yml" pattern="file:docker-compose.yml" />
+</component>

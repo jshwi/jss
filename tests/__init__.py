@@ -1,4 +1,1 @@
-"""
-tests
-=====
-"""
+"""Tests for the app."""
