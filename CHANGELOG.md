@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Implements `workbox` to handle service worker
 - Implements `webpack` for bundling static files and library
 
+### Changed
+- Adds `moment` inline to `webpack` bundle
+
 ### Fixed
 - Fixes up handling of icons
 

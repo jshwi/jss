@@ -8,6 +8,7 @@ const toggleSwitch = document.querySelector('input[type="checkbox"]');
 const darkreader = require("darkreader");
 
 const hljs = require("highlight.js/lib/core");
+const moment = require("moment");
 
 hljs.registerLanguage("python", require("highlight.js/lib/languages/python"));
 
@@ -90,6 +91,42 @@ if ("serviceWorker" in navigator) {
       });
   });
 }
+
+moment.locale("en");
+
+function flaskMomentRender(elem) {
+  const timestamp = moment(elem.dataset.timestamp);
+  const func = elem.dataset.function;
+  const { format } = elem.dataset;
+  const { timestamp2 } = elem.dataset;
+  const noSuffix = elem.dataset.nosuffix;
+  const { units } = elem.dataset;
+  const args = [];
+  if (format) args.push(format);
+  if (timestamp2) args.push(moment(timestamp2));
+  if (noSuffix) args.push(noSuffix);
+  if (units) args.push(units);
+  elem.textContent = timestamp[func](...args);
+  elem.classList.remove("flask-moment");
+  elem.style.display = "";
+}
+
+function flaskMomentRenderAll() {
+  const moments = document.querySelectorAll(".flask-moment");
+  moments.forEach((m) => {
+    flaskMomentRender(m);
+    const { refresh } = m.dataset;
+    if (refresh && refresh > 0) {
+      (function onRefresh(elem, interval) {
+        setInterval(() => {
+          flaskMomentRender(elem);
+        }, interval);
+      })(m, refresh);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", flaskMomentRenderAll);
 
 // noinspection JSUnusedGlobalSymbols
 module.exports = { toggleDarkReader, setMessageCount, setTaskProgress };
