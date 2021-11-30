@@ -105,7 +105,7 @@ redis==4.0.2
 regex==2021.11.10
 requests-toolbelt==0.9.1
 requests==2.26.0
-restview==2.9.2
+restview==2.9.3
 rfc3986==1.5.0
 rq==1.10.0
 secretstorage==3.3.1
