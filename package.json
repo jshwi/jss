@@ -2,6 +2,7 @@
   "name": "jss",
   "version": "1.12.1",
   "description": "A Flask web application",
+  "private": "true",
   "directories": {
     "doc": "docs",
     "test": "tests"
