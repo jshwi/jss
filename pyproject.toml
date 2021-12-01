@@ -30,3 +30,47 @@ addopts = [
 ]
 norecursedirs = ["docs", "*.egg-info", ".git", ".mypy_cache", ".idea", "prof"]
 filterwarnings = "ignore::DeprecationWarning"
+
+[tool.pyaud.clean]
+exclude = ["*.egg*", ".mypy_cache", ".env", "instance", "node_modules"]
+
+[tool.pyaud.logging]
+version = 1
+disable_existing_loggers = true
+
+[tool.pyaud.indexing]
+exclude = ["whitelist.py", "conf.py", "setup.py", "migrations", "node_modules"]
+
+[tool.pyaud.packages]
+name = "app"
+exclude = []
+
+[tool.pyaud.audit]
+modules = [
+    "files",
+    "format",
+    "format-docs",
+    "format-str",
+    "imports",
+    "typecheck",
+    "unused",
+    "lint",
+    "coverage",
+    "readme",
+    "docs",
+]
+
+[tool.pyaud.logging.root]
+level = "DEBUG"
+handlers = ["default"]
+propagate = false
+
+[tool.pyaud.logging.formatters.standard]
+format = "%(asctime)s %(levelname)s %(name)s %(message)s"
+
+[tool.pyaud.logging.handlers.default]
+class = "logging.handlers.TimedRotatingFileHandler"
+formatter = "standard"
+when = "d"
+backupCount = 60
+filename = "~/.cache/pyaud/log/pyaud.log"
