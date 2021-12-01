@@ -16,6 +16,7 @@
     "create:admin": "pipenv run create:admin",
     "db:upgrade": "pipenv run db:upgrade",
     "format": "npm-run-all format:*",
+    "format:misc": "prettier -w .",
     "format:py": "npm-run-all format:py:*",
     "format:py:code": "pipenv run format:code",
     "format:py:docs": "pipenv run format:docs",

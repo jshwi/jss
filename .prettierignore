@@ -1,0 +1,13 @@
+.lh/
+.mypy_cache/
+.pytest_cache/
+CHANGELOG.md
+Pipfile.lock
+app/templates/
+dist/
+docs/_build/
+docs/_themes/
+instance/
+migrations/
+node_modules/
+package-lock.json
