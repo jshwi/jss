@@ -6,30 +6,30 @@
 /* toggle checkbox for light and dark modes */
 /* positioning of notification counter */
 .badge-notify {
-    position: relative;
-    top: -12px;
-    left: -12px;
-    font-size: 14px;
+  position: relative;
+  top: -12px;
+  left: -12px;
+  font-size: 14px;
 }
 
 /* rules for null pointer */
 .current-version-anchor {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 /* like `table-hover`, for rows */
 .row.highlight:hover > * {
-    background-color: rgba(18, 52, 86, 0.13);
+  background-color: rgba(18, 52, 86, 0.13);
 }
 
 /* padding between the right-most object and the collapse toggler */
 .navbar-right {
-    padding-right: 10px;
+  padding-right: 10px;
 }
 
 /* round the edges of the navbar user menu */
 .navbar-avatar {
-border-radius: 25%;
--moz-border-radius: 25%;
--webkit-border-radius: 25%;
+  border-radius: 25%;
+  -moz-border-radius: 25%;
+  -webkit-border-radius: 25%;
 }
