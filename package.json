@@ -22,6 +22,7 @@
     "format:py:docs": "pipenv run format:docs",
     "format:py:str": "pipenv run format:str",
     "lint": "npm-run-all lint:*",
+    "lint:js": "eslint",
     "lint:py": "pipenv run lint",
     "release": "run-s build db:upgrade create:admin",
     "start": "pipenv run start",
@@ -48,7 +49,62 @@
     "url": "https://github.com/jshwi/jss/issues"
   },
   "homepage": "https://github.com/jshwi/jss#readme",
+  "eslintConfig": {
+    "extends": [
+      "airbnb-base",
+      "prettier",
+      "plugin:json/recommended"
+    ],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false
+    },
+    "rules": {
+      "no-param-reassign": "off",
+      "no-console": "off",
+      "max-len": [
+        "error",
+        {
+          "code": 79,
+          "comments": 72,
+          "ignoreComments": false,
+          "ignoreTrailingComments": false,
+          "ignoreUrls": false,
+          "ignoreStrings": false,
+          "ignoreTemplateLiterals": false,
+          "ignoreRegExpLiterals": false
+        }
+      ]
+    },
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "__dirname": true,
+      "jQuery": true,
+      "$": true
+    }
+  },
+  "eslintIgnore": [
+    ".mypy_cache/",
+    ".pytest_cache/",
+    "Pipfile.lock",
+    "dist/",
+    "docs/_build/",
+    "docs/_themes/",
+    "instance/",
+    "node_modules/",
+    "package-lock.json"
+  ],
   "devDependencies": {
+    "@babel/eslint-parser": "^7.16.3",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-json": "^3.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "lighthouse": "^9.1.0",
     "npm-run-all": "^4.1.5",
     "prettier": "2.5.0"

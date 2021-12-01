@@ -148,10 +148,10 @@
                 for (let i = 0; i < notifications.length; i++) {
                   switch (notifications[i].name) {
                     case "unread_message_count":
-                      set_message_count(notifications[i].data)
+                      setMessageCount(notifications[i].data)
                       break
                     case "task_progress":
-                      set_task_progress(
+                      setTaskProgress(
                         notifications[i].data.task_id,
                         notifications[i].data.progress
                       )
