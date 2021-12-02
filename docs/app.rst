@@ -77,10 +77,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.routes.static
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.routes.user
    :members:
    :undoc-members:
@@ -122,10 +118,6 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.utils.security
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.utils.send_from
    :members:
    :undoc-members:
    :show-inheritance:

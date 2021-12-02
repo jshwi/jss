@@ -7,42 +7,42 @@
   "description": "A Flask web app",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "img/favicon.ico",
       "sizes": "48x48",
       "type": "image/vnd.microsoft.icon"
     },
     {
-      "src": "/android-chrome-192x192.png",
+      "src": "img/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/android-chrome-512x512.png",
+      "src": "img/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/apple-touch-icon.png",
+      "src": "img/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png"
     },
     {
-      "src": "/favicon-16x16.png",
+      "src": "img/favicon-16x16.png",
       "sizes": "16x16",
       "type": "image/png"
     },
     {
-      "src": "/favicon-32x32.png",
+      "src": "img/favicon-32x32.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "/mstile-150x150.png",
+      "src": "img/mstile-150x150.png",
       "sizes": "270x270",
       "type": "image/png"
     },
     {
-      "src": "/safari-pinned-tab.svg",
+      "src": "img/safari-pinned-tab.svg",
       "sizes": "683x683",
       "type": "image/svg+xml"
     }
