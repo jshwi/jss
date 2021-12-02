@@ -39,14 +39,17 @@ const siteWebmanifest = {
     {
       src: path.join(ASSETS_IMG, "android-chrome-192x192.png"),
       size: "192x192",
+      purpose: "maskable",
     },
     {
       src: path.join(ASSETS_IMG, "android-chrome-512x512.png"),
       size: "512x512",
+      purpose: "maskable",
     },
     {
       src: path.join(ASSETS_IMG, "apple-touch-icon.png"),
       size: "180x180",
+      purpose: "maskable",
     },
     {
       src: path.join(ASSETS_IMG, "favicon-16x16.png"),

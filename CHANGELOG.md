@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Adds `moment` inline to `webpack` bundle
 
 ### Fixed
+- Fixes `Lighthouse` maskable icon audit
 - Fixes up handling of icons
 
 [1.12.1](https://github.com/jshwi/jss/releases/tag/v1.12.1) - 2021-11-24
