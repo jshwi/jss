@@ -12,6 +12,7 @@ black==21.7b0
 bleach==4.1.0
 blinker==1.4
 bootstrap-flask==1.8.0
+brotli==1.0.9
 bump2version==1.0.1
 certifi==2021.10.8
 cffi==1.15.0
@@ -32,6 +33,7 @@ environs==9.3.5
 execnet==1.9.0
 flask-admin==1.5.8
 flask-caching==1.10.1
+flask-compress==1.10.1
 flask-debugtoolbar==0.11.0
 flask-login==0.5.0
 flask-mail==0.9.1

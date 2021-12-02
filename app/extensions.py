@@ -7,6 +7,7 @@ Each extension is initialized with ``init_app`` method.
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_caching import Cache
+from flask_compress import Compress
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -34,6 +35,7 @@ bootstrap = Bootstrap()
 moment = Moment()
 nav = Nav()
 talisman = Talisman()
+compress = Compress()
 
 
 def init_app(app: Flask) -> None:
@@ -55,3 +57,4 @@ def init_app(app: Flask) -> None:
     moment.init_app(app)
     nav.init_app(app)
     talisman.init_app(app)
+    compress.init_app(app)
