@@ -59,10 +59,10 @@
 {# additional JavaScript functionality #}
 {% block scripts %}
     {# import JavaScript functions #}
-    <script src="{{ static_url_for("static", filename="build/main_js.bundle.js") }}"></script>
+    <script src="{{ static_url_for("static", filename="build/main_js.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
 
     <!--suppress JSUnresolvedVariable -->
-    <script nonce="{{ csp_nonce() }}">
+    <script>
       {% if current_user.is_authenticated %}
         $ = window.main_js.$
         $(function () {

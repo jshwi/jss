@@ -43,3 +43,4 @@ def init_app(app: Flask) -> None:
     t.content_security_policy.update_policy(app.config["CSP"])
     t.content_security_policy_report_only = app.config["CSP_REPORT_ONLY"]
     t.content_security_policy_report_uri = app.config["CSP_REPORT_URI"]
+    t.content_security_policy_nonce_in = ["style-src-attr"]

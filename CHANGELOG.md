@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixes `Lighthouse` maskable icon audit
 - Fixes up handling of icons
 
+### Security
+Updates CSP
+
 [1.12.1](https://github.com/jshwi/jss/releases/tag/v1.12.1) - 2021-11-24
 ------------------------------------------------------------------------
 ### Fixed
