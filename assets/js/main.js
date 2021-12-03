@@ -78,5 +78,18 @@ function toggleDarkReader() {
 // default to false if no saved state
 toggleSwitch.addEventListener("change", toggleDarkReader, false);
 
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/static/build/service-worker.js")
+      .then((registration) => {
+        console.log("SW registered: ", registration);
+      })
+      .catch((registrationError) => {
+        console.log("SW registration failed: ", registrationError);
+      });
+  });
+}
+
 // noinspection JSUnusedGlobalSymbols
 module.exports = { toggleDarkReader, setMessageCount, setTaskProgress };

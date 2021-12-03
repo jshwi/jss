@@ -4,6 +4,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const { DefinePlugin, ProvidePlugin } = require("webpack");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 const CWD = path.resolve(__dirname);
 const ASSETS = path.join(CWD, "assets");
@@ -93,10 +94,9 @@ module.exports = {
   resolve: { extensions: [".js", ".css"] },
   plugins: [
     new MiniCssExtractPlugin({ filename: "[name].bundle.css" }),
-    // expose `JQuery`'s special variables `$` and `JQuery` to all JS
-    // modules
     new ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
     new WebpackPwaManifest(siteWebmanifest),
+    new WorkboxPlugin.GenerateSW({ clientsClaim: true, skipWaiting: true }),
   ].concat(debug ? [] : ProductionPlugins),
   module: {
     rules: [
