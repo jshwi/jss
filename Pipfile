@@ -57,3 +57,19 @@ twine = "==3.7.0"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+"audit" = "pyaud audit --fix"
+"clean" = "pyaud clean"
+"create:admin" = "flask create admin"
+"db:upgrade" = "flask db upgrade"
+"format:code" = "pyaud format --fix"
+"format:docs" = "pyaud format-docs --fix"
+"format:str" = "pyaud format-str --fix"
+"lint" = "pyaud lint"
+"start" = "gunicorn wsgi:app"
+"start:dev" = "flask run"
+"static:clean" = "flask digest clean"
+"static:compile" = "flask digest compile"
+"test" = "pyaud coverage"
+"typecheck" = "pyaud typecheck"
