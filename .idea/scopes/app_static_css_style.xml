@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="app.static.css.style" pattern="file:app/static/css/style.css" />
+  <scope name="app.static.css.style" pattern="file:assets/css/style.css" />
 </component>

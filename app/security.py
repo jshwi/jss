@@ -13,6 +13,7 @@ _CSP: CSPType = {
         "'self'",
         "cdnjs.cloudflare.com",
         "cdn.jsdelivr.net",
+        "fonts.googleapis.com",
         "'unsafe-inline'",
     ],
     "script-src-elem": [
@@ -22,8 +23,14 @@ _CSP: CSPType = {
         "'unsafe-inline'",
     ],
     "img-src": ["'self'", "gravatar.com", "data:"],
-    "font-src": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
+    "font-src": [
+        "'self'",
+        "cdnjs.cloudflare.com",
+        "cdn.jsdelivr.net",
+        "fonts.gstatic.com",
+    ],
     "script-src-attr": ["'self'", "'unsafe-inline'"],
+    "connect-src": ["'self'", "fonts.googleapis.com", "cdn.jsdelivr.net"],
 }
 
 

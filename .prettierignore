@@ -3,6 +3,7 @@
 .pytest_cache/
 CHANGELOG.md
 Pipfile.lock
+app/static
 app/templates/
 dist/
 docs/_build/

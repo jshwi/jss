@@ -134,3 +134,35 @@ def fixture_add_test_objects(test_app: Flask) -> AddTestObjects:
     :return: Instantiated ``AddTestObjects`` class.
     """
     return AddTestObjects(test_app)
+
+
+@pytest.fixture(name="init_static")
+def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
+    """Initialize static dir and set in app for testing.
+
+    :param tmp_path: Create and return temporary directory.
+    :param test_app: Test ``Flask`` app object.
+    """
+    # create and set static
+    static_dir = tmp_path / "static"
+    static_dir.mkdir()
+    test_app.static_folder = str(static_dir)
+
+    # add non "built" static files
+    setting_files = ["browserconfig.xml"]
+    for setting_file in setting_files:
+        Path(static_dir / setting_file).touch()
+
+    # create build dir
+    build_dir = static_dir / "build"
+    build_dir.mkdir()
+
+    # create "built" images
+    items = [
+        "favicon.ico",
+        "mstile-150x150.png",
+        "safari-pinned-tab.svg",
+        "site.webmanifest",
+    ]
+    for item in items:
+        Path(build_dir / item).touch()

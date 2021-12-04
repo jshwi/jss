@@ -8,9 +8,9 @@
 {% block metas %}
     {{ super() }}
 
-    <link rel="shortcut icon" href="{{static_url_for('static', filename='img/favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{static_url_for('static', filename='img/apple-touch-icon.png') }}">
-    <link rel="manifest" href="{{static_url_for('static', filename='site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{static_url_for('static', filename='build/icon_48x48.ico') }}">
+    <link rel="apple-touch-icon" href="{{static_url_for('static', filename='build/icon_180x180.png') }}">
+    <link rel="manifest" href="{{static_url_for('static', filename='build/site.webmanifest') }}">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <meta name="msapplication-config" content="{{ static_url_for('static', filename='browserconfig.xml') }}">
@@ -18,25 +18,10 @@
 
 {# source static files #}
 {% block styles %}
-    {{ super() }}
-
-    {# checkbox as toggle switch #}
-    <link id="bootstrap-toggle"
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css">
-
-    {# icons lib #}
-    <link id="bootstrap-icons"
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css">
-
     {# additional style rules #}
-    <link id="style" rel="stylesheet" href="{{ static_url_for('static', filename='css/style.css') }}">
-
-    {# syntax-highlighting stylesheet for fenced code blocks #}
-    <link id="syntax-style"
-          rel="stylesheet"
-          href="{{ static_url_for('static', filename='css/highlight/default.css') }}">
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{ static_url_for('static', filename='build/main_css.bundle.css') }}">
 {% endblock %}
 
 {# for navigating site #}
@@ -72,34 +57,14 @@
 
 {# additional JavaScript functionality #}
 {% block scripts %}
-    {{ super() }}
-
-    {# syntax highlighting for fenced markdown code #}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/languages/python.min.js"></script>
-
-    {# apply dark-mode from darkreader: https://darkreader.org/ #}
-    {# disabled by default (night-mode off) #}
-    <!--suppress HtmlDeprecatedAttribute -->
-    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.40/darkreader.min.js"></script>
-
     {# import JavaScript functions #}
-    <script src="{{ static_url_for("static", filename="js/main.js") }}"></script>
-    <!--suppress JSUnresolvedFunction, JSUnresolvedVariable -->
-    <script nonce="{{ csp_nonce() }}">hljs.highlightAll()</script>
-
-    {# checkbox as toggle switch #}
-    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-
-    {# from https://github.com/miguelgrinberg/Flask-Moment #}
-    {# see https://github.com/miguelgrinberg/Flask-Moment/issues/43 #}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+    <script src="{{ static_url_for("static", filename="build/main_js.bundle.js") }}"></script>
 
     <!--suppress JSCheckFunctionSignatures -->
     <script nonce="{{ csp_nonce() }}">
-        moment.locale("en");
+        window.main_js.moment.locale("en");
         function flask_moment_render(elem) {
-            const timestamp = moment(elem.dataset.timestamp);
+            const timestamp = window.main_js.moment(elem.dataset.timestamp);
             const func = elem.dataset.function;
             const format = elem.dataset.format;
             const timestamp2 = elem.dataset.timestamp2;
@@ -109,7 +74,7 @@
             if (format)
                 args.push(format);
             if (timestamp2)
-                args.push(moment(timestamp2));
+                args.push(window.main_js.moment(timestamp2));
             if (no_suffix)
                 args.push(no_suffix);
             if (units)
@@ -138,6 +103,7 @@
     <!--suppress JSUnresolvedVariable -->
     <script nonce="{{ csp_nonce() }}">
       {% if current_user.is_authenticated %}
+        $ = window.main_js.$
         $(function () {
           let since = 0
           setInterval(function () {
@@ -146,10 +112,10 @@
                 for (let i = 0; i < notifications.length; i++) {
                   switch (notifications[i].name) {
                     case "unread_message_count":
-                      setMessageCount(notifications[i].data)
+                      window.main_js.setMessageCount(notifications[i].data)
                       break
                     case "task_progress":
-                      setTaskProgress(
+                      window.main_js.setTaskProgress(
                         notifications[i].data.task_id,
                         notifications[i].data.progress
                       )

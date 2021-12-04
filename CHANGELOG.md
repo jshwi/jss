@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.12.1...HEAD)
 ------------------------------------------------------------------------
+### Added
+- Implements `webpack` for bundling static files and library
+
 ### Fixed
 - Fixes up handling of icons
 

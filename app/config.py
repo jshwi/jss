@@ -333,6 +333,11 @@ class Config:
         """URI to report CSP violations to."""
         return env.str("CSP_REPORT_URI", default="/report/csp_violations")
 
+    @property
+    def BOOTSTRAP_SERVE_LOCAL(self) -> bool:
+        """Serve local CSS."""
+        return env.bool("BOOTSTRAP_SERVE_LOCAL", default=True)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

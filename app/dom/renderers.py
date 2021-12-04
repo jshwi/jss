@@ -161,7 +161,7 @@ class NavbarRenderer(Visitor):
                 data_style="border",
                 data_on="<i class='bi bi-sun'></i>",
                 data_off="<i class='bi-moon'></i>",
-                onchange="toggleDarkReader()",
+                onchange="window.main_js.toggleDarkReader()",
             )
         )
         toggle_dark_mode.add("toggle-darkreader")

@@ -2141,7 +2141,7 @@ def test_all_routes_covered(test_app: Flask) -> None:
     assert all(r in COVERED_ROUTES for r in filter_covered)
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures("init_db", "init_static")
 @pytest.mark.parametrize(
     "code,routes", STATUS_CODE_TO_ROUTE_DEFAULT, ids=[200, 401, 405]
 )
