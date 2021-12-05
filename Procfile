@@ -1,2 +1,2 @@
-release: npm run release
-web: npm start
+release: chmod u+x scripts/release.sh && ./scripts/release.sh
+web: gunicorn wsgi:app
