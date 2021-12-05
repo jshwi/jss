@@ -6,7 +6,7 @@
 
 {# page body to the unconfirmed view #}
 {% block app_content %}
-    <p>Please check your inbox or or junk folder for a confirmation link.</p>
+    <p>Please check your inbox or junk folder for a confirmation link.</p>
 
     {# trigger sending of confirmation email #}
     <p>Didn't get the email? <a href="{{ url_for('redirect.resend_confirmation') }}">Resend</a>.</p>
