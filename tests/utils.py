@@ -211,7 +211,7 @@ class PostTestObject(TestObject):
     """Test model attributes.
 
     :param title: Title of the post.
-    :param body: Main content of the post..
+    :param body: Main content of the post.
     :param user_id: ID of the user who made the post.
     :param created: When the post was created.
     """
@@ -248,7 +248,7 @@ class MessageTestObject(TestObject):
 
     :param sender_id: ID of sender.
     :param recipient_id: ID of recipient.
-    :param body: Main content of the post..
+    :param body: Main content of the post.
     :param created: When the post was created.
     """
 

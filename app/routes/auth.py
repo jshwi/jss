@@ -39,7 +39,7 @@ def register() -> Union[str, Response]:
     again with an error message.
 
     :return: Rendered register template on GET, or POST with error.
-        Response object redirect to login view on successful POST.
+        Response object redirect to the "login" view on successful POST.
     """
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -141,7 +141,7 @@ def request_password_reset() -> Union[str, Response]:
     that leads to the reset password page.
 
     :return: Rendered auth/request_password_reset template on GET or
-        invalid email POST. Response object redirect to login view on
+        invalid email POST. Response object redirect to "login" view on
         successful email POST.
     """
     form = ResetPasswordRequestForm()

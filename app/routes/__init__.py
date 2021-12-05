@@ -35,7 +35,7 @@ def format_html(response: Response):
 
 
 def init_app(app: Flask) -> None:
-    """Load the app with views views.
+    """Load the app with views.
 
     :param app: Application factory object.
     """

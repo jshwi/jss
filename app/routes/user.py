@@ -75,7 +75,7 @@ def edit_profile() -> Union[str, Response]:
 @login_required
 @confirmation_required
 def send_message(recipient: str) -> Union[str, Response]:
-    """Send IM to another user.
+    """Send message to another user.
 
     :return: Rendered user/send_message template on GET. Response object
         redirect to recipient's view on successful POST.
@@ -135,7 +135,7 @@ def messages() -> str:
 @blueprint.route("/notifications")
 @login_required
 def notifications() -> Response:
-    """Retrieve notifications for logged in user.
+    """Retrieve notifications for logged-in user.
 
     :return: Response containing JSON payload.
     """

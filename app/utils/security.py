@@ -23,7 +23,7 @@ def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
 
     Admin needs to be logged in to create, edit, and delete posts.
 
-    The new function checks if a admin is loaded and returns a
+    The new function checks if an admin is loaded and returns a
     ``401 Unauthorized`` error otherwise. If an admin user is loaded the
     original view is called and continues normally.
 
@@ -63,9 +63,9 @@ def authorization_required(view: Callable[..., Any]) -> Callable[..., Any]:
 
 
 def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
-    """Handle views that require a verified logged in user.
+    """Handle views that require a verified logged-in user.
 
-    The new function checks if a user if confirmed or not and redirects
+    The new function checks if a user is confirmed or not and redirects
     The user to the auth/unconfirmed page otherwise. If a confirmed user
     is loaded the original view is called and continues normally.
 

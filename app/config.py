@@ -287,7 +287,7 @@ class Config:
 
     @property
     def NAVBAR_USER_DROPDOWN(self) -> bool:
-        """Display logged in user links as dropdown."""
+        """Display logged-in user links as dropdown."""
         return env.bool("NAVBAR_USER_DROPDOWN", default=False)
 
     @property

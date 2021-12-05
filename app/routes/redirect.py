@@ -82,7 +82,7 @@ def resend_confirmation() -> Response:
 def delete(id: int) -> Response:
     """Delete post by post's ID.
 
-    The delete view does not have its own template. Since there is no
+    The "delete" view does not have its own template. Since there is no
     template it will only handle the ``POST`` method and then redirect
     to the index view.
 

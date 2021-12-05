@@ -28,11 +28,11 @@ from .utils import (
 def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     """Create an instance of the ``Flask`` app with testing environment.
 
-    The ``DATABASE_URL`` path is overridden so it points to the test
+    The ``DATABASE_URL`` path is overridden, so it points to the test
     path.
 
     ``TESTING`` tells ``Flask`` that the app is in test mode. ``Flask``
-    changes some internal behaviour so it is easier to test and other
+    changes some internal behaviour, so it is easier to test and other
     extensions can also use the flag to make testing them easier.
 
     :param tmp_path: Create and return temporary directory.

@@ -8,7 +8,7 @@ From the ``Flask`` docs:
 
     Instead of creating a ``Flask`` instance globally, we will create
     it inside a function. This function is known as the application
-    factory. Any configuration, registration, and other setup the
+    factory. Any configuration, registration, and other set up the
     application needs will happen inside the function, then the
     application will be returned.
 

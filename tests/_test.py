@@ -213,7 +213,7 @@ def test_index(
     be a link to edit the post.
 
     We can also test some more authentication behaviour while testing
-    the index view. When not logged in each pages shows links to log in
+    the index view. When not logged in each page shows links to log in
     or register. When logged in there's a link to log out.
 
     :param client: Client for testing app.
@@ -249,10 +249,10 @@ def test_index(
 def test_login_required(client: FlaskClient, route: str) -> None:
     """Test requirement that user be logged in to post.
 
-    A user must be logged in to access the create, update, and delete
-    views.
+    A user must be logged in to access the "create", "update", and
+    "delete" views.
 
-    The logged in user must be the author of the post to access the
+    The logged-in user must be the author of the post to access the
     update and delete views, otherwise a ``403 Forbidden`` status is
     returned.
 
@@ -427,8 +427,8 @@ def test_delete(
 ) -> None:
     """Test deletion of posts.
 
-    The delete view should redirect to the index URl and the post should
-    no longer exist in the database.
+    The "delete" view should redirect to the index URl and the post
+    should no longer exist in the database.
 
     :param test_app: Test ``Flask`` app object.
     :param client: Client for testing app.
@@ -584,7 +584,7 @@ def test_create_user_exists(
 def test_create_user_email_exists(
     runner: FlaskCliRunner, add_test_objects: AddTestObjects
 ) -> None:
-    """Test creation of a new user who's email is already registered.
+    """Test creation of a new user whose email is already registered.
 
     :param runner: Fixture derived from the ``create_app`` factory
         fixture used to call the ``init-db`` command by name.
@@ -657,10 +657,10 @@ def test_admin_required(
 ) -> None:
     """Test requirement that admin user be logged in to post.
 
-    An admin user must be logged in to access the create, update, and
-    delete views.
+    An admin user must be logged in to access the "create", "update",
+    and "delete" views.
 
-    The logged in user must be the author of the post to access the
+    The logged-in user must be the author of the post to access the
     update and delete views, otherwise a ``403 Forbidden`` status is
     returned.
 
@@ -1202,7 +1202,7 @@ def test_follow_posts(
         post_3 = Post.query.filter_by(title=POST_TITLE_3).first()
         post_4 = Post.query.filter_by(title=POST_TITLE_4).first()
 
-        # setup the followers
+        # set up the followers
         user_1.follow(user_2)
         user_1.follow(user_4)
         user_2.follow(user_3)
@@ -1786,7 +1786,7 @@ def test_inspect_profile_no_user(
 
         AttributeError: 'NoneType' object has no attribute 'posts'
 
-    If a non existing user is searched, prior to this commit, the route
+    If a non-existing user is searched, prior to this commit, the route
     will use methods belonging to the user (assigned None).
 
     Prefer to handle the exception and return a ``404: Not Found`` error

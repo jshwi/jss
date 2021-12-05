@@ -19,7 +19,7 @@ blueprint = Blueprint("public", __name__)
 def index() -> str:
     """App's index page.
 
-    The index will show all of the posts with the most recent first.
+    The index will show all the posts with the most recent first.
 
     ``JOIN`` is used so that the author information from the user table
     is available in the result.

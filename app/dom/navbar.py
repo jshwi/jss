@@ -24,7 +24,7 @@ def _construct_messages_view() -> BadgedView:
 
 def _construct_user_subgroup() -> Subgroup:
     # construct a ``NavigationItem`` for implementing a group of links
-    # in user specifically for a logged in user
+    # in user specifically for a logged-in user
     if current_app.config["NAVBAR_USER_DROPDOWN"]:
 
         subgroup = Subgroup(
