@@ -14,7 +14,7 @@
     "audit": "npm-run-all audit:*",
     "audit:app": "lighthouse http://localhost:5000 --view --chrome-flags=--headless --output-path=\"$(mktemp).html\"",
     "audit:py": "pipenv run audit",
-    "build": "run-s webpack:prod static:compile",
+    "build": "npm run webpack:prod",
     "build:dev": "npm run webpack:dev",
     "clean": "pipenv run clean",
     "create:admin": "pipenv run create:admin",
