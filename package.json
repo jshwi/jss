@@ -1,6 +1,9 @@
 {
   "name": "jss",
   "version": "1.13.0",
+  "engines": {
+    "node": "16.x"
+  },
   "description": "A Flask web application",
   "private": "true",
   "directories": {

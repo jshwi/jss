@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.13.0...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- Adds `node` version to package.json `engines` key
 
 [1.13.0](https://github.com/jshwi/jss/releases/tag/v1.13.0) - 2021-12-06
 ------------------------------------------------------------------------
