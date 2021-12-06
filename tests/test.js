@@ -5,11 +5,12 @@ const darkreader = require("darkreader");
 const $ = require("jquery");
 const main = require("../assets/js/main");
 const messages = require("../assets/js/messages");
+const DarkMode = require("../assets/js/darkMode");
 
 describe("test dark-mode", () => {
   it('should have called `localStorage.getItem` with "theme"', () => {
     // eslint-disable-next-line no-unused-vars
-    const darkMode = new main.DarkMode();
+    const darkMode = new DarkMode();
     expect(localStorage.getItem).toHaveBeenCalledWith("theme");
   });
   it.each`
@@ -22,7 +23,7 @@ describe("test dark-mode", () => {
       localStorage.setItem("theme", theme);
       const myMock = jest.spyOn(document.documentElement, "setAttribute");
       // eslint-disable-next-line no-unused-vars
-      const darkMode = new main.DarkMode();
+      const darkMode = new DarkMode();
       expect(myMock).toHaveBeenCalledWith("data-theme", theme);
     }
   );
@@ -31,7 +32,7 @@ describe("test dark-mode", () => {
     ${false} | ${"disable"} | ${"light"}
     ${true}  | ${"enable"}  | ${"dark"}
   `("should be $theme", ({ checked, mode, theme }) => {
-    const darkMode = new main.DarkMode();
+    const darkMode = new DarkMode();
     darkMode.toggleSwitch.checked = checked;
     const spyOnDocument = jest.spyOn(document.documentElement, "setAttribute");
     const spyOnDarkReader = jest.spyOn(darkreader, mode);
@@ -40,7 +41,7 @@ describe("test dark-mode", () => {
     expect(spyOnDarkReader).toHaveBeenCalled();
   });
   it("should have been called with event listener", () => {
-    const darkMode = new main.DarkMode();
+    const darkMode = new DarkMode();
     const addEventListener = jest.fn();
     darkMode.toggleSwitch.addEventListener = addEventListener;
     darkMode.addToggleListener();
