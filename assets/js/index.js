@@ -15,12 +15,15 @@ const hljs = require("highlight.js/lib/core");
 const $ = require("jquery");
 const {
   toggleDarkReader,
-  setMessageCount,
-  setTaskProgress,
   initTheme,
   toggleSwitch,
   registerServiceWorker,
 } = require("./main");
+const {
+  setMessageCount,
+  setTaskProgress,
+  getMessageCount,
+} = require("./messages");
 
 // noinspection JSUnresolvedFunction
 require.context("../img", true, /.*/);
@@ -41,5 +44,6 @@ module.exports = {
   toggleDarkReader,
   setMessageCount,
   setTaskProgress,
+  getMessageCount,
   $,
 };

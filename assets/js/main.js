@@ -6,7 +6,6 @@
 const currentTheme = window.localStorage.getItem("theme");
 const toggleSwitch = document.querySelector('input[type="checkbox"]');
 const darkreader = require("darkreader");
-const $ = require("jquery");
 
 // trigger on import
 // determine the saved state (if there is one)
@@ -22,31 +21,6 @@ function initTheme() {
       });
     }
   }
-}
-
-// noinspection JSUnusedGlobalSymbols
-/**
- * [Set the count for number of messages held.]
- * @function setMessageCount
- * @param n
- */
-// eslint-disable-next-line no-unused-vars
-function setMessageCount(n) {
-  const messageCount = $("#message_count");
-  messageCount.text(n);
-  messageCount.css("visibility", n ? "visible" : "hidden");
-}
-
-// noinspection JSUnusedGlobalSymbols
-/**
- * [Set the percentage to show for task progress.]
- * @function setTaskProgress
- * @param {String} taskID
- * @param {String} progress
- */
-// eslint-disable-next-line no-unused-vars
-function setTaskProgress(taskID, progress) {
-  $(`#${taskID}-progress`).text(progress);
 }
 
 /**
@@ -87,8 +61,6 @@ function registerServiceWorker() {
 // noinspection JSUnusedGlobalSymbols
 module.exports = {
   toggleDarkReader,
-  setMessageCount,
-  setTaskProgress,
   initTheme,
   registerServiceWorker,
   toggleSwitch,
