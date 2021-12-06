@@ -13,7 +13,7 @@ this is the base template for pages displaying posts #}
                     <img src="{{ post.author.avatar(70) }}" alt="{{ post.author.username }}">
                 </a>
                 <div class="about">
-                    <a href="{{ url_for("public.profile", username=post.author.username) }}">
+                    <a class="link-profile" href="{{ url_for("public.profile", username=post.author.username) }}">
                         {{ post.author.username }}
                     </a>
                     <br>

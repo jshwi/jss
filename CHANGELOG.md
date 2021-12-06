@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.13.4...HEAD)
 ------------------------------------------------------------------------
+### Changed
+- Enlarges dark mode toggle button
+
 ### Security
 - Updates CSP
 

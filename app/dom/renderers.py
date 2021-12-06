@@ -153,6 +153,7 @@ class NavbarRenderer(Visitor):
 
         toggle_dark_mode = ul_right.add(
             tags.input_(
+                cls="toggle-darkreader",
                 id="toggle-darkreader",
                 type="checkbox",
                 data_toggle="toggle",
@@ -162,6 +163,7 @@ class NavbarRenderer(Visitor):
                 data_on="<i class='bi bi-sun'></i>",
                 data_off="<i class='bi-moon'></i>",
                 onchange="window.main_js.toggleDarkReader()",
+                data_height="48px",
             )
         )
         toggle_dark_mode.add("toggle-darkreader")
