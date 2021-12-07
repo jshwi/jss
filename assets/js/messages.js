@@ -21,20 +21,17 @@ const tracker = new Tracker(0);
  * @function setMessageCount
  * @param n
  */
-// eslint-disable-next-line no-unused-vars
 function setMessageCount(n) {
   const count = $("#message_count");
   count.text(n);
   count.css("visibility", n ? "visible" : "hidden");
 }
 
-// noinspection JSUnusedGlobalSymbols
 /**
  * [Set the percentage to show for task progress.]
  * @function setTaskProgress
  */
 function setTaskProgress(data) {
-  // noinspection JSUnresolvedVariable
   $(`#${data.task_id}-progress`).text(data.progress);
 }
 
@@ -46,7 +43,6 @@ function whenDone(notifications) {
         setMessageCount(obj.data);
         break;
       case "task_progress":
-        // noinspection JSUnresolvedVariable
         setTaskProgress(obj.data);
         break;
       default:

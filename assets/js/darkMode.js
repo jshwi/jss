@@ -1,6 +1,5 @@
 const darkreader = require("darkreader");
 
-// noinspection JSUnresolvedFunction
 darkreader.setFetchMethod(window.fetch);
 
 // trigger on import
