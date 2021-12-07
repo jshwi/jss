@@ -12,3 +12,4 @@ instance/
 migrations/
 node_modules/
 package-lock.json
+*.js

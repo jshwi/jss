@@ -22,3 +22,7 @@ jss
 .. image:: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
     :target: https://github.com/prettier/prettier
     :alt: prettier
+.. image:: https://img.shields.io/badge/code_style-standard-brightgreen.svg
+    :target: https://standardjs.com
+    :alt: standard
+

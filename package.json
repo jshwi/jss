@@ -26,7 +26,7 @@
     "format:py:docs": "pipenv run format:docs",
     "format:py:str": "pipenv run format:str",
     "lint": "npm-run-all lint:*",
-    "lint:js": "eslint",
+    "lint:js": "standard --fix",
     "lint:py": "pipenv run lint",
     "prebuild:dev": "npm run static:clean",
     "prestart:dev:watch": "npm run static:clean",
@@ -59,55 +59,30 @@
     "url": "https://github.com/jshwi/jss/issues"
   },
   "homepage": "https://github.com/jshwi/jss#readme",
-  "eslintConfig": {
-    "extends": [
-      "airbnb-base",
-      "prettier",
-      "plugin:json/recommended"
-    ],
-    "parser": "@babel/eslint-parser",
-    "parserOptions": {
-      "requireConfigFile": false
-    },
-    "rules": {
-      "no-param-reassign": "off",
-      "no-console": "off",
-      "max-len": [
-        "error",
-        {
-          "code": 79,
-          "comments": 72,
-          "ignoreComments": false,
-          "ignoreTrailingComments": false,
-          "ignoreUrls": false,
-          "ignoreStrings": false,
-          "ignoreTemplateLiterals": false,
-          "ignoreRegExpLiterals": false
-        }
-      ]
-    },
-    "env": {
-      "browser": true,
-      "node": true
-    },
-    "globals": {
-      "__dirname": true,
-      "jQuery": true,
-      "$": true
-    }
+  "standard": {
+    "max-len": [
+      "error",
+      {
+        "code": 79,
+        "comments": 72,
+        "ignoreComments": false,
+        "ignoreTrailingComments": false,
+        "ignoreUrls": false,
+        "ignoreStrings": false,
+        "ignoreTemplateLiterals": false,
+        "ignoreRegExpLiterals": false
+      }
+    ]
   },
-  "eslintIgnore": [
-    ".mypy_cache/",
-    ".pytest_cache/",
-    "Pipfile.lock",
-    "app/static",
-    "dist/",
-    "docs/_build/",
-    "docs/_themes/",
-    "instance/",
-    "node_modules/",
-    "package-lock.json"
-  ],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "globals": {
+    "__dirname": true,
+    "jQuery": true,
+    "$": true
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.0",
     "@popperjs/core": "^2.9.2",
@@ -121,24 +96,18 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
-    "@babel/eslint-parser": "^7.14.7",
     "@babel/preset-env": "^7.11.5",
     "babel-loader": "^8.1.0",
     "concurrently": "^6.4.0",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.2.0",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-json": "^3.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "file-loader": "^6.1.0",
     "lighthouse": "^9.1.0",
     "mini-css-extract-plugin": "^2.4.5",
     "npm-run-all": "^4.1.5",
     "prettier": "2.5.1",
     "raw-loader": "^4.0.1",
+    "standard": "^16.0.4",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.2.5",
     "url-loader": "^4.1.0",
