@@ -3,9 +3,9 @@
 
 const darkreader = require("darkreader");
 const $ = require("jquery");
-const main = require("../assets/js/main");
 const messages = require("../assets/js/messages");
 const DarkMode = require("../assets/js/darkMode");
+const registerServiceWorker = require("../assets/js/serviceWorker");
 
 describe("test dark-mode", () => {
   it('should have called `localStorage.getItem` with "theme"', () => {
@@ -70,7 +70,7 @@ describe("test service worker", () => {
   it("should not have been passed to `window.addEventListener`", () => {
     // noinspection JSValidateTypes
     const spy = jest.spyOn(window, "addEventListener");
-    main.registerServiceWorker();
+    registerServiceWorker();
     expect(spy).not.toBeCalled();
   });
   it.each`
@@ -85,7 +85,7 @@ describe("test service worker", () => {
     // noinspection JSValidateTypes
     global.navigator.serviceWorker = serviceWorker;
     const spyOnWindowAddEventListener = jest.spyOn(window, "addEventListener");
-    main.registerServiceWorker();
+    registerServiceWorker();
     events.load();
     expect(spyOnWindowAddEventListener).toBeCalled();
     expect(serviceWorker.register).toBeCalledWith(

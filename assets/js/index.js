@@ -13,7 +13,6 @@ require("bootstrap4-toggle");
 require("darkreader");
 const hljs = require("highlight.js/lib/core");
 const $ = require("jquery");
-const { registerServiceWorker } = require("./main");
 const {
   setMessageCount,
   setTaskProgress,
@@ -21,6 +20,7 @@ const {
   whenDone,
 } = require("./messages");
 const DarkMode = require("./darkMode");
+const registerServiceWorker = require("./serviceWorker");
 
 // noinspection JSUnresolvedFunction
 require.context("../img", true, /.*/);

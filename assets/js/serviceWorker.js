@@ -18,5 +18,4 @@ function registerServiceWorker() {
   }
 }
 
-// noinspection JSUnusedGlobalSymbols
-module.exports = { registerServiceWorker };
+module.exports = registerServiceWorker;
