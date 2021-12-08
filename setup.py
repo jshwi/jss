@@ -61,7 +61,7 @@ setup(
         "psycopg2==2.9.2",
         "pyjwt==2.3.0",
         "redis==4.0.2",
-        "rq==1.10.0",
+        "rq==1.10.1",
         "sqlalchemy==1.3.24",
         "sqlalchemy-continuum==1.3.11",
         "sqlalchemy-utils==0.37.9",

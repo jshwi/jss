@@ -109,7 +109,7 @@ requests-toolbelt==0.9.1
 requests==2.26.0
 restview==2.9.3
 rfc3986==1.5.0
-rq==1.10.0
+rq==1.10.1
 secretstorage==3.3.1
 six==1.16.0
 snowballstemmer==2.2.0
