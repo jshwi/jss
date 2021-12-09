@@ -16,7 +16,7 @@ brotli==1.0.9
 bump2version==1.0.1
 certifi==2021.10.8
 cffi==1.15.0
-charset-normalizer==2.0.8
+charset-normalizer==2.0.9
 click==8.0.3
 codecov==2.1.12
 colorama==0.4.4
@@ -90,7 +90,7 @@ pyaud==3.2.10
 pycparser==2.21
 pygments==2.8.1
 pyjwt==2.3.0
-pylint==2.12.1
+pylint==2.12.2
 pyopenssl==21.0.0
 pyparsing==3.0.6
 pytest-cov==3.0.0

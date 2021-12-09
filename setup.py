@@ -41,6 +41,7 @@ setup(
         "flask==2.0.2",
         "flask-admin==1.5.8",
         "flask-caching==1.10.1",
+        "flask-compress==1.10.1",
         "flask-debugtoolbar==0.11.0",
         "flask-login==0.5.0",
         "flask-mail==0.9.1",
