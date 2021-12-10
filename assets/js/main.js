@@ -3,43 +3,40 @@
  * =======
  * [Sourced functions for HTML scripts.]
  */
-const toggleSwitch = document.querySelector('input[type="checkbox"]');
 const darkreader = require("darkreader");
 
 // trigger on import
 // determine the saved state (if there is one)
-function initTheme() {
-  const currentTheme = window.localStorage.getItem("theme");
-  if (currentTheme) {
-    document.documentElement.setAttribute("data-theme", currentTheme);
-    if (currentTheme === "dark") {
-      toggleSwitch.checked = true;
+class DarkMode {
+  constructor() {
+    this.toggleSwitch = document.querySelector('input[type="checkbox"]');
+    this.currentTheme = window.localStorage.getItem("theme") || "light";
+    this.toggleSwitch.checked = this.currentTheme === "dark";
+    this.toggle();
+  }
+
+  addToggleListener() {
+    // default to false if no saved state
+    this.toggleSwitch.addEventListener("change", this.toggle, false);
+  }
+
+  /**
+   * [Toggle between light and dark mode.]
+   */
+  toggle() {
+    if (this.toggleSwitch.checked) {
+      this.currentTheme = "dark";
       darkreader.enable({
         brightness: 100,
         contrast: 90,
         sepia: 10,
       });
+    } else {
+      this.currentTheme = "light";
+      darkreader.disable();
     }
-  }
-}
-
-/**
- * [Toggle between light and dark mode.]
- * @function toggleDarkReader
- */
-function toggleDarkReader() {
-  if (toggleSwitch.checked === true) {
-    document.documentElement.setAttribute("data-theme", "dark");
-    localStorage.setItem("theme", "dark");
-    darkreader.enable({
-      brightness: 100,
-      contrast: 90,
-      sepia: 10,
-    });
-  } else {
-    document.documentElement.setAttribute("data-theme", "light");
-    localStorage.setItem("theme", "light");
-    darkreader.disable();
+    document.documentElement.setAttribute("data-theme", this.currentTheme);
+    window.localStorage.setItem("theme", this.currentTheme);
   }
 }
 
@@ -59,9 +56,4 @@ function registerServiceWorker() {
 }
 
 // noinspection JSUnusedGlobalSymbols
-module.exports = {
-  toggleDarkReader,
-  initTheme,
-  registerServiceWorker,
-  toggleSwitch,
-};
+module.exports = { registerServiceWorker, DarkMode };

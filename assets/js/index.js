@@ -13,12 +13,7 @@ require("bootstrap4-toggle");
 require("darkreader");
 const hljs = require("highlight.js/lib/core");
 const $ = require("jquery");
-const {
-  toggleDarkReader,
-  initTheme,
-  toggleSwitch,
-  registerServiceWorker,
-} = require("./main");
+const { registerServiceWorker, DarkMode } = require("./main");
 const {
   setMessageCount,
   setTaskProgress,
@@ -34,15 +29,14 @@ hljs.registerLanguage("python", require("highlight.js/lib/languages/python"));
 
 hljs.highlightAll();
 
-initTheme();
+const darkMode = new DarkMode();
 
 registerServiceWorker();
 
-// default to false if no saved state
-toggleSwitch.addEventListener("change", toggleDarkReader, false);
+darkMode.addToggleListener();
 
 module.exports = {
-  toggleDarkReader,
+  darkMode,
   setMessageCount,
   setTaskProgress,
   getMessageCount,
