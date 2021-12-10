@@ -20,6 +20,7 @@
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/.lh" />
       <excludeFolder url="file://$MODULE_DIR$/app/static" />
+      <excludeFolder url="file://$MODULE_DIR$/coverage" />
     </content>
     <orderEntry type="jdk" jdkName="Poetry (jss)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
