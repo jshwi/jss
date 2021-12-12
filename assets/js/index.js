@@ -19,8 +19,6 @@ const {
   setTaskProgress,
   initTheme,
   toggleSwitch,
-  moment,
-  flaskMomentRenderAll,
   registerServiceWorker,
 } = require("./main");
 
@@ -39,14 +37,9 @@ registerServiceWorker();
 // default to false if no saved state
 toggleSwitch.addEventListener("change", toggleDarkReader, false);
 
-moment.locale("en");
-
-document.addEventListener("DOMContentLoaded", flaskMomentRenderAll);
-
 module.exports = {
   toggleDarkReader,
   setMessageCount,
   setTaskProgress,
-  moment,
   $,
 };

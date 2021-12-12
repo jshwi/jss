@@ -17,7 +17,7 @@ this is the base template for pages displaying posts #}
                         {{ post.author.username }}
                     </a>
                     <br>
-                    {{ dom_macros_moment(post.created) }}
+                    {{ moment(post.created).fromNow() }}
                 </div>
                 {% if current_user.id == post.user_id %}
                     <a class="action" href="{{ url_for("post.update", id=post.id) }}">Edit</a>

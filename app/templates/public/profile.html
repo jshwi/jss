@@ -18,7 +18,7 @@
 
     {# when user"s profile has last been seen #}
     {% if user.last_seen %}
-        <p>Last seen on: {{ dom_macros_moment(user.last_seen) }}</p>
+        <p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>
     {% endif %}
 
     {# user can follow and unfollow user if they are logged in #}

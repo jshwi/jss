@@ -58,6 +58,9 @@
 
 {# additional JavaScript functionality #}
 {% block scripts %}
+    {# render user's timezone client side #}
+    {{ moment.include_moment() }}
+
     {# import JavaScript functions #}
     <script src="{{ static_url_for("static", filename="build/main_js.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
 

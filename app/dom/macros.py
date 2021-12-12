@@ -11,13 +11,13 @@ are registered into context processor they will be wrapped with
 ``Markup``.
 """
 # pylint: disable=invalid-name
-from datetime import datetime
 from typing import List, Optional
 
 from dominate import tags
 from dominate.tags import html_tag
 from flask import get_flashed_messages, url_for
 from flask_login import current_user
+from flask_moment import moment
 from markupsafe import Markup
 
 from app.utils.models import Post
@@ -31,22 +31,6 @@ DATETIME_FMT = "h:mmA DD/MM/YYYY"
 _REF = "_".join(__name__.split(".")[1:])
 
 macros = RegisterContext(_REF, Markup)
-
-
-@macros.register
-def moment(timestamp: datetime) -> html_tag:
-    """Render timestamps with ``moment.js``.
-
-    :param timestamp: ``datetime`` object.
-    :return: ``<span>...</span>`` containing ``moment.js`` timestamp.
-    """
-    return tags.span(
-        cls="flask-moment",
-        data_format=DATETIME_FMT,
-        data_function="format",
-        data_refresh="0",
-        data_timestamp=str(timestamp),
-    )
 
 
 @macros.register
@@ -174,8 +158,8 @@ def post_times(post: Post) -> html_tag:
     """
     p = tags.p(cls="small")
     p.add("Posted: ")
-    p.add(moment(post.created))
+    p.add(moment(post.created).fromNow())
     if post.edited is not None:
-        p.add(tags.br(), "Edited: ", moment(post.edited))
+        p.add(tags.br(), "Edited: ", moment(post.edited).fromNow())
 
     return p
