@@ -3,31 +3,25 @@
  * =======
  * [Sourced functions for HTML scripts.]
  */
-const currentTheme = localStorage.getItem("theme");
+const currentTheme = window.localStorage.getItem("theme");
 const toggleSwitch = document.querySelector('input[type="checkbox"]');
 const darkreader = require("darkreader");
-
-const hljs = require("highlight.js/lib/core");
+const $ = require("jquery");
 const moment = require("moment");
-
-hljs.registerLanguage("python", require("highlight.js/lib/languages/python"));
-
-hljs.highlightAll();
-
-// noinspection JSUnresolvedFunction
-darkreader.setFetchMethod(window.fetch);
 
 // trigger on import
 // determine the saved state (if there is one)
-if (currentTheme) {
-  document.documentElement.setAttribute("data-theme", currentTheme);
-  if (currentTheme === "dark") {
-    toggleSwitch.checked = true;
-    darkreader.enable({
-      brightness: 100,
-      contrast: 90,
-      sepia: 10,
-    });
+function initTheme() {
+  if (currentTheme) {
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    if (currentTheme === "dark") {
+      toggleSwitch.checked = true;
+      darkreader.enable({
+        brightness: 100,
+        contrast: 90,
+        sepia: 10,
+      });
+    }
   }
 }
 
@@ -76,23 +70,20 @@ function toggleDarkReader() {
   }
 }
 
-// default to false if no saved state
-toggleSwitch.addEventListener("change", toggleDarkReader, false);
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/static/build/service-worker.js")
-      .then((registration) => {
-        console.log("SW registered: ", registration);
-      })
-      .catch((registrationError) => {
-        console.log("SW registration failed: ", registrationError);
-      });
-  });
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/static/build/service-worker.js")
+        .then((registration) => {
+          console.log("SW registered: ", registration);
+        })
+        .catch((registrationError) => {
+          console.log("SW registration failed: ", registrationError);
+        });
+    });
+  }
 }
-
-moment.locale("en");
 
 function flaskMomentRender(elem) {
   const timestamp = moment(elem.dataset.timestamp);
@@ -126,7 +117,14 @@ function flaskMomentRenderAll() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", flaskMomentRenderAll);
-
 // noinspection JSUnusedGlobalSymbols
-module.exports = { toggleDarkReader, setMessageCount, setTaskProgress };
+module.exports = {
+  toggleDarkReader,
+  setMessageCount,
+  setTaskProgress,
+  initTheme,
+  registerServiceWorker,
+  moment,
+  flaskMomentRenderAll,
+  toggleSwitch,
+};

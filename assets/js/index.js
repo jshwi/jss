@@ -11,18 +11,37 @@ require("bootstrap");
 require("bootstrap-icons/font/bootstrap-icons.css");
 require("bootstrap4-toggle");
 require("darkreader");
-require("highlight.js");
+const hljs = require("highlight.js/lib/core");
 const $ = require("jquery");
-const moment = require("moment");
 const {
   toggleDarkReader,
   setMessageCount,
   setTaskProgress,
+  initTheme,
+  toggleSwitch,
+  moment,
+  flaskMomentRenderAll,
+  registerServiceWorker,
 } = require("./main");
 
 // noinspection JSUnresolvedFunction
 require.context("../img", true, /.*/);
 require("../xml/browserconfig.xml");
+
+hljs.registerLanguage("python", require("highlight.js/lib/languages/python"));
+
+hljs.highlightAll();
+
+initTheme();
+
+registerServiceWorker();
+
+// default to false if no saved state
+toggleSwitch.addEventListener("change", toggleDarkReader, false);
+
+moment.locale("en");
+
+document.addEventListener("DOMContentLoaded", flaskMomentRenderAll);
 
 module.exports = {
   toggleDarkReader,
