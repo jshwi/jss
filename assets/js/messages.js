@@ -1,5 +1,21 @@
 const $ = require("jquery");
-// noinspection JSUnusedGlobalSymbols
+
+class Tracker {
+  constructor(int) {
+    this.val = int;
+  }
+
+  setVal(int) {
+    this.val = int;
+  }
+
+  getVal() {
+    return this.val;
+  }
+}
+
+const tracker = new Tracker(0);
+
 /**
  * [Set the count for number of messages held.]
  * @function setMessageCount
@@ -7,48 +23,65 @@ const $ = require("jquery");
  */
 // eslint-disable-next-line no-unused-vars
 function setMessageCount(n) {
-  const messageCount = $("#message_count");
-  messageCount.text(n);
-  messageCount.css("visibility", n ? "visible" : "hidden");
+  const count = $("#message_count");
+  count.text(n);
+  count.css("visibility", n ? "visible" : "hidden");
 }
 
 // noinspection JSUnusedGlobalSymbols
 /**
  * [Set the percentage to show for task progress.]
  * @function setTaskProgress
- * @param {String} taskID
- * @param {String} progress
  */
-// eslint-disable-next-line no-unused-vars
-function setTaskProgress(taskID, progress) {
-  $(`#${taskID}-progress`).text(progress);
+function setTaskProgress(data) {
+  // noinspection JSUnresolvedVariable
+  $(`#${data.task_id}-progress`).text(data.progress);
 }
 
-function getMessageCount(url) {
-  $(() => {
-    let since = 0;
-    setInterval(() => {
-      $.ajax(`${url}?since${since}`).done((notifications) => {
-        for (let i = 0; i < notifications.length; i += 1) {
-          switch (notifications[i].name) {
-            case "unread_message_count":
-              setMessageCount(notifications[i].data);
-              break;
-            case "task_progress":
-              // noinspection JSUnresolvedVariable
-              setTaskProgress(
-                notifications[i].data.task_id,
-                notifications[i].data.progress
-              );
-              break;
-            default:
-              break;
-          }
-          since = notifications[i].timestamp;
-        }
-      });
-    }, 10000);
+function whenDone(notifications) {
+  Object.keys(notifications).forEach((i) => {
+    const obj = notifications[i];
+    switch (obj.name) {
+      case "unread_message_count":
+        setMessageCount(obj.data);
+        break;
+      case "task_progress":
+        // noinspection JSUnresolvedVariable
+        setTaskProgress(obj.data);
+        break;
+      default:
+        break;
+    }
+    tracker.setVal(obj.timestamp);
   });
 }
 
-module.exports = { setTaskProgress, setMessageCount, getMessageCount };
+/* istanbul ignore next */
+function ajax(url) {
+  $.ajax(`${url}?since${tracker.getVal()}`).done((notifications) => {
+    whenDone(notifications);
+  });
+}
+
+/* istanbul ignore next */
+function getCount(url) {
+  tracker.setVal(0);
+  setInterval(() => {
+    ajax(url);
+  }, 10000);
+}
+
+/* istanbul ignore next */
+function getMessageCount(url) {
+  $(() => {
+    getCount(url);
+  });
+}
+
+module.exports = {
+  setTaskProgress,
+  setMessageCount,
+  getMessageCount,
+  whenDone,
+  tracker,
+};

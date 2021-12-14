@@ -23,6 +23,7 @@ const {
   setMessageCount,
   setTaskProgress,
   getMessageCount,
+  whenDone,
 } = require("./messages");
 
 // noinspection JSUnresolvedFunction
@@ -46,4 +47,5 @@ module.exports = {
   setTaskProgress,
   getMessageCount,
   $,
+  whenDone,
 };
