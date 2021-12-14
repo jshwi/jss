@@ -12,6 +12,7 @@ require("bootstrap-icons/font/bootstrap-icons.css");
 require("bootstrap4-toggle");
 require("darkreader");
 const hljs = require("highlight.js/lib/core");
+const hljsPython = require("highlight.js/lib/languages/python");
 const $ = require("jquery");
 const {
   setMessageCount,
@@ -26,7 +27,7 @@ const registerServiceWorker = require("./serviceWorker");
 require.context("../img", true, /.*/);
 require("../xml/browserconfig.xml");
 
-hljs.registerLanguage("python", require("highlight.js/lib/languages/python"));
+hljs.registerLanguage("python", hljsPython);
 
 hljs.highlightAll();
 
