@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.13.4...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Updates CSP
 
 [1.13.4](https://github.com/jshwi/jss/releases/tag/v1.13.4) - 2022-02-26
 ------------------------------------------------------------------------

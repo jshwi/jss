@@ -7,30 +7,21 @@ from flask import Flask
 from app.extensions import talisman as t
 from app.utils.csp import ContentSecurityPolicy, CSPType
 
+_SELF = "'self'"
+_JSDELIVR = "cdn.jsdelivr.net"
+_CLOUDFLARE = "cdnjs.cloudflare.com"
+_UNSAFE_INLINE = "'unsafe-inline'"
+_GRAVATAR = "gravatar.com"
+_FONTS_GOOGLE_APIS = "fonts.googleapis.com"
+_DATA = "data:"
+_FONTS_GSTATIC = "fonts.gstatic.com"
+
 _CSP: CSPType = {
-    "default-src": ["'self'", "cdn.jsdelivr.net"],
-    "style-src-elem": [
-        "'self'",
-        "cdnjs.cloudflare.com",
-        "cdn.jsdelivr.net",
-        "fonts.googleapis.com",
-        "'unsafe-inline'",
-    ],
-    "script-src-elem": [
-        "'self'",
-        "cdnjs.cloudflare.com",
-        "cdn.jsdelivr.net",
-        "'unsafe-inline'",
-    ],
-    "img-src": ["'self'", "gravatar.com", "data:"],
-    "font-src": [
-        "'self'",
-        "cdnjs.cloudflare.com",
-        "cdn.jsdelivr.net",
-        "fonts.gstatic.com",
-    ],
-    "script-src-attr": ["'self'", "'unsafe-inline'"],
-    "connect-src": ["'self'", "fonts.googleapis.com", "cdn.jsdelivr.net"],
+    "default-src": [_SELF],
+    "style-src": [_SELF, _UNSAFE_INLINE],
+    "script-src-elem": [_SELF, _UNSAFE_INLINE, _CLOUDFLARE],
+    "img-src": [_SELF, _GRAVATAR, _DATA],
+    "script-src": [_SELF, _UNSAFE_INLINE],
 }
 
 
