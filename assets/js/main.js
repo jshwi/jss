@@ -3,13 +3,13 @@
  * =======
  * [Sourced functions for HTML scripts.]
  */
-const currentTheme = window.localStorage.getItem("theme");
 const toggleSwitch = document.querySelector('input[type="checkbox"]');
 const darkreader = require("darkreader");
 
 // trigger on import
 // determine the saved state (if there is one)
 function initTheme() {
+  const currentTheme = window.localStorage.getItem("theme");
   if (currentTheme) {
     document.documentElement.setAttribute("data-theme", currentTheme);
     if (currentTheme === "dark") {
