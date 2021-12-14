@@ -27,15 +27,14 @@ const registerServiceWorker = require("./serviceWorker");
 require.context("../img", true, /.*/);
 require("../xml/browserconfig.xml");
 
-hljs.registerLanguage("python", hljsPython);
-
-hljs.highlightAll();
-
 const darkMode = new DarkMode();
 
-registerServiceWorker();
-
-darkMode.addToggleListener();
+document.addEventListener("DOMContentLoaded", () => {
+  hljs.registerLanguage("python", hljsPython);
+  hljs.highlightAll();
+  registerServiceWorker();
+  darkMode.addToggleListener();
+});
 
 module.exports = {
   darkMode,
