@@ -103,7 +103,7 @@ python-dotenv==0.19.2
 pytz==2021.3
 readme-renderer==32.0
 readmetester==1.0.1
-redis==4.0.2
+redis==4.1.0
 regex==2021.11.10
 requests-toolbelt==0.9.1
 requests==2.26.0
