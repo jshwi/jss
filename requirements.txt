@@ -141,5 +141,5 @@ wcwidth==0.2.5
 webencodings==0.5.1
 werkzeug==2.0.2
 wrapt==1.13.3
-wtforms==3.0.0
+wtforms==3.0.1
 zipp==3.6.0
