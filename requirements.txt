@@ -3,7 +3,7 @@ alabaster==0.7.12
 alembic==1.7.5
 appdirs==1.4.4
 astor==0.8.1
-astroid==2.9.0
+astroid==2.9.2
 attrs==21.4.0
 babel==2.9.1
 backcall==0.2.0
@@ -62,7 +62,7 @@ itsdangerous==2.0.1
 jedi==0.18.1
 jeepney==0.7.1
 jinja2==3.0.3
-keyring==23.4.0
+keyring==23.5.0
 lazy-object-proxy==1.7.1
 mako==1.1.6
 markupsafe==2.0.1
@@ -83,7 +83,7 @@ pkginfo==1.8.2
 platformdirs==2.4.1
 pluggy==1.0.0
 prompt-toolkit==3.0.24
-psycopg2==2.9.2
+psycopg2==2.9.3
 ptyprocess==0.7.0
 py==1.11.0
 pyaud==3.3.0
@@ -105,7 +105,7 @@ readme-renderer==32.0
 readmetester==1.0.1
 redis==4.1.0
 requests-toolbelt==0.9.1
-requests==2.26.0
+requests==2.27.0
 restview==2.9.3
 rfc3986==1.5.0
 rq==1.10.1
@@ -141,4 +141,4 @@ webencodings==0.5.1
 werkzeug==2.0.2
 wrapt==1.13.3
 wtforms==3.0.1
-zipp==3.6.0
+zipp==3.7.0
