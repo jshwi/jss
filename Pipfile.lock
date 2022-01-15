@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3d14af24bf8c673b72f9afd1de35fc932b901a22b139aa951f660041ed54756d"
+            "sha256": "01a2307acd962567ae36290f74074ab996eb95c06ef7a2bb4d95f9bd29652613"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -48,11 +48,11 @@
         },
         "bootstrap-flask": {
             "hashes": [
-                "sha256:1c47a35b26b2ea2eaa0326b416c557aee77c7802f188055a8cfc4520a5cfdba2",
-                "sha256:74a333756e997f2bb7d2d39a080eb2d1b4fd9da225f6cd5b56f0488ae5fe48ed"
+                "sha256:a097ea7cdb219648253cde95ab36aedcf929459881fff476edc699e2c0f6a654",
+                "sha256:d2d18931720f7b4440d99c179c89772ca2f10d54fdff955a22f2925ff44ef133"
             ],
             "index": "pypi",
-            "version": "==1.8.0"
+            "version": "==2.0.0"
         },
         "brotli": {
             "hashes": [
@@ -867,11 +867,11 @@
         },
         "bootstrap-flask": {
             "hashes": [
-                "sha256:1c47a35b26b2ea2eaa0326b416c557aee77c7802f188055a8cfc4520a5cfdba2",
-                "sha256:74a333756e997f2bb7d2d39a080eb2d1b4fd9da225f6cd5b56f0488ae5fe48ed"
+                "sha256:a097ea7cdb219648253cde95ab36aedcf929459881fff476edc699e2c0f6a654",
+                "sha256:d2d18931720f7b4440d99c179c89772ca2f10d54fdff955a22f2925ff44ef133"
             ],
             "index": "pypi",
-            "version": "==1.8.0"
+            "version": "==2.0.0"
         },
         "brotli": {
             "hashes": [
