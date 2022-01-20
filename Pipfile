@@ -44,7 +44,7 @@ wtforms = "==3.0.1"
 [dev-packages]
 bump2version = "==1.0.1"
 flask-shell-ipython = "==0.4.1"
-ipython = "==8.0.0"
+ipython = "==8.0.1"
 jss = {editable = true, path = "."}
 prompt-toolkit = "==3.0.24"
 pyaud = "==3.6.0"
