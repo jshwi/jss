@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a75e6b0f1c9a2a66431b19285ade39012c7234e24f134aa3a4776e4fa7724706"
+            "sha256": "4b4efbf8a859bfb583b5d2479fd9f56523a80d26f75f9b27c11f2c5ed511442c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -568,11 +568,11 @@
         },
         "pyparsing": {
             "hashes": [
-                "sha256:04ff808a5b90911829c55c4e26f75fa5ca8a2f5f36aa3a51f68e27033341d3e4",
-                "sha256:d9bdec0013ef1eb5a84ab39a3b3868911598afa494f5faa038647101504e2b81"
+                "sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea",
+                "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.0.6"
+            "version": "==3.0.7"
         },
         "python-dotenv": {
             "hashes": [
@@ -1852,11 +1852,11 @@
         },
         "pyparsing": {
             "hashes": [
-                "sha256:04ff808a5b90911829c55c4e26f75fa5ca8a2f5f36aa3a51f68e27033341d3e4",
-                "sha256:d9bdec0013ef1eb5a84ab39a3b3868911598afa494f5faa038647101504e2b81"
+                "sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea",
+                "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.0.6"
+            "version": "==3.0.7"
         },
         "pytest": {
             "hashes": [
@@ -1961,11 +1961,11 @@
         },
         "restview": {
             "hashes": [
-                "sha256:5951aa2182e7a9aa3ab906dbd0f0d33df8fe93e66318a8689649c1228ad74cd8",
-                "sha256:ce5a56e81ccb6e2197d735501981cb9a6ffc79b63296b7db719e8c9eb9b09769"
+                "sha256:2b989610aaed2fd42da64f6cdc539cf3ee70ce370bcba872db72421ad515dd1e",
+                "sha256:9cd358c3ddf7ef82174d90a64e82e8c1b82630269cb750c166ef94bd73cf3162"
             ],
             "index": "pypi",
-            "version": "==2.9.3"
+            "version": "==3.0.0"
         },
         "rfc3986": {
             "hashes": [
