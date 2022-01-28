@@ -144,7 +144,7 @@
     "terser-webpack-plugin": "^5.2.5",
     "url-loader": "^4.1.0",
     "webpack": "^5.64.4",
-    "webpack-cli": "^4.9.1",
+    "webpack-cli": "^4.9.2",
     "webpack-pwa-manifest": "^4.3.0",
     "workbox-webpack-plugin": "^6.4.1"
   }
