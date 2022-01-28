@@ -1,14 +1,16 @@
-name: build
+name: ci
 
 on:
+  pull_request:
+
   push:
     branches:
       - master
 
 jobs:
-  build:
+  ci:
     name: ${{ matrix.os }}-python${{ matrix.python-version }}-node@${{ matrix.node-version }}
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     env:
       PYAUD_GH_NAME: jshwi
       PYAUD_GH_EMAIL: stephen@jshwisolutions.com
@@ -18,14 +20,17 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
         python-version: [3.8]
+        os: [ubuntu-latest]
         node-version: [16.x.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout build
+        id: checkout-build
+        uses: actions/checkout@v2
 
       - name: Setup Python
+        id: setup-python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -35,11 +40,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Update Apt
-        run: sudo apt-get update -y && sudo apt-get install zstd -y
-
       - name: Install Pipenv
-        run: python -m pip install --upgrade pip pipenv==2021.5.29 wheel
+        run: |
+          python -m pip install --upgrade pip pipenv==2021.5.29 wheel
 
       - name: Cache Pipenv
         uses: actions/cache@v2
@@ -57,12 +60,19 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      - name: Setup Pip
+      - name: Setup pipenv
+        id: setup-pipenv
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
-        run: pipenv install --dev
+        run: |
+          pipenv install --dev
 
       - name: Setup Node
-        run: npm ci --ignore-scripts
+        id: setup-node
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: |
+          npm ci --ignore-scripts
 
       - name: Audit
-        run: npm run audit
+        id: audit
+        run: |
+          npm run audit
