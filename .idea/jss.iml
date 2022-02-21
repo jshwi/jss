@@ -21,7 +21,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.lh" />
       <excludeFolder url="file://$MODULE_DIR$/app/static" />
     </content>
-    <orderEntry type="jdk" jdkName="Pipenv (jss)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Poetry (jss)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="bootstrap-icons" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
