@@ -11,7 +11,7 @@
     "test": "tests"
   },
   "scripts": {
-    "audit": "npm-run-all audit:*",
+    "audit": "npm-run-all audit:* && npm run toml:sort",
     "audit:py": "pipenv run audit --deploy --rcfile .github/pyaud.toml",
     "audit:js": "npx prettier -c . && npm run lint:js",
     "build": "npm run webpack:prod",
@@ -39,6 +39,7 @@
     "static:compile": "pipenv run static:compile",
     "test": "npm-run-all test:*",
     "test:py": "pipenv run test",
+    "toml:sort": "pipenv run toml-sort pyproject.toml --in-place --all",
     "types": "npm-run-all types:*",
     "types:py": "pipenv run typecheck",
     "webpack:dev": "NODE_ENV=development webpack --progress",
