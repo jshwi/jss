@@ -12,8 +12,8 @@
   },
   "scripts": {
     "audit": "npm-run-all audit:* && npm run toml:sort",
-    "audit:py": "pipenv run audit --deploy --rcfile .github/pyaud.toml",
     "audit:js": "npx prettier -c . && npm run lint:js",
+    "audit:py": "pipenv run audit --deploy --rcfile .github/pyaud.toml",
     "build": "npm run webpack:prod",
     "build:dev": "npm run webpack:dev",
     "clean": "pipenv run clean",
