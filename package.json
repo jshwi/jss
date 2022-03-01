@@ -114,7 +114,7 @@
     "package-lock.json"
   ],
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.0",
+    "@fortawesome/fontawesome-free": "^6.0.0",
     "@popperjs/core": "^2.9.2",
     "bootstrap": "^4.6.1",
     "bootstrap-icons": "^1.7.1",
