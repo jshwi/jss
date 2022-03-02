@@ -39,6 +39,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
       - name: Install Poetry
         run: |
@@ -52,25 +53,15 @@ jobs:
           key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: ${{ runner.os }}-poetry-
 
-      - name: Cache npm
-        uses: actions/cache@v2
-        id: npm-cache
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
+      - name: Install Node packages
+        run: |
+          npm install
 
       - name: Setup poetry
         id: setup-poetry
         if: steps.poetry-cache.outputs.cache-hit != 'true'
         run: |
           poetry install
-
-      - name: Setup Node
-        id: setup-node
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: |
-          npm ci --ignore-scripts
 
       - name: Audit
         id: audit
