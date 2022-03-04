@@ -28,7 +28,7 @@ description = "A Flask web application"
 license = "MIT"
 name = "jss"
 packages = [{ include = "app" }]
-version = "1.13.4"
+version = "1.14.0"
 
 [tool.poetry.dependencies]
 appdirs = "^1.4.4"
