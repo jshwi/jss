@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.15.0...HEAD)
 ------------------------------------------------------------------------
+### Fix
+- Reverts prior to 5039f7 as `PurgeCSSPlugin` removed valid CSS
 
 [1.15.0](https://github.com/jshwi/jss/releases/tag/v1.15.0) - 2022-03-06
 ------------------------------------------------------------------------
