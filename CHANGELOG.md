@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.15.1...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- Adds `yaml` support for fenced code
 - Adds `shell` support for fenced code
 
 [1.15.1](https://github.com/jshwi/jss/releases/tag/v1.15.1) - 2022-03-06
