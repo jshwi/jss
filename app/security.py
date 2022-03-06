@@ -22,6 +22,8 @@ _CSP: CSPType = {
     "script-src-elem": [_SELF, _UNSAFE_INLINE, _CLOUDFLARE],
     "img-src": [_SELF, _GRAVATAR, _DATA],
     "script-src": [_SELF, _UNSAFE_INLINE],
+    "font-src": [_SELF, _FONTS_GSTATIC, _DATA],
+    "connect-src": [_SELF, _FONTS_GOOGLE_APIS],
 }
 
 
