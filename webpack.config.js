@@ -99,7 +99,11 @@ module.exports = {
     new MiniCssExtractPlugin({ filename: "[name].bundle.css" }),
     new ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
     new WebpackPwaManifest(siteWebmanifest),
-    new WorkboxPlugin.GenerateSW({ clientsClaim: true, skipWaiting: true }),
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+      maximumFileSizeToCacheInBytes: 3000000,
+    }),
   ].concat(debug ? [] : ProductionPlugins),
   module: {
     rules: [
