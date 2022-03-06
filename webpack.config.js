@@ -5,6 +5,8 @@ const TerserPlugin = require("terser-webpack-plugin");
 const { DefinePlugin, ProvidePlugin } = require("webpack");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 const WorkboxPlugin = require("workbox-webpack-plugin");
+const PurgeCSSPlugin = require("purgecss-webpack-plugin");
+const glob = require("glob");
 
 const CWD = path.resolve(__dirname);
 const ASSETS = path.join(CWD, "assets");
@@ -103,6 +105,9 @@ module.exports = {
       clientsClaim: true,
       skipWaiting: true,
       maximumFileSizeToCacheInBytes: 3000000,
+    }),
+    new PurgeCSSPlugin({
+      paths: glob.sync(`${ASSETS}/**/*`, { nodir: true }),
     }),
   ].concat(debug ? [] : ProductionPlugins),
   module: {

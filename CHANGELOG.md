@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Change
 - Increases service worker precache maximum to 3000000 bytes
 
+### Fixed
+- Removes unused css from bundle
+
 ### Security
 - Updates CSP
 
