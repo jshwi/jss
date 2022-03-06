@@ -108,7 +108,7 @@ module.exports = {
         use: [{ loader: MiniCssExtractPlugin.loader }, "css-loader"],
       },
       {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.woff(2)?(\?v=\d\.\d\.\d)?$/,
         loader: "url-loader",
         options: { limit: 10000, mimetype: "application/font-woff" },
       },
