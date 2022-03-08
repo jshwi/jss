@@ -1599,7 +1599,7 @@ def test_export_posts(
         POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
     )
 
-    # running outside of `test_app's` context
+    # running outside `test_app's` context
     # noinspection PyArgumentList
     test_user = User(
         username=ADMIN_USER_USERNAME,

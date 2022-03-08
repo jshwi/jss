@@ -46,7 +46,7 @@ def export_posts(user_id: int) -> None:
         _set_task_progress(0)
         user = User.query.get(user_id)
 
-        # get all user's posts (oldest first)
+        # get all user's posts (the oldest first)
         # noinspection PyUnresolvedReferences
         posts = user.posts.order_by(Post.created.asc())
         total = posts.count()
