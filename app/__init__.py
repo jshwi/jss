@@ -41,6 +41,7 @@ from app import (
     routes,
     security,
     shell,
+    sitemap,
 )
 from app.version import __version__
 
@@ -64,6 +65,7 @@ def create_app() -> Flask:
     cli.init_app(app)
     security.init_app(app)
     lang.init_app(app)
+    sitemap.init_app()
     return app
 
 

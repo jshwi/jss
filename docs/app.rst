@@ -81,6 +81,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.sitemap
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.utils
    :members:
    :undoc-members:
