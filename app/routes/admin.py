@@ -39,6 +39,7 @@ class MyAdminIndexView(AdminIndexView):
         return super().index()
 
 
+# noinspection PyTypeChecker
 def init_app(app: Flask) -> None:
     """Add models to admin view.
 

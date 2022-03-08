@@ -26,6 +26,7 @@ def create_user(
     :param kwargs: Non-mandatory keyword arguments to pas to model.
     :return: New ``User`` object.
     """
+    # noinspection PyArgumentList
     user = User(username=username, email=email, **kwargs)
     user.set_password(password)
     db.session.add(user)

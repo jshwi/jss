@@ -114,6 +114,7 @@ def messages() -> str:
     current_user.add_notifications("unread_message_count", 0)
     db.session.commit()
     page = request.args.get("page", 1, type=int)
+    # noinspection PyUnresolvedReferences
     query = current_user.messages_received.order_by(Message.created.desc())
     posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
@@ -140,6 +141,7 @@ def notifications() -> Response:
     :return: Response containing JSON payload.
     """
     since = request.args.get("since", 0.0, type=float)
+    # noinspection PyUnresolvedReferences
     query = current_user.notifications.filter(
         Notification.timestamp > since
     ).order_by(Notification.timestamp.asc())

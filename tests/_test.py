@@ -1012,6 +1012,7 @@ def test_get_smtp_handler(
 
 def test_avatar() -> None:
     """Test generated avatar URL for expected value."""
+    # noinspection PyArgumentList
     user = User(username=ADMIN_USER_USERNAME, email=ADMIN_USER_EMAIL)
     assert user.avatar(128) == (
         "https://gravatar.com/avatar/"
@@ -1445,6 +1446,7 @@ def test_export_post(
         test_app.task_queue.enqueue.get_id = lambda: TASK_ID  # type: ignore
         monkeypatch.setattr("app.utils.models.User.is_authenticated", True)
         monkeypatch.setattr("app.utils.models.db.session.add", session_add)
+        # noinspection PyArgumentList
         user = User(
             username=user_test_object.username, email=user_test_object.email
         )
@@ -1598,6 +1600,7 @@ def test_export_posts(
     )
 
     # running outside of `test_app's` context
+    # noinspection PyArgumentList
     test_user = User(
         username=ADMIN_USER_USERNAME,
         password_hash=ADMIN_USER_PASSWORD,
