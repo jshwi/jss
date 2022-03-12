@@ -5,9 +5,9 @@ app.utils.user
 Functionality for user's of the app.
 """
 import os
+import typing as t
 from datetime import datetime
 from getpass import getpass
-from typing import Any
 
 from flask import current_app
 
@@ -16,7 +16,7 @@ from app.utils.models import User, Usernames, db
 
 
 def create_user(
-    username: str, email: str, password: str, **kwargs: Any
+    username: str, email: str, password: str, **kwargs: t.Any
 ) -> User:
     """Instantiate a new user, add user to the database, and return.
 
@@ -38,7 +38,7 @@ def create_user(
 
 
 def create_user_override(
-    username: str, email: str, password: str, **kwargs: Any
+    username: str, email: str, password: str, **kwargs: t.Any
 ) -> User:
     """Create a new user and confirm them automatically.
 

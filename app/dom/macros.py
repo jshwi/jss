@@ -11,7 +11,7 @@ are registered into context processor they will be wrapped with
 ``Markup``.
 """
 # pylint: disable=invalid-name
-from typing import List, Optional
+import typing as t
 
 from dominate import tags
 from dominate.tags import html_tag
@@ -40,7 +40,7 @@ def version_dropdown(post: Post) -> html_tag:
     :param post: Post ORM object of posts with version history.
     :return: ``<div>...</div>`` dropdown as ``html_tag`` object.
     """
-    versions: List[Post] = post.versions.all()
+    versions: t.List[Post] = post.versions.all()
     div = tags.div(cls="dropdown")
     a = div.add(
         tags.a(href="#", cls="dropdown-toggle", data_toggle="dropdown")
@@ -111,7 +111,7 @@ def task_progress() -> html_tag:
 
 @macros.register
 def post_footer_nav(
-    prev_url: Optional[str], next_url: Optional[str]
+    prev_url: t.Optional[str], next_url: t.Optional[str]
 ) -> html_tag:
     """Bottom navbar for newer and older post navigation.
 

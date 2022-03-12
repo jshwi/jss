@@ -2,7 +2,7 @@
 app.routes.auth
 ===============
 """
-from typing import Union
+import typing as t
 
 from flask import Blueprint, flash, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
@@ -29,7 +29,7 @@ blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @blueprint.route("/register", methods=["GET", "POST"])
-def register() -> Union[str, Response]:
+def register() -> t.Union[str, Response]:
     """Register a new user account.
 
     When the user visits the /auth/register URL the register view will
@@ -66,7 +66,7 @@ def register() -> Union[str, Response]:
 
 
 @blueprint.route("/login", methods=["GET", "POST"])
-def login() -> Union[str, Response]:
+def login() -> t.Union[str, Response]:
     """Log in to an existing account.
 
     The user is queried first and stored in a variable for use later
@@ -133,7 +133,7 @@ def unconfirmed() -> str:
 
 
 @blueprint.route("/request_password_reset", methods=["GET", "POST"])
-def request_password_reset() -> Union[str, Response]:
+def request_password_reset() -> t.Union[str, Response]:
     """Allow user to reset their password.
 
     Once the request password form is filled in with the user's email
@@ -169,7 +169,7 @@ def request_password_reset() -> Union[str, Response]:
 
 
 @blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
-def reset_password(token: str) -> Union[str, Response]:
+def reset_password(token: str) -> t.Union[str, Response]:
     """This route contains the token securely sent to the user's inbox.
 
     When the token is decrypted, it will return the user's email address

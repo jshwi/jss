@@ -2,9 +2,10 @@
 app.dom.renderers
 =================
 """
+import typing as t
+
 # pylint: disable=invalid-name,too-few-public-methods
 from hashlib import sha1
-from typing import Any, List, Optional
 
 from dominate import tags
 from dominate.tags import html_tag
@@ -68,7 +69,7 @@ class BadgedView(IconView):
         count: int,
         badge: html_tag,
         endpoint: str,
-        **kwargs: Any,
+        **kwargs: t.Any,
     ) -> None:
         super().__init__(text, endpoint, **kwargs)
         self.count = count
@@ -117,9 +118,9 @@ class Navbar(NavigationItem):  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         title: View,
-        header: List[NavigationItem] = None,
-        items: List[NavigationItem] = None,
-        right_items: List[NavigationItem] = None,
+        header: t.List[NavigationItem] = None,
+        items: t.List[NavigationItem] = None,
+        right_items: t.List[NavigationItem] = None,
     ) -> None:
         self.title = title
         self.header = header or []
@@ -130,7 +131,7 @@ class Navbar(NavigationItem):  # pylint: disable=too-few-public-methods
 class NavbarRenderer(Visitor):
     """Rules for rendering the navbar HTML."""
 
-    def __init__(self, html5: bool = True, id: Optional[int] = None):
+    def __init__(self, html5: bool = True, id: t.Optional[int] = None):
         self.html5 = html5
         self._in_dropdown = False
         self.id = id

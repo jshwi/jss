@@ -4,7 +4,7 @@ app.dom.redirect
 
 Frequently used redirects.
 """
-from typing import Any
+import typing as t
 
 from flask import redirect, url_for
 from werkzeug import Response
@@ -19,7 +19,7 @@ class _Redirect:
         return cls.__name__.lower()
 
     @classmethod
-    def redirect(cls, target: str, **kwargs: Any) -> Response:
+    def redirect(cls, target: str, **kwargs: t.Any) -> Response:
         """Response object leading to target route.
 
         :param target: Target route.

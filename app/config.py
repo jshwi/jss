@@ -7,8 +7,8 @@ https://12factor.net/config:
 """
 # pylint: disable=too-many-public-methods,invalid-name
 import datetime
+import typing as t
 from pathlib import Path
-from typing import Dict, List, Optional, Union
 
 import tomli
 from environs import Env
@@ -38,12 +38,12 @@ class Config:
         return env.bool("TESTING", default=self.ENV == "testing")
 
     @property
-    def DATABASE_URL(self) -> Optional[str]:
+    def DATABASE_URL(self) -> t.Optional[str]:
         """Database location."""
         return env.str("DATABASE_URL", default=None)
 
     @property
-    def SECRET_KEY(self) -> Optional[str]:
+    def SECRET_KEY(self) -> t.Optional[str]:
         """Value is not public."""
         return env.str("SECRET_KEY", default=None)
 
@@ -68,7 +68,7 @@ class Config:
         return env.bool("DEBUG_TB_INTERCEPT_REDIRECTS", default=False)
 
     @property
-    def FLASK_STATIC_DIGEST_HOST_URL(self) -> Optional[str]:
+    def FLASK_STATIC_DIGEST_HOST_URL(self) -> t.Optional[str]:
         """Set to a value such as https://cdn.example.com.
 
         Prefix your static path with this URL. This would be useful if
@@ -78,7 +78,7 @@ class Config:
         return env.str("FLASK_STATIC_DIGEST_HOST_URL", default=None)
 
     @property
-    def FLASK_STATIC_DIGEST_BLACKLIST_FILTER(self) -> List[str]:
+    def FLASK_STATIC_DIGEST_BLACKLIST_FILTER(self) -> t.List[str]:
         """Do not md5 tag added extensions.
 
         eg: [".htm", ".html", ".txt"]. Make sure to include the ".".
@@ -109,7 +109,7 @@ class Config:
         return env.bool("SQlALCHEMY_TRACK_MODIFICATIONS", default=False)
 
     @property
-    def DEFAULT_MAIL_SENDER(self) -> Optional[str]:
+    def DEFAULT_MAIL_SENDER(self) -> t.Optional[str]:
         """Default mail sender."""
         return env.str("DEFAULT_MAIL_SENDER", default=None)
 
@@ -119,7 +119,7 @@ class Config:
         return env.str("MAIL_SUBJECT_PREFIX", default="")
 
     @property
-    def ADMINS(self) -> Optional[List[str]]:
+    def ADMINS(self) -> t.Optional[t.List[str]]:
         """List of web admins."""
         return env.list("ADMINS", default=[])
 
@@ -134,7 +134,7 @@ class Config:
         return env.str("WTF_CSRF_SECRET_KEY", self.SECRET_KEY)
 
     @property
-    def SECURITY_PASSWORD_SALT(self) -> Optional[str]:
+    def SECURITY_PASSWORD_SALT(self) -> t.Optional[str]:
         """Combined with the unique salt generated for each password."""
         return env.str("SECURITY_PASSWORD_SALT", default=self.SECRET_KEY)
 
@@ -164,12 +164,12 @@ class Config:
         return env.bool("MAIL_DEBUG", default=self.DEBUG)
 
     @property
-    def MAIL_USERNAME(self) -> Optional[str]:
+    def MAIL_USERNAME(self) -> t.Optional[str]:
         """Username of sender."""
         return env.str("MAIL_USERNAME", default=None)
 
     @property
-    def MAIL_PASSWORD(self) -> Optional[str]:
+    def MAIL_PASSWORD(self) -> t.Optional[str]:
         """Password of sender."""
         return env.str("MAIL_PASSWORD", default=None)
 
@@ -184,7 +184,7 @@ class Config:
         return env.str("REDIS_URL", default="redis://")
 
     @property
-    def RESERVED_USERNAMES(self) -> List[str]:
+    def RESERVED_USERNAMES(self) -> t.List[str]:
         """List of names that cannot be registered the standard way."""
         return env.list("RESERVED_USERNAMES", default=[])
 
@@ -210,7 +210,7 @@ class Config:
         )
 
     @property
-    def COPYRIGHT(self) -> Optional[str]:
+    def COPYRIGHT(self) -> t.Optional[str]:
         """Return the copyright line from LICENSE else None."""
         declaration = None
         if self.LICENSE.is_file():
@@ -316,7 +316,7 @@ class Config:
         return env.str("PREFERRED_URL_SCHEME", default="https")
 
     @property
-    def CSP(self) -> Dict[str, Union[str, List[str]]]:
+    def CSP(self) -> t.Dict[str, t.Union[str, t.List[str]]]:
         """Content Security Policy."""
         return env.dict("CSP", default={})
 

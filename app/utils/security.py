@@ -5,8 +5,8 @@ app.utils.security
 Define app's security functionality.
 """
 import functools
+import typing as t
 from time import time
-from typing import Any, Callable, Union
 
 import jwt
 from flask import current_app, redirect, url_for
@@ -18,7 +18,7 @@ from app.extensions import login_manager
 from app.utils.models import User
 
 
-def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
+def admin_required(view: t.Callable[..., t.Any]) -> t.Callable[..., t.Any]:
     """Handle views that require an admin be signed in.
 
     Admin needs to be logged in to create, edit, and delete posts.
@@ -32,7 +32,7 @@ def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
     """
 
     @functools.wraps(view)
-    def _wrapped_view(*args: Any, **kwargs: Any) -> Response:
+    def _wrapped_view(*args: t.Any, **kwargs: t.Any) -> Response:
         if not current_user.admin:
             return login_manager.unauthorized()
 
@@ -41,7 +41,9 @@ def admin_required(view: Callable[..., Any]) -> Callable[..., Any]:
     return _wrapped_view
 
 
-def authorization_required(view: Callable[..., Any]) -> Callable[..., Any]:
+def authorization_required(
+    view: t.Callable[..., t.Any]
+) -> t.Callable[..., t.Any]:
     """Handle views that require an authorized user be signed in.
 
     The new function checks if an authorized user is loaded and returns
@@ -53,7 +55,7 @@ def authorization_required(view: Callable[..., Any]) -> Callable[..., Any]:
     """
 
     @functools.wraps(view)
-    def _wrapped_view(*args: Any, **kwargs: Any) -> Response:
+    def _wrapped_view(*args: t.Any, **kwargs: t.Any) -> Response:
         if not current_user.authorized:
             return login_manager.unauthorized()
 
@@ -62,7 +64,9 @@ def authorization_required(view: Callable[..., Any]) -> Callable[..., Any]:
     return _wrapped_view
 
 
-def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
+def confirmation_required(
+    view: t.Callable[..., t.Any]
+) -> t.Callable[..., t.Any]:
     """Handle views that require a verified logged-in user.
 
     The new function checks if a user is confirmed or not and redirects
@@ -74,7 +78,7 @@ def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
     """
 
     @functools.wraps(view)
-    def _wrapped_view(*args: Any, **kwargs: Any) -> Union[str, Response]:
+    def _wrapped_view(*args: t.Any, **kwargs: t.Any) -> t.Union[str, Response]:
         if not current_user.confirmed:
             return redirect(url_for("auth.unconfirmed"))
 
@@ -83,7 +87,7 @@ def confirmation_required(view: Callable[..., Any]) -> Callable[..., Any]:
     return _wrapped_view
 
 
-def generate_confirmation_token(email: str) -> Union[str, bytes]:
+def generate_confirmation_token(email: str) -> t.Union[str, bytes]:
     """Generate unique token for verifying new user's email.
 
     :param email: Email of recipient.

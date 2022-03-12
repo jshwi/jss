@@ -2,8 +2,8 @@
 app.routes.post
 ===============
 """
+import typing as t
 from datetime import datetime
-from typing import Union
 
 from flask import Blueprint, render_template, request
 from flask_login import current_user, login_required
@@ -20,7 +20,7 @@ blueprint = Blueprint("post", __name__, url_prefix="/post")
 @blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 @authorization_required
-def create() -> Union[str, Response]:
+def create() -> t.Union[str, Response]:
     """Create a post.
 
     The decorator will ensure that the user is logged in to visit this
@@ -46,7 +46,7 @@ def create() -> Union[str, Response]:
 
 
 @blueprint.route("/<int:id>", methods=["GET", "POST"])
-def read(id: int) -> Union[str, Response]:
+def read(id: int) -> t.Union[str, Response]:
     """Render post page for selected post ID.
 
     :param id: ID of post to display full page on.
@@ -60,7 +60,7 @@ def read(id: int) -> Union[str, Response]:
 @blueprint.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
 @authorization_required
-def update(id: int) -> Union[str, Response]:
+def update(id: int) -> t.Union[str, Response]:
     """Update post that corresponds to the provided post ID.
 
     :param id: The post's ID.

@@ -8,8 +8,8 @@ import fnmatch
 import functools
 import json
 import logging
+import typing as t
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
 
 import pytest
 from dominate import tags
@@ -527,7 +527,7 @@ def test_send_mail(test_app: Flask, sync: bool) -> None:
 def test_create_user_no_exist(
     test_app: Flask,
     runner: FlaskCliRunner,
-    patch_getpass: Callable[[List[str]], None],
+    patch_getpass: t.Callable[[t.List[str]], None],
 ) -> None:
     """Test creation of a new user that doesn't exist.
 
@@ -603,7 +603,7 @@ def test_create_user_email_exists(
 
 @pytest.mark.usefixtures("init_db")
 def test_create_user_passwords_no_match(
-    runner: FlaskCliRunner, patch_getpass: Callable[[List[str]], None]
+    runner: FlaskCliRunner, patch_getpass: t.Callable[[t.List[str]], None]
 ) -> None:
     """Test creation of a new user where passwords don't match.
 
@@ -971,7 +971,7 @@ def test_reset_password(
 
 @pytest.mark.parametrize("use_tls,secure", [(False, None), (True, ())])
 def test_get_smtp_handler(
-    monkeypatch: pytest.MonkeyPatch, use_tls: bool, secure: Optional[tuple]
+    monkeypatch: pytest.MonkeyPatch, use_tls: bool, secure: t.Optional[tuple]
 ) -> None:
     """Test correct values passed to ``SMTPHandler``.
 
@@ -1554,7 +1554,7 @@ def test_get_tasks_in_progress_error_raised(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
     )
 
-    def _fetch(*_: Any, **__: Any) -> None:
+    def _fetch(*_: t.Any, **__: t.Any) -> None:
         raise RedisError("test Redis error")
 
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, _fetch)
@@ -1777,7 +1777,7 @@ def test_inspect_profile_no_user(
     auth: AuthActions,
     add_test_objects: AddTestObjects,
     method: str,
-    data: Dict[str, str],
+    data: t.Dict[str, str],
     bad_route: str,
 ) -> None:
     """Assert that unhandled error is not raised for user routes.
@@ -2149,9 +2149,9 @@ def test_all_routes_covered(test_app: Flask) -> None:
 def test_static_route_default(
     client: FlaskClient,
     add_test_objects: AddTestObjects,
-    interpolate_routes: Callable[..., None],
+    interpolate_routes: t.Callable[..., None],
     code: int,
-    routes: List[str],
+    routes: t.List[str],
 ):
     """Specifically test all status codes of routes.
 

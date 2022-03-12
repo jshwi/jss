@@ -2,10 +2,10 @@
 app.utils.csp
 =============
 """
-from typing import Iterator, List, MutableMapping, Optional, Union
+import typing as t
 
-CSPValType = Union[str, List[str]]
-CSPType = MutableMapping[str, CSPValType]
+CSPValType = t.Union[str, t.List[str]]
+CSPType = t.MutableMapping[str, CSPValType]
 
 
 class ContentSecurityPolicy(CSPType):  # pylint: disable=too-many-ancestors
@@ -14,7 +14,7 @@ class ContentSecurityPolicy(CSPType):  # pylint: disable=too-many-ancestors
     :param default_csp: Default CSP, before implementing configurations.
     """
 
-    def __init__(self, default_csp: Optional[CSPType] = None) -> None:
+    def __init__(self, default_csp: t.Optional[CSPType] = None) -> None:
         self._dict: CSPType = default_csp or {}
 
     def __repr__(self) -> str:
@@ -32,7 +32,7 @@ class ContentSecurityPolicy(CSPType):  # pylint: disable=too-many-ancestors
     def __getitem__(self, key: str) -> CSPValType:
         return self._dict.__getitem__(key)
 
-    def __iter__(self) -> Iterator[str]:
+    def __iter__(self) -> t.Iterator[str]:
         return self._dict.__iter__()
 
     def _format_value(self, key, theirs) -> CSPValType:

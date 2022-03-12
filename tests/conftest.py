@@ -6,8 +6,8 @@ The ``test_app`` fixture will call the factory and pass ``test_config``
 to configure the application and database for testing instead of using
 local development configuration.
 """
+import typing as t
 from pathlib import Path
-from typing import Callable, List
 
 import pytest
 from flask import Flask
@@ -93,28 +93,28 @@ def fixture_auth(client: FlaskClient) -> AuthActions:
 @pytest.fixture(name="patch_getpass")
 def fixture_patch_getpass(
     monkeypatch: pytest.MonkeyPatch,
-) -> Callable[[List[str]], None]:
+) -> t.Callable[[t.List[str]], None]:
     """Patch getpass in the cli module.
 
     :param monkeypatch: Mock patch environment and attributes.
     :return: Fixture to use this function.
     """
 
-    def _patch_getpass(inputs: List[str]) -> None:
+    def _patch_getpass(inputs: t.List[str]) -> None:
         monkeypatch.setattr("app.utils.user.getpass", lambda _: inputs.pop())
 
     return _patch_getpass
 
 
 @pytest.fixture(name="interpolate_routes")
-def fixture_interpolate_routes() -> Callable[..., None]:
+def fixture_interpolate_routes() -> t.Callable[..., None]:
     """Interpolate route fields with values for testing.
 
     :return: Function for using this fixture.
     """
 
     def _interpolate_routes(
-        routes: List[str], post_id: int, revision_id, username: str
+        routes: t.List[str], post_id: int, revision_id, username: str
     ) -> None:
         for count, route in enumerate(routes):
             routes[count] = (

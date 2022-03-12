@@ -2,8 +2,8 @@
 app.routes.user
 ===============
 """
+import typing as t
 from datetime import datetime
-from typing import Union
 
 from flask import (
     Blueprint,
@@ -38,7 +38,7 @@ def before_request() -> None:
 @blueprint.route("/profile/edit", methods=["GET", "POST"])
 @login_required
 @confirmation_required
-def edit_profile() -> Union[str, Response]:
+def edit_profile() -> t.Union[str, Response]:
     """Edit a user's personal profile page.
 
     :return: Rendered profile/edit template on GET. Response object
@@ -74,7 +74,7 @@ def edit_profile() -> Union[str, Response]:
 @blueprint.route("/send_message/<recipient>", methods=["GET", "POST"])
 @login_required
 @confirmation_required
-def send_message(recipient: str) -> Union[str, Response]:
+def send_message(recipient: str) -> t.Union[str, Response]:
     """Send message to another user.
 
     :return: Rendered user/send_message template on GET. Response object

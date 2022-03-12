@@ -8,8 +8,8 @@ Utilities for testing.
 # pylint: disable=too-many-instance-attributes,too-many-arguments
 from __future__ import annotations
 
+import typing as t
 from datetime import datetime
-from typing import Any, Dict, Tuple, Type
 
 from bs4 import BeautifulSoup
 from flask import Flask
@@ -340,10 +340,10 @@ class Recorder:
 
     def __init__(self) -> None:
         self.called = False
-        self.args: Tuple[Any, ...] = ()
-        self.kwargs: Dict[Any, Any] = {}
+        self.args: t.Tuple[t.Any, ...] = ()
+        self.kwargs: t.Dict[t.Any, t.Any] = {}
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Recorder:
+    def __call__(self, *args: t.Any, **kwargs: t.Any) -> Recorder:
         self.called = True
         self.args = args
         self.kwargs = kwargs
@@ -360,7 +360,7 @@ class AddTestObjects:
         self.test_app = test_app
 
     def _add_object(
-        self, model: Type[BaseModel], *test_objects: TestObject
+        self, model: t.Type[BaseModel], *test_objects: TestObject
     ) -> None:
         with self.test_app.app_context():
             for test_object in test_objects:

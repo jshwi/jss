@@ -8,10 +8,10 @@ Define app's database models.
 from __future__ import annotations
 
 import json
+import typing as t
 from datetime import datetime
 from hashlib import md5
 from time import time
-from typing import Any, Dict, List, Optional
 
 from flask import abort, current_app
 from flask_login import UserMixin, current_user
@@ -44,7 +44,7 @@ class BaseModel(db.Model):
 
     __abstract__ = True
 
-    def export(self) -> Dict[str, str]:
+    def export(self) -> t.Dict[str, str]:
         """Get post attributes as a dict of str objects.
 
         :return: Post as dict.
@@ -148,7 +148,7 @@ class User(UserMixin, BaseModel):
             > 0
         )
 
-    def followed_posts(self) -> List[Post]:
+    def followed_posts(self) -> t.List[Post]:
         """Get all posts that the user is following.
 
         :return: List of posts that the user is following in descending
@@ -172,7 +172,7 @@ class User(UserMixin, BaseModel):
             .count()
         )
 
-    def add_notifications(self, name: str, data: Any) -> Notification:
+    def add_notifications(self, name: str, data: t.Any) -> Notification:
         """Add user's notifications to database.
 
         :param name: Name of the database key.
@@ -188,7 +188,7 @@ class User(UserMixin, BaseModel):
         return notification
 
     def launch_task(
-        self, name: str, description: str, *args: Any, **kwargs: Any
+        self, name: str, description: str, *args: t.Any, **kwargs: t.Any
     ) -> Task:
         """Launch a user triggered task.
 
@@ -211,7 +211,7 @@ class User(UserMixin, BaseModel):
         db.session.add(task)
         return task
 
-    def get_tasks_in_progress(self) -> List[BaseQuery]:
+    def get_tasks_in_progress(self) -> t.List[BaseQuery]:
         """Get the currently running tasks triggered by user.
 
         :return: List of ``BaseQuery`` objects returned as running
@@ -219,7 +219,7 @@ class User(UserMixin, BaseModel):
         """
         return Task.query.filter_by(user=self, complete=False).all()
 
-    def get_task_in_progress(self, name: str) -> Optional[BaseQuery]:
+    def get_task_in_progress(self, name: str) -> t.Optional[BaseQuery]:
         """Return first task currently running under this user.
 
         :param name: Name of running task.
@@ -252,7 +252,7 @@ class User(UserMixin, BaseModel):
 class Post(BaseModel):
     """Database schema for posts."""
 
-    __versioned__: Dict[Any, Any] = {}
+    __versioned__: t.Dict[t.Any, t.Any] = {}
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
@@ -261,7 +261,7 @@ class Post(BaseModel):
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
     edited = db.Column(db.DateTime, default=None)
 
-    def get_version(self, index: int) -> Optional[ModelBuilder]:
+    def get_version(self, index: int) -> t.Optional[ModelBuilder]:
         """Get version of post by index.
 
         If no version can be returned a ``404: Not Found`` error will
@@ -277,7 +277,7 @@ class Post(BaseModel):
 
     @classmethod
     def get_post(
-        cls, id: int, version: Optional[int] = None, checkauthor: bool = True
+        cls, id: int, version: t.Optional[int] = None, checkauthor: bool = True
     ) -> Post:
         """Get post by post's ID or abort with ``404: Not Found.``
 
@@ -338,14 +338,14 @@ class Notification(BaseModel):
     timestamp = db.Column(db.Float, index=True, default=time)
     mapping = db.Column(db.Text)
 
-    def set_mapping(self, mapping: Dict[str, Any]) -> None:
+    def set_mapping(self, mapping: t.Dict[str, t.Any]) -> None:
         """Set ``dict`` object as ``str`` (JSON).
 
         :param mapping: Set object as str.
         """
         self.mapping = json.dumps(mapping)
 
-    def get_mapping(self) -> Dict[str, Any]:
+    def get_mapping(self) -> t.Dict[str, t.Any]:
         """Get dict representation of JSON data.
 
         :return: Dict object of notification data.
@@ -362,7 +362,7 @@ class Task(BaseModel):
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
     complete = db.Column(db.Boolean, default=False)
 
-    def get_rq_job(self) -> Optional[Job]:
+    def get_rq_job(self) -> t.Optional[Job]:
         """Get a ``Redis`` queued job.
 
         :return: RQ job if it exists, else return None.
