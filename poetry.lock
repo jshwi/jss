@@ -609,14 +609,11 @@ Flask = ">=1.0"
 
 [[package]]
 name = "flask-talisman"
-version = "0.8.1"
+version = "1.0.0"
 description = "HTTP security headers for Flask."
 category = "main"
 optional = false
 python-versions = "*"
-
-[package.dependencies]
-six = ">=1.9.0"
 
 [[package]]
 name = "flask-wtf"
@@ -1794,7 +1791,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "fb25ebd84e5523dc65c581bd5857aff8e17a4897afd5422ad910c12ee9c87d09"
+content-hash = "fc244330d1f6926e83a507ae224a19854023252e250617b832a855b54ba1cf75"
 
 [metadata.files]
 alabaster = [
@@ -2163,8 +2160,8 @@ flask-static-digest = [
     {file = "Flask-Static-Digest-0.2.1.tar.gz", hash = "sha256:7528b08a2c12dc3a828096b66ee2612f323d50be36d01f2817b767fbb1ceca6e"},
 ]
 flask-talisman = [
-    {file = "flask-talisman-0.8.1.tar.gz", hash = "sha256:5d502ec0c51bf1755a797b8cffbe4e94f8684af712ba0b56f3d80b79277ef285"},
-    {file = "flask_talisman-0.8.1-py2.py3-none-any.whl", hash = "sha256:08a25360c771f7a79d6d4db2abfa71f7422e62a714418b671d69d6a201764d05"},
+    {file = "flask-talisman-1.0.0.tar.gz", hash = "sha256:205d3de7c5ecfad667c84123f5fbe580b1f68cd9a1b058d7353cc0348e15b1bf"},
+    {file = "flask_talisman-1.0.0-py2.py3-none-any.whl", hash = "sha256:be2767b6b2bc11b36bf9a0e09ffa10622fbe0d971fd7057a843f82cd795a854b"},
 ]
 flask-wtf = [
     {file = "Flask-WTF-1.0.0.tar.gz", hash = "sha256:872fbb17b5888bfc734edbdcf45bc08fb365ca39f69d25dc752465a455517b28"},
