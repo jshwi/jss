@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app.routes.auth &#8212; jss 1.16.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphite.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../routes.html" accesskey="U">app.routes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.routes.auth</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for app.routes.auth</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">app.routes.auth</span>
+<span class="sd">===============</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">url_for</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">logout_user</span>
+<span class="kn">from</span> <span class="nn">jwt</span> <span class="kn">import</span> <span class="n">InvalidTokenError</span>
+<span class="kn">from</span> <span class="nn">werkzeug</span> <span class="kn">import</span> <span class="n">Response</span>
+
+<span class="kn">from</span> <span class="nn">app.utils</span> <span class="kn">import</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">app.utils.forms</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LoginForm</span><span class="p">,</span>
+    <span class="n">RegistrationForm</span><span class="p">,</span>
+    <span class="n">ResetPasswordForm</span><span class="p">,</span>
+    <span class="n">ResetPasswordRequestForm</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">app.utils.mail</span> <span class="kn">import</span> <span class="n">send_email</span>
+<span class="kn">from</span> <span class="nn">app.utils.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">app.utils.security</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">generate_confirmation_token</span><span class="p">,</span>
+    <span class="n">generate_reset_password_token</span><span class="p">,</span>
+    <span class="n">get_requested_reset_password_user</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">app.utils.user</span> <span class="kn">import</span> <span class="n">create_user</span>
+
+<span class="n">blueprint</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;auth&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s2">&quot;/auth&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="register"><a class="viewcode-back" href="../../../app.html#app.routes.auth.register">[docs]</a><span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/register&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Response</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Register a new user account.</span>
+
+<span class="sd">    When the user visits the /auth/register URL the register view will</span>
+<span class="sd">    return an HTML template str with a form for the user to fill out.</span>
+<span class="sd">    When the user submits the form it will validate their input and</span>
+<span class="sd">    either create the new user and go to login page or show the form</span>
+<span class="sd">    again with an error message.</span>
+
+<span class="sd">    :return: Rendered register template on GET, or POST with error.</span>
+<span class="sd">        Response object redirect to the &quot;login&quot; view on successful POST.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">RegistrationForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">create_user</span><span class="p">(</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">)</span>
+        <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">send_email</span><span class="p">(</span>
+            <span class="n">subject</span><span class="o">=</span><span class="s2">&quot;Please verify your email address&quot;</span><span class="p">,</span>
+            <span class="n">recipients</span><span class="o">=</span><span class="p">[</span><span class="n">current_user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span>
+            <span class="n">html</span><span class="o">=</span><span class="n">render_template</span><span class="p">(</span>
+                <span class="s2">&quot;email/activate.html&quot;</span><span class="p">,</span>
+                <span class="n">confirm_url</span><span class="o">=</span><span class="n">url_for</span><span class="p">(</span>
+                    <span class="s2">&quot;redirect.confirm_email&quot;</span><span class="p">,</span>
+                    <span class="n">token</span><span class="o">=</span><span class="n">generate_confirmation_token</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">email</span><span class="p">),</span>
+                    <span class="n">_external</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;A confirmation email has been sent.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="o">.</span><span class="n">Auth</span><span class="o">.</span><span class="n">unconfirmed</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/register.html&quot;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../../../app.html#app.routes.auth.login">[docs]</a><span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Response</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Log in to an existing account.</span>
+
+<span class="sd">    The user is queried first and stored in a variable for use later</span>
+<span class="sd">    use.</span>
+
+<span class="sd">    The ``check_password_hash`` function hashes the submitted password</span>
+<span class="sd">    in the same way as the stored hash and securely compares the two. If</span>
+<span class="sd">    they match the password is valid.</span>
+
+<span class="sd">    The ``session`` object is a dict that stores data across requests.</span>
+<span class="sd">    When validation succeeds the user ID is stored in a new session.</span>
+<span class="sd">    The data is then stored in a cookie that is sent to the browser and</span>
+<span class="sd">    the browser then sends it back with subsequent requests. ``Flask``</span>
+<span class="sd">    securely signs the data so that it cannot be tampered with.</span>
+
+<span class="sd">    At the beginning of each request if a user is logged in their</span>
+<span class="sd">    information should be loaded and made available to other views.</span>
+
+<span class="sd">    :return: Rendered login template on GET or failed login POST.</span>
+<span class="sd">        Response object redirect to index view on successful login POST.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">LoginForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">username</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">remember</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">remember_me</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">confirmed</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="o">.</span><span class="n">index</span><span class="p">()</span>
+
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;You have not verified your account.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="o">.</span><span class="n">Auth</span><span class="o">.</span><span class="n">unconfirmed</span><span class="p">()</span>
+
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Invalid username or password.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/login.html&quot;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logout"><a class="viewcode-back" href="../../../app.html#app.routes.auth.logout">[docs]</a><span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">logout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Log user out.</span>
+
+<span class="sd">    To log out the user&#39;s ID needs to be removed from the session.</span>
+
+<span class="sd">    The ``load_logged_in_user`` function will not load a user on</span>
+<span class="sd">    subsequent requests.</span>
+
+<span class="sd">    There is no view for this route so user will be redirected the user</span>
+<span class="sd">    to the index view.</span>
+
+<span class="sd">    :return: Response object redirect to index view.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logout_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="o">.</span><span class="n">index</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="unconfirmed"><a class="viewcode-back" href="../../../app.html#app.routes.auth.unconfirmed">[docs]</a><span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/unconfirmed&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">unconfirmed</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Unconfirmed email route.</span>
+
+<span class="sd">    :return: Rendered auth/unconfirmed template.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/unconfirmed.html&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="request_password_reset"><a class="viewcode-back" href="../../../app.html#app.routes.auth.request_password_reset">[docs]</a><span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/request_password_reset&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">request_password_reset</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Response</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Allow user to reset their password.</span>
+
+<span class="sd">    Once the request password form is filled in with the user&#39;s email</span>
+<span class="sd">    (if the email address is in the database) send an email with a link</span>
+<span class="sd">    that leads to the reset password page.</span>
+
+<span class="sd">    :return: Rendered auth/request_password_reset template on GET or</span>
+<span class="sd">        invalid email POST. Response object redirect to &quot;login&quot; view on</span>
+<span class="sd">        successful email POST.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">ResetPasswordRequestForm</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;An account with that email address doesn&#39;t exist.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">send_email</span><span class="p">(</span>
+                <span class="n">subject</span><span class="o">=</span><span class="s2">&quot;Password reset&quot;</span><span class="p">,</span>
+                <span class="n">recipients</span><span class="o">=</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">],</span>
+                <span class="n">html</span><span class="o">=</span><span class="n">render_template</span><span class="p">(</span>
+                    <span class="s2">&quot;email/reset_password.html&quot;</span><span class="p">,</span>
+                    <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                    <span class="n">token</span><span class="o">=</span><span class="n">generate_reset_password_token</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">flash</span><span class="p">(</span>
+                <span class="s2">&quot;Please check your inbox for instructions on how to reset &quot;</span>
+                <span class="s2">&quot;your password&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="o">.</span><span class="n">Auth</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/request_password_reset.html&quot;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reset_password"><a class="viewcode-back" href="../../../app.html#app.routes.auth.reset_password">[docs]</a><span class="nd">@blueprint</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/reset_password/&lt;token&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">reset_password</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Response</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;This route contains the token securely sent to the user&#39;s inbox.</span>
+
+<span class="sd">    When the token is decrypted, it will return the user&#39;s email address</span>
+<span class="sd">    (if it is valid), and the correct user will be retrieved from the</span>
+<span class="sd">    database to complete the password reset.</span>
+
+<span class="sd">    :param token: Unique token generated from user&#39;s email address.</span>
+<span class="sd">    :return: Rendered auth/reset_password template on GET or invalid</span>
+<span class="sd">        token POST. Response object redirect to index view on successful</span>
+<span class="sd">        token POST.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">ResetPasswordForm</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># error can be raised here for a bad token...</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_requested_reset_password_user</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+        <span class="c1"># ...or here if the token is redundant</span>
+        <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidTokenError</span>
+
+    <span class="k">except</span> <span class="n">InvalidTokenError</span><span class="p">:</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;The confirmation link is invalid or has expired.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="o">.</span><span class="n">index</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">flash</span><span class="p">(</span><span class="s2">&quot;Your password has been reset.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="o">.</span><span class="n">Auth</span><span class="o">.</span><span class="n">login</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;auth/reset_password.html&quot;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../app.html">app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">README</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../routes.html" >app.routes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.routes.auth</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Stephen Whitlock.
+    </div>
+  </body>
+</html>

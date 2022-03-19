@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app.dom.renderers &#8212; jss 1.16.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphite.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../dom.html" accesskey="U">app.dom</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.dom.renderers</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for app.dom.renderers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">app.html.renderers</span>
+<span class="sd">==================</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=invalid-name,too-few-public-methods</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha1</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">dominate</span> <span class="kn">import</span> <span class="n">tags</span>
+<span class="kn">from</span> <span class="nn">dominate.tags</span> <span class="kn">import</span> <span class="n">html_tag</span>
+<span class="kn">from</span> <span class="nn">flask_nav.elements</span> <span class="kn">import</span> <span class="n">NavigationItem</span><span class="p">,</span> <span class="n">Subgroup</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">visitor</span> <span class="kn">import</span> <span class="n">Visitor</span>
+
+
+<div class="viewcode-block" id="IconView"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.IconView">[docs]</a><span class="k">class</span> <span class="nc">IconView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;View which can be set to display text or icons.</span>
+
+<span class="sd">    For icons to be set to on the app needs to be configured with</span>
+<span class="sd">    ``NAVBAR_ICONS`` set to True and an icon span class needs to be</span>
+<span class="sd">    passed to the constructor.</span>
+
+<span class="sd">    :param text: The text to display as a link and also to display</span>
+<span class="sd">        hover-over information.</span>
+<span class="sd">    :param endpoint: The target of the link being rendered with</span>
+<span class="sd">        ``url_for``.</span>
+<span class="sd">    :param kwargs: Keyword arguments to pass to ``url_for``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cls</span> <span class="o">=</span> <span class="s2">&quot;nav-link &quot;</span>
+
+<div class="viewcode-block" id="IconView.set_icon"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.IconView.set_icon">[docs]</a>    <span class="k">def</span> <span class="nf">set_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Override attributes to render an icon instead of text.</span>
+
+<span class="sd">        :param icon: Icon attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">icon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cls</span> <span class="o">+=</span> <span class="s2">&quot;btn-lg btn-link&quot;</span></div></div>
+
+
+<div class="viewcode-block" id="BadgedView"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.BadgedView">[docs]</a><span class="k">class</span> <span class="nc">BadgedView</span><span class="p">(</span><span class="n">IconView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;``NavigationItem`` to be rendered into HTML.</span>
+
+<span class="sd">    Parameters outline the rules for rendering HTML through the visitor</span>
+<span class="sd">    pattern.</span>
+
+<span class="sd">    This item will be rendered into a link to a view. The link will</span>
+<span class="sd">    display a badge previewing the number of items that the view will</span>
+<span class="sd">    point the user to.</span>
+
+<span class="sd">    :param text: The text to display as a link and also to display</span>
+<span class="sd">        hover-over information.</span>
+<span class="sd">    :param count: The number to display on the link&#39;s badge. If the</span>
+<span class="sd">        count is 0 then no badge will be rendered.</span>
+<span class="sd">    :param badge: An instantiated ``Badge`` object which sets the</span>
+<span class="sd">        parameters for the badged view this object constructs.</span>
+<span class="sd">    :param endpoint: The target of the link being rendered with</span>
+<span class="sd">        ``url_for``.</span>
+<span class="sd">    :param kwargs: Keyword arguments to pass to ``url_for``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">badge</span><span class="p">:</span> <span class="n">html_tag</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">badge</span> <span class="o">=</span> <span class="n">badge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">badge</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;badge&quot;</span>
+
+<div class="viewcode-block" id="BadgedView.set_icon"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.BadgedView.set_icon">[docs]</a>    <span class="k">def</span> <span class="nf">set_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Override attributes to render an icon instead of text.</span>
+
+<span class="sd">        :param icon: Icon attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_icon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">badge</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot; badge-pill badge-primary badge-notify&quot;</span></div></div>
+
+
+<div class="viewcode-block" id="RawUrl"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.RawUrl">[docs]</a><span class="k">class</span> <span class="nc">RawUrl</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Like ``View`` only without using ``url_for``.</span>
+
+<span class="sd">    Does not need a visitor method in the navbar renderer as the visitor</span>
+<span class="sd">    class traverses the mro and this is not implemented with any</span>
+<span class="sd">    difference to its parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RawUrl.get_url"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.RawUrl.get_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Override the parent&#39;s implementation of processing the</span>
+<span class="sd">        endpoint and kwargs through ``url_for`` to only process a static</span>
+<span class="sd">        url str.</span>
+
+<span class="sd">        :return: The static url str passed to the constructor as</span>
+<span class="sd">            ``endpoint.``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span></div></div>
+
+
+<div class="viewcode-block" id="ListGroup"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.ListGroup">[docs]</a><span class="k">class</span> <span class="nc">ListGroup</span><span class="p">(</span><span class="n">Subgroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Register a subgroup of li items that are not part of dropdown.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Navbar"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.Navbar">[docs]</a><span class="k">class</span> <span class="nc">Navbar</span><span class="p">(</span><span class="n">NavigationItem</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+    <span class="sd">&quot;&quot;&quot;Navbar object parameters.</span>
+
+<span class="sd">    :param items: Items to place on the left side of the navbar.</span>
+<span class="sd">    :param right_items: Items to place on the right side of the navbar.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="n">View</span><span class="p">,</span>
+        <span class="n">header</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NavigationItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NavigationItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">right_items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NavigationItem</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">items</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_items</span> <span class="o">=</span> <span class="n">right_items</span> <span class="ow">or</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="NavbarRenderer"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.NavbarRenderer">[docs]</a><span class="k">class</span> <span class="nc">NavbarRenderer</span><span class="p">(</span><span class="n">Visitor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rules for rendering the navbar HTML.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">html5</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">html5</span> <span class="o">=</span> <span class="n">html5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_in_dropdown</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+
+<div class="viewcode-block" id="NavbarRenderer.visit_Navbar"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.NavbarRenderer.visit_Navbar">[docs]</a>    <span class="k">def</span> <span class="nf">visit_Navbar</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-locals</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Navbar</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Render HTML via ``Bootstrap`` for navbar.</span>
+
+<span class="sd">        :param node: Navbar object to add to template.</span>
+<span class="sd">        :return: Rendered HTML.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node_id</span> <span class="o">=</span> <span class="n">sha1</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">node</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">nav</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">nav</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;navbar navbar-expand-lg navbar-light bg-light&quot;</span><span class="p">)</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">nav</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;navbar-brand&quot;</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">get_url</span><span class="p">()))</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="n">ul_right</span> <span class="o">=</span> <span class="n">nav</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">ul</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;navbar-nav ml-auto navbar-right&quot;</span><span class="p">))</span>
+
+        <span class="n">toggle_dark_mode</span> <span class="o">=</span> <span class="n">ul_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">input_</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;toggle-darkreader&quot;</span><span class="p">,</span>
+                <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;toggle-darkreader&quot;</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;checkbox&quot;</span><span class="p">,</span>
+                <span class="n">data_toggle</span><span class="o">=</span><span class="s2">&quot;toggle&quot;</span><span class="p">,</span>
+                <span class="n">data_onstyle</span><span class="o">=</span><span class="s2">&quot;outline-dark&quot;</span><span class="p">,</span>
+                <span class="n">data_offstyle</span><span class="o">=</span><span class="s2">&quot;outline-light&quot;</span><span class="p">,</span>
+                <span class="n">data_style</span><span class="o">=</span><span class="s2">&quot;border&quot;</span><span class="p">,</span>
+                <span class="n">data_on</span><span class="o">=</span><span class="s2">&quot;&lt;i class=&#39;bi bi-sun&#39;&gt;&lt;/i&gt;&quot;</span><span class="p">,</span>
+                <span class="n">data_off</span><span class="o">=</span><span class="s2">&quot;&lt;i class=&#39;bi-moon&#39;&gt;&lt;/i&gt;&quot;</span><span class="p">,</span>
+                <span class="n">onchange</span><span class="o">=</span><span class="s2">&quot;window.main_js.darkMode.toggle()&quot;</span><span class="p">,</span>
+                <span class="n">data_height</span><span class="o">=</span><span class="s2">&quot;48px&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">toggle_dark_mode</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;toggle-darkreader&quot;</span><span class="p">)</span>
+
+        <span class="n">collapse_button</span> <span class="o">=</span> <span class="n">nav</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">button</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;navbar-toggler&quot;</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span><span class="p">,</span>
+                <span class="n">data_toggle</span><span class="o">=</span><span class="s2">&quot;collapse&quot;</span><span class="p">,</span>
+                <span class="n">data_target</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">aria_controls</span><span class="o">=</span><span class="s2">&quot;navbarSupported&quot;</span><span class="p">,</span>
+                <span class="n">aria_expanded</span><span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="p">,</span>
+                <span class="n">aria_label</span><span class="o">=</span><span class="s2">&quot;Toggle navigation&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">collapse_button</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="s2">&quot;Toggle navigation&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;sr-only&quot;</span><span class="p">),</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;navbar-toggler-icon&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">collapsible_div</span> <span class="o">=</span> <span class="n">nav</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;collapse navbar-collapse&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">node_id</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">collapsible_ul</span> <span class="o">=</span> <span class="n">collapsible_div</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">ul</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;navbar-nav mr-auto&quot;</span><span class="p">))</span>
+        <span class="n">collapsible_ul</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">items</span><span class="p">])</span>
+
+        <span class="c1"># navbar items to the right</span>
+        <span class="n">collapsible_ul_right</span> <span class="o">=</span> <span class="n">collapsible_div</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">ul</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav navbar-nav ml-auto&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">collapsible_ul_right</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">right_items</span><span class="p">])</span>
+
+        <span class="c1"># return the configured &lt;nav&gt; element</span>
+        <span class="k">return</span> <span class="n">nav</span></div>
+
+<div class="viewcode-block" id="NavbarRenderer.visit_BadgedView"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.NavbarRenderer.visit_BadgedView">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">visit_BadgedView</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">BadgedView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Render a dynamic view link, displaying a badge with count.</span>
+
+<span class="sd">        :param node: A ``PreviewView`` instance.</span>
+<span class="sd">        :return: An ``html_tag`` instance for rendering a list object</span>
+<span class="sd">            in an unordered list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">get_url</span><span class="p">(),</span> <span class="n">title</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="p">))</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># create the badge that will display the number of focused items</span>
+        <span class="c1"># if the node count is not 0</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">badge</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">li</span></div>
+
+<div class="viewcode-block" id="NavbarRenderer.visit_ListGroup"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.NavbarRenderer.visit_ListGroup">[docs]</a>    <span class="k">def</span> <span class="nf">visit_ListGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ListGroup</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A simpler form of ``visit_Subgroup``.</span>
+
+<span class="sd">        A div of list items.</span>
+
+<span class="sd">        :param node: A ``ListGroup`` instance.</span>
+<span class="sd">        :return: An ``html_tag`` instance for rendering a list object</span>
+<span class="sd">            in an unordered list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="p">)</span>
+        <span class="n">div</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;list-group&quot;</span><span class="p">))</span>
+        <span class="n">div</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">items</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">li</span></div>
+
+<div class="viewcode-block" id="NavbarRenderer.visit_IconView"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.NavbarRenderer.visit_IconView">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">visit_IconView</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">IconView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Render a view which can also be set to display icons.</span>
+
+<span class="sd">        :param node: The ``IconView`` instance.</span>
+<span class="sd">        :return: An ``html_tag`` instance for rendering a list object</span>
+<span class="sd">            in an unordered list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">get_url</span><span class="p">(),</span> <span class="n">title</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="p">))</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">li</span></div>
+
+    <span class="c1"># all the below is from `Flask-Bootstrap.nav.BootstrapRenderer`</span>
+    <span class="c1"># cannot be installed at the same time as `Bootstrap-Flask`</span>
+    <span class="c1"># in order to avoid to many changes between migration, hard code</span>
+    <span class="c1"># this instead of importing</span>
+
+<div class="viewcode-block" id="NavbarRenderer.visit_Subgroup"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.NavbarRenderer.visit_Subgroup">[docs]</a>    <span class="k">def</span> <span class="nf">visit_Subgroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Subgroup</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Render a subgroup.</span>
+
+<span class="sd">        :return: An ``html_tag`` instance for rendering a subgroup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_dropdown</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                <span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span>
+                    <span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">,</span>
+                    <span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav-link dropdown-toggle&quot;</span><span class="p">,</span>
+                    <span class="n">data_toggle</span><span class="o">=</span><span class="s2">&quot;dropdown&quot;</span><span class="p">,</span>
+                    <span class="n">role</span><span class="o">=</span><span class="s2">&quot;button&quot;</span><span class="p">,</span>
+                    <span class="n">aria_haspopup</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
+                    <span class="n">aria_expanded</span><span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;caret&quot;</span><span class="p">))</span>
+
+            <span class="n">ul</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">ul</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;dropdown-menu dropdown-menu-right&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_in_dropdown</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+                <span class="n">ul</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_in_dropdown</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">li</span></div>
+
+<div class="viewcode-block" id="NavbarRenderer.visit_View"><a class="viewcode-back" href="../../../app.html#app.dom.renderers.NavbarRenderer.visit_View">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">visit_View</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">View</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Render a view.</span>
+
+<span class="sd">        :return: An ``html_tag`` instance for rendering a view.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav-item&quot;</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">get_url</span><span class="p">(),</span> <span class="n">title</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;nav-link&quot;</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">get_url</span><span class="p">()))</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="n">li</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;nav-item active&quot;</span>
+
+        <span class="k">return</span> <span class="n">li</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../app.html">app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">README</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../dom.html" >app.dom</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.dom.renderers</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Stephen Whitlock.
+    </div>
+  </body>
+</html>

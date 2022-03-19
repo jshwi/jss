@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app.routes.admin &#8212; jss 1.16.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphite.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../routes.html" accesskey="U">app.routes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.routes.admin</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for app.routes.admin</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">app.admin</span>
+<span class="sd">=========</span>
+
+<span class="sd">Admin page initialized with models for reading and writing.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask_admin</span> <span class="kn">import</span> <span class="n">Admin</span><span class="p">,</span> <span class="n">AdminIndexView</span><span class="p">,</span> <span class="n">expose</span>
+<span class="kn">from</span> <span class="nn">flask_admin.contrib</span> <span class="kn">import</span> <span class="n">sqla</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">login_required</span>
+
+<span class="kn">from</span> <span class="nn">app.extensions</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">app.utils.models</span> <span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">Notification</span><span class="p">,</span> <span class="n">Post</span><span class="p">,</span> <span class="n">Task</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">app.utils.security</span> <span class="kn">import</span> <span class="n">admin_required</span>
+
+<span class="n">_INDEX</span> <span class="o">=</span> <span class="s2">&quot;index&quot;</span>
+
+
+<div class="viewcode-block" id="MyModelView"><a class="viewcode-back" href="../../../app.html#app.routes.admin.MyModelView">[docs]</a><span class="k">class</span> <span class="nc">MyModelView</span><span class="p">(</span><span class="n">sqla</span><span class="o">.</span><span class="n">ModelView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom model view that determines accessibility.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">__table__</span><span class="si">}</span><span class="s2">s&quot;</span>
+
+<div class="viewcode-block" id="MyModelView.is_accessible"><a class="viewcode-back" href="../../../app.html#app.routes.admin.MyModelView.is_accessible">[docs]</a>    <span class="k">def</span> <span class="nf">is_accessible</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Only allow access if user is logged in as admin.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="ow">and</span> <span class="n">current_user</span><span class="o">.</span><span class="n">admin</span></div></div>
+
+
+<div class="viewcode-block" id="MyAdminIndexView"><a class="viewcode-back" href="../../../app.html#app.routes.admin.MyAdminIndexView">[docs]</a><span class="k">class</span> <span class="nc">MyAdminIndexView</span><span class="p">(</span><span class="n">AdminIndexView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom index view that handles login / registration.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MyAdminIndexView.index"><a class="viewcode-back" href="../../../app.html#app.routes.admin.MyAdminIndexView.index">[docs]</a>    <span class="nd">@expose</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+    <span class="nd">@login_required</span>
+    <span class="nd">@admin_required</span>
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Requires user be logged in as admin.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="init_app"><a class="viewcode-back" href="../../../app.html#app.routes.admin.init_app">[docs]</a><span class="k">def</span> <span class="nf">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">Flask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Add models to admin view.</span>
+
+<span class="sd">    Not consistent with the application factory pattern for ``Flask``</span>
+<span class="sd">    extensions, however, the ``Admin`` object does not integrate into</span>
+<span class="sd">    the application well as a global singleton.</span>
+
+<span class="sd">    While running ``pytest``, ``Admin`` will be called multiple times</span>
+<span class="sd">    and the following will be raised:</span>
+
+<span class="sd">        ValueError: The name &#39;user&#39; is already registered for a</span>
+<span class="sd">        different blueprint. Use &#39;name=&#39; to provide a unique name.</span>
+
+<span class="sd">    See https://stackoverflow.com/questions/18002750</span>
+
+<span class="sd">    :param app: Application factory object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">admin</span> <span class="o">=</span> <span class="n">Admin</span><span class="p">(</span>
+        <span class="n">app</span><span class="p">,</span>
+        <span class="n">index_view</span><span class="o">=</span><span class="n">MyAdminIndexView</span><span class="p">(),</span>
+        <span class="n">base_template</span><span class="o">=</span><span class="s2">&quot;/admin/master.html&quot;</span><span class="p">,</span>
+        <span class="n">template_mode</span><span class="o">=</span><span class="s2">&quot;bootstrap4&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">MyModelView</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+    <span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">MyModelView</span><span class="p">(</span><span class="n">Post</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+    <span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">MyModelView</span><span class="p">(</span><span class="n">Message</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+    <span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">MyModelView</span><span class="p">(</span><span class="n">Notification</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span>
+    <span class="n">admin</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">MyModelView</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="p">))</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../app.html">app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">README</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../routes.html" >app.routes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.routes.admin</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Stephen Whitlock.
+    </div>
+  </body>
+</html>

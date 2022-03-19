@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app.dom.macros &#8212; jss 1.16.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphite.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../dom.html" accesskey="U">app.dom</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.dom.macros</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for app.dom.macros</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">app.html.macros</span>
+<span class="sd">===============</span>
+
+<span class="sd">More complex logic written here and not in ``Jinja.`` This makes it</span>
+<span class="sd">easier to run unittests.</span>
+
+<span class="sd">Functions will return ``html_tags`` and not rendered ``Markup``. This</span>
+<span class="sd">ensures all functions can share tags with each other. When functions</span>
+<span class="sd">are registered into context processor they will be wrapped with</span>
+<span class="sd">``Markup``.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=invalid-name</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">dominate</span> <span class="kn">import</span> <span class="n">tags</span>
+<span class="kn">from</span> <span class="nn">dominate.tags</span> <span class="kn">import</span> <span class="n">html_tag</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">get_flashed_messages</span><span class="p">,</span> <span class="n">url_for</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">flask_moment</span> <span class="kn">import</span> <span class="n">moment</span>
+<span class="kn">from</span> <span class="nn">markupsafe</span> <span class="kn">import</span> <span class="n">Markup</span>
+
+<span class="kn">from</span> <span class="nn">app.utils.models</span> <span class="kn">import</span> <span class="n">Post</span>
+<span class="kn">from</span> <span class="nn">app.utils.register</span> <span class="kn">import</span> <span class="n">RegisterContext</span>
+
+<span class="n">DATETIME_FMT</span> <span class="o">=</span> <span class="s2">&quot;h:mmA DD/MM/YYYY&quot;</span>
+
+<span class="c1"># reference to this module</span>
+<span class="c1"># replace invalid dot notation for function names with underscores</span>
+<span class="c1"># only keep the path to this module relative to the package</span>
+<span class="n">_REF</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+
+<span class="n">macros</span> <span class="o">=</span> <span class="n">RegisterContext</span><span class="p">(</span><span class="n">_REF</span><span class="p">,</span> <span class="n">Markup</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="version_dropdown"><a class="viewcode-back" href="../../../app.html#app.dom.macros.version_dropdown">[docs]</a><span class="nd">@macros</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">version_dropdown</span><span class="p">(</span><span class="n">post</span><span class="p">:</span> <span class="n">Post</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Render an HTML dropdown based on the versions of posts available.</span>
+
+<span class="sd">    :param post: Post ORM object of posts with version history.</span>
+<span class="sd">    :return: ``&lt;div&gt;...&lt;/div&gt;`` dropdown as ``html_tag`` object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Post</span><span class="p">]</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">versions</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;dropdown&quot;</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;dropdown-toggle&quot;</span><span class="p">,</span> <span class="n">data_toggle</span><span class="o">=</span><span class="s2">&quot;dropdown&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Versions&quot;</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;caret&quot;</span><span class="p">))</span>
+    <span class="n">ul</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">ul</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;dropdown-menu&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;menu&quot;</span><span class="p">))</span>
+
+    <span class="c1"># populate &lt;ul&gt;...&lt;/ul&gt;</span>
+    <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">versions</span><span class="p">):</span>
+
+        <span class="c1"># version id should begin at 1...</span>
+        <span class="n">version_id</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">li</span> <span class="o">=</span> <span class="n">ul</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">())</span>
+
+        <span class="c1"># ...but we are still getting the# version via its list index</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;post.read&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">post</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">count</span><span class="p">))</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">version_id</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">versions</span><span class="p">):</span>
+            <span class="c1"># the last version is the current version</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;v</span><span class="si">{</span><span class="n">version_id</span><span class="si">}</span><span class="s2">: This revision&quot;</span><span class="p">)</span>
+            <span class="n">a</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;current-version-anchor&quot;</span>
+        <span class="k">elif</span> <span class="n">version_id</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">versions</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># the version before the current version is highlighted for</span>
+            <span class="c1"># easy rollback</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;v</span><span class="si">{</span><span class="n">version_id</span><span class="si">}</span><span class="s2">: Previous revision&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># all other versions</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;v</span><span class="si">{</span><span class="n">version_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">div</span></div>
+
+
+<div class="viewcode-block" id="flash_messages"><a class="viewcode-back" href="../../../app.html#app.dom.macros.flash_messages">[docs]</a><span class="nd">@macros</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">flash_messages</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Render flashed messages.</span>
+
+<span class="sd">    :return: Flashed messages within``&lt;div&gt;...&lt;/div&gt;`` as ``html_tag``</span>
+<span class="sd">        object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">div</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">get_flashed_messages</span><span class="p">():</span>
+        <span class="n">alert</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;alert alert-info&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;alert&quot;</span><span class="p">))</span>
+        <span class="n">alert</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">div</span></div>
+
+
+<div class="viewcode-block" id="task_progress"><a class="viewcode-back" href="../../../app.html#app.dom.macros.task_progress">[docs]</a><span class="nd">@macros</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">task_progress</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Display a tasks progress as its percentage through progress bar.</span>
+
+<span class="sd">    :return: Task progress display as percentage within</span>
+<span class="sd">        ``&lt;div&gt;...&lt;/div&gt;`` ``html_tag`` object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">div</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">current_user</span><span class="o">.</span><span class="n">get_tasks_in_progress</span><span class="p">():</span>
+            <span class="n">alert</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;alert alert-success&quot;</span><span class="p">))</span>
+            <span class="n">alert</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+            <span class="n">span</span> <span class="o">=</span> <span class="n">alert</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">span</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">-progress&quot;</span><span class="p">))</span>
+            <span class="n">span</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">get_progress</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">div</span></div>
+
+
+<div class="viewcode-block" id="post_footer_nav"><a class="viewcode-back" href="../../../app.html#app.dom.macros.post_footer_nav">[docs]</a><span class="nd">@macros</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">post_footer_nav</span><span class="p">(</span>
+    <span class="n">prev_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">next_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Bottom navbar for newer and older post navigation.</span>
+
+<span class="sd">    :param prev_url: URL to previous posts.</span>
+<span class="sd">    :param next_url: URL to next posts.</span>
+<span class="sd">    :return: Navbar as ``html_tag`` object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nav</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">nav</span><span class="p">(</span><span class="n">aria_label</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+    <span class="n">ul</span> <span class="o">=</span> <span class="n">nav</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">ul</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;pagination justify-content-center&quot;</span><span class="p">))</span>
+
+    <span class="c1"># newer posts</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="n">ul</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;page-item&quot;</span><span class="p">))</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;page-link&quot;</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Previous&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">prev_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev_url</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">li</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot; disabled&quot;</span>
+        <span class="n">a</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span>
+        <span class="n">a</span><span class="p">[</span><span class="s2">&quot;tabindex&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-1&quot;</span>
+
+    <span class="c1"># older posts</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="n">ul</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">li</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;page-item&quot;</span><span class="p">))</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">li</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">a</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;page-link&quot;</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Next&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">next_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_url</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">li</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot; disabled&quot;</span>
+        <span class="n">a</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span>
+        <span class="n">a</span><span class="p">[</span><span class="s2">&quot;tabindex&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-1&quot;</span>
+
+    <span class="k">return</span> <span class="n">nav</span></div>
+
+
+<div class="viewcode-block" id="post_times"><a class="viewcode-back" href="../../../app.html#app.dom.macros.post_times">[docs]</a><span class="nd">@macros</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">post_times</span><span class="p">(</span><span class="n">post</span><span class="p">:</span> <span class="n">Post</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">html_tag</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Display time user created post.</span>
+
+<span class="sd">    If user has edited their post show the timestamp for that as well.</span>
+
+<span class="sd">    :param post: Post ORM object.</span>
+<span class="sd">    :return: Rendered paragraph tag with post&#39;s timestamp information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Posted: &quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">moment</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">created</span><span class="p">)</span><span class="o">.</span><span class="n">fromNow</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">post</span><span class="o">.</span><span class="n">edited</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">br</span><span class="p">(),</span> <span class="s2">&quot;Edited: &quot;</span><span class="p">,</span> <span class="n">moment</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">edited</span><span class="p">)</span><span class="o">.</span><span class="n">fromNow</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">p</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../app.html">app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">README</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">jss 1.16.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../app.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../dom.html" >app.dom</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.dom.macros</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Stephen Whitlock.
+    </div>
+  </body>
+</html>
