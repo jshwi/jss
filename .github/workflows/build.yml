@@ -46,7 +46,7 @@ jobs:
           python -m pip install --upgrade pip poetry wheel
 
       - name: Cache Poetry
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: poetry-cache
         with:
           path: ~/.cache/pypoetry/virtualenvs/
