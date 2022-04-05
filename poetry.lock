@@ -626,7 +626,7 @@ python-versions = "*"
 
 [[package]]
 name = "flask-wtf"
-version = "1.0.0"
+version = "1.0.1"
 description = "Form rendering, validation, and CSRF protection for Flask with WTForms."
 category = "main"
 optional = false
@@ -1850,7 +1850,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "776dab29311441d62c3efe049d6f94e5a463ec9dbd8f79c54cb85c0faae4da3b"
+content-hash = "da8e9398e139546ad29e4cb761ccac174d1d99cda907334ae42b45e789426942"
 
 [metadata.files]
 alabaster = [
@@ -2227,8 +2227,8 @@ flask-talisman = [
     {file = "flask_talisman-1.0.0-py2.py3-none-any.whl", hash = "sha256:be2767b6b2bc11b36bf9a0e09ffa10622fbe0d971fd7057a843f82cd795a854b"},
 ]
 flask-wtf = [
-    {file = "Flask-WTF-1.0.0.tar.gz", hash = "sha256:872fbb17b5888bfc734edbdcf45bc08fb365ca39f69d25dc752465a455517b28"},
-    {file = "Flask_WTF-1.0.0-py3-none-any.whl", hash = "sha256:01feccfc395405cea48a3f36c23f0d766e2cc6fd2a5a065ad50ad3e5827ec797"},
+    {file = "Flask-WTF-1.0.1.tar.gz", hash = "sha256:34fe5c6fee0f69b50e30f81a3b7ea16aa1492a771fe9ad0974d164610c09a6c9"},
+    {file = "Flask_WTF-1.0.1-py3-none-any.whl", hash = "sha256:9d733658c80be551ce7d5bc13c7a7ac0d80df509be1e23827c847d9520f4359a"},
 ]
 flynt = [
     {file = "flynt-0.75-py3-none-any.whl", hash = "sha256:2211967c935d5317b8f6811a562b536a934a6c910db1b1738ad660e9fce8ca7a"},
