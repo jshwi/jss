@@ -7,6 +7,9 @@ jss
 .. image:: https://github.com/jshwi/jss/workflows/build/badge.svg
     :target: https://github.com/jshwi/jss/workflows/build/badge.svg
     :alt: build
+.. image:: https://github.com/jshwi/jss/actions/workflows/codeql-analysis.yml/badge.svg
+    :target: https://github.com/jshwi/jss/actions/workflows/codeql-analysis.yml
+    :alt: CodeQL
 .. image:: https://codecov.io/gh/jshwi/jss/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/jshwi/jss
     :alt: codecov.io
