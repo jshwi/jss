@@ -157,7 +157,7 @@
     "darkreader": "^4.9.46",
     "highlight.js": "^11.5.1",
     "jquery": "^3.6.0",
-    "moment": "^2.29.2"
+    "moment": "^2.29.3"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
