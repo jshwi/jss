@@ -1,11 +1,11 @@
 name: ci
 
 on:
-  pull_request:
-
   push:
-    branches:
-      - master
+    branches: [master]
+
+  pull_request:
+    branches: [master]
 
 jobs:
   ci:
@@ -21,49 +21,44 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        os: [ubuntu-latest]
         node-version: [16.x.x]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout build
         id: checkout-build
         uses: actions/checkout@v3
 
+      - name: Install Poetry
+        id: install-poetry
+        run: pipx install poetry
+
       - name: Setup Python
         id: setup-python
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+          cache: poetry
 
       - name: Setup Node
+        id: setup-node
         uses: actions/setup-node@v3.1.1
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          cache: npm
 
-      - name: Install Poetry
-        run: |
-          python -m pip install --upgrade pip poetry wheel
+      - name: Install Python Packages
+        id: install-python-packages
+        run: poetry install
 
-      - name: Cache Poetry
-        uses: actions/cache@v3
-        id: poetry-cache
-        with:
-          path: ~/.cache/pypoetry/virtualenvs/
-          key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: ${{ runner.os }}-poetry-
-
-      - name: Install Node packages
-        run: |
-          npm install
-
-      - name: Setup poetry
-        id: setup-poetry
-        if: steps.poetry-cache.outputs.cache-hit != 'true'
-        run: |
-          poetry install
+      - name: Install Node Packages
+        id: install-node-packages
+        run: npm install
 
       - name: Audit
         id: audit
-        run: |
-          npm run audit
+        run: npm run audit
+
+      - name: Build
+        id: build
+        run: npm run webpack:prod
