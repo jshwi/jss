@@ -47,4 +47,4 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(redirect.blueprint)
     app.add_url_rule("/", endpoint="index")
     admin.init_app(app)
-    app.after_request(format_html)
+    app.after_request(format_html)  # type: ignore

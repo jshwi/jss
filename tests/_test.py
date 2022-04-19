@@ -235,12 +235,12 @@ def test_index(
     add_test_objects.add_test_users(user_test_object)
     add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
-    response = client.get("/").data.decode()
-    assert "Logout" in response
-    assert post_test_object.title in response
-    assert user_test_object.username in response
-    assert post_test_object.body in response
-    assert 'href="/post/1/update"' in response
+    decoded_response = client.get("/").data.decode()
+    assert "Logout" in decoded_response
+    assert post_test_object.title in decoded_response
+    assert user_test_object.username in decoded_response
+    assert post_test_object.body in decoded_response
+    assert 'href="/post/1/update"' in decoded_response
 
 
 @pytest.mark.parametrize(
