@@ -177,7 +177,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "file-loader": "^6.1.0",
     "jest": "^28.0.1",
-    "jest-each": "^28.0.0",
+    "jest-each": "^28.0.2",
     "jest-localstorage-mock": "^2.4.21",
     "lighthouse": "^9.5.0",
     "mini-css-extract-plugin": "^2.6.0",
