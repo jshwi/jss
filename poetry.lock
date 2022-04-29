@@ -467,7 +467,7 @@ Flask = "*"
 
 [[package]]
 name = "flask-compress"
-version = "1.11"
+version = "1.12"
 description = "Compress responses in your Flask app with gzip, deflate or brotli."
 category = "main"
 optional = false
@@ -1846,7 +1846,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3a13fa62813e8f8e969830e5acc22e90f6dfecf7aa1056a9e8bce490e0905dcc"
+content-hash = "996c176b0c425bae0a23ec826160d9290e5d2cc4bc58fb646e5637cc510e6437"
 
 [metadata.files]
 alabaster = [
@@ -2194,8 +2194,8 @@ flask-caching = [
     {file = "Flask_Caching-1.10.1-py3-none-any.whl", hash = "sha256:bcda8acbc7508e31e50f63e9b1ab83185b446f6b6318bd9dd1d45626fba2e903"},
 ]
 flask-compress = [
-    {file = "Flask-Compress-1.11.tar.gz", hash = "sha256:f569f32c446d6b25ca8e347d5003a0531811ef732678005b0036fc1c9eb1c21c"},
-    {file = "Flask_Compress-1.11-py3-none-any.whl", hash = "sha256:7ccc4102104a63e6207f39eb307f99aebbfbaf4e70992d727440cff29119a0a0"},
+    {file = "Flask-Compress-1.12.tar.gz", hash = "sha256:e2159499f39d618a4d56ba0484e7b58b57956b9a2c6d3510f095f5bb14b7afc5"},
+    {file = "Flask_Compress-1.12-py3-none-any.whl", hash = "sha256:9f4e40211755e86f85e5eb7d414856ef1e8751912caa78d62853169400335f0c"},
 ]
 flask-debugtoolbar = [
     {file = "Flask-DebugToolbar-0.13.1.tar.gz", hash = "sha256:0c26aa013a9813b8886857bf0ec24d28ab494114a264baf06c951cadc4dd0dae"},
