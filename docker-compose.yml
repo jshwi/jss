@@ -4,7 +4,7 @@ services:
     build:
       context: .
       target: production
-    image: jss-production:1.16.0
+    image: jss-production:1.16.1
     command: .venv/bin/pipenv run gunicorn --bind 0.0.0.0:5000 wsgi:app
     expose:
       - "5000"
@@ -23,7 +23,7 @@ services:
     build:
       context: .
       target: development
-    image: jss-development:1.16.0
+    image: jss-development:1.16.1
     command: .venv/bin/pipenv run flask run --host 0.0.0.0
     ports:
       - "5000:5000"
@@ -56,7 +56,7 @@ services:
     build:
       context: .
       target: nginx
-    image: jss-nginx:1.16.0
+    image: jss-nginx:1.16.1
     ports:
       - "1337:80"
     depends_on:
