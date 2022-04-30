@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.16.0...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Upgrades dependencies
 
 [1.16.0](https://github.com/jshwi/jss/releases/tag/v1.16.0) - 2022-03-06
 ------------------------------------------------------------------------
