@@ -1,4 +1,4 @@
-name: ci
+name: Build
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     branches: [master]
 
 jobs:
-  ci:
+  build:
     name: ${{ matrix.os }}-python${{ matrix.python-version }}-node@${{ matrix.node-version }}
     runs-on: ${{ matrix.os }}
     env:
