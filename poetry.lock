@@ -1373,7 +1373,7 @@ pygments = "2.8.1"
 
 [[package]]
 name = "redis"
-version = "4.3.0"
+version = "4.3.1"
 description = "Python client for Redis database and key-value store"
 category = "main"
 optional = false
@@ -1846,7 +1846,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "33716e9dee1fd9ab8ad3ce5618d2da2714d8749e3f6eb0901aa0bf192399d64e"
+content-hash = "b7e4108bad95ba490607349846c2cad7d8c33895f94a681846ddcbda9b4d7998"
 
 [metadata.files]
 alabaster = [
@@ -2673,8 +2673,8 @@ readmetester = [
     {file = "readmetester-1.0.1.tar.gz", hash = "sha256:10a0f043571f0c206ba45836ac3171696620911a1cc5bd2a996d988daad4c0e9"},
 ]
 redis = [
-    {file = "redis-4.3.0-py3-none-any.whl", hash = "sha256:0b1cc61af1389c6cd27a428a5425d81fbe11961bc2a4317b9c94909aed91b501"},
-    {file = "redis-4.3.0.tar.gz", hash = "sha256:240e84b967653146ad136692b945b7bc90cf82f4aab3f46a20975fb60a0e4ff9"},
+    {file = "redis-4.3.1-py3-none-any.whl", hash = "sha256:84316970995a7adb907a56754d2b92d88fc2d252963dc5ac34c88f0f1a22c25d"},
+    {file = "redis-4.3.1.tar.gz", hash = "sha256:94b617b4cd296e94991146f66fc5559756fbefe9493604f0312e4d3298ac63e9"},
 ]
 requests = [
     {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},
