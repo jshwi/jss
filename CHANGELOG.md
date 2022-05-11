@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.16.1...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Removes `Flask-Caching`
 
 [1.16.1](https://github.com/jshwi/jss/releases/tag/v1.16.1) - 2022-04-30
 ------------------------------------------------------------------------

@@ -6,7 +6,6 @@ Each extension is initialized with ``init_app`` method.
 """
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask_caching import Cache
 from flask_compress import Compress
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -23,7 +22,6 @@ from flask_wtf.csrf import CSRFProtect
 
 debug_toolbar = DebugToolbarExtension()
 static_digest = FlaskStaticDigest()
-cache = Cache()
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
@@ -45,7 +43,6 @@ def init_app(app: Flask) -> None:
     """
     debug_toolbar.init_app(app)
     static_digest.init_app(app)
-    cache.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
