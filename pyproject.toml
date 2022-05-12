@@ -113,11 +113,12 @@ pytest-randomly = "^3.12.0"
 pytest-sugar = "^0.9.4"
 pytest-xdist = "^2.4.0"
 restview = "^3.0.0"
-toml-sort = "^0.20.0"
 
 [tool.pyaud.audit]
 modules = [
-    "files",
+    "toc",
+    "whitelist",
+    "sort-pyproject",
     "format",
     "format-docs",
     "format-str",
@@ -125,8 +126,7 @@ modules = [
     "typecheck",
     "unused",
     "lint",
-    "coverage",
-    "readme",
+    "test",
     "docs",
 ]
 

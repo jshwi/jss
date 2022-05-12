@@ -40,7 +40,7 @@
     "test": "npm-run-all test:*",
     "test:js": "jest",
     "test:py": "poetry run pyaud tests",
-    "toml:sort": "poetry run toml-sort pyproject.toml --in-place --all",
+    "toml:sort": "poetry run pyaud sort-pyproject",
     "types": "npm-run-all types:*",
     "types:py": "poetry run pyaud typecheck",
     "webpack:dev": "NODE_ENV=development webpack --progress",
