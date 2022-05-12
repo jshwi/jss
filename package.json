@@ -1,11 +1,8 @@
 {
   "name": "jss",
   "version": "1.16.2",
-  "engines": {
-    "node": "16.x"
-  },
-  "description": "A Flask web application",
-  "private": "true",
+  "description": "A Flask webapp",
+  "private": true,
   "directories": {
     "doc": "docs",
     "test": "tests"
@@ -55,9 +52,11 @@
     "url": "git+https://github.com/jshwi/jss.git"
   },
   "keywords": [
-    "Flask",
-    "web",
-    "application"
+    "flask",
+    "webapp",
+    "pwa",
+    "jshwisolutions",
+    "blog"
   ],
   "author": "Stephen Whitlock",
   "license": "MIT",
