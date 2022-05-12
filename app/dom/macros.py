@@ -1,6 +1,6 @@
 """
-app.html.macros
-===============
+app.dom.macros
+==============
 
 More complex logic written here and not in ``Jinja.`` This makes it
 easier to run unittests.

@@ -1,6 +1,6 @@
 """
-app.logging
-===========
+app.log
+=======
 
 Register custom app loggers.
 """

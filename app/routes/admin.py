@@ -1,6 +1,6 @@
 """
-app.admin
-=========
+app.routes.admin
+================
 
 Admin page initialized with models for reading and writing.
 """

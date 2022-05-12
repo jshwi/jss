@@ -1,6 +1,6 @@
 """
-app.html
-========
+app.dom
+=======
 """
 from flask import Flask
 from flask_nav import register_renderer

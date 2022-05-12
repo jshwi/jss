@@ -1,6 +1,6 @@
 """
-app.mail
-========
+app.utils.mail
+==============
 
 Setup app's mailer.
 """

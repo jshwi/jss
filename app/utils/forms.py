@@ -1,6 +1,6 @@
 """
-app.forms
-=========
+app.utils.forms
+===============
 
 All classes derived from ``FlaskForm`` imported from ``Flask-WTF``.
 ``Flask-WTF`` is a ``Flask`` extension built on top of ``WTForms``.

@@ -1,6 +1,6 @@
 """
-app.redirects
-=============
+app.dom.redirect
+================
 
 Frequently used redirects.
 """

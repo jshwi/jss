@@ -1,6 +1,6 @@
 """
-app.models
-==========
+app.utils.models
+================
 
 Define app's database models.
 """

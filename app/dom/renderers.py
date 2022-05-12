@@ -1,6 +1,6 @@
 """
-app.html.renderers
-==================
+app.dom.renderers
+=================
 """
 # pylint: disable=invalid-name,too-few-public-methods
 from hashlib import sha1

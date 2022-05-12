@@ -1,6 +1,4 @@
-"""
-app
-===
+"""A Flask webapp.
 
 Application factory.
 

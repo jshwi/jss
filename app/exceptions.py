@@ -1,6 +1,6 @@
 """
-app.errors
-==========
+app.exceptions
+==============
 
 Register handling of error-codes and their corresponding pages.
 """

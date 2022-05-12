@@ -1,6 +1,6 @@
 """
-app.html.navbar
-===============
+app.dom.navbar
+==============
 """
 from dominate import tags
 from flask import current_app
