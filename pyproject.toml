@@ -1,6 +1,8 @@
 [build-system]
 build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+requires = [
+    "poetry-core>=1.0.0",
+]
 
 [tool.black]
 exclude = '''
@@ -20,14 +22,44 @@ skip-magic-trailing-comma = true
 fail_under = 100
 
 [tool.coverage.run]
-omit = ["whitelist.py", "jss/__main__.py"]
+omit = [
+    "whitelist.py",
+]
 
 [tool.poetry]
-authors = ["jshwi <stephen@jshwisolutions.com>"]
-description = "A Flask web application"
+authors = [
+    "jshwi <stephen@jshwisolutions.com>",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+]
+description = "A Flask webapp"
+documentation = "https://jss.readthedocs.io/en/latest/?badge=latest"
+homepage = "https://jshwisolutions.com"
+keywords = [
+    "flask",
+    "webapp",
+    "pwa",
+    "jshwisolutions",
+    "blog",
+]
 license = "MIT"
+maintainers = [
+    "jshwi <stephen@jshwisolutions.com>",
+]
 name = "jss"
-packages = [{ include = "app" }]
+packages = [
+    { include = "app" },
+]
+readme = "README.rst"
+repository = "https://github.com/jshwi/jss"
 version = "1.16.2"
 
 [tool.poetry.dependencies]
@@ -99,10 +131,21 @@ modules = [
 ]
 
 [tool.pyaud.clean]
-exclude = ["*.egg*", ".mypy_cache", ".env", "instance", "node_modules"]
+exclude = [
+    "*.egg*",
+    ".mypy_cache",
+    ".env",
+    "instance",
+    "node_modules",
+]
 
 [tool.pyaud.indexing]
-exclude = ["whitelist.py", "conf.py", "setup.py", "migrations", "node_modules"]
+exclude = [
+    "whitelist.py",
+    "conf.py",
+    "migrations",
+    "node_modules",
+]
 
 [tool.pyaud.logging]
 disable_existing_loggers = true
@@ -119,13 +162,11 @@ formatter = "standard"
 when = "d"
 
 [tool.pyaud.logging.root]
-handlers = ["default"]
+handlers = [
+    "default",
+]
 level = "DEBUG"
 propagate = false
-
-[tool.pyaud.packages]
-exclude = []
-name = "app"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -138,4 +179,10 @@ addopts = [
     "auto",
 ]
 filterwarnings = "ignore::DeprecationWarning"
-norecursedirs = ["docs", "*.egg-info", ".git", ".mypy_cache", ".idea", "prof"]
+norecursedirs = [
+    "docs",
+    "*.egg-info",
+    ".git",
+    ".mypy_cache",
+    ".idea",
+]
