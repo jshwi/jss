@@ -1,7 +1,6 @@
 .mypy_cache/
 .pytest_cache/
 CHANGELOG.md
-Pipfile.lock
 app/static
 app/templates/
 coverage/
