@@ -87,10 +87,10 @@ module.exports = {
     ],
   },
   output: {
-    path: path.join(__dirname, "app", "static", "build"),
+    path: path.join(__dirname, "app", "static"),
     filename: "[name].bundle.js",
     chunkFilename: "[id].js",
-    publicPath: "/static/build/",
+    publicPath: "/static/",
     library: "[name]",
     clean: true,
   },

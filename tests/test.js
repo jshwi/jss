@@ -88,9 +88,7 @@ describe("test service worker", () => {
     registerServiceWorker();
     events.load();
     expect(spyOnWindowAddEventListener).toBeCalled();
-    expect(serviceWorker.register).toBeCalledWith(
-      "/static/build/service-worker.js"
-    );
+    expect(serviceWorker.register).toBeCalledWith("/static/service-worker.js");
   });
 });
 
