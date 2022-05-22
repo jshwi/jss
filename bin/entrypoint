@@ -1,16 +1,19 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #=======================================================================
 #
-#          FILE: release.sh
+#          FILE:  entrypoint
 #
 #         USAGE:  To be called by Dockerfile upon docker-compose build
 #
 #   DESCRIPTION:  Docker entry point
-#                 Listen for PostgreSQL connection then execute command
+#                 Listen for PostgreSQL connection and announce start
+#                 Run database migration upgrade
+#                 Create initial app admin
+#                 execute command defined in docker-compose.yml
 #
 #        AUTHOR:  Stephen Whitlock (jshwi), stephen@jshwisolutions.com
 #       CREATED:  22/09/21 16:15:44
-#      REVISION:  0.1.1
+#      REVISION:  0.2.0
 #=======================================================================
 set -o errexit
 set -o nounset
@@ -21,6 +24,7 @@ while ! nc -z "$SQL_HOST" "$SQL_PORT"; do
 done
 
 echo "PostgreSQL started"
-./.venv/bin/pipenv run bash release.sh
+./.venv/bin/flask db upgrade
+./.venv/bin/flask create admin
 
 exec "$@"

@@ -1,66 +1,103 @@
 version: "3.8"
+
 services:
   production:
     build:
       context: .
       target: production
-    image: jss-production:1.16.2
-    command: .venv/bin/pipenv run gunicorn --bind 0.0.0.0:5000 wsgi:app
-    expose:
-      - "5000"
-    env_file: .env
     environment:
-      FLASK_ENV: production
-      DATABASE_URL: postgresql://jss:jss@db:5432/jss
-      FLASK_SKIP_DOTENV: 1
-      SQL_HOST: db
-      SQL_PORT: 5432
-      DATABASE: postgres
-    depends_on:
-      - db
+      - "ADMINS"
+      - "ADMIN_SECRET"
+      - "BRAND"
+      - "COPYRIGHT_AUTHOR"
+      - "COPYRIGHT_EMAIL"
+      - "CSP_REPORT_ONLY"
+      - "DATABASE_URL"
+      - "DEFAULT_MAIL_SENDER"
+      - "HEROKU_DATABASE_URL"
+      - "LOGDNA_KEY"
+      - "LOG_LEVEL"
+      - "MAIL_DEFAULT_SENDER"
+      - "MAIL_PASSWORD"
+      - "MAIL_PORT"
+      - "MAIL_SERVER"
+      - "MAIL_SUBJECT_PREFIX"
+      - "MAIL_USERNAME"
+      - "NAVBAR_HOME"
+      - "NAVBAR_ICONS"
+      - "NAVBAR_USER_DROPDOWN"
+      - "PYTHON_RUNTIME_VERSION"
+      - "REDIS_TLS_URL"
+      - "REDIS_URL"
+      - "RESERVED_USERNAMES"
+      - "SECRET_KEY"
+      - "SEND_FILE_MAX_AGE_DEFAULT"
+    expose:
+      - 5000
+    image: jss-production:1.16.2
+    volumes:
+      - static_volume:/home/jss/app/static/
 
   development:
     build:
       context: .
       target: development
-    image: jss-development:1.16.2
-    command: .venv/bin/pipenv run flask run --host 0.0.0.0
-    ports:
-      - "5000:5000"
-    environment:
-      FLASK_ENV: development
-      DATABASE_URL: postgresql://jss:jss@db:5432/jss
-      SECRET_KEY: dev
-      SEND_FILE_MAX_AGE_DEFAULT: 0
-      DEFAULT_MAIL_SENDER: admin@localhost
-      ADMINS: admin@localhost
-      FLASK_SKIP_DOTENV: 1
-      SQL_HOST: db
-      SQL_PORT: 5432
-      DATABASE: postgres
-
-    env_file: .env
+    command: ./.venv/bin/flask run --host 0.0.0.0
     depends_on:
       - db
-
-  db:
-    image: postgres:13-alpine
+      - redis
+    environment:
+      - "BRAND"
+      - "COPYRIGHT_AUTHOR"
+      - "COPYRIGHT_EMAIL"
+      - "DATABASE=postgres"
+      - "DATABASE_URL=postgresql://jss:jss@postgres:5432/jss"
+      - "MAIL_PASSWORD=${DEV_MAIL_PASSWORD}"
+      - "MAIL_PORT=${DEV_MAIL_PORT}"
+      - "MAIL_SERVER=${DEV_MAIL_SERVER}"
+      - "MAIL_SUBJECT_PREFIX"
+      - "MAIL_USERNAME=${DEV_MAIL_USERNAME}"
+      - "MAIL_USE_SSL=${DEV_MAIL_USE_SSL}"
+      - "MAIL_USE_TLS=${DEV_MAIL_USE_TLS}"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "SIGNATURE"
+      - "SQL_HOST=postgres"
+      - "SQL_PORT=5432"
+    image: jss-development:1.16.2
+    ports:
+      - "5000:5000"
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - ./app:/home/jss/app
+      - ./migrations:/home/jss/migrations
+
+  postgres:
     environment:
       POSTGRES_USER: jss
       POSTGRES_PASSWORD: jss
       POSTGRES_DB: jss
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
 
   nginx:
     build:
       context: .
       target: nginx
-    image: jss-nginx:1.16.2
-    ports:
-      - "1337:80"
     depends_on:
       - production
+    image: jss-nginx:1.16.2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - static_volume:/home/jss/app/static/
+
+  redis:
+    image: redis:6.2-alpine
+    volumes:
+      - redis_dump:/data/
 
 volumes:
   postgres_data:
+  redis_dump:
+  static_volume:
