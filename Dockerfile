@@ -96,3 +96,6 @@ FROM nginx:1.21.4-alpine as nginx
 # repository
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
+
+# add certs for running with ssl locally
+COPY certs /etc/nginx/ssl
