@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.16.2...HEAD)
 ------------------------------------------------------------------------
+### Changed
+- Updates `COPYRIGHT_EMAIL` default value
 
 [1.16.2](https://github.com/jshwi/jss/releases/tag/v1.16.2) - 2022-05-11
 ------------------------------------------------------------------------

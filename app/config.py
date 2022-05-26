@@ -10,6 +10,7 @@ import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
+import tomli
 from environs import Env
 from flask import Flask
 
@@ -201,11 +202,11 @@ class Config:
         )
 
     @property
-    def SETUP_FILE(self) -> Path:
+    def PYPROJECT_TOML(self) -> Path:
         """Path to LICENSE file."""
         return env.path(
-            "SETUP_FILE",
-            default=Path(__file__).absolute().parent.parent / "setup.py",
+            "PYPROJECT_TOML",
+            default=Path(__file__).absolute().parent.parent / "pyproject.toml",
         )
 
     @property
@@ -263,15 +264,11 @@ class Config:
         is returned.
         """
         email = ""
-        if self.SETUP_FILE.is_file():
-            with open(self.SETUP_FILE, encoding="utf-8") as fin:
-                for line in fin.read().splitlines():
-                    if "author_email" in line:
-                        email = (
-                            line.split("=")[1]
-                            .replace('"', "")
-                            .replace(",", "")
-                        )
+        if self.PYPROJECT_TOML.is_file():
+            obj = tomli.loads(self.PYPROJECT_TOML.read_text())
+            authors = obj.get("tool", {}).get("poetry", {}).get("authors", [])
+            if authors:
+                email = authors[0].split()[1][1:-1]
 
         return env.str("COPYRIGHT_EMAIL", default=email)
 

@@ -84,9 +84,9 @@ from .utils import (
     POST_TITLE_V2,
     POST_TITLE_V3,
     PROFILE_EDIT,
+    PYPROJECT_TOML,
     RECIPIENT_ID,
     SENDER_ID,
-    SETUP_FILE,
     STATUS_CODE_TO_ROUTE_DEFAULT,
     TASK_DESCRIPTION,
     TASK_ID,
@@ -2008,16 +2008,17 @@ def test_config_copyright(
     :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test ``Flask`` app object.
     """
+    monkeypatch.setattr("os.environ", {})
     license_file = tmp_path / "LICENSE"
-    setup_file = tmp_path / "setup.py"
+    pyproject_toml = tmp_path / "pyproject.toml"
     with open(license_file, "w", encoding="utf-8") as fout:
         fout.write(LICENSE)
 
-    with open(setup_file, "w", encoding="utf-8") as fout:
-        fout.write(SETUP_FILE)
+    with open(pyproject_toml, "w", encoding="utf-8") as fout:
+        fout.write(PYPROJECT_TOML)
 
     monkeypatch.setenv("LICENSE", str(license_file))
-    monkeypatch.setenv("SETUP_FILE", str(setup_file))
+    monkeypatch.setenv("PYPROJECT_TOML", str(pyproject_toml))
     config.init_app(test_app)
     assert test_app.config["LICENSE"] == license_file
     assert test_app.config["COPYRIGHT_YEAR"] == COPYRIGHT_YEAR

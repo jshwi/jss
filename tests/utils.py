@@ -100,36 +100,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-SETUP_FILE = f"""\
-from setuptools import setup, find_packages
-
-with open("README.rst") as file:
-    README = file.read()
-
-
-setup(
-    name="package",
-    version="0.1.0",
-    description="A package",
-    long_description=README,
-    long_description_content_type="text/x-rst",
-    author="John Doe",
-    author_email="{COPYRIGHT_EMAIL}",
-    url="https://github.com/does_not/exist",
-    license="MIT",
-    platforms="GNU/Linux",
-    classifiers=[
-        "Programming Language :: Python :: 3.8",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: POSIX :: Linux",
-    ],
-    keywords=["python3.8"],
-    packages=find_packages(exclude=["tests"]),
-    include_package_data=True,
-    zip_safe=False,
-    install_requires=["flask==2.0.2"],
-    python_requires=">=3.8",
-)
+PYPROJECT_TOML = f"""\
+[tool.poetry]
+authors = [
+    "jshwi <{COPYRIGHT_EMAIL}>",
+]
+description = "A Flask webapp"
+keywords = [
+    "flask",
+    "webapp",
+    "pwa",
+    "jshwisolutions",
+    "blog",
+]
+license = "MIT"
+name = "jss"
+packages = [{{ include = "app" }}]
+readme = "README.rst"
+version = "1.16.2"
 """
 STATUS_CODE_TO_ROUTE_DEFAULT = [
     (
