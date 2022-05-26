@@ -1,6 +1,7 @@
 <component name="ProjectDictionaryState">
   <dictionary name="stephen">
     <words>
+      <w>autoescape</w>
       <w>backrefs</w>
       <w>browserconfig</w>
       <w>caplog</w>
@@ -16,9 +17,11 @@
       <w>makestuff</w>
       <w>misaka</w>
       <w>msapplication</w>
+      <w>msgid</w>
       <w>mstile</w>
       <w>nodir</w>
       <w>nosuffix</w>
+      <w>nplurals</w>
       <w>potrace</w>
       <w>sagalaev</w>
       <w>selinger</w>
