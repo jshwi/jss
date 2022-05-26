@@ -22,7 +22,7 @@ copyright = "2022, Stephen Whitlock"
 author = "Stephen Whitlock"
 
 # The full version, including alpha/beta/rc tags
-release = "1.16.2"
+release = "1.17.0"
 
 
 # -- General configuration ---------------------------------------------------
