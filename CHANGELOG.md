@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updates commandline help
 - Replaces `Bootstrap` with `Bootstrap4`
 
+### Fixed
+- Fixes progress in `app.utils.tasks._set_task_progress`
+
 [1.17.0](https://github.com/jshwi/jss/releases/tag/v1.17.0) - 2022-05-27
 ------------------------------------------------------------------------
 ### Changed

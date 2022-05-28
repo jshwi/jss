@@ -31,6 +31,8 @@ def _set_task_progress(progress: int) -> None:
         task.user.add_notifications(
             "task_progress", {"task_id": job.get_id(), "progress": progress}
         )
+        if progress >= 100:
+            task.complete = True
 
         db.session.commit()
 
