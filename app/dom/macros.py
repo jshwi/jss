@@ -20,7 +20,7 @@ from flask_login import current_user
 from flask_moment import moment
 from markupsafe import Markup
 
-from app.utils.models import Post
+from app.models import Post
 from app.utils.register import RegisterContext
 
 DATETIME_FMT = "h:mmA DD/MM/YYYY"

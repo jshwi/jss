@@ -12,7 +12,7 @@ from getpass import getpass
 from flask import current_app
 
 from app.extensions import login_manager
-from app.utils.models import User, Usernames, db
+from app.models import User, Usernames, db
 
 
 def create_user(

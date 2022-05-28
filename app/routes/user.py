@@ -19,7 +19,7 @@ from werkzeug import Response
 
 from app.utils import redirect
 from app.utils.forms import EditProfile, MessageForm
-from app.utils.models import Message, Notification, User, Usernames, db
+from app.models import Message, Notification, User, Usernames, db
 from app.utils.security import confirmation_required
 
 blueprint = Blueprint("user", __name__, url_prefix="/user")

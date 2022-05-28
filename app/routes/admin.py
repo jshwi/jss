@@ -10,7 +10,7 @@ from flask_admin.contrib import sqla
 from flask_login import current_user, login_required
 
 from app.extensions import db
-from app.utils.models import Message, Notification, Post, Task, User
+from app.models import Message, Notification, Post, Task, User
 from app.utils.security import admin_required
 
 _INDEX = "index"

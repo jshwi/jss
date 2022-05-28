@@ -14,7 +14,7 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from app import create_app
-from app.utils.models import db
+from app.models import db
 
 from .utils import (
     ADMIN_USER_EMAIL,

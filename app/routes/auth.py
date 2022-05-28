@@ -9,6 +9,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from jwt import InvalidTokenError
 from werkzeug import Response
 
+from app.models import User, db
 from app.utils import redirect
 from app.utils.forms import (
     LoginForm,
@@ -17,7 +18,6 @@ from app.utils.forms import (
     ResetPasswordRequestForm,
 )
 from app.utils.mail import send_email
-from app.utils.models import User, db
 from app.utils.security import (
     generate_confirmation_token,
     generate_reset_password_token,

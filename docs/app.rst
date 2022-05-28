@@ -49,6 +49,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.models
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.routes
    :members:
    :undoc-members:
@@ -102,10 +106,6 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.utils.mail
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.utils.models
    :members:
    :undoc-members:
    :show-inheritance:

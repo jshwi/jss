@@ -15,7 +15,7 @@ from itsdangerous import URLSafeTimedSerializer
 from werkzeug import Response
 
 from app.extensions import login_manager
-from app.utils.models import User
+from app.models import User
 
 
 def admin_required(view: t.Callable[..., t.Any]) -> t.Callable[..., t.Any]:

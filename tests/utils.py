@@ -17,7 +17,7 @@ from flask.testing import FlaskClient
 from werkzeug import Response
 from werkzeug.security import generate_password_hash
 
-from app.utils.models import BaseModel, Message, Post, Task, User, db
+from app.models import BaseModel, Message, Post, Task, User, db
 
 UPDATE1 = "/post/1/update"
 ADMIN_USER_USERNAME = "admin"
@@ -68,7 +68,7 @@ TASK_ID = "123"
 TASK_NAME = "export_posts"
 TASK_DESCRIPTION = "Exporting posts..."
 MISC_PROGRESS_INT = 37
-APP_MODELS_JOB_FETCH = "app.utils.models.Job.fetch"
+APP_MODELS_JOB_FETCH = "app.models.Job.fetch"
 ADMIN_ROUTE = "/admin"
 ADMIN_USER_ROUTE = "/admin/users"
 COPYRIGHT_YEAR = "2021"

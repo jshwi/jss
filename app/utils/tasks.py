@@ -12,8 +12,8 @@ from flask import render_template
 from rq import get_current_job
 
 from app import create_app
+from app.models import Post, Task, User, db
 from app.utils.mail import send_email
-from app.utils.models import Post, Task, User, db
 
 _app = create_app()
 

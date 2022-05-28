@@ -24,9 +24,9 @@ from redis import RedisError
 from app import config
 from app.extensions import mail
 from app.log import smtp_handler
+from app.models import Post, User, db
 from app.utils.csp import ContentSecurityPolicy, CSPType
 from app.utils.mail import send_email
-from app.utils.models import Post, User, db
 from app.utils.register import RegisterContext
 
 from .utils import (
@@ -1444,8 +1444,8 @@ def test_export_post(
         test_app.task_queue = Recorder()  # type: ignore
         test_app.task_queue.enqueue = enqueue  # type: ignore
         test_app.task_queue.enqueue.get_id = lambda: TASK_ID  # type: ignore
-        monkeypatch.setattr("app.utils.models.User.is_authenticated", True)
-        monkeypatch.setattr("app.utils.models.db.session.add", session_add)
+        monkeypatch.setattr("app.models.User.is_authenticated", True)
+        monkeypatch.setattr("app.models.db.session.add", session_add)
         # noinspection PyArgumentList
         user = User(
             username=user_test_object.username, email=user_test_object.email

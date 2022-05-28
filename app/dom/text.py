@@ -2,7 +2,7 @@
 app.dom.text
 ============
 """
-from app.utils.models import Post
+from app.models import Post
 from app.utils.register import RegisterContext
 
 # reference to this module

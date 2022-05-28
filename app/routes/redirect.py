@@ -10,10 +10,10 @@ from flask_login import current_user, login_required
 from itsdangerous import BadSignature
 from werkzeug import Response
 
+from app.models import Post, User, db
 from app.utils import redirect
 from app.utils.forms import EmptyForm
 from app.utils.mail import send_email
-from app.utils.models import Post, User, db
 from app.utils.security import (
     authorization_required,
     confirm_token,
