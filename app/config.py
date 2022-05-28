@@ -14,58 +14,52 @@ import tomli
 from environs import Env
 from flask import Flask
 
-env = Env()
 
-env.read_env()
-
-
-class Config:
-    """Load environment."""
-
+class _Config(Env):
     @property
     def ENV(self) -> str:
         """Default to production."""
-        return env.str("FLASK_ENV", default="production")
+        return self.str("FLASK_ENV", default="production")
 
     @property
     def DEBUG(self) -> bool:
         """Value depends on the ``FLASK_ENV`` environment."""
-        return env.bool("FLASK_DEBUG", default=self.ENV == "development")
+        return self.bool("FLASK_DEBUG", default=self.ENV == "development")
 
     @property
     def TESTING(self) -> bool:
         """Value depends on the ``FLASK_ENV`` environment."""
-        return env.bool("TESTING", default=self.ENV == "testing")
+        return self.bool("TESTING", default=self.ENV == "testing")
 
     @property
     def DATABASE_URL(self) -> t.Optional[str]:
         """Database location."""
-        return env.str("DATABASE_URL", default=None)
+        return self.str("DATABASE_URL", default=None)
 
     @property
     def SECRET_KEY(self) -> t.Optional[str]:
         """Value is not public."""
-        return env.str("SECRET_KEY", default=None)
+        return self.str("SECRET_KEY", default=None)
 
     @property
     def SEND_FILE_MAX_AGE_DEFAULT(self) -> int:
         """Read from environment."""
-        return env.int("SEND_FILE_MAX_AGE_DEFAULT", default=31556926)
+        return self.int("SEND_FILE_MAX_AGE_DEFAULT", default=31556926)
 
     @property
     def BCRYPT_LOG_ROUNDS(self) -> int:
         """Defaults to 13."""
-        return env.int("BCRYPT_LOG_ROUNDS", default=13)
+        return self.int("BCRYPT_LOG_ROUNDS", default=13)
 
     @property
     def DEBUG_TB_ENABLED(self) -> bool:
         """When ``DEBUG`` is True enable ``TB`` (toolbar)."""
-        return env.bool("DEBUG_TB_ENABLED", default=self.DEBUG)
+        return self.bool("DEBUG_TB_ENABLED", default=self.DEBUG)
 
     @property
     def DEBUG_TB_INTERCEPT_REDIRECTS(self) -> bool:
         """Remains False."""
-        return env.bool("DEBUG_TB_INTERCEPT_REDIRECTS", default=False)
+        return self.bool("DEBUG_TB_INTERCEPT_REDIRECTS", default=False)
 
     @property
     def FLASK_STATIC_DIGEST_HOST_URL(self) -> t.Optional[str]:
@@ -75,7 +69,7 @@ class Config:
         you host your files from a CDN. Make sure to include the
         protocol (aka. https://).
         """
-        return env.str("FLASK_STATIC_DIGEST_HOST_URL", default=None)
+        return self.str("FLASK_STATIC_DIGEST_HOST_URL", default=None)
 
     @property
     def FLASK_STATIC_DIGEST_BLACKLIST_FILTER(self) -> t.List[str]:
@@ -83,7 +77,7 @@ class Config:
 
         eg: [".htm", ".html", ".txt"]. Make sure to include the ".".
         """
-        return env.list("FLASK_STATIC_DIGEST_BLACKLIST_FILTER", default=[])
+        return self.list("FLASK_STATIC_DIGEST_BLACKLIST_FILTER", default=[])
 
     @property
     def FLASK_STATIC_DIGEST_GZIP_FILES(self) -> bool:
@@ -91,112 +85,112 @@ class Config:
 
         Static files will still get md5 tagged.
         """
-        return env.bool("FLASK_STATIC_DIGEST_GZIP_FILES", default=True)
+        return self.bool("FLASK_STATIC_DIGEST_GZIP_FILES", default=True)
 
     @property
     def CACHE_TYPE(self) -> str:
         """Can be "memcached", "redis", etc."""
-        return env.str("CACHE_TYPE", default="simple")
+        return self.str("CACHE_TYPE", default="simple")
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         """Alias for ``DATABASE_URL.``"""
-        return env.str("SQLALCHEMY_DATABASE_URI", default=self.DATABASE_URL)
+        return self.str("SQLALCHEMY_DATABASE_URI", default=self.DATABASE_URL)
 
     @property
     def SQLALCHEMY_TRACK_MODIFICATIONS(self) -> bool:
         """Set to False by default: Can be a resource drain."""
-        return env.bool("SQlALCHEMY_TRACK_MODIFICATIONS", default=False)
+        return self.bool("SQlALCHEMY_TRACK_MODIFICATIONS", default=False)
 
     @property
     def DEFAULT_MAIL_SENDER(self) -> t.Optional[str]:
         """Default mail sender."""
-        return env.str("DEFAULT_MAIL_SENDER", default=None)
+        return self.str("DEFAULT_MAIL_SENDER", default=None)
 
     @property
     def MAIL_SUBJECT_PREFIX(self) -> str:
         """str object to prefix mail client's subject line with."""
-        return env.str("MAIL_SUBJECT_PREFIX", default="")
+        return self.str("MAIL_SUBJECT_PREFIX", default="")
 
     @property
     def ADMINS(self) -> t.Optional[t.List[str]]:
         """List of web admins."""
-        return env.list("ADMINS", default=[])
+        return self.list("ADMINS", default=[])
 
     @property
     def WTF_CSRF_ENABLED(self) -> bool:
         """Cross-Site Request Forgery: Switch off for testing."""
-        return env.bool("WTF_CSRF_ENABLED", default=not self.TESTING)
+        return self.bool("WTF_CSRF_ENABLED", default=not self.TESTING)
 
     @property
     def WTF_CSRF_SECRET_KEY(self) -> str:
         """Secret keys for signing CSRF tokens."""
-        return env.str("WTF_CSRF_SECRET_KEY", self.SECRET_KEY)
+        return self.str("WTF_CSRF_SECRET_KEY", self.SECRET_KEY)
 
     @property
     def SECURITY_PASSWORD_SALT(self) -> t.Optional[str]:
         """Combined with the unique salt generated for each password."""
-        return env.str("SECURITY_PASSWORD_SALT", default=self.SECRET_KEY)
+        return self.str("SECURITY_PASSWORD_SALT", default=self.SECRET_KEY)
 
     @property
     def MAIL_SERVER(self) -> str:
         """Mail server to send mail from."""
-        return env.str("MAIL_SERVER", default=None)
+        return self.str("MAIL_SERVER", default=None)
 
     @property
     def MAIL_PORT(self) -> int:
         """Mail port to send mail from."""
-        return env.int("MAIL_PORT", default=25)
+        return self.int("MAIL_PORT", default=25)
 
     @property
     def MAIL_USE_TLS(self) -> bool:
         """Use TLS: Defaults to False."""
-        return env.bool("MAIL_USER_TLS", default=False)
+        return self.bool("MAIL_USER_TLS", default=False)
 
     @property
     def MAIL_USE_SSL(self) -> bool:
         """Use SSL: Defaults to False."""
-        return env.bool("MAIL_USER_SSL", default=False)
+        return self.bool("MAIL_USER_SSL", default=False)
 
     @property
     def MAIL_DEBUG(self) -> bool:
         """Mail debug mode: Default to same as ``FLASK_DEBUG``."""
-        return env.bool("MAIL_DEBUG", default=self.DEBUG)
+        return self.bool("MAIL_DEBUG", default=self.DEBUG)
 
     @property
     def MAIL_USERNAME(self) -> t.Optional[str]:
         """Username of sender."""
-        return env.str("MAIL_USERNAME", default=None)
+        return self.str("MAIL_USERNAME", default=None)
 
     @property
     def MAIL_PASSWORD(self) -> t.Optional[str]:
         """Password of sender."""
-        return env.str("MAIL_PASSWORD", default=None)
+        return self.str("MAIL_PASSWORD", default=None)
 
     @property
     def POSTS_PER_PAGE(self) -> int:
         """Posts to paginate per page."""
-        return env.int("POSTS_PER_PAGE", default=25)
+        return self.int("POSTS_PER_PAGE", default=25)
 
     @property
     def REDIS_URL(self) -> str:
         """URL to ``Redis`` server."""
-        return env.str("REDIS_URL", default="redis://")
+        return self.str("REDIS_URL", default="redis://")
 
     @property
     def RESERVED_USERNAMES(self) -> t.List[str]:
         """List of names that cannot be registered the standard way."""
-        return env.list("RESERVED_USERNAMES", default=[])
+        return self.list("RESERVED_USERNAMES", default=[])
 
     @property
     def BRAND(self) -> str:
         """Display in navbar and on browser tabs."""
-        return env.str("BRAND", default="")
+        return self.str("BRAND", default="")
 
     @property
     def LICENSE(self) -> Path:
         """Path to LICENSE file."""
-        return env.path(
+        return self.path(
             "LICENSE",
             default=Path(__file__).absolute().parent.parent / "LICENSE",
         )
@@ -204,7 +198,7 @@ class Config:
     @property
     def PYPROJECT_TOML(self) -> Path:
         """Path to LICENSE file."""
-        return env.path(
+        return self.path(
             "PYPROJECT_TOML",
             default=Path(__file__).absolute().parent.parent / "pyproject.toml",
         )
@@ -219,7 +213,7 @@ class Config:
                     if "Copyright" in line:
                         declaration = line
 
-        return env.str("COPYRIGHT", default=declaration)
+        return self.str("COPYRIGHT", default=declaration)
 
     @property
     def COPYRIGHT_YEAR(self) -> str:
@@ -235,7 +229,7 @@ class Config:
         if self.COPYRIGHT is not None:
             year = self.COPYRIGHT.split()[2]
 
-        return env.str("COPYRIGHT_YEAR", default=year)
+        return self.str("COPYRIGHT_YEAR", default=year)
 
     @property
     def COPYRIGHT_AUTHOR(self) -> str:
@@ -251,7 +245,7 @@ class Config:
         if self.COPYRIGHT is not None:
             author = " ".join(self.COPYRIGHT.split()[3:])
 
-        return env.str("COPYRIGHT_AUTHOR", default=author)
+        return self.str("COPYRIGHT_AUTHOR", default=author)
 
     @property
     def COPYRIGHT_EMAIL(self) -> str:
@@ -270,37 +264,37 @@ class Config:
             if authors:
                 email = authors[0].split()[1][1:-1]
 
-        return env.str("COPYRIGHT_EMAIL", default=email)
+        return self.str("COPYRIGHT_EMAIL", default=email)
 
     @property
     def NAVBAR_HOME(self) -> bool:
         """Include ``Home`` in navbar as opposed to only the brand."""
-        return env.bool("NAVBAR_HOME", default=True)
+        return self.bool("NAVBAR_HOME", default=True)
 
     @property
     def NAVBAR_ICONS(self) -> bool:
         """Display certain links in navbar as icons instead of text."""
-        return env.bool("NAVBAR_ICONS", default=False)
+        return self.bool("NAVBAR_ICONS", default=False)
 
     @property
     def NAVBAR_USER_DROPDOWN(self) -> bool:
         """Display logged-in user links as dropdown."""
-        return env.bool("NAVBAR_USER_DROPDOWN", default=False)
+        return self.bool("NAVBAR_USER_DROPDOWN", default=False)
 
     @property
     def SESSION_COOKIE_HTTPONLY(self) -> bool:
         """Set session-cookie HttpOnly parameter; Defaults to True."""
-        return env.bool("SESSION_COOKIE_HTTPONLY", default=True)
+        return self.bool("SESSION_COOKIE_HTTPONLY", default=True)
 
     @property
     def SESSION_COOKIE_SECURE(self) -> bool:
         """Set session-cookie secure parameter; Defaults to True."""
-        return env.bool("SESSION_COOKIE_SECURE", default=True)
+        return self.bool("SESSION_COOKIE_SECURE", default=True)
 
     @property
     def SESSION_COOKIE_SAMESITE(self) -> str:
         """Set session-cookie SAMESITE parameter; Defaults to strict."""
-        return env.str("REMEMBER_COOKIE_SAMESITE", default="strict")
+        return self.str("REMEMBER_COOKIE_SAMESITE", default="strict")
 
     @property
     def REMEMBER_COOKIE_SECURE(self) -> bool:
@@ -308,37 +302,41 @@ class Config:
 
         The cookie for the ``Remember Me`` checkbox in logins.
         """
-        return env.bool("REMEMBER_COOKIE_SECURE", default=True)
+        return self.bool("REMEMBER_COOKIE_SECURE", default=True)
 
     @property
     def PREFERRED_URL_SCHEME(self) -> str:
         """HTTPS or HTTP."""
-        return env.str("PREFERRED_URL_SCHEME", default="https")
+        return self.str("PREFERRED_URL_SCHEME", default="https")
 
     @property
     def CSP(self) -> t.Dict[str, t.Union[str, t.List[str]]]:
         """Content Security Policy."""
-        return env.dict("CSP", default={})
+        return self.dict("CSP", default={})
 
     @property
     def CSP_REPORT_ONLY(self) -> bool:
         """Do not enforce CSP, report violations only."""
-        return env.bool("CSP_REPORT_ONLY", default=True)
+        return self.bool("CSP_REPORT_ONLY", default=True)
 
     @property
     def CSP_REPORT_URI(self) -> str:
         """URI to report CSP violations to."""
-        return env.str("CSP_REPORT_URI", default="/report/csp_violations")
+        return self.str("CSP_REPORT_URI", default="/report/csp_violations")
 
     @property
     def BOOTSTRAP_SERVE_LOCAL(self) -> bool:
         """Serve local CSS."""
-        return env.bool("BOOTSTRAP_SERVE_LOCAL", default=True)
+        return self.bool("BOOTSTRAP_SERVE_LOCAL", default=True)
 
     @property
     def SIGNATURE(self) -> str:
         """Signature to sign off emails with."""
-        return env.str("SIGNATURE", default=self.BRAND)
+        return self.str("SIGNATURE", default=self.BRAND)
+
+
+config = _Config()
+config.read_env()
 
 
 def init_app(app: Flask) -> None:
@@ -353,4 +351,4 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
-    app.config.from_object(Config())
+    app.config.from_object(config)
