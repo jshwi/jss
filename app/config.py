@@ -335,6 +335,11 @@ class Config:
         """Serve local CSS."""
         return env.bool("BOOTSTRAP_SERVE_LOCAL", default=True)
 
+    @property
+    def SIGNATURE(self) -> str:
+        """Signature to sign off emails with."""
+        return env.str("SIGNATURE", default=self.BRAND)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.
