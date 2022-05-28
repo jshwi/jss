@@ -13,11 +13,9 @@ from app.utils.user import create_admin_cli, create_user_cli
 
 @click.group()
 def create() -> None:
-    """App init methods called with ``flask create <subcommand>``.
-
-    Group functions are registered as decorators, and this will decorate
-    its subcommands, not ``click``.
-    """
+    """Create users."""
+    # group functions are registered as decorators, and this will
+    # decorate its subcommands, not `click`
 
 
 @create.command("user")
