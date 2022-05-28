@@ -5,7 +5,7 @@ app.extensions
 Each extension is initialized with ``init_app`` method.
 """
 from flask import Flask
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap4
 from flask_compress import Compress
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -29,7 +29,7 @@ login_manager = LoginManager()
 csrf_protect = CSRFProtect()
 markdown = Misaka(fenced_code=True)
 page_down = PageDown()
-bootstrap = Bootstrap()
+bootstrap = Bootstrap4()
 moment = Moment()
 nav = Nav()
 talisman = Talisman()
