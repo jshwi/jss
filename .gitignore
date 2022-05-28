@@ -1,4 +1,5 @@
 *.egg-*
+*.mo
 *coverage*
 .env*
 /build/
@@ -8,4 +9,5 @@ _build/
 app/static/
 dump.rdb
 instance/
+messages.pot
 node_modules/
