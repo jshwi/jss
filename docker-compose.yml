@@ -42,7 +42,7 @@ services:
     build:
       context: .
       target: development
-    command: ./.venv/bin/flask run --host 0.0.0.0
+    command: flask run --host 0.0.0.0
     depends_on:
       - postgres
       - redis

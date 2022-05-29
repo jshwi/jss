@@ -1,13 +1,16 @@
-ARG USER=jss
 # =============================== Base =================================
 FROM python:3.8-alpine AS base
 
-ARG USER
+ARG USER=jss
 ARG WORKDIR=/home/$USER
+ARG VENV=$WORKDIR/.venv
 
-# reduce image size and send output straight to terminal
+# reduce image size, send output straight to terminal, and add
+# virtualenv to PATH (venv needs to be in PATH for any scripts run
+# outside of this context that aren't prefixed with $VENV/bin/)
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PATH $VENV/bin:$PATH
 
 # add user to run container under and install `libpq` for `psycopg2` and
 # `libstdc++` for multiple `Flask` extensions
@@ -16,34 +19,49 @@ RUN adduser --disabled-password $USER && apk add --no-cache libpq libstdc++
 # set new user's $HOME as WORKDIR
 WORKDIR $WORKDIR
 
-# =========================== Poetry Base ==============================
-FROM base AS poetry-base
+FROM base as dev-base
 
-# create virtualenv in workdir and execute `poetry` from ~/.local/bin
+# install `netcat` to listen for `postgresql` container
+RUN apk add --no-cache netcat-openbsd
+
+# ======================= Backend Builder Base =========================
+FROM base AS backend-builder-base
+
+# create virtualenv in workdir, install `poetry` in $POETRY_HOME/bin/,
+# and add $POETRY_HOME/bin to PATH
 ENV POETRY_VIRTUALENVS_IN_PROJECT 1
 ENV POETRY_HOME $WORKDIR/.local
-
-# install dependencies for building `poetry` and other Python packages
-# and build and install `poetry`
-RUN apk add --no-cache curl g++ libffi-dev musl-dev && \
-    curl -sSL https://install.python-poetry.org | python3 -
-
-# ========================== Backend Builder ============================
-FROM poetry-base AS backend-builder
+ENV PATH $POETRY_HOME/bin:$PATH
+ENV PIP_DEFAULT_TIMEOUT 100
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+ENV PIP_NO_CACHE_DIR 1
+ENV POETRY_VERSION 1.1.13
 
 # copy over files needed for installing Python packages with `poetry`
 COPY ./pyproject.toml ./poetry.lock ./
 
-# install dependencies for building `cryptography` and `psycopg2` and
+# install dependencies for building `poetry`, and other Python packages
+# (`cryptography` and `psycopg2` etc.), then build and install `poetry`
+RUN apk add --no-cache \
+    curl \
+    cargo \
+    g++ \
+    libffi-dev \
+    musl-dev \
+    postgresql-dev && \
+    curl -sSL https://install.python-poetry.org | python3 -
+
+# ========================== Backend Builder ============================
+FROM backend-builder-base AS backend-builder
+
 # create virtualenv to copy into other images
-RUN apk add --no-cache cargo postgresql-dev && \
-    ./.local/bin/poetry install --no-dev --no-root --no-ansi
+RUN poetry install --no-dev --no-root --no-ansi
 
 # ======================= Dev Backend Builder ==========================
 FROM backend-builder AS dev-backend-builder
 
 # install dev packages to virtualenv to copy into development image
-RUN ./.local/bin/poetry install --no-root --no-ansi
+RUN poetry install --no-root --no-ansi
 
 # ========================= Frontend Builder ===========================
 FROM node:18 AS frontend-builder
@@ -66,14 +84,14 @@ COPY ./migrations ./migrations
 COPY ./wsgi.py ./
 
 # copy over prepared virtualenv from builder
-COPY --from=backend-builder $WORKDIR/.venv ./.venv
+COPY --from=backend-builder $VENV ./.venv
 
 # copy over prepared static assets from builder
 COPY --from=frontend-builder ./app/static ./app/static
 
 # run static digest on static assets, make sure static files are
 # readable by `nginx`, then  pass ownership of all files to user
-RUN ./.venv/bin/flask digest compile && \
+RUN flask digest compile && \
     chmod 777 -R ./app/static && \
     chown -R $USER:$USER ./
 
@@ -81,20 +99,22 @@ RUN ./.venv/bin/flask digest compile && \
 USER $USER
 
 # run the application server
-CMD ["./.venv/bin/gunicorn", "--bind=0.0.0.0:5000", "wsgi:app"]
+CMD ["gunicorn", "--bind=0.0.0.0:5000", "wsgi:app"]
 
 # =========================== Development ==============================
-FROM base AS development
+FROM dev-base AS development
 
+# dummy development vars
 ARG DEV_SECRET=dev
-ARG DEV_EMAIL=admin@localhost
+ARG DEV_ADMIN_EMAIL=admin@localhost
 
+# hardcode env for development
 ENV FLASK_ENV development
-ENV ADMINS $DEV_EMAIL
+ENV ADMINS $DEV_ADMIN_EMAIL
 ENV ADMIN_SECRET $DEV_SECRET
 ENV CSP_REPORT_ONLY 1
 ENV DEBUG_TB_ENABLED 0
-ENV DEFAULT_MAIL_SENDER $DEV_EMAIL
+ENV DEFAULT_MAIL_SENDER $DEV_ADMIN_EMAIL
 ENV LOG_LEVEL DEBUG
 ENV NAVBAR_HOME 0
 ENV NAVBAR_ICONS 1
@@ -106,11 +126,10 @@ ENV SEND_FILE_MAX_AGE_DEFAULT 0
 COPY ./bin/entrypoint ./
 
 # copy over prepared python virtualenv from builder
-COPY --from=dev-backend-builder $WORKDIR/.venv ./.venv
+COPY --from=dev-backend-builder $VENV ./.venv
 
-# install `netcat` to listen for `postgresql` container and pass
-# ownership of all files to user
-RUN apk add --no-cache netcat-openbsd && chown -R $USER:$USER ./
+# pass ownership of all files to user
+RUN chown -R $USER:$USER ./
 
 # get out of root and run container as user
 USER $USER

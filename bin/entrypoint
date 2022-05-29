@@ -24,7 +24,7 @@ while ! nc -z "$SQL_HOST" "$SQL_PORT"; do
 done
 
 echo "PostgreSQL started"
-./.venv/bin/flask db upgrade
-./.venv/bin/flask create admin
+flask db upgrade
+flask create admin
 
 exec "$@"
