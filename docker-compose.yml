@@ -44,7 +44,7 @@ services:
       target: development
     command: ./.venv/bin/flask run --host 0.0.0.0
     depends_on:
-      - db
+      - postgres
       - redis
     environment:
       - "BRAND"
