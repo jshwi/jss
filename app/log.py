@@ -5,10 +5,8 @@ app.log
 Register custom app loggers.
 """
 import logging
-from logging.handlers import RotatingFileHandler, SMTPHandler
-from pathlib import Path
+from logging.handlers import SMTPHandler
 
-import appdirs
 from flask import Flask
 
 formatter = logging.Formatter(
@@ -46,22 +44,6 @@ def smtp_handler(app: Flask) -> None:
         app.logger.addHandler(handler)
 
 
-def file_handler(app: Flask) -> None:
-    """Add handler to write logs to rotating file.
-
-    :param app: Application factory object.
-    :return: Rotating file handler.
-    """
-    logfile = (
-        Path(appdirs.user_log_dir(app.name, opinion=False)) / f"{app.name}.log"
-    )
-    logfile.parent.mkdir(exist_ok=True, parents=True)
-    handler = RotatingFileHandler(logfile, maxBytes=10240, backupCount=10)
-    handler.setFormatter(formatter)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
-
-
 def integrate_loggers(app: Flask) -> None:
     """Integrate ``Flask`` logger with ``Gunicorn`` logger.
 
@@ -80,6 +62,5 @@ def init_app(app: Flask) -> None:
     :param app: Application factory object.
     """
     smtp_handler(app)
-    file_handler(app)
     if not app.config["DEBUG"]:
         integrate_loggers(app)
