@@ -34,7 +34,7 @@ services:
       - "SEND_FILE_MAX_AGE_DEFAULT"
     expose:
       - 5000
-    image: jss-production:1.17.0
+    image: jss-production:1.18.0
     volumes:
       - static_volume:/home/jss/app/static/
 
@@ -63,7 +63,7 @@ services:
       - "SIGNATURE"
       - "SQL_HOST=postgres"
       - "SQL_PORT=5432"
-    image: jss-development:1.17.0
+    image: jss-development:1.18.0
     ports:
       - "5000:5000"
     volumes:
@@ -85,7 +85,7 @@ services:
       target: nginx
     depends_on:
       - production
-    image: jss-nginx:1.17.0
+    image: jss-nginx:1.18.0
     ports:
       - "80:80"
       - "443:443"
