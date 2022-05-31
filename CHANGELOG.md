@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.18.0...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- Removes translate process from bin/post_compile
 
 [1.18.0](https://github.com/jshwi/jss/releases/tag/v1.18.0) - 2022-05-31
 ------------------------------------------------------------------------

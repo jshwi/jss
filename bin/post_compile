@@ -9,12 +9,9 @@
 #
 #        AUTHOR:  Stephen Whitlock (jshwi), stephen@jshwisolutions.com
 #       CREATED:  26/09/21 17:42:54
-#      REVISION:  0.2.0
+#      REVISION:  0.2.1
 #=======================================================================
 set -o errexit
 
 echo "-----> Digesting static files"
 cd "${1}" && flask digest compile
-
-echo "-----> Compiling translations"
-cd "${1}" && flask translate compile
