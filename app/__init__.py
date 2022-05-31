@@ -42,8 +42,7 @@ from app import (
     security,
     shell,
 )
-
-__version__ = "1.17.0"
+from app.version import __version__
 
 
 def create_app() -> Flask:
@@ -66,3 +65,6 @@ def create_app() -> Flask:
     dom.init_app(app)
     security.init_app(app)
     return app
+
+
+__all__ = ["__version__", "create_app"]
