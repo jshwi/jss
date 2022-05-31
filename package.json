@@ -1,6 +1,6 @@
 {
   "name": "jss",
-  "version": "1.18.0",
+  "version": "1.18.1",
   "description": "A Flask webapp",
   "private": true,
   "directories": {
