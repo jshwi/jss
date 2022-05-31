@@ -17,9 +17,9 @@ from flask import (
 from flask_login import current_user, login_required
 from werkzeug import Response
 
-from app.utils import redirect
-from app.utils.forms import EditProfile, MessageForm
+from app.forms import EditProfile, MessageForm
 from app.models import Message, Notification, User, Usernames, db
+from app.utils import redirect
 from app.utils.security import confirmation_required
 
 blueprint = Blueprint("user", __name__, url_prefix="/user")

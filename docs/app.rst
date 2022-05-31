@@ -45,6 +45,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.forms
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.log
    :members:
    :undoc-members:
@@ -98,10 +102,6 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.utils.csp
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.utils.forms
    :members:
    :undoc-members:
    :show-inheritance:
