@@ -40,8 +40,7 @@ http://localhost:5000
 
 .. code-block:: console
 
-    $ npm install
-    $ npm run webpack:dev
+    $ npm run init:dev
     $ docker compose up development
 
 Production
