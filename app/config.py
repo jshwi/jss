@@ -12,6 +12,7 @@ import datetime
 import typing as t
 from pathlib import Path
 
+import rq_dashboard
 import tomli
 from environs import Env
 from flask import Flask
@@ -362,6 +363,11 @@ class _Config(Env):
 
         return self.list("LANGUAGES", default=default)
 
+    @property
+    def RQ_DASHBOARD_REDIS_URL(self) -> str:
+        """URL for `rq-dashboard`."""
+        return self.str("RQ_DASHBOARD_REDIS_URL", default=self.REDIS_URL)
+
 
 config = _Config()
 config.read_env()
@@ -380,3 +386,4 @@ def init_app(app: Flask) -> None:
     :param app: Application factory object.
     """
     app.config.from_object(config)
+    app.config.from_object(rq_dashboard.default_settings)

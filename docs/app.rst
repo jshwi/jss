@@ -69,6 +69,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.routes.rq
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.routes.user
    :members:
    :undoc-members:

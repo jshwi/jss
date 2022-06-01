@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [1.19.0](https://github.com/jshwi/jss/releases/tag/v1.19.0) - 2022-06-02
 ------------------------------------------------------------------------
 ### Added
+- Adds `rq-dashboard`
 - Adds Spanish translation
 - Adds support for language translations
 - Adds `ADMIN_SECRET` to config

@@ -19,7 +19,7 @@ from flask_babel import get_locale
 from flask_login import current_user
 
 from app.extensions import db
-from app.routes import admin, auth, post, public, redirect, report, user
+from app.routes import admin, auth, post, public, redirect, report, rq, user
 
 
 def _before_request() -> None:
@@ -62,4 +62,5 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(redirect.blueprint)
     app.add_url_rule("/", endpoint="index")
     admin.init_app(app)
+    rq.init_app(app)
     app.after_request(format_html)  # type: ignore

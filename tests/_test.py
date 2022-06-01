@@ -1575,7 +1575,7 @@ def test_all_routes_covered(test_app: Flask) -> None:
 
     :param test_app: Test application.
     """
-    ignore = ["/admin/*", "/static/*", "/bootstrap/*"]
+    ignore = ["/admin/*", "/static/*", "/bootstrap/*", "/rq/*"]
     exception = ["/admin/"]
     filter_covered = [
         r.rule
@@ -2092,3 +2092,29 @@ def test_pot_file(test_app: Flask) -> None:
     """
     with test_app.app_context():
         assert lang._pot_file() == Path(MESSAGES_POT)
+
+
+@pytest.mark.usefixtures("init_db")
+def test_rq_dashboard_admin_required(
+    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
+) -> None:
+    """Test requirement that admin user be logged in to view dashboard.
+
+    :param client: Client for testing app.
+    :param auth: Handle authorization with test app.
+    :param add_test_objects: Add test objects to test database.
+    """
+    admin_test_object = UserTestObject(
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+    )
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, admin=False
+    )
+    add_test_objects.add_test_users(admin_test_object)
+    add_test_objects.add_test_users(user_test_object)
+    auth.login(admin_test_object)
+    response = client.get("/rq", follow_redirects=True)
+    assert response.status_code == 200
+    auth.login(user_test_object)
+    response = client.get("/rq", follow_redirects=True)
+    assert response.status_code == 401
