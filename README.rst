@@ -50,4 +50,4 @@ https://localhost:443
 
 .. code-block:: console
 
-    $ docker compose up nginx
+    $ docker compose up production

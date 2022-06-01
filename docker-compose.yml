@@ -5,6 +5,9 @@ services:
     build:
       context: .
       target: production
+    container_name: jss-production
+    depends_on:
+      - nginx
     environment:
       - "ADMINS"
       - "ADMIN_SECRET"
@@ -43,9 +46,11 @@ services:
       context: .
       target: development
     command: flask run --host 0.0.0.0
+    container_name: jss-development
     depends_on:
       - postgres
       - redis
+      - development-worker
     environment:
       - "BRAND"
       - "COPYRIGHT_AUTHOR"
@@ -70,7 +75,35 @@ services:
       - ./app:/home/jss/app
       - ./migrations:/home/jss/migrations
 
+  development-worker:
+    container_name: jss-dev-worker
+    entrypoint: ["rq", "worker", "--url", "redis://redis:6379/0", "jss-tasks"]
+    environment:
+      - "BRAND"
+      - "DATABASE=postgres"
+      - "DATABASE_URL=postgresql://jss:jss@postgres:5432/jss"
+      - "MAIL_PASSWORD=${DEV_MAIL_PASSWORD}"
+      - "MAIL_PORT=${DEV_MAIL_PORT}"
+      - "MAIL_SERVER=${DEV_MAIL_SERVER}"
+      - "MAIL_SUBJECT_PREFIX"
+      - "MAIL_USERNAME=${DEV_MAIL_USERNAME}"
+      - "MAIL_USE_SSL=${DEV_MAIL_USE_SSL}"
+      - "MAIL_USE_TLS=${DEV_MAIL_USE_TLS}"
+      - "REDIS_URL=redis://redis:6379/0"
+      - "SIGNATURE"
+      - "SQL_HOST=postgres"
+      - "SQL_PORT=5432"
+    depends_on:
+      - redis
+    image: jss-development:1.18.1
+    links:
+      - redis
+    volumes:
+      - ./app:/home/jss/app
+      - ./migrations:/home/jss/migrations
+
   postgres:
+    container_name: jss-postgres
     environment:
       POSTGRES_USER: jss
       POSTGRES_PASSWORD: jss
@@ -83,8 +116,7 @@ services:
     build:
       context: .
       target: nginx
-    depends_on:
-      - production
+    container_name: jss-nginx
     image: jss-nginx:1.18.1
     ports:
       - "80:80"
@@ -93,7 +125,10 @@ services:
       - static_volume:/home/jss/app/static/
 
   redis:
+    container_name: jss-redis
     image: redis:6.2-alpine
+    ports:
+      - "6379:6379"
     volumes:
       - redis_dump:/data/
 

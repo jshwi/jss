@@ -37,9 +37,6 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV PIP_NO_CACHE_DIR 1
 ENV POETRY_VERSION 1.1.13
 
-# copy over files needed for installing Python packages with `poetry`
-COPY ./pyproject.toml ./poetry.lock ./
-
 # install dependencies for building `poetry`, and other Python packages
 # (`cryptography` and `psycopg2` etc.), then build and install `poetry`
 RUN apk add --no-cache \
@@ -53,6 +50,9 @@ RUN apk add --no-cache \
 
 # ========================== Backend Builder ============================
 FROM backend-builder-base AS backend-builder
+
+# copy over files needed for installing Python packages with `poetry`
+COPY ./pyproject.toml ./poetry.lock ./
 
 # create virtualenv to copy into other images
 RUN poetry install --no-dev --no-root --no-ansi
@@ -81,7 +81,7 @@ ENV FLASK_ENV production
 # copy over app, database migrations, and wsgi entry point
 COPY ./app ./app
 COPY ./migrations ./migrations
-COPY ./wsgi.py ./
+COPY ./wsgi.py ./bin/post_compile ./
 
 # copy over prepared virtualenv from builder
 COPY --from=backend-builder $VENV ./.venv
@@ -91,9 +91,10 @@ COPY --from=frontend-builder ./app/static ./app/static
 
 # run static digest on static assets, make sure static files are
 # readable by `nginx`, then  pass ownership of all files to user
-RUN flask digest compile && \
+RUN ./post_compile && \
     chmod 777 -R ./app/static && \
-    chown -R $USER:$USER ./
+    chown -R $USER:$USER ./ && \
+    rm -f ./post_compile
 
 # get out of root and run container as user
 USER $USER

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #=======================================================================
 #
 #          FILE:  post_compile
@@ -9,7 +9,7 @@
 #
 #        AUTHOR:  Stephen Whitlock (jshwi), stephen@jshwisolutions.com
 #       CREATED:  26/09/21 17:42:54
-#      REVISION:  0.2.1
+#      REVISION:  0.3.0
 #=======================================================================
 set -o errexit
 
