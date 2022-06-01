@@ -618,17 +618,13 @@ def test_create_user_passwords_no_match(
 
 
 @pytest.mark.usefixtures("init_db")
-def test_create_admin(
-    monkeypatch: pytest.MonkeyPatch, test_app: Flask, runner: FlaskCliRunner
-) -> None:
+def test_create_admin(test_app: Flask, runner: FlaskCliRunner) -> None:
     """Test commands called when invoking ``flask create admin``.
 
-    :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test ``Flask`` app object.
     :param runner: Fixture derived from the ``create_app`` factory
         fixture used to call the ``init-db`` command by name.
     """
-    monkeypatch.setenv("ADMIN_SECRET", ADMIN_USER_PASSWORD)
     response = runner.invoke(args=["create", "admin"])
     assert "admin successfully created" in response.output
     with test_app.app_context():

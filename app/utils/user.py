@@ -4,7 +4,6 @@ app.utils.user
 
 Functionality for user's of the app.
 """
-import os
 import typing as t
 from datetime import datetime
 from getpass import getpass
@@ -90,7 +89,7 @@ def create_admin_cli() -> None:
         create_user_override(
             username="admin",
             email=current_app.config["ADMINS"][0],
-            password=os.environ["ADMIN_SECRET"],
+            password=current_app.config["ADMIN_SECRET"],
             admin=True,
             authorized=True,
         )

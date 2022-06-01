@@ -334,6 +334,11 @@ class _Config(Env):
         """Signature to sign off emails with."""
         return self.str("SIGNATURE", default=self.BRAND)
 
+    @property
+    def ADMIN_SECRET(self) -> str:
+        """Password for initialized admin user."""
+        return self.str("ADMIN_SECRET", default=None)
+
 
 config = _Config()
 config.read_env()

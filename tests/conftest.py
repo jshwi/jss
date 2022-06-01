@@ -18,6 +18,7 @@ from app.models import db
 
 from .utils import (
     ADMIN_USER_EMAIL,
+    ADMIN_USER_PASSWORD,
     MAIN_USER_EMAIL,
     AddTestObjects,
     AuthActions,
@@ -46,6 +47,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("ADMINS", f"{ADMIN_USER_EMAIL},{MAIN_USER_EMAIL}")
     monkeypatch.setenv("DEFAULT_MAIL_SENDER", "no-reply@test.com")
     monkeypatch.setenv("DEBUG_TB_ENABLED", "0")
+    monkeypatch.setenv("ADMIN_SECRET", ADMIN_USER_PASSWORD)
     return create_app()
 
 
