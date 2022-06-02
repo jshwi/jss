@@ -262,6 +262,7 @@ class Post(BaseModel):
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
     edited = db.Column(db.DateTime, default=None)
+    language = db.Column(db.String(5))
 
     def get_version(self, index: int) -> ModelBuilder | None:
         """Get version of post by index.
