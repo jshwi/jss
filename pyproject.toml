@@ -181,7 +181,11 @@ addopts = [
     "-n",
     "auto",
 ]
-filterwarnings = "ignore::DeprecationWarning"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+    "ignore::RuntimeWarning",
+]
 norecursedirs = [
     "docs",
     "*.egg-info",
