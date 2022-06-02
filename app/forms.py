@@ -42,9 +42,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField("Register")
 
     # noinspection PyMethodMayBeStatic
-    def validate_username(  # pylint: disable=no-self-use
-        self, username: StringField
-    ) -> None:
+    def validate_username(self, username: StringField) -> None:
         """WTForms validates methods prefixed with ``validate_``.
 
         :param username: Username to check validity for.
@@ -56,9 +54,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Username is taken")
 
     # noinspection PyMethodMayBeStatic
-    def validate_email(  # pylint: disable=no-self-use
-        self, email: StringField
-    ) -> None:
+    def validate_email(self, email: StringField) -> None:
         """WTForms validates methods prefixed with ``validate_``.
 
         :param email: Email to check validity for.
