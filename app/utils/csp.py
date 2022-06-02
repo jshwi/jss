@@ -8,7 +8,7 @@ CSPValType = t.Union[str, t.List[str]]
 CSPType = t.MutableMapping[str, CSPValType]
 
 
-class ContentSecurityPolicy(CSPType):  # pylint: disable=too-many-ancestors
+class ContentSecurityPolicy(CSPType):
     """Object for setting default CSP and config override.
 
     :param default_csp: Default CSP, before implementing configurations.

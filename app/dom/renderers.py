@@ -2,9 +2,8 @@
 app.dom.renderers
 =================
 """
+# pylint: disable=invalid-name
 import typing as t
-
-# pylint: disable=invalid-name,too-few-public-methods
 from hashlib import sha1
 
 from dominate import tags
@@ -136,9 +135,7 @@ class NavbarRenderer(Visitor):
         self._in_dropdown = False
         self.id = id
 
-    def visit_Navbar(  # pylint: disable=too-many-locals
-        self, node: Navbar
-    ) -> html_tag:
+    def visit_Navbar(self, node: Navbar) -> html_tag:
         """Render HTML via ``Bootstrap`` for navbar.
 
         :param node: Navbar object to add to template.

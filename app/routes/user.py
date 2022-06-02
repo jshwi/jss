@@ -29,9 +29,7 @@ blueprint = Blueprint("user", __name__, url_prefix="/user")
 def before_request() -> None:
     """Add user's login date and time before first request."""
     if current_user.is_authenticated:
-        current_user.last_seen = (  # pylint: disable=assigning-non-slot
-            datetime.now()
-        )
+        current_user.last_seen = datetime.now()
         db.session.commit()
 
 
@@ -49,12 +47,8 @@ def edit_profile() -> t.Union[str, Response]:
         username=current_user.username, about_me=current_user.about_me
     )
     if form.validate_on_submit():
-        current_user.username = (  # pylint: disable=assigning-non-slot
-            form.username.data
-        )
-        current_user.about_me = (  # pylint: disable=assigning-non-slot
-            form.about_me.data
-        )
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
         db.session.commit()
         flash("Your changes have been saved.")
         if old_username != current_user.username:
@@ -109,7 +103,6 @@ def messages() -> str:
 
     :return: Rendered user/messages template to view received messages.
     """
-    # pylint: disable=assigning-non-slot
     current_user.last_message_read_time = datetime.utcnow()
     current_user.add_notifications("unread_message_count", 0)
     db.session.commit()
