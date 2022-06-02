@@ -5,9 +5,7 @@
       <scope name="docs.index" level="ERROR" enabled="false" />
     </inspection_tool>
     <inspection_tool class="CssUnusedSymbol" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="app.static.css.darkreader" level="WARNING" enabled="false" />
-      <scope name="app.static.css.highlight.default" level="WARNING" enabled="false" />
-      <scope name="app.static.css.style" level="WARNING" enabled="false" />
+      <scope name="assets.css" level="WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="DjangoUnresolvedTemplateReferenceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">

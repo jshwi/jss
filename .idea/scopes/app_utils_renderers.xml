@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="app.utils.renderers" pattern="file:app/utils/renderers.py" />
-</component>

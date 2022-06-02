@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="assets.css" pattern="file[jss]:assets/css/*||file[jss]:assets/css/highlight/*" />
+</component>
