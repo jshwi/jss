@@ -14,6 +14,7 @@ from app.forms import PostForm
 from app.models import Post, db
 from app.utils import redirect
 from app.utils.security import authorization_required
+from langdetect import detect, LangDetectException
 
 blueprint = Blueprint("post", __name__, url_prefix="/post")
 
@@ -37,8 +38,17 @@ def create() -> str | Response:
     form = PostForm()
     if form.validate_on_submit():
         # noinspection PyArgumentList
+        try:
+            # noinspection PyUnresolvedReferences
+            language = detect(form.post.data)
+        except LangDetectException:
+            language = ""
+
         post = Post(
-            title=form.title.data, body=form.body.data, user_id=current_user.id
+            title=form.title.data,
+            body=form.body.data,
+            user_id=current_user.id,
+            language=language,
         )
         db.session.add(post)
         db.session.commit()

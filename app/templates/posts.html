@@ -5,6 +5,10 @@ this is the base template for pages displaying posts #}
 {# overrides empty post block in base template #}
 {% block posts %}
     {% for post in posts %}
+        {% if post.language and post.language != g.locale %}
+        <br><br>
+        <a href="#">{{ _('Translate') }}</a>
+        {% endif %}
         <hr/>
         <div class="row highlight">
             <div class="col-12 col-md-3">
