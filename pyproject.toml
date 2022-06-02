@@ -147,6 +147,7 @@ exclude = [
     "conf.py",
     "migrations",
     "node_modules",
+    "wsgi.py",
 ]
 
 [tool.pyaud.logging]
