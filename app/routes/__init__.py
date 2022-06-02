@@ -12,9 +12,14 @@ an outgoing response.
 based on its name and arguments.
 """
 from bs4 import BeautifulSoup
-from flask import Flask, Response
+from flask import Flask, Response, g
+from flask_babel import get_locale
 
 from app.routes import admin, auth, post, public, redirect, report, user
+
+
+def _set_global_locale() -> None:
+    g.locale = str(get_locale())
 
 
 def format_html(response: Response):
@@ -39,6 +44,7 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
+    app.before_request(_set_global_locale)
     app.register_blueprint(report.blueprint)
     app.register_blueprint(public.blueprint)
     app.register_blueprint(auth.blueprint)

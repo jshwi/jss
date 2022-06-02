@@ -19,6 +19,8 @@ from app.models import db
 from .utils import (
     ADMIN_USER_EMAIL,
     ADMIN_USER_PASSWORD,
+    COPYRIGHT_AUTHOR,
+    COPYRIGHT_EMAIL,
     MAIN_USER_EMAIL,
     AddTestObjects,
     AuthActions,
@@ -48,6 +50,9 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("DEFAULT_MAIL_SENDER", "no-reply@test.com")
     monkeypatch.setenv("DEBUG_TB_ENABLED", "0")
     monkeypatch.setenv("ADMIN_SECRET", ADMIN_USER_PASSWORD)
+    monkeypatch.setenv("TRANSLATIONS_DIR", str(tmp_path / "translations"))
+    monkeypatch.setenv("COPYRIGHT_AUTHOR", COPYRIGHT_AUTHOR)
+    monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)
     return create_app()
 
 

@@ -18,7 +18,7 @@
 
     {# when user"s profile has last been seen #}
     {% if user.last_seen %}
-        <p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>
+        <p>{{ _("Last seen on") }}: {{ moment(user.last_seen).format('LLL') }}</p>
     {% endif %}
 
     {# user can follow and unfollow user if they are logged in #}
@@ -26,34 +26,34 @@
     {% if current_user.is_authenticated %}
 
         {# display a count of followed users and following users #}
-        <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+        <p>{{ user.followers.count() }} {{ _("followers") }}, {{ user.followed.count() }} {{ _("following.") }}</p>
 
         {# check that post was written by user currently logged in #}
         {% if user == current_user %}
 
             {# if user is on their own profile page display option to edit it #}
-            <p><a href="{{ url_for('user.edit_profile') }}">Edit</a></p>
+            <p><a href="{{ url_for('user.edit_profile') }}">{{ _("Edit") }}</a></p>
 
             {# user can start a new task if one isn"t already running #}
             {% if not current_user.get_task_in_progress('export_posts') %}
-                <p><a href="{{ url_for('redirect.export_posts') }}">Export posts</a></p>
+                <p><a href="{{ url_for('redirect.export_posts') }}">{{ _("Export posts") }}</a></p>
             {% endif %}
         {% else %}
             {# option to send a message to other user #}
-            <p><a href="{{ url_for('user.send_message', recipient=user.username) }}">Send private message</a></p>
+            <p><a href="{{ url_for('user.send_message', recipient=user.username) }}">{{ _("Send private message") }}</a></p>
             {% if not current_user.is_following(user) %}
 
                 {# option to follow user if not already following #}
                 <form action="{{ url_for('redirect.follow', username=user.username) }}" method="post">
                     {{ form.hidden_tag() }}
-                    {{ wtf.render_field(form.submit, value="Follow") }}
+                    {{ wtf.render_field(form.submit, value=_("Follow")) }}
                 </form>
             {% else %}
 
                 {# option to unfollow user if already following #}
                 <form action="{{ url_for('redirect.unfollow', username=user.username) }}" method="post">
                     {{ form.hidden_tag() }}
-                    {{ wtf.render_field(form.submit, value="Unfollow") }}
+                    {{ wtf.render_field(form.submit, value=_("Unfollow")) }}
                 </form>
             {% endif %}
         {% endif %}

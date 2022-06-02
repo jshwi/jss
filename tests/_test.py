@@ -3,11 +3,13 @@ tests._test
 ===========
 """
 # pylint: disable=too-many-arguments,too-many-lines,too-many-locals
-# pylint: disable=import-outside-toplevel
+# pylint: disable=import-outside-toplevel,protected-access
 import fnmatch
 import functools
 import json
 import logging
+import os
+import shutil
 import typing as t
 from pathlib import Path
 
@@ -26,6 +28,7 @@ from app import config
 from app.extensions import mail
 from app.log import smtp_handler
 from app.models import Post, User, db
+from app.utils import lang
 from app.utils.csp import ContentSecurityPolicy, CSPType
 from app.utils.mail import send_email
 from app.utils.register import RegisterContext
@@ -84,6 +87,7 @@ from .utils import (
     POST_TITLE_V1,
     POST_TITLE_V2,
     POST_TITLE_V3,
+    POT_CONTENTS,
     PROFILE_EDIT,
     PYPROJECT_TOML,
     RECIPIENT_ID,
@@ -2498,3 +2502,208 @@ def test_jinja2_required_extensions() -> None:
     # noinspection PyUnresolvedReferences
     assert hasattr(jinja2_ext, "autoescape")
     assert hasattr(jinja2_ext, "with_")
+
+
+# noinspection DuplicatedCode
+def test_translate_init_files(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    runner: FlaskCliRunner,
+) -> None:
+    """Test management of files when running ``flask translate init``.
+
+    :param tmp_path: Create and return temporary ``Path`` object.
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test ``Flask`` app object.
+    :param runner: Fixture derived from the ``create_app`` factory.
+    """
+    pot_file = tmp_path / "messages.pot"
+    tdir: Path = test_app.config["TRANSLATIONS_DIR"]
+    lang_arg = "es"
+    lc_dir = tdir / lang_arg / "LC_MESSAGES"
+    po_file = lc_dir / "messages.po"
+
+    def _extract():
+        pot_file.write_text(POT_CONTENTS)
+
+    def _init():
+        lc_dir.mkdir(parents=True)
+        shutil.copy2(pot_file, po_file)
+
+    commands = [_extract, _init]
+
+    def _pybabel(_: str, *__: t.Union[str, os.PathLike]) -> None:
+        commands.pop(0)()
+
+    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+    monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
+    result = runner.invoke(
+        args=["translate", "init", lang_arg], catch_exceptions=False
+    )
+    po_contents = po_file.read_text(encoding="utf-8")
+    assert "<Result okay>" in str(result)
+    assert POT_CONTENTS[-3:] == '"\n\n'
+    assert not pot_file.is_file()
+    assert po_contents[-3:] == '""\n'
+    assert f"{COPYRIGHT_AUTHOR} <{COPYRIGHT_EMAIL}>, 2022" in po_contents
+    assert f"Report-Msgid-Bugs-To: {COPYRIGHT_EMAIL}" in po_contents
+    assert (
+        f"Last-Translator: {COPYRIGHT_AUTHOR} <{COPYRIGHT_EMAIL}>"
+        in po_contents
+    )
+    assert "FIRST AUTHOR" not in po_contents
+    assert "EMAIL@ADDRESS" not in po_contents
+
+
+# noinspection DuplicatedCode
+def test_translate_update_files(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    runner: FlaskCliRunner,
+) -> None:
+    """Test management of files when running ``flask translate update``.
+
+    :param tmp_path: Create and return temporary ``Path`` object.
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test ``Flask`` app object.
+    :param runner: Fixture derived from the ``create_app`` factory.
+    """
+    pot_file = tmp_path / "messages.pot"
+    tdir: Path = test_app.config["TRANSLATIONS_DIR"]
+    lang_arg = "es"
+    lc_dir = tdir / lang_arg / "LC_MESSAGES"
+    po_file = lc_dir / "messages.po"
+
+    def _extract():
+        pot_file.write_text(POT_CONTENTS)
+
+    def _init():
+        lc_dir.mkdir(parents=True)
+        shutil.copy2(pot_file, po_file)
+
+    def _update():
+        shutil.copy2(pot_file, po_file)
+
+    _extract()
+    _init()
+    os.remove(pot_file)
+
+    commands = [_extract, _update]
+
+    def _pybabel(_: str, *__: t.Union[str, os.PathLike]) -> None:
+        commands.pop(0)()
+
+    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+    monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
+    result = runner.invoke(
+        args=["translate", "update"], catch_exceptions=False
+    )
+    po_contents = po_file.read_text(encoding="utf-8")
+    assert "<Result okay>" in str(result)
+    assert POT_CONTENTS[-3:] == '"\n\n'
+    assert not pot_file.is_file()
+    assert po_contents[-3:] == '""\n'
+    assert f"{COPYRIGHT_AUTHOR} <{COPYRIGHT_EMAIL}>, 2022" in po_contents
+    assert f"Report-Msgid-Bugs-To: {COPYRIGHT_EMAIL}" in po_contents
+    assert (
+        f"Last-Translator: {COPYRIGHT_AUTHOR} <{COPYRIGHT_EMAIL}>"
+        in po_contents
+    )
+    assert "FIRST AUTHOR" not in po_contents
+    assert "EMAIL@ADDRESS" not in po_contents
+
+
+# noinspection DuplicatedCode
+def test_translate_args(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
+) -> None:
+    """Test commands called when invoking ``flask translate init``.
+
+    :param tmp_path: Create and return temporary ``Path`` object.
+    :param monkeypatch: Mock patch environment and attributes.
+    :param runner: Fixture derived from the ``create_app`` factory.
+    """
+    commands = []
+    pot_file = tmp_path / "messages.pot"
+    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+
+    def _subprocess_run(
+        args: t.List[t.Union[str, os.PathLike]], **_: bool
+    ) -> None:
+        commands.extend(args)
+        pot_file.write_text(POT_CONTENTS)
+
+    monkeypatch.setattr("app.utils.lang.subprocess.run", _subprocess_run)
+    runner.invoke(args=["translate", "init", "es"])
+    assert "pybabel" in commands
+    assert "extract" in commands
+    assert "init" in commands
+
+
+# noinspection DuplicatedCode
+def test_translate_update_args(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
+) -> None:
+    """Test commands called when invoking ``flask translate update``.
+
+    :param tmp_path: Create and return temporary ``Path`` object.
+    :param monkeypatch: Mock patch environment and attributes.
+    :param runner: Fixture derived from the ``create_app`` factory.
+    """
+    commands = []
+    pot_file = tmp_path / "messages.pot"
+    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+
+    def _subprocess_run(
+        args: t.List[t.Union[str, os.PathLike]], **_: bool
+    ) -> None:
+        commands.extend(args)
+        pot_file.write_text(POT_CONTENTS)
+
+    monkeypatch.setattr("app.utils.lang.subprocess.run", _subprocess_run)
+    runner.invoke(args=["translate", "update"])
+    assert "pybabel" in commands
+    assert "extract" in commands
+
+
+# noinspection DuplicatedCode
+def test_translate_compile(
+    monkeypatch: pytest.MonkeyPatch, test_app: Flask, runner: FlaskCliRunner
+) -> None:
+    """Test commands called when invoking ``flask translate compile``.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test ``Flask`` app object.
+    :param runner: Fixture derived from the ``create_app`` factory.
+    """
+    po_file: Path = (
+        test_app.config["TRANSLATIONS_DIR"]
+        / "es"
+        / "LC_MESSAGES"
+        / "messages.po"
+    )
+    commands = []
+    monkeypatch.setattr(
+        "app.utils.lang.subprocess.run", lambda x, **y: commands.extend(x)
+    )
+    result = runner.invoke(
+        args=["translate", "compile"], catch_exceptions=False
+    )
+    assert "No message catalogs to compile" in result.output
+    assert not commands
+    po_file.parent.mkdir(parents=True)
+    po_file.touch()
+    runner.invoke(args=["translate", "compile"], catch_exceptions=False)
+    assert "pybabel" in commands
+    assert "compile" in commands
+
+
+def test_pot_file(test_app: Flask) -> None:
+    """Test ``_pot_file`` which is monkeypatched above.
+
+    :param test_app: Test ``Flask`` app object.
+    """
+    with test_app.app_context():
+        assert lang._pot_file() == Path("messages.pot")

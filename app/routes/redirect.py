@@ -2,10 +2,12 @@
 app.routes.redirect
 ===================
 """
-
 from datetime import datetime
 
 from flask import Blueprint, flash, render_template, url_for
+
+# noinspection PyProtectedMember
+from flask_babel import _
 from flask_login import current_user, login_required
 from itsdangerous import BadSignature
 from werkzeug import Response
@@ -39,16 +41,16 @@ def confirm_email(token: str) -> Response:
         email = confirm_token(token)
         user = User.query.filter_by(email=email).first()
         if user.confirmed:
-            flash("Account already confirmed. Please login.")
+            flash(_("Account already confirmed. Please login."))
         else:
             user.confirmed = True
             user.confirmed_on = datetime.now()
             db.session.add(user)
             db.session.commit()
-            flash("Your account has been verified.")
+            flash(_("Your account has been verified."))
 
     except BadSignature:
-        flash("The confirmation link is invalid or has expired.")
+        flash(_("The confirmation link is invalid or has expired."))
 
     return redirect.index()
 
@@ -75,7 +77,7 @@ def resend_confirmation() -> Response:
             ),
         ),
     )
-    flash("A new confirmation email has been sent.")
+    flash(_("A new confirmation email has been sent."))
     return redirect.Auth.unconfirmed()
 
 
@@ -116,7 +118,7 @@ def follow(username: str) -> Response:
         user = User.query.filter_by(username=username).first_or_404()
         current_user.follow(user)
         db.session.commit()
-        flash(f"You are now following {username}")
+        flash(_("You are now following %(username)s", username=username))
 
     return redirect.Public.profile(username=username)
 
@@ -139,7 +141,7 @@ def unfollow(username: str) -> Response:
         user = User.query.filter_by(username=username).first_or_404()
         current_user.unfollow(user)
         db.session.commit()
-        flash(f"You are no longer following {username}")
+        flash(_("You are no longer following %(username)s", username=username))
 
     return redirect.Public.profile(username=username)
 
@@ -157,7 +159,7 @@ def export_posts() -> Response:
         requested the post export (current user).
     """
     if current_user.get_task_in_progress("export_posts"):
-        flash("An export task is already in progress")
+        flash(_("An export task is already in progress"))
     else:
         current_user.launch_task("export_posts", "Exporting posts...")
         db.session.commit()

@@ -4,6 +4,9 @@ app.dom.navbar
 """
 from dominate import tags
 from flask import current_app
+
+# noinspection PyProtectedMember
+from flask_babel import _
 from flask_login import current_user
 from flask_nav.elements import Subgroup, View
 
@@ -19,7 +22,7 @@ def _construct_messages_view() -> BadgedView:
     # visitor class
     badge = tags.span(new_messages, id="message_count")
 
-    return BadgedView("Messages", new_messages, badge, "user.messages")
+    return BadgedView(_("Messages"), new_messages, badge, "user.messages")
 
 
 def _construct_user_subgroup() -> Subgroup:
@@ -35,12 +38,14 @@ def _construct_user_subgroup() -> Subgroup:
 
     # anything declared here will be in the navbar regardless of the
     # state of the current user i.e. admin is True or False.
-    profile = View("Profile", "public.profile", username=current_user.username)
-    logout = View("Logout", "auth.logout")
+    profile = View(
+        _("Profile"), "public.profile", username=current_user.username
+    )
+    logout = View(_("Logout"), "auth.logout")
 
     # only available to admin user
     if current_user.admin:
-        subgroup.items.append(RawUrl("Console", "/admin"))
+        subgroup.items.append(RawUrl(_("Console"), "/admin"))
 
     subgroup.items.extend([profile, logout])
     return subgroup
@@ -59,7 +64,7 @@ def top() -> Navbar:
     navbar = Navbar(brand)
 
     # add the Home view to the navbar if configured to do so
-    home = View("Home", "index")
+    home = View(_("Home"), "index")
     if current_app.config["NAVBAR_HOME"]:
         navbar.items.append(home)
 
@@ -67,7 +72,7 @@ def top() -> Navbar:
     # currently logged in
     if current_user.is_authenticated:
         messages = _construct_messages_view()
-        create = IconView("New", "post.create")
+        create = IconView(_("New"), "post.create")
         subgroup = _construct_user_subgroup()
 
         # replace regular text with icon attributes if configured to do
@@ -81,7 +86,7 @@ def top() -> Navbar:
 
     # the following will be rendered with the navbar if the user is
     # not currently logged in
-    register = View("Register", "auth.register")
-    login = View("Login", "auth.login")
+    register = View(_("Register"), "auth.register")
+    login = View(_("Login"), "auth.login")
     navbar.right_items.extend([register, login])
     return navbar

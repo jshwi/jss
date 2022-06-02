@@ -37,6 +37,7 @@ from app import (
     dom,
     exceptions,
     extensions,
+    lang,
     log,
     routes,
     security,
@@ -64,6 +65,7 @@ def create_app() -> Flask:
     cli.init_app(app)
     dom.init_app(app)
     security.init_app(app)
+    lang.init_app(app)
     return app
 
 

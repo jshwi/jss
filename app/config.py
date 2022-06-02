@@ -339,6 +339,27 @@ class _Config(Env):
         """Password for initialized admin user."""
         return self.str("ADMIN_SECRET", default=None)
 
+    @property
+    def BABEL_FILENAME(self) -> str:
+        """Name of .pot file."""
+        return self.str("BABEL_FILENAME", default="messages")
+
+    @property
+    def TRANSLATIONS_DIR(self) -> Path:
+        """Dir to store translations in."""
+        return self.path(
+            "TRANSLATIONS_DIR", default=Path("app") / "translations"
+        )
+
+    @property
+    def LANGUAGES(self) -> t.List[str]:
+        """Supported languages."""
+        default = ["en"]
+        if self.TRANSLATIONS_DIR.is_dir():
+            default.extend([p.name for p in self.TRANSLATIONS_DIR.iterdir()])
+
+        return self.list("LANGUAGES", default=default)
+
 
 config = _Config()
 config.read_env()

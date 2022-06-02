@@ -16,6 +16,9 @@ import typing as t
 from dominate import tags
 from dominate.tags import html_tag
 from flask import get_flashed_messages, url_for
+
+# noinspection PyProtectedMember
+from flask_babel import _
 from flask_login import current_user
 from flask_moment import moment
 from markupsafe import Markup
@@ -45,12 +48,12 @@ def version_dropdown(post: Post) -> html_tag:
     a = div.add(
         tags.a(href="#", cls="dropdown-toggle", data_toggle="dropdown")
     )
-    a.add("Versions")
+    a.add(_("Versions"))
     a.add(tags.span(cls="caret"))
     ul = div.add(tags.ul(cls="dropdown-menu", role="menu"))
 
     # populate <ul>...</ul>
-    for count, _ in enumerate(versions):
+    for count, __ in enumerate(versions):
 
         # version id should begin at 1...
         version_id = count + 1
@@ -63,12 +66,12 @@ def version_dropdown(post: Post) -> html_tag:
 
         if version_id == len(versions):
             # the last version is the current version
-            a.add(f"v{version_id}: This revision")
+            a.add(f"v{version_id}: {_('This revision')}")
             a["class"] = "current-version-anchor"
         elif version_id == len(versions) - 1:
             # the version before the current version is highlighted for
             # easy rollback
-            a.add(f"v{version_id}: Previous revision")
+            a.add(f"v{version_id}: {_('Previous revision')}")
         else:
             # all other versions
             a.add(f"v{version_id}")
@@ -119,13 +122,13 @@ def post_footer_nav(
     :param next_url: URL to next posts.
     :return: Navbar as ``html_tag`` object.
     """
-    nav = tags.nav(aria_label="...")
+    nav = tags.nav(aria_abel="...")
     ul = nav.add(tags.ul(cls="pagination justify-content-center"))
 
     # newer posts
     li = ul.add(tags.li(cls="page-item"))
     a = li.add(tags.a(cls="page-link"))
-    a.add("Previous")
+    a.add(_("Previous"))
     if prev_url is not None:
         a["href"] = prev_url
     else:
@@ -136,7 +139,7 @@ def post_footer_nav(
     # older posts
     li = ul.add(tags.li(cls="page-item"))
     a = li.add(tags.a(cls="page-link"))
-    a.add("Next")
+    a.add(_("Next"))
     if next_url is not None:
         a["href"] = next_url
     else:
@@ -157,9 +160,9 @@ def post_times(post: Post) -> html_tag:
     :return: Rendered paragraph tag with post's timestamp information.
     """
     p = tags.p(cls="small")
-    p.add("Posted: ")
+    p.add(f"{_('Posted')}: ")
     p.add(moment(post.created).fromNow())
     if post.edited is not None:
-        p.add(tags.br(), "Edited: ", moment(post.edited).fromNow())
+        p.add(tags.br(), f"{_('Edited')}: ", moment(post.edited).fromNow())
 
     return p

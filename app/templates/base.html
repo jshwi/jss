@@ -61,6 +61,9 @@
     {# render user's timezone client side #}
     {{ moment.include_moment() }}
 
+    {# set locale for `moment` #}
+    {{ moment.lang(g.locale) }}
+
     {# import JavaScript functions #}
     <script src="{{ static_url_for("static", filename="main_js.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
 

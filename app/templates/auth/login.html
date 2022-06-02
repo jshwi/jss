@@ -3,7 +3,7 @@
 {% import 'bootstrap4/form.html' as wtf %}
 
 {# page header and browser tab #}
-{% block page_name %}Sign In{% endblock %}
+{% block page_name %}{{ _("Sign In") }}{% endblock %}
 
 {# page body unique to login view #}
 {% block app_content %}
@@ -13,8 +13,8 @@
     <br>
 
     {# leads to registration route #}
-    <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
+    <p>{{ _("New User?") }} <a href="{{ url_for('auth.register') }}">{{ _("Click to Register!") }}</a></p>
 
     {# trigger sending of password reset email #}
-    <p><a href="{{ url_for('auth.request_password_reset') }}">Forgot password?</a></p>
+    <p><a href="{{ url_for('auth.request_password_reset') }}">{{ _("Forgot password?") }}</a></p>
 {% endblock %}

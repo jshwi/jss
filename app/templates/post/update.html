@@ -4,7 +4,7 @@
 
 {# page header and browser tab #}
 {% block header %}
-    <h1>{% block title %}Edit Post{% endblock %}</h1>{% endblock %}
+    <h1>{% block title %}{{ _("Edit Post") }}{% endblock %}</h1>{% endblock %}
 
 {# page body unique to the updayee view #}
 {% block app_content %}
@@ -12,7 +12,7 @@
     {# delete a post #}
     <form action="{{ url_for('redirect.delete', id=post.id) }}" method="post">
         {{ form.hidden_tag() }}
-        {{ wtf.render_field(form.submit, value="Delete", class="btn btn-danger", onclick="return confirm('Are you sure?');" ) }}
+        {{ wtf.render_field(form.submit, value=_("Delete"), class="btn btn-danger", onclick="return confirm('Are you sure?');" ) }}
     </form>
 
     {# preview markdown #}

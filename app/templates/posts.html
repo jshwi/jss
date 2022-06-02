@@ -20,7 +20,7 @@ this is the base template for pages displaying posts #}
                     {{ moment(post.created).fromNow() }}
                 </div>
                 {% if current_user.id == post.user_id %}
-                    <a class="action" href="{{ url_for("post.update", id=post.id) }}">Edit</a>
+                    <a class="action" href="{{ url_for("post.update", id=post.id) }}">{{ _("Edit") }}</a>
                     {% if post.versions.count() > 1 %}
                         {{ dom_macros_version_dropdown(post) }}
                     {% endif %}

@@ -404,3 +404,306 @@ class AddTestObjects:
             ``MessageTestObject`` instances.
         """
         self._add_object(Message, *message_test_objects)
+
+
+POT_CONTENTS = """
+# Translations template for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\\n"
+"POT-Creation-Date: 2022-06-02 14:34+1000\\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"
+"Language-Team: LANGUAGE <LL@li.org>\\n"
+"MIME-Version: 1.0\\n"
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"Generated-By: Babel 2.10.1\\n"
+
+#: app/forms.py:34 app/forms.py:75
+msgid "Username"
+msgstr ""
+
+#: app/forms.py:37 app/forms.py:94
+msgid "Email"
+msgstr ""
+
+#: app/forms.py:39 app/forms.py:76 app/forms.py:101
+msgid "Password"
+msgstr ""
+
+#: app/forms.py:41 app/forms.py:103
+msgid "Confirm Password"
+msgstr ""
+
+#: app/dom/navbar.py:90 app/forms.py:44 app/templates/auth/register.html:6
+msgid "Register"
+msgstr ""
+
+#: app/forms.py:56
+msgid "Username is taken"
+msgstr ""
+
+#: app/forms.py:68
+msgid "A user with this email address is already registered"
+msgstr ""
+
+#: app/forms.py:77
+msgid "Remember Me"
+msgstr ""
+
+#: app/forms.py:78 app/templates/auth/login.html:6
+msgid "Sign In"
+msgstr ""
+
+#: app/forms.py:84
+msgid "Title"
+msgstr ""
+
+#: app/forms.py:86
+msgid "Body"
+msgstr ""
+
+#: app/forms.py:88 app/forms.py:116 app/forms.py:122 app/forms.py:131
+msgid "Submit"
+msgstr ""
+
+#: app/forms.py:95
+msgid "Request Password Reset"
+msgstr ""
+
+#: app/forms.py:104
+msgid "password"
+msgstr ""
+
+#: app/forms.py:106 app/templates/auth/reset_password.html:6
+msgid "Reset Password"
+msgstr ""
+
+#: app/forms.py:112
+msgid "username"
+msgstr ""
+
+#: app/forms.py:114
+msgid "About me"
+msgstr ""
+
+#: app/forms.py:129
+msgid "Message"
+msgstr ""
+
+#: app/dom/macros.py:51
+msgid "Versions"
+msgstr ""
+
+#: app/dom/macros.py:131
+msgid "Previous"
+msgstr ""
+
+#: app/dom/macros.py:142
+msgid "Next"
+msgstr ""
+
+#: app/dom/navbar.py:25 app/templates/user/messages.html:7
+msgid "Messages"
+msgstr ""
+
+#: app/dom/navbar.py:42
+msgid "Profile"
+msgstr ""
+
+#: app/dom/navbar.py:44
+msgid "Logout"
+msgstr ""
+
+#: app/dom/navbar.py:48
+msgid "Console"
+msgstr ""
+
+#: app/dom/navbar.py:49
+msgid "RQ Dashboard"
+msgstr ""
+
+#: app/dom/navbar.py:68
+msgid "Home"
+msgstr ""
+
+#: app/dom/navbar.py:76
+msgid "New"
+msgstr ""
+
+#: app/dom/navbar.py:91
+msgid "Login"
+msgstr ""
+
+#: app/routes/redirect.py:44
+msgid "Account already confirmed. Please login."
+msgstr ""
+
+#: app/routes/redirect.py:50
+msgid "Your account has been verified."
+msgstr ""
+
+#: app/routes/redirect.py:53
+msgid "The confirmation link is invalid or has expired."
+msgstr ""
+
+#: app/routes/redirect.py:80
+msgid "A new confirmation email has been sent."
+msgstr ""
+
+#: app/routes/redirect.py:121
+#, python-format
+msgid "You are now following %(username)s"
+msgstr ""
+
+#: app/routes/redirect.py:144
+#, python-format
+msgid "You are no longer following %(username)s"
+msgstr ""
+
+#: app/routes/redirect.py:162
+msgid "An export task is already in progress"
+msgstr ""
+
+#: app/templates/posts.html:23 app/templates/public/profile.html:35
+msgid "Edit"
+msgstr ""
+
+#: app/templates/auth/login.html:16
+msgid "New User?"
+msgstr ""
+
+#: app/templates/auth/login.html:16
+msgid "Click to Register!"
+msgstr ""
+
+#: app/templates/auth/login.html:19
+msgid "Forgot password?"
+msgstr ""
+
+#: app/templates/auth/register.html:16
+msgid "Already a User?"
+msgstr ""
+
+#: app/templates/auth/register.html:16
+msgid "Click to Sign In!"
+msgstr ""
+
+#: app/templates/auth/request_password_reset.html:6
+msgid "Password Reset"
+msgstr ""
+
+#: app/templates/auth/request_password_reset.html:10
+msgid "Please enter your email to receive a password reset link"
+msgstr ""
+
+#: app/templates/auth/reset_password.html:10
+msgid "Please enter your new password"
+msgstr ""
+
+#: app/templates/auth/unconfirmed.html:5
+msgid "Account Verification Pending"
+msgstr ""
+
+#: app/templates/auth/unconfirmed.html:9
+msgid "Please check your inbox or junk folder for a confirmation link."
+msgstr ""
+
+#: app/templates/auth/unconfirmed.html:12
+msgid "Didn't get the email?"
+msgstr ""
+
+#: app/templates/auth/unconfirmed.html:12
+msgid "Resend"
+msgstr ""
+
+#: app/templates/email/activate.html:1
+msgid "Please follow the below link to activate your account"
+msgstr ""
+
+#: app/templates/email/reset_password.html:1
+msgid "Hi"
+msgstr ""
+
+#: app/templates/email/reset_password.html:2
+msgid "To reset your password click on the following link"
+msgstr ""
+
+#: app/templates/email/reset_password.html:3
+msgid "Reset password"
+msgstr ""
+
+#: app/templates/email/reset_password.html:4
+msgid ""
+"If you have not requested a password reset you can simply ignore this "
+"message"
+msgstr ""
+
+#: app/templates/post/create.html:6
+msgid "New Post"
+msgstr ""
+
+#: app/templates/post/read.html:19
+msgid "Update"
+msgstr ""
+
+#: app/templates/post/read.html:21
+msgid "Restore"
+msgstr ""
+
+#: app/templates/post/update.html:7
+msgid "Edit Post"
+msgstr ""
+
+#: app/templates/post/update.html:15
+msgid "Delete"
+msgstr ""
+
+#: app/templates/public/index.html:7
+msgid "Posts"
+msgstr ""
+
+#: app/templates/public/profile.html:21
+msgid "Last seen on"
+msgstr ""
+
+#: app/templates/public/profile.html:29
+msgid "followers"
+msgstr ""
+
+#: app/templates/public/profile.html:29
+msgid "following."
+msgstr ""
+
+#: app/templates/public/profile.html:39
+msgid "Export posts"
+msgstr ""
+
+#: app/templates/public/profile.html:43
+msgid "Send private message"
+msgstr ""
+
+#: app/templates/public/profile.html:49
+msgid "Follow"
+msgstr ""
+
+#: app/templates/public/profile.html:56
+msgid "Unfollow"
+msgstr ""
+
+#: app/templates/user/edit_profile.html:6
+msgid "Edit Profile"
+msgstr ""
+
+#: app/templates/user/send_message.html:6
+msgid "Send Message to"
+msgstr ""
+
+"""

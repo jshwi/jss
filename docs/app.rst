@@ -49,6 +49,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.lang
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.log
    :members:
    :undoc-members:
@@ -102,6 +106,10 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.utils.csp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.utils.lang
    :members:
    :undoc-members:
    :show-inheritance:

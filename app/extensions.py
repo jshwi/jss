@@ -5,6 +5,7 @@ app.extensions
 Each extension is initialized with ``init_app`` method.
 """
 from flask import Flask
+from flask_babel import Babel
 from flask_bootstrap import Bootstrap4
 from flask_compress import Compress
 from flask_debugtoolbar import DebugToolbarExtension
@@ -34,6 +35,7 @@ moment = Moment()
 nav = Nav()
 talisman = Talisman()
 compress = Compress()
+babel = Babel()
 
 
 def init_app(app: Flask) -> None:
@@ -55,3 +57,4 @@ def init_app(app: Flask) -> None:
     nav.init_app(app)
     talisman.init_app(app)
     compress.init_app(app)
+    babel.init_app(app)

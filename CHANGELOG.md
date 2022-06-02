@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.18.1...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- Adds support for language translations
 - Adds `ADMIN_SECRET` to config
 
 [1.18.1](https://github.com/jshwi/jss/releases/tag/v1.18.1) - 2022-05-31

@@ -2,12 +2,12 @@
 {% extends "base.html" %}
 
 {# page header and browser tab #}
-{% block page_name %}Account Verification Pending{% endblock %}
+{% block page_name %}{{ _("Account Verification Pending") }}{% endblock %}
 
 {# page body to the unconfirmed view #}
 {% block app_content %}
-    <p>Please check your inbox or junk folder for a confirmation link.</p>
+    <p>{{ _("Please check your inbox or junk folder for a confirmation link.") }}</p>
 
     {# trigger sending of confirmation email #}
-    <p>Didn't get the email? <a href="{{ url_for('redirect.resend_confirmation') }}">Resend</a>.</p>
+    <p>{{ _("Didn't get the email?") }} <a href="{{ url_for('redirect.resend_confirmation') }}">{{ _("Resend") }}</a>.</p>
 {% endblock %}
