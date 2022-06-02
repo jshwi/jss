@@ -11,6 +11,7 @@ import logging
 import typing as t
 from pathlib import Path
 
+import jinja2.ext as jinja2_ext
 import pytest
 from dominate import tags
 from dominate.tags import html_tag
@@ -2494,3 +2495,10 @@ def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
     csp = ContentSecurityPolicy(default)
     csp.update_policy(add)
     assert dict(csp) == expected
+
+
+def test_jinja2_required_extensions() -> None:
+    """Test ``jinja2.ext`` has attrs needed for language support."""
+    # noinspection PyUnresolvedReferences
+    assert hasattr(jinja2_ext, "autoescape")
+    assert hasattr(jinja2_ext, "with_")
