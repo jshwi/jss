@@ -14,7 +14,6 @@
       <scope name="whitelist.py" level="WEAK WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="HtmlUnknownTarget" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="IgnoreCoverEntry" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="prettierignore" level="WARNING" enabled="false" />
     </inspection_tool>
@@ -22,6 +21,13 @@
       <scope name="prettierignore" level="WEAK WARNING" enabled="false" />
     </inspection_tool>
     <inspection_tool class="PoetryPackageVersionsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ignoredPackages">
+        <value>
+          <list size="0" />
+        </value>
+      </option>
+    </inspection_tool>
     <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="whitelist.py" level="WEAK WARNING" enabled="false" />
     </inspection_tool>
@@ -55,11 +61,6 @@
         <option name="processLiterals" value="true" />
         <option name="processComments" value="true" />
       </scope>
-      <scope name="Pipfile.lock" level="TYPO" enabled="false">
-        <option name="processCode" value="true" />
-        <option name="processLiterals" value="true" />
-        <option name="processComments" value="true" />
-      </scope>
       <scope name="app.translations" level="TYPO" enabled="false">
         <option name="processCode" value="true" />
         <option name="processLiterals" value="true" />
@@ -74,7 +75,5 @@
       <option name="processLiterals" value="true" />
       <option name="processComments" value="true" />
     </inspection_tool>
-    <inspection_tool class="SqlNoDataSourceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="SqlResolveInspection" enabled="false" level="ERROR" enabled_by_default="false" />
   </profile>
 </component>

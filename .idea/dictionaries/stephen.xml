@@ -1,32 +1,72 @@
 <component name="ProjectDictionaryState">
   <dictionary name="stephen">
     <words>
+      <w>asctime</w>
       <w>autoescape</w>
+      <w>autonamedtuple</w>
       <w>backrefs</w>
       <w>browserconfig</w>
       <w>caplog</w>
       <w>cdnjs</w>
       <w>cdns</w>
+      <w>checkauthor</w>
+      <w>classmethod</w>
+      <w>codeql</w>
+      <w>conftest</w>
       <w>darkreader</w>
       <w>doctag</w>
+      <w>dunders</w>
+      <w>esdata</w>
+      <w>formdata</w>
+      <w>fout</w>
+      <w>fromaddr</w>
+      <w>fulltoc</w>
+      <w>genindex</w>
+      <w>githubpages</w>
+      <w>globaltoc</w>
       <w>gstatic</w>
       <w>highlightjs</w>
+      <w>hljs</w>
+      <w>imgmath</w>
+      <w>jsdelivr</w>
+      <w>jshwi</w>
+      <w>jshwisolutions</w>
+      <w>levelname</w>
       <w>libpq</w>
       <w>libstdc</w>
       <w>lstrip</w>
+      <w>mailhost</w>
       <w>makestuff</w>
+      <w>mastertoc</w>
+      <w>memlock</w>
       <w>misaka</w>
+      <w>monkeypatched</w>
+      <w>monokai</w>
       <w>msapplication</w>
       <w>msgid</w>
       <w>msgstr</w>
       <w>mstile</w>
       <w>nodir</w>
+      <w>noninfringement</w>
+      <w>nosniff</w>
       <w>nosuffix</w>
       <w>nplurals</w>
+      <w>postgre</w>
       <w>potrace</w>
+      <w>programoutput</w>
       <w>sagalaev</w>
+      <w>sameorigin</w>
+      <w>samesite</w>
+      <w>searchbox</w>
       <w>selinger</w>
+      <w>sourcelink</w>
+      <w>sphinxcontrib</w>
+      <w>toggler</w>
+      <w>ulimits</w>
+      <w>viewcode</w>
       <w>webmanifest</w>
+      <w>whitlock</w>
+      <w>xpack</w>
     </words>
   </dictionary>
 </component>
