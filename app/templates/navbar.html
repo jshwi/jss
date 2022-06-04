@@ -1,0 +1,137 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="{{ url_for("index") }}">
+    {{ config["BRAND"] }}
+  </a>
+  <ul class="navbar-nav ml-auto navbar-right">
+    <li class="slide-container">
+      <label for="toggle-darkreader"></label>
+      <input class="toggle-darkreader"
+        data-height="48px"
+        data-off="<i class='bi-moon'></i>"
+        data-offstyle="outline-light"
+        data-on="<i class='bi bi-sun'></i>"
+        data-onstyle="outline-dark"
+        data-style="border"
+        data-toggle="toggle"
+        id="toggle-darkreader"
+        onchange="window.main_js.darkMode.toggle()"
+        type="checkbox" />
+    </li>
+  </ul>
+  <button aria-controls="navbarSupported"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+          class="navbar-toggler"
+          data-target="#bd71281a6300e77ea836b0c9bbd3083ef2c23e12"
+          data-toggle="collapse"
+          type="button">
+    <span class="sr-only">
+      Toggle navigation
+    </span>
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse"
+       id="bd71281a6300e77ea836b0c9bbd3083ef2c23e12">
+    <ul class="navbar-nav mr-auto">
+      {% if config["NAVBAR_HOME"] %}
+        <li class="nav-item" href="{{ url_for("index") }}" title="Home">
+          <a class="nav-link" href="{{ url_for("index") }}">
+            Home
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+    <ul class="nav navbar-nav ml-auto">
+      {% if current_user.is_authenticated %}
+        {% if config["NAVBAR_ICONS"] %}
+          <li class="nav-item">
+            <a class="nav-link btn-lg btn-link"
+               href="{{ url_for("user.messages") }}" title="Messages">
+              <span class="bi-bell"></span>
+              {% if current_user.new_messages() %}
+                <span class="badge badge-pill badge-primary badge-notify"
+                      id="message_count">
+                {{ current_user.new_messages() }}
+              </span>
+              {% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn-lg btn-link"
+               href="{{ url_for("post.create") }}" title="New">
+              <span class="bi-plus-lg"></span>
+            </a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link"
+               href="{{ url_for("user.messages") }}"
+               title="Messages">
+              Messages
+              {% if current_user.new_messages() %}
+                <span class="badge" id="message_count">
+                {{ current_user.new_messages() }}
+              </span>
+              {% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+               href="{{ url_for("post.create") }}"
+               title="New">
+              New
+            </a>
+          </li>
+        {% endif %}
+        {% if config["NAVBAR_USER_DROPDOWN"] %}
+          <li class="nav-item">
+          <a aria-expanded="false" aria-haspopup="true"
+             class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+             role="button">
+            <img class="navbar-avatar" src="{{ current_user.avatar(18) }}"
+                 alt="" />
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right">
+        {% else %}
+          <div class="list-group list-group-horizontal">
+        {% endif %}
+        {% if current_user.admin %}
+          <li class="nav-item" href="/admin" title="Console">
+            <a class="nav-link" href="/admin">
+              Console
+            </a>
+          </li>
+        {% endif %}
+        <li class="nav-item"
+            href="{{ url_for("public.profile", username=current_user.username) }}"
+            title="Profile">
+          <a class="nav-link"
+             href="{{ url_for("public.profile", username=current_user.username) }}">
+            Profile
+          </a>
+        </li>
+        <li class="nav-item"
+            href="{{ url_for("auth.logout") }}"
+            title="Logout">
+          <a class="nav-link" href="{{ url_for("auth.logout") }}">
+            Logout
+          </a>
+        </li>
+      {% else %}
+        <li class="nav-item" href="{{ url_for("auth.register") }}"
+            title="Register">
+          <a class="nav-link" href="{{ url_for("auth.register") }}">
+            Register
+          </a>
+        </li>
+        <li class="nav-item" href="{{ url_for("auth.login") }}" title="Login">
+          <a class="nav-link" href="{{ url_for("auth.login") }}">
+            Login
+          </a>
+        </li>
+      {% endif %}
+      </div>
+      </ul>
+  </div>
+</nav>

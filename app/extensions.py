@@ -14,7 +14,6 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_misaka import Misaka
 from flask_moment import Moment
-from flask_nav import Nav
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
@@ -32,7 +31,6 @@ markdown = Misaka(fenced_code=True)
 page_down = PageDown()
 bootstrap = Bootstrap4()
 moment = Moment()
-nav = Nav()
 talisman = Talisman()
 compress = Compress()
 babel = Babel()
@@ -54,7 +52,6 @@ def init_app(app: Flask) -> None:
     page_down.init_app(app)
     bootstrap.init_app(app)
     moment.init_app(app)
-    nav.init_app(app)
     talisman.init_app(app)
     compress.init_app(app)
     babel.init_app(app)

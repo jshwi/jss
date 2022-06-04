@@ -1318,21 +1318,19 @@ def test_send_message(
     # ensure the badge (<span> tag) is displayed when there are messages
     # held for the user
     response = client.get("/")
-    assert all(
-        i in response.data.decode()
-        for i in [
-            (
-                '<a class="nav-link btn-lg btn-link" href="/user/messages" '
-                'title="Messages">'
-            ),
-            '<span class="bi-bell">',
-            (
-                '<span class="badge badge-pill badge-primary badge-notify" '
-                'id="message_count">'
-            ),
-            "1",
-        ]
-    )
+    for i in [
+        (
+            '<a class="nav-link btn-lg btn-link" href="/user/messages" '
+            'title="Messages">'
+        ),
+        '<span class="bi-bell">',
+        (
+            '<span class="badge badge-pill badge-primary badge-notify" '
+            'id="message_count">'
+        ),
+        "1",
+    ]:
+        assert i in response.data.decode()
 
     # for reliable testing ensure navbar not set to display icons
     monkeypatch.setenv("NAVBAR_ICONS", "0")
@@ -2101,7 +2099,7 @@ def test_navbar_user_dropdown_config_switch(
     assert all(
         i in response.data.decode()
         for i in [
-            '<div class="list-group">',
+            '<div class="list-group list-group-horizontal">',
             '<li class="nav-item" href="/admin" title="Console">',
             '<a class="nav-link" href="/admin">',
             "Console",
