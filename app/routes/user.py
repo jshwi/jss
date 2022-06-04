@@ -112,7 +112,7 @@ def messages() -> str:
     posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
         "user/messages.html",
-        posts=posts,
+        posts=posts.items,
         next_url=(
             url_for("user.messages", page=posts.next_num)
             if posts.has_next

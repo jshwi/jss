@@ -32,7 +32,7 @@ def index() -> str:
     posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
         "public/index.html",
-        posts=posts,
+        posts=posts.items,
         next_url=(
             url_for("index", page=posts.next_num) if posts.has_next else None
         ),
@@ -61,7 +61,7 @@ def profile(username: str) -> t.Union[str, Response]:
     posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
         "public/profile.html",
-        posts=posts,
+        posts=posts.items,
         username=username,
         user=user,
         form=form,
