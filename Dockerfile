@@ -122,6 +122,10 @@ ENV NAVBAR_ICONS 1
 ENV NAVBAR_USER_DROPDOWN 1
 ENV SECRET_KEY $DEV_SECRET
 ENV SEND_FILE_MAX_AGE_DEFAULT 0
+ENV BRAND "DevBrand"
+ENV COPYRIGHT_AUTHOR "Dev Copyright Author"
+ENV COPYRIGHT_EMAIL "dev_copyright_author@localhost.com"
+ENV MAIL_SUBJECT_PREFIX "[DevBrand]: "
 
 # execute command defined in docker-compose.yml within this script
 COPY ./bin/entrypoint ./
@@ -134,10 +138,6 @@ RUN chown -R $USER:$USER ./
 
 # get out of root and run container as user
 USER $USER
-
-# entry point to ensure database os running, upgrade database, and
-# create admin, before starting dev server
-ENTRYPOINT ["./entrypoint"]
 
 # ============================== Nginx =================================
 FROM nginx:1.23.0-alpine AS nginx

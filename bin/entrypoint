@@ -6,25 +6,43 @@
 #         USAGE:  To be called by Dockerfile upon docker-compose build
 #
 #   DESCRIPTION:  Docker entry point
-#                 Listen for PostgreSQL connection and announce start
+#                 Listen for container connections and announce start
 #                 Run database migration upgrade
 #                 Create initial app admin
 #                 execute command defined in docker-compose.yml
 #
 #        AUTHOR:  Stephen Whitlock (jshwi), stephen@jshwisolutions.com
 #       CREATED:  22/09/21 16:15:44
-#      REVISION:  0.2.0
+#      REVISION:  0.4.0
 #=======================================================================
 set -o errexit
 set -o nounset
 
-echo "Waiting for postgres..."
-while ! nc -z "$SQL_HOST" "$SQL_PORT"; do
-  sleep 0.1
+SQL_UP=0
+ES_UP=0
+
+listener () {
+  service="$1"; host="$2"; port="$3"; status="$4";
+  if [ "$status" = 0 ]; then
+    if nc -z "$host" "$port"; then
+      printf '%s started\n' "$service"
+      return 0
+    fi
+    printf 'Waiting for %s...\n' "$service"
+    return 1
+  fi
+}
+
+while true; do
+  listener "PostgreSQL" "$SQL_HOST" "$SQL_PORT" "$SQL_UP" && SQL_UP=1
+  listener "Elasticsearch" "$ES_HOST" "$ES_PORT" "$ES_UP" && ES_UP=1
+  [ "$SQL_UP" = 1 ] && [ "$ES_UP" = 1 ] && break
+  sleep 1
 done
 
-echo "PostgreSQL started"
-flask db upgrade
-flask create admin
+if [ "$FLASK_ENV" = "development" ]; then
+  flask db upgrade
+  flask create admin
+fi
 
 exec "$@"

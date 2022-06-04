@@ -1,6 +1,168 @@
 version: "3.8"
 
+x-development: &development
+  build:
+    context: .
+    target: development
+  environment: &dev-environment
+    DATABASE: "postgres"
+    DATABASE_URL: "postgresql://jss:jss@dev-postgres:5432/jss"
+    REDIS_URL: "redis://dev-redis:6379/0"
+    SQL_HOST: "dev-postgres"
+    SQL_PORT: "5432"
+    MAIL_PASSWORD: ${DEV_MAIL_PASSWORD}
+    MAIL_PORT: ${DEV_MAIL_PORT}
+    MAIL_SERVER: ${DEV_MAIL_SERVER}
+    MAIL_USERNAME: ${DEV_MAIL_USERNAME}
+    MAIL_USE_SSL: ${DEV_MAIL_USE_SSL}
+    MAIL_USE_TLS: ${DEV_MAIL_USE_TLS}
+  image: jss-development:1.19.1
+  volumes:
+    - ./app:/home/jss/app/
+    - ./migrations:/home/jss/migrations/
+
+  x-testing: &testing
+    build:
+      context: .
+      target: development
+    environment: &test-environment
+      FLASK_ENV: "testing"
+      DATABASE: "postgres"
+      DATABASE_URL: "postgresql://jss:jss@test-postgres:5432/jss"
+      REDIS_URL: "redis://test-redis:6379/0"
+      SQL_HOST: "test-postgres"
+      SQL_PORT: "5432"
+    image: jss-testing:1.19.1
+    volumes:
+      - ./app:/home/jss/app/
+      - ./migrations:/home/jss/migrations/
+      - ./tests:/home/jss/tests/
+
+x-elasticsearch: &elasticsearch
+  image: elasticsearch:7.8.0
+  ports:
+    - "9200:9200"
+  environment:
+    - "node.name=elasticsearch"
+    - "discovery.seed_hosts=elasticsearch"
+    - "cluster.initial_master_nodes=elasticsearch"
+    - "cluster.name=docker-cluster"
+    - "bootstrap.memory_lock=true"
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  ulimits:
+    memlock:
+      soft: -1
+      hard: -1
+
+x-redis: &redis
+  image: redis:6.2-alpine
+  ports:
+    - "6379:6379"
+
+x-postgres: &postgres
+  environment:
+    POSTGRES_USER: jss
+    POSTGRES_PASSWORD: jss
+    POSTGRES_DB: jss
+  image: postgres:13-alpine
+  ports:
+    - "5432:5432"
+
 services:
+  dev:
+    <<: *development
+    entrypoint: ./entrypoint
+    command: flask run --host 0.0.0.0
+    container_name: jss-dev
+    depends_on:
+      - dev-postgres
+      - dev-redis
+      - dev-elasticsearch
+      - dev-worker
+    environment:
+      <<: *dev-environment
+      ELASTICSEARCH_URL: "http://dev-elasticsearch:9200"
+      ES_HOST: "dev-elasticsearch"
+      ES_PORT: "9200"
+    ports:
+      - "5000:5000"
+
+  dev-worker:
+    <<: *development
+    container_name: jss-dev-worker
+    depends_on:
+      - dev-postgres
+      - dev-redis
+    entrypoint:
+      ["rq", "worker", "--url", "redis://dev-redis:6379/0", "jss-tasks"]
+    links:
+      - dev-redis
+
+  dev-postgres:
+    <<: *postgres
+    container_name: jss-dev-postgres
+    volumes:
+      - dev_postgres_data:/var/lib/postgresql/data/
+
+  dev-redis:
+    <<: *redis
+    container_name: jss-dev-redis
+    volumes:
+      - dev_redis_dump:/data/
+
+  dev-elasticsearch:
+    <<: *elasticsearch
+    container_name: jss-dev-elasticsearch
+    volumes:
+      - dev_elasticsearch_data:/usr/share/elasticsearch/data/
+
+  test:
+    <<: *testing
+    entrypoint: ./entrypoint
+    command: pytest --cov=app
+    container_name: jss-test
+    depends_on:
+      - test-postgres
+      - test-redis
+      - test-elasticsearch
+      - test-worker
+    environment:
+      <<: *test-environment
+      ELASTICSEARCH_URL: "http://test-elasticsearch:9200"
+      ES_HOST: "test-elasticsearch"
+      ES_PORT: "9200"
+    ports:
+      - "5001:5000"
+
+  test-worker:
+    <<: *testing
+    container_name: jss-test-worker
+    depends_on:
+      - test-postgres
+      - test-redis
+    entrypoint:
+      ["rq", "worker", "--url", "redis://test-redis:6379/0", "jss-tasks"]
+    links:
+      - test-redis
+
+  test-postgres:
+    <<: *postgres
+    container_name: jss-test-postgres
+    ports:
+      - "5433:5432"
+
+  test-redis:
+    <<: *redis
+    container_name: jss-test-redis
+    ports:
+      - "6380:6379"
+
+  test-elasticsearch:
+    <<: *elasticsearch
+    container_name: jss-test-elasticsearch
+    ports:
+      - "9201:9200"
+
   production:
     build:
       context: .
@@ -41,77 +203,6 @@ services:
     volumes:
       - static_volume:/home/jss/app/static/
 
-  development:
-    build:
-      context: .
-      target: development
-    command: flask run --host 0.0.0.0
-    container_name: jss-development
-    depends_on:
-      - postgres
-      - redis
-      - development-worker
-    environment:
-      - "BRAND"
-      - "COPYRIGHT_AUTHOR"
-      - "COPYRIGHT_EMAIL"
-      - "DATABASE=postgres"
-      - "DATABASE_URL=postgresql://jss:jss@postgres:5432/jss"
-      - "MAIL_PASSWORD=${DEV_MAIL_PASSWORD}"
-      - "MAIL_PORT=${DEV_MAIL_PORT}"
-      - "MAIL_SERVER=${DEV_MAIL_SERVER}"
-      - "MAIL_SUBJECT_PREFIX"
-      - "MAIL_USERNAME=${DEV_MAIL_USERNAME}"
-      - "MAIL_USE_SSL=${DEV_MAIL_USE_SSL}"
-      - "MAIL_USE_TLS=${DEV_MAIL_USE_TLS}"
-      - "REDIS_URL=redis://redis:6379/0"
-      - "SIGNATURE"
-      - "SQL_HOST=postgres"
-      - "SQL_PORT=5432"
-    image: jss-development:1.19.1
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./app:/home/jss/app
-      - ./migrations:/home/jss/migrations
-
-  development-worker:
-    container_name: jss-dev-worker
-    entrypoint: ["rq", "worker", "--url", "redis://redis:6379/0", "jss-tasks"]
-    environment:
-      - "BRAND"
-      - "DATABASE=postgres"
-      - "DATABASE_URL=postgresql://jss:jss@postgres:5432/jss"
-      - "MAIL_PASSWORD=${DEV_MAIL_PASSWORD}"
-      - "MAIL_PORT=${DEV_MAIL_PORT}"
-      - "MAIL_SERVER=${DEV_MAIL_SERVER}"
-      - "MAIL_SUBJECT_PREFIX"
-      - "MAIL_USERNAME=${DEV_MAIL_USERNAME}"
-      - "MAIL_USE_SSL=${DEV_MAIL_USE_SSL}"
-      - "MAIL_USE_TLS=${DEV_MAIL_USE_TLS}"
-      - "REDIS_URL=redis://redis:6379/0"
-      - "SIGNATURE"
-      - "SQL_HOST=postgres"
-      - "SQL_PORT=5432"
-    depends_on:
-      - redis
-    image: jss-development:1.19.1
-    links:
-      - redis
-    volumes:
-      - ./app:/home/jss/app
-      - ./migrations:/home/jss/migrations
-
-  postgres:
-    container_name: jss-postgres
-    environment:
-      POSTGRES_USER: jss
-      POSTGRES_PASSWORD: jss
-      POSTGRES_DB: jss
-    image: postgres:13-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-
   nginx:
     build:
       context: .
@@ -124,15 +215,8 @@ services:
     volumes:
       - static_volume:/home/jss/app/static/
 
-  redis:
-    container_name: jss-redis
-    image: redis:6.2-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_dump:/data/
-
 volumes:
-  postgres_data:
-  redis_dump:
+  dev_elasticsearch_data:
+  dev_postgres_data:
+  dev_redis_dump:
   static_volume:
