@@ -489,6 +489,7 @@ def test_create_command(
 
 def test_export() -> None:
     """Test export (to dict_ function for models."""
+    # noinspection PyArgumentList
     post = Post(title=POST_TITLE_1, body=POST_BODY_1, created=POST_CREATED_1)
     as_dict = post.export()
     assert as_dict["title"] == POST_TITLE_1
