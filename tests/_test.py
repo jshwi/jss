@@ -15,13 +15,10 @@ from pathlib import Path
 
 import jinja2.ext as jinja2_ext
 import pytest
-from dominate import tags
-from dominate.tags import html_tag
 from flask import Flask, session
 from flask.testing import FlaskClient, FlaskCliRunner
 from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
-from markupsafe import Markup
 from redis import RedisError
 
 from app import config
@@ -2224,25 +2221,6 @@ def test_mutable_mapping_dunders(
     assert len(self) == 0
 
 
-def test_register_macros(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Test "macro" is registered and wrapped with ``Markup``.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    """
-    monkeypatch.setattr("app.utils.register.RegisterContext", RegisterContext)
-    test_tag = tags.div(tags.p(tags.h1("Title")))
-    macros = RegisterContext("dom_macros", Markup)
-
-    @macros.register
-    def registered_macro() -> html_tag:
-        return test_tag
-
-    # the ``register_macros`` function will prefix the key with
-    # ``dom_macros_``
-    registered = RegisterContext.registered()
-    assert registered["dom_macros_registered_macro"]() == Markup(test_tag)
-
-
 def test_register_text(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test text is registered.
 
@@ -2303,17 +2281,15 @@ def test_version_dropdown(
         db.session.commit()
 
     response = client.get("/")
-    assert all(
-        i in response.data.decode()
-        for i in [
-            '<a href="/post/1?revision=0">',
-            "v1",
-            '<a href="/post/1?revision=1">',
-            "v2: Previous revision",
-            '<a class="current-version-anchor" href="/post/1?revision=2">',
-            "v3: This revision",
-        ]
-    )
+    for i in [
+        '<a href="/post/1?revision=0">',
+        "v1",
+        '<a href="/post/1?revision=1">',
+        "v2: Previous revision",
+        '<a class="current-version-anchor" href="/post/1?revision=2">',
+        "v3: This revision",
+    ]:
+        assert i in response.data.decode()
 
 
 @pytest.mark.usefixtures("init_db")

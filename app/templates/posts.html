@@ -22,7 +22,32 @@ this is the base template for pages displaying posts #}
                 {% if current_user.id == post.user_id %}
                     <a class="action" href="{{ url_for("post.update", id=post.id) }}">{{ _("Edit") }}</a>
                     {% if post.versions.count() > 1 %}
-                        {{ dom_macros_version_dropdown(post) }}
+                        <div class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                             {{ _("Versions") }}
+                            <span class="caret">
+                            </span>
+                          </a>
+                          <ul class="dropdown-menu" role="menu">
+                            {% for i in post.versions.all() %}
+                              <li>
+                                {% if loop.index == post.versions.count() %}
+                                <a class="current-version-anchor" href="{{ url_for("post.read", id=post.id, revision=loop.index0) }}">
+                                    v{{ loop.index }}: {{ _("This revision") }}
+                                </a>
+                                {% elif loop.index == post.versions.count() - 1 %}
+                                  <a href="{{ url_for("post.read", id=post.id, revision=loop.index0) }}">
+                                    v{{ loop.index }}: {{ _("Previous revision") }}
+                                  </a>
+                                {% else %}
+                                  <a href="{{ url_for("post.read", id=post.id, revision=loop.index0) }}">
+                                  v{{ loop.index }}
+                                  </a>
+                                {% endif %}
+                              </li>
+                            {% endfor %}
+                          </ul>
+                        </div>
                     {% endif %}
                 {% endif %}
                 <br>
@@ -34,5 +59,34 @@ this is the base template for pages displaying posts #}
     {% endfor %}
 
     {# posts are listed in descending order: newer posts are on the left #}
-    {{ dom_macros_post_footer_nav(prev_url, next_url) }}
+    <nav aria-label="...">
+      <ul class="pagination justify-content-center">
+        {% if prev_url %}
+          <li class="page-item">
+            <a class="page-link" href="{{ prev_url }}">
+              {{ _("Previous") }}
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">
+              {{ _("Previous") }}
+            </a>
+          </li>
+        {% endif %}
+        {% if next_url %}
+          <li class="page-item">
+            <a class="page-link" href="{{ next_url }}">
+              {{ _("Next") }}
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">
+              {{ _("Next") }}
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
 {% endblock %}

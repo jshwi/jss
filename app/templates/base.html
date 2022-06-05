@@ -34,12 +34,29 @@
 
     {# keep contents within centre of the screen #}
     <div class="container">
-
-        {# tasks progress bar #}
-        {{ dom_macros_task_progress() }}
+        <div>
+          {% if current_user.is_authenticated %}
+            {% for task in current_user.get_tasks_in_progress() %}
+              <div class="alert alert-success">
+                {{ task.description }}
+                  <span id="{{ task.id }}-progress">
+                    {{ task.get_progress() }}
+                  </span>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
 
         {# all instruction to flash messages will be handled here #}
-        {{ dom_macros_flash_messages() }}
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-info" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
 
         {# override ``page_name`` to display in the header block #}
         {# declared in the title block #}

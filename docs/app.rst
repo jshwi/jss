@@ -17,18 +17,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.dom
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.dom.macros
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.dom.text
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.exceptions
    :members:
    :undoc-members:
