@@ -40,6 +40,8 @@ from .utils import (
     ADMIN_USER_ROUTE,
     ADMIN_USER_USERNAME,
     APP_MODELS_JOB_FETCH,
+    APP_UTILS_LANG_POT_FILE,
+    APP_UTILS_LANG_SUBPROCESS_RUN,
     AUTHORIZED_USER_EMAIL,
     AUTHORIZED_USER_PASSWORD,
     AUTHORIZED_USER_USERNAME,
@@ -61,10 +63,13 @@ from .utils import (
     MAIN_USER_USERNAME,
     MESSAGE_BODY,
     MESSAGE_CREATED,
+    MESSAGES_PO,
+    MESSAGES_POT,
     MISC_PROGRESS_INT,
     OTHER_USER_EMAIL,
     OTHER_USER_PASSWORD,
     OTHER_USER_USERNAME,
+    POST_1,
     POST_AUTHOR_ID_1,
     POST_AUTHOR_ID_2,
     POST_AUTHOR_ID_3,
@@ -91,6 +96,7 @@ from .utils import (
     PROFILE_EDIT,
     PYPROJECT_TOML,
     RECIPIENT_ID,
+    REDIRECT_LOGOUT,
     SENDER_ID,
     STATUS_CODE_TO_ROUTE_DEFAULT,
     TASK_DESCRIPTION,
@@ -203,7 +209,7 @@ def test_logout(client: FlaskClient, auth: AuthActions) -> None:
     )
     auth.login(user_test_object)
     with client:
-        client.get("/redirect/logout")
+        client.get(REDIRECT_LOGOUT)
         assert "user_id" not in session
 
 
@@ -411,7 +417,7 @@ def test_update(
     add_test_objects.add_test_posts(created_post)
     auth.login(user_test_object)
     assert client.get(UPDATE1, follow_redirects=True).status_code == 200
-    assert "Edited" not in client.get("/post/1").data.decode()
+    assert "Edited" not in client.get(POST_1).data.decode()
     client.post(
         UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
     )
@@ -420,7 +426,7 @@ def test_update(
         assert post.title == updated_post.title
         assert post.body == updated_post.body
 
-    assert "Edited" in client.get("/post/1").data.decode()
+    assert "Edited" in client.get(POST_1).data.decode()
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1055,7 +1061,7 @@ def test_post_page(
     )
     add_test_objects.add_test_users(user_test_object)
     add_test_objects.add_test_posts(post_test_object)
-    response = client.get("/post/1")
+    response = client.get(POST_1)
     assert (
         f"    <h1>\n     {POST_TITLE_1}\n    </h1>\n"
     ) in response.data.decode()
@@ -1301,7 +1307,7 @@ def test_send_message(
         f"Send Message to {user_test_object_2.username}"
         in response.data.decode()
     )
-    client.get("/redirect/logout")
+    client.get(REDIRECT_LOGOUT)
     auth.login(user_test_object_2)
 
     # test icon span
@@ -1739,7 +1745,7 @@ def test_admin_access_control(
     assert (
         client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 200
     )
-    client.get("/redirect/logout")
+    client.get(REDIRECT_LOGOUT)
     auth.login(regular_user_test_object)
     assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 401
     assert (
@@ -2518,11 +2524,11 @@ def test_translate_init_files(
     :param test_app: Test ``Flask`` app object.
     :param runner: Fixture derived from the ``create_app`` factory.
     """
-    pot_file = tmp_path / "messages.pot"
+    pot_file = tmp_path / MESSAGES_POT
     tdir: Path = test_app.config["TRANSLATIONS_DIR"]
     lang_arg = "es"
     lc_dir = tdir / lang_arg / "LC_MESSAGES"
-    po_file = lc_dir / "messages.po"
+    po_file = lc_dir / MESSAGES_PO
 
     def _extract():
         pot_file.write_text(POT_CONTENTS)
@@ -2536,7 +2542,7 @@ def test_translate_init_files(
     def _pybabel(_: str, *__: t.Union[str, os.PathLike]) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
     monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
     result = runner.invoke(
         args=["translate", "init", lang_arg], catch_exceptions=False
@@ -2570,11 +2576,11 @@ def test_translate_update_files(
     :param test_app: Test ``Flask`` app object.
     :param runner: Fixture derived from the ``create_app`` factory.
     """
-    pot_file = tmp_path / "messages.pot"
+    pot_file = tmp_path / MESSAGES_POT
     tdir: Path = test_app.config["TRANSLATIONS_DIR"]
     lang_arg = "es"
     lc_dir = tdir / lang_arg / "LC_MESSAGES"
-    po_file = lc_dir / "messages.po"
+    po_file = lc_dir / MESSAGES_PO
 
     def _extract():
         pot_file.write_text(POT_CONTENTS)
@@ -2595,7 +2601,7 @@ def test_translate_update_files(
     def _pybabel(_: str, *__: t.Union[str, os.PathLike]) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
     monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
     result = runner.invoke(
         args=["translate", "update"], catch_exceptions=False
@@ -2626,8 +2632,8 @@ def test_translate_args(
     :param runner: Fixture derived from the ``create_app`` factory.
     """
     commands = []
-    pot_file = tmp_path / "messages.pot"
-    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+    pot_file = tmp_path / MESSAGES_POT
+    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
 
     def _subprocess_run(
         args: t.List[t.Union[str, os.PathLike]], **_: bool
@@ -2635,7 +2641,7 @@ def test_translate_args(
         commands.extend(args)
         pot_file.write_text(POT_CONTENTS)
 
-    monkeypatch.setattr("app.utils.lang.subprocess.run", _subprocess_run)
+    monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
     runner.invoke(args=["translate", "init", "es"])
     assert "pybabel" in commands
     assert "extract" in commands
@@ -2653,8 +2659,8 @@ def test_translate_update_args(
     :param runner: Fixture derived from the ``create_app`` factory.
     """
     commands = []
-    pot_file = tmp_path / "messages.pot"
-    monkeypatch.setattr("app.utils.lang._pot_file", lambda: pot_file)
+    pot_file = tmp_path / MESSAGES_POT
+    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
 
     def _subprocess_run(
         args: t.List[t.Union[str, os.PathLike]], **_: bool
@@ -2662,7 +2668,7 @@ def test_translate_update_args(
         commands.extend(args)
         pot_file.write_text(POT_CONTENTS)
 
-    monkeypatch.setattr("app.utils.lang.subprocess.run", _subprocess_run)
+    monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
     runner.invoke(args=["translate", "update"])
     assert "pybabel" in commands
     assert "extract" in commands
@@ -2682,11 +2688,11 @@ def test_translate_compile(
         test_app.config["TRANSLATIONS_DIR"]
         / "es"
         / "LC_MESSAGES"
-        / "messages.po"
+        / MESSAGES_PO
     )
     commands = []
     monkeypatch.setattr(
-        "app.utils.lang.subprocess.run", lambda x, **y: commands.extend(x)
+        APP_UTILS_LANG_SUBPROCESS_RUN, lambda x, **y: commands.extend(x)
     )
     result = runner.invoke(
         args=["translate", "compile"], catch_exceptions=False
@@ -2706,4 +2712,4 @@ def test_pot_file(test_app: Flask) -> None:
     :param test_app: Test ``Flask`` app object.
     """
     with test_app.app_context():
-        assert lang._pot_file() == Path("messages.pot")
+        assert lang._pot_file() == Path(MESSAGES_POT)
