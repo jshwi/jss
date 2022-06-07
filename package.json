@@ -170,7 +170,7 @@
     "@babel/core": "^7.18.2",
     "@babel/eslint-parser": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
-    "babel-jest": "^28.1.0",
+    "babel-jest": "^28.1.1",
     "babel-loader": "^8.2.5",
     "concurrently": "^7.2.1",
     "css-loader": "^5.0.1",
