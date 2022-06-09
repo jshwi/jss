@@ -79,3 +79,22 @@ def update(id: int) -> t.Union[str, Response]:
         return redirect.index()
 
     return render_template("post/update.html", post=post, form=form)
+
+
+@blueprint.route("/<int:id>/delete", methods=["POST"])
+@login_required
+@authorization_required
+def delete(id: int) -> Response:
+    """Delete post by post's ID.
+
+    The "delete" view does not have its own template. Since there is no
+    template it will only handle the ``POST`` method and then redirect
+    to the index view.
+
+    :param id: The post's ID.
+    :return: Response object redirect to index view.
+    """
+    post = Post.get_post(id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect.index()

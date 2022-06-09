@@ -251,9 +251,7 @@ def test_index(
     assert 'href="/post/1/update"' in decoded_response
 
 
-@pytest.mark.parametrize(
-    "route", ["/post/create", UPDATE1, "/redirect/1/delete"]
-)
+@pytest.mark.parametrize("route", ["/post/create", UPDATE1, "/post/1/delete"])
 def test_login_required(client: FlaskClient, route: str) -> None:
     """Test requirement that user be logged in to post.
 
@@ -315,7 +313,7 @@ def test_author_required(
     auth.login(user_test_object)
     # current user cannot modify other user's post
     assert client.post(UPDATE1, follow_redirects=True).status_code == 403
-    assert client.post("/redirect/1/delete").status_code == 403
+    assert client.post("/post/1/delete").status_code == 403
 
     # current user doesn't see edit link
     assert b'href="/post/1/update"' not in client.get("/").data
@@ -455,7 +453,7 @@ def test_delete(
     )
     add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
-    response = client.post("/redirect/1/delete")
+    response = client.post("/post/1/delete")
     assert response.headers["Location"] == "https://localhost/"
     with test_app.app_context():
         post = Post.query.get(1)
@@ -651,9 +649,7 @@ def test_404_error(client: FlaskClient) -> None:
 
 
 @pytest.mark.usefixtures("init_db")
-@pytest.mark.parametrize(
-    "route", ["/post/create", UPDATE1, "/redirect/1/delete"]
-)
+@pytest.mark.parametrize("route", ["/post/create", UPDATE1, "/post/1/delete"])
 def test_admin_required(
     client: FlaskClient,
     auth: AuthActions,

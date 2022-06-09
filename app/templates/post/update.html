@@ -10,7 +10,7 @@
 {% block app_content %}
 
     {# delete a post #}
-    <form action="{{ url_for('redirect.delete', id=post.id) }}" method="post">
+    <form action="{{ url_for('post.delete', id=post.id) }}" method="post">
         {{ form.hidden_tag() }}
         {{ wtf.render_field(form.submit, value=_("Delete"), class="btn btn-danger", onclick="return confirm('Are you sure?');" ) }}
     </form>
