@@ -2,10 +2,11 @@
 app.utils.lang
 ==============
 """
+from __future__ import annotations
+
 import os
 import subprocess
 import tempfile
-import typing as t
 from pathlib import Path
 
 from flask import current_app
@@ -34,7 +35,7 @@ def _po_file() -> Path:
     return Path(f"{current_app.config['BABEL_FILENAME']}.po")
 
 
-def _pybabel(positional: str, *args: t.Union[str, os.PathLike]) -> None:
+def _pybabel(positional: str, *args: str | os.PathLike) -> None:
     subprocess.run(["pybabel", positional, *args], check=True)
 
 

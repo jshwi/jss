@@ -2,7 +2,8 @@
 app.routes.post
 ===============
 """
-import typing as t
+from __future__ import annotations
+
 from datetime import datetime
 
 from flask import Blueprint, render_template, request
@@ -20,7 +21,7 @@ blueprint = Blueprint("post", __name__, url_prefix="/post")
 @blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 @authorization_required
-def create() -> t.Union[str, Response]:
+def create() -> str | Response:
     """Create a post.
 
     The decorator will ensure that the user is logged in to visit this
@@ -47,7 +48,7 @@ def create() -> t.Union[str, Response]:
 
 
 @blueprint.route("/<int:id>", methods=["GET", "POST"])
-def read(id: int) -> t.Union[str, Response]:
+def read(id: int) -> str | Response:
     """Render post page for selected post ID.
 
     :param id: ID of post to display full page on.
@@ -61,7 +62,7 @@ def read(id: int) -> t.Union[str, Response]:
 @blueprint.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
 @authorization_required
-def update(id: int) -> t.Union[str, Response]:
+def update(id: int) -> str | Response:
     """Update post that corresponds to the provided post ID.
 
     :param id: The post's ID.

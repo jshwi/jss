@@ -2,7 +2,7 @@
 app.routes.views
 ================
 """
-import typing as t
+from __future__ import annotations
 
 from flask import Blueprint, current_app, render_template, request, url_for
 from werkzeug import Response
@@ -43,7 +43,7 @@ def index() -> str:
 
 
 @blueprint.route("/profile/<username>", methods=["GET", "POST"])
-def profile(username: str) -> t.Union[str, Response]:
+def profile(username: str) -> str | Response:
     """Render user's profile page.
 
     :param username: Username of registered user.

@@ -40,7 +40,7 @@ class RegisterContext(MutableMapping):
         return dict(pair for d in cls._instances for pair in d.items())
 
     def __init__(
-        self, prefix: t.Optional[str] = None, return_type: t.Type = str
+        self, prefix: str | None = None, return_type: t.Type = str
     ) -> None:
         self._prefix = "" if prefix is None else f"{prefix}_"
         self._return_type = return_type

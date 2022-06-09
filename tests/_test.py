@@ -4,6 +4,8 @@ tests._test
 """
 # pylint: disable=too-many-arguments,too-many-lines,too-many-locals
 # pylint: disable=import-outside-toplevel,protected-access
+from __future__ import annotations
+
 import fnmatch
 import functools
 import json
@@ -974,7 +976,9 @@ def test_reset_password(
 
 @pytest.mark.parametrize("use_tls,secure", [(False, None), (True, ())])
 def test_get_smtp_handler(
-    monkeypatch: pytest.MonkeyPatch, use_tls: bool, secure: t.Optional[tuple]
+    monkeypatch: pytest.MonkeyPatch,
+    use_tls: bool,
+    secure: t.Tuple[None] | None,
 ) -> None:
     """Test correct values passed to ``SMTPHandler``.
 
@@ -2156,7 +2160,7 @@ def test_static_route_default(
     interpolate_routes: t.Callable[..., None],
     code: int,
     routes: t.List[str],
-):
+) -> None:
     """Specifically test all status codes of routes.
 
     :param client: App's test-client API.
@@ -2197,8 +2201,11 @@ def test_static_route_default(
     ids=["register", "csp"],
 )
 def test_mutable_mapping_dunders(
-    monkeypatch: pytest.MonkeyPatch, attr, obj, expected_repr
-):
+    monkeypatch: pytest.MonkeyPatch,
+    attr: str,
+    obj: t.Type[t.MutableMapping],
+    expected_repr: str,
+) -> None:
     """Test ``MutableMapping`` dunder methods (coverage).
 
     :param monkeypatch: Mock patch environment and attributes.
@@ -2512,7 +2519,7 @@ def test_translate_init_files(
 
     commands = [_extract, _init]
 
-    def _pybabel(_: str, *__: t.Union[str, os.PathLike]) -> None:
+    def _pybabel(_: str, *__: str | os.PathLike) -> None:
         commands.pop(0)()
 
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
@@ -2571,7 +2578,7 @@ def test_translate_update_files(
 
     commands = [_extract, _update]
 
-    def _pybabel(_: str, *__: t.Union[str, os.PathLike]) -> None:
+    def _pybabel(_: str, *__: str | os.PathLike) -> None:
         commands.pop(0)()
 
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
@@ -2608,9 +2615,7 @@ def test_translate_args(
     pot_file = tmp_path / MESSAGES_POT
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
 
-    def _subprocess_run(
-        args: t.List[t.Union[str, os.PathLike]], **_: bool
-    ) -> None:
+    def _subprocess_run(args: t.List[str | os.PathLike], **_: bool) -> None:
         commands.extend(args)
         pot_file.write_text(POT_CONTENTS)
 
@@ -2635,9 +2640,7 @@ def test_translate_update_args(
     pot_file = tmp_path / MESSAGES_POT
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
 
-    def _subprocess_run(
-        args: t.List[t.Union[str, os.PathLike]], **_: bool
-    ) -> None:
+    def _subprocess_run(args: t.List[str | os.PathLike], **_: bool) -> None:
         commands.extend(args)
         pot_file.write_text(POT_CONTENTS)
 

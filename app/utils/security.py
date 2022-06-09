@@ -4,6 +4,8 @@ app.utils.security
 
 Define app's security functionality.
 """
+from __future__ import annotations
+
 import functools
 import typing as t
 from time import time
@@ -78,7 +80,7 @@ def confirmation_required(
     """
 
     @functools.wraps(view)
-    def _wrapped_view(*args: t.Any, **kwargs: t.Any) -> t.Union[str, Response]:
+    def _wrapped_view(*args: t.Any, **kwargs: t.Any) -> str | Response:
         if not current_user.confirmed:
             return redirect(url_for("auth.unconfirmed"))
 
@@ -87,7 +89,7 @@ def confirmation_required(
     return _wrapped_view
 
 
-def generate_confirmation_token(email: str) -> t.Union[str, bytes]:
+def generate_confirmation_token(email: str) -> str | bytes:
     """Generate unique token for verifying new user's email.
 
     :param email: Email of recipient.

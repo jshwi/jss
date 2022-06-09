@@ -2,6 +2,8 @@
 app.utils.csp
 =============
 """
+from __future__ import annotations
+
 import typing as t
 
 CSPValType = t.Union[str, t.List[str]]
@@ -14,7 +16,7 @@ class ContentSecurityPolicy(CSPType):
     :param default_csp: Default CSP, before implementing configurations.
     """
 
-    def __init__(self, default_csp: t.Optional[CSPType] = None) -> None:
+    def __init__(self, default_csp: CSPType | None = None) -> None:
         self._dict: CSPType = default_csp or {}
 
     def __repr__(self) -> str:

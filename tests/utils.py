@@ -14,8 +14,8 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from flask import Flask
 from flask.testing import FlaskClient
-from werkzeug import Response
 from werkzeug.security import generate_password_hash
+from werkzeug.test import TestResponse
 
 from app.models import BaseModel, Message, Post, Task, User, db
 
@@ -271,7 +271,7 @@ class AuthActions:
 
     def login(
         self, user_test_object: UserTestObject, follow_redirects: bool = False
-    ) -> Response:
+    ) -> TestResponse:
         """Set client to the login state.
 
         :param user_test_object: Attributes possessed by user.
@@ -289,7 +289,7 @@ class AuthActions:
 
     def register(
         self, user_test_object: UserTestObject, follow_redirects: bool = False
-    ) -> Response:
+    ) -> TestResponse:
         """Register a user.
 
         :param user_test_object: Attributes possessed by user.
@@ -310,11 +310,13 @@ class AuthActions:
     @staticmethod
     def parse_token_route(html: str) -> str:
         """Parse sent for password resets, verification, etc."""
-        return BeautifulSoup(html, features="html.parser").find("a")["href"]
+        return str(
+            BeautifulSoup(html, features="html.parser").find("a")["href"]
+        )
 
     def follow_token_route(
         self, html: str, follow_redirects: bool = False
-    ) -> Response:
+    ) -> TestResponse:
         """Follow token sent for password resets, verification, etc.
 
         :param html: HTML str object.
@@ -327,7 +329,7 @@ class AuthActions:
 
     def request_password_reset(
         self, email: str, follow_redirects: bool = False
-    ) -> Response:
+    ) -> TestResponse:
         """Request user password reset.
 
         :param email: Email to request reset with.

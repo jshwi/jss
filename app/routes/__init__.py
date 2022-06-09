@@ -30,7 +30,7 @@ def _before_request() -> None:
     g.locale = str(get_locale())
 
 
-def format_html(response: Response):
+def format_html(response: Response) -> Response:
     """Prettify HTML response.
 
     See https://stackoverflow.com/a/6167432/13316671.

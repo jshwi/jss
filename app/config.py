@@ -6,6 +6,8 @@ Most configuration is set via environment variables as per
 https://12factor.net/config:
 """
 # pylint: disable=too-many-public-methods,invalid-name
+from __future__ import annotations
+
 import datetime
 import typing as t
 from pathlib import Path
@@ -32,12 +34,12 @@ class _Config(Env):
         return self.bool("TESTING", default=self.ENV == "testing")
 
     @property
-    def DATABASE_URL(self) -> t.Optional[str]:
+    def DATABASE_URL(self) -> str | None:
         """Database location."""
         return self.str("DATABASE_URL", default=None)
 
     @property
-    def SECRET_KEY(self) -> t.Optional[str]:
+    def SECRET_KEY(self) -> str | None:
         """Value is not public."""
         return self.str("SECRET_KEY", default=None)
 
@@ -62,7 +64,7 @@ class _Config(Env):
         return self.bool("DEBUG_TB_INTERCEPT_REDIRECTS", default=False)
 
     @property
-    def FLASK_STATIC_DIGEST_HOST_URL(self) -> t.Optional[str]:
+    def FLASK_STATIC_DIGEST_HOST_URL(self) -> str | None:
         """Set to a value such as https://cdn.example.com.
 
         Prefix your static path with this URL. This would be useful if
@@ -103,7 +105,7 @@ class _Config(Env):
         return self.bool("SQlALCHEMY_TRACK_MODIFICATIONS", default=False)
 
     @property
-    def DEFAULT_MAIL_SENDER(self) -> t.Optional[str]:
+    def DEFAULT_MAIL_SENDER(self) -> str | None:
         """Default mail sender."""
         return self.str("DEFAULT_MAIL_SENDER", default=None)
 
@@ -113,7 +115,7 @@ class _Config(Env):
         return self.str("MAIL_SUBJECT_PREFIX", default="")
 
     @property
-    def ADMINS(self) -> t.Optional[t.List[str]]:
+    def ADMINS(self) -> t.List[str]:
         """List of web admins."""
         return self.list("ADMINS", default=[])
 
@@ -128,7 +130,7 @@ class _Config(Env):
         return self.str("WTF_CSRF_SECRET_KEY", self.SECRET_KEY)
 
     @property
-    def SECURITY_PASSWORD_SALT(self) -> t.Optional[str]:
+    def SECURITY_PASSWORD_SALT(self) -> str | None:
         """Combined with the unique salt generated for each password."""
         return self.str("SECURITY_PASSWORD_SALT", default=self.SECRET_KEY)
 
@@ -158,12 +160,12 @@ class _Config(Env):
         return self.bool("MAIL_DEBUG", default=self.DEBUG)
 
     @property
-    def MAIL_USERNAME(self) -> t.Optional[str]:
+    def MAIL_USERNAME(self) -> str | None:
         """Username of sender."""
         return self.str("MAIL_USERNAME", default=None)
 
     @property
-    def MAIL_PASSWORD(self) -> t.Optional[str]:
+    def MAIL_PASSWORD(self) -> str | None:
         """Password of sender."""
         return self.str("MAIL_PASSWORD", default=None)
 
@@ -204,7 +206,7 @@ class _Config(Env):
         )
 
     @property
-    def COPYRIGHT(self) -> t.Optional[str]:
+    def COPYRIGHT(self) -> str | None:
         """Return the copyright line from LICENSE else None."""
         declaration = None
         if self.LICENSE.is_file():
@@ -310,7 +312,7 @@ class _Config(Env):
         return self.str("PREFERRED_URL_SCHEME", default="https")
 
     @property
-    def CSP(self) -> t.Dict[str, t.Union[str, t.List[str]]]:
+    def CSP(self) -> t.Dict[str, str | t.List[str]]:
         """Content Security Policy."""
         return self.dict("CSP", default={})
 

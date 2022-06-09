@@ -220,7 +220,7 @@ class User(UserMixin, BaseModel):
         """
         return Task.query.filter_by(user=self, complete=False).all()
 
-    def get_task_in_progress(self, name: str) -> t.Optional[BaseQuery]:
+    def get_task_in_progress(self, name: str) -> BaseQuery | None:
         """Return first task currently running under this user.
 
         :param name: Name of running task.
@@ -263,7 +263,7 @@ class Post(BaseModel):
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
     edited = db.Column(db.DateTime, default=None)
 
-    def get_version(self, index: int) -> t.Optional[ModelBuilder]:
+    def get_version(self, index: int) -> ModelBuilder | None:
         """Get version of post by index.
 
         If no version can be returned a ``404: Not Found`` error will
@@ -279,7 +279,7 @@ class Post(BaseModel):
 
     @classmethod
     def get_post(
-        cls, id: int, version: t.Optional[int] = None, checkauthor: bool = True
+        cls, id: int, version: int | None = None, checkauthor: bool = True
     ) -> Post:
         """Get post by post's ID or abort with ``404: Not Found.``
 
@@ -364,7 +364,7 @@ class Task(BaseModel):
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
     complete = db.Column(db.Boolean, default=False)
 
-    def get_rq_job(self) -> t.Optional[Job]:
+    def get_rq_job(self) -> Job | None:
         """Get a ``Redis`` queued job.
 
         :return: RQ job if it exists, else return None.

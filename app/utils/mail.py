@@ -4,6 +4,8 @@ app.utils.mail
 
 Setup app's mailer.
 """
+from __future__ import annotations
+
 import typing as t
 from threading import Thread
 
@@ -19,7 +21,7 @@ def _send_async_email(app: Flask, msg: Message) -> None:
 
 
 def send_email(
-    attachments: t.Optional[t.Iterable[t.Dict[str, str]]] = None,
+    attachments: t.Iterable[t.Dict[str, str]] | None = None,
     sync: bool = False,
     **kwargs: t.Any,
 ) -> None:
