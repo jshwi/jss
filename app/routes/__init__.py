@@ -36,6 +36,7 @@ def format_html(response: Response) -> Response:
     See https://stackoverflow.com/a/6167432/13316671.
 
     :param response: Response returned from a route.
+    :return: Response returned from a route.
     """
     if response.content_type == "text/html; charset=utf-8":
         response.set_data(

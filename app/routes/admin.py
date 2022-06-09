@@ -35,7 +35,10 @@ class MyAdminIndexView(AdminIndexView):
     @login_required
     @admin_required
     def index(self) -> str:
-        """Requires user be logged in as admin."""
+        """Requires user be logged in as admin.
+
+        :return: Admin index page.
+        """
         return super().index()
 
 

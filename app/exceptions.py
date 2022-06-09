@@ -20,7 +20,10 @@ EXCEPTIONS = {
 
 
 def init_app(app: Flask) -> None:
-    """Register error handlers."""
+    """Register error handlers.
+
+    :param app: Application factory object.
+    """
 
     def render_error(error: HTTPException) -> t.Tuple[str, int]:
         """Render error template.

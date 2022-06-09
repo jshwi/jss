@@ -296,17 +296,17 @@ class Post(BaseModel):
         when committing database changes.
 
         The ``checkauthor`` argument is defined so that the function can
-         be used to get a post without checking the author. This would
-         be useful if we wrote a view to show an individual post on a
-         page where the user doesn't matter, because they are not
-         modifying the post. If the logged in author does not own the
-         post abort with ``403: Forbidden``.
+        be used to get a post without checking the author. This would be
+        useful if we wrote a view to show an individual post on a page
+        where the user doesn't matter, because they are not modifying
+        the post. If the logged in author does not own the post abort
+        with ``403: Forbidden``.
 
-         :param id: The post's ID.
-         :param version: If provided populate session object with
-             version.
-         :param checkauthor: Rule whether to check for author ID.
-         :return: Post's connection object.
+        :param id: The post's ID.
+        :param version: If provided populate session object with
+            version.
+        :param checkauthor: Rule whether to check for author ID.
+        :return: Post's connection object.
         """
         post = cls.query.filter_by(id=id).first_or_404()
         if version is not None:

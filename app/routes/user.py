@@ -64,6 +64,7 @@ def edit_profile() -> str | Response:
 def send_message(recipient: str) -> str | Response:
     """Send message to another user.
 
+    :param recipient: Email address to send email to.
     :return: Rendered user/send_message template on GET. Response object
         redirect to recipient's view on successful POST.
     """

@@ -18,7 +18,6 @@ def smtp_handler(app: Flask) -> None:
     """Configure an SMTP handler for error reporting.
 
     :param app: Application factory object.
-    :return: SMTPHandler if not in debug and vars are set, else None.
     """
     server = app.config["MAIL_SERVER"]
     username = app.config["MAIL_USERNAME"]

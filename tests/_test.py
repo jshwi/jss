@@ -129,9 +129,9 @@ def test_register(
     Headers will have a ``Location`` object with the login URL when the
     register view redirects to the login view.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     """
     assert client.get("/auth/register").status_code == 200
     user_test_object = UserTestObject(
@@ -150,8 +150,8 @@ def test_login(
 ) -> None:
     """Test login functionality.
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -182,7 +182,7 @@ def test_login_validate(
 ) -> None:
     """Test incorrect username and password error messages.
 
-    :param auth: Handle authorization with test app.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     :param username: Parametrized incorrect username
     :param password: Parametrized incorrect password
@@ -200,8 +200,8 @@ def test_login_validate(
 def test_logout(client: FlaskClient, auth: AuthActions) -> None:
     """Test logout functionality.
 
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -226,8 +226,9 @@ def test_index(
     the index view. When not logged in each page shows links to log in
     or register. When logged in there's a link to log out.
 
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
+    :param add_test_objects: Add test objects to test database.
     """
     response = client.get("/")
     assert b"Login" in response.data
@@ -264,7 +265,7 @@ def test_login_required(client: FlaskClient, route: str) -> None:
     update and delete views, otherwise a ``403 Forbidden`` status is
     returned.
 
-    :param client: Client for testing app.
+    :param client: Test application client.
     :param route: Parametrized route path.
     """
     response = client.post(route, follow_redirects=True)
@@ -288,9 +289,10 @@ def test_author_required(
     should modify the existing data. Both pages should show an error
     message on invalid data.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -333,8 +335,9 @@ def test_exists_required(
 ) -> None:
     """Test ``404 Not Found`` is returned when a route does not exist.
 
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
+    :param add_test_objects: Add test objects to test database.
     :param route: Parametrized route path.
     """
     user_test_object = UserTestObject(
@@ -365,9 +368,10 @@ def test_create(
     When valid data is sent in a ``POST`` request the create view should
     insert the new post data into the database.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         AUTHORIZED_USER_USERNAME,
@@ -395,9 +399,9 @@ def test_update(
 ) -> None:
     """Test update view modifies the existing data.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -440,9 +444,9 @@ def test_delete(
     The "delete" view should redirect to the index URl and the post
     should no longer exist in the database.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -469,8 +473,7 @@ def test_create_command(
 ) -> None:
     """Test cli.
 
-    :param runner: Fixture derived from the ``create_app`` factory
-        fixture used to call the ``init-db`` command by name.
+    :param runner: Test application cli.
     :param monkeypatch: Mock patch environment and attributes.
     """
     # flask create user
@@ -487,7 +490,7 @@ def test_create_command(
 
 
 def test_export() -> None:
-    """Test export (to dict_ function for models."""
+    """Test export to dict_ function for models."""
     # noinspection PyArgumentList
     post = Post(title=POST_TITLE_1, body=POST_BODY_1, created=POST_CREATED_1)
     as_dict = post.export()
@@ -500,7 +503,7 @@ def test_export() -> None:
 def test_send_mail(test_app: Flask, sync: bool) -> None:
     """Test sending of mail by app's email client.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     :param sync: Asynchronous: True or False.
     """
     subject = "mail subject line"
@@ -542,9 +545,9 @@ def test_create_user_no_exist(
 ) -> None:
     """Test creation of a new user that doesn't exist.
 
-    :param test_app: Test ``Flask`` app object.
-    :param runner: Fixture derived from the ``create_app`` factory
-        fixture used to call the ``init-db`` command by name.
+    :param test_app: Test application.
+    :param runner: Test application cli.
+    :param patch_getpass: Patch ``getpass`` password module.
     """
     user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}\n"
     patch_getpass([MAIN_USER_PASSWORD, MAIN_USER_PASSWORD])
@@ -578,8 +581,11 @@ def test_create_user_exists(
 ) -> None:
     """Test creation of a new user that exists.
 
-    :param runner: Fixture derived from the ``create_app`` factory
-        fixture used to call the ``init-db`` command by name.
+    :param runner: Test application cli.
+    :param add_test_objects: Add test objects to test database.
+    :param username: The test user username.
+    :param email: The test user email.
+    :param expected: Expected result.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -597,8 +603,8 @@ def test_create_user_email_exists(
 ) -> None:
     """Test creation of a new user whose email is already registered.
 
-    :param runner: Fixture derived from the ``create_app`` factory
-        fixture used to call the ``init-db`` command by name.
+    :param runner: Test application cli.
+    :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -618,8 +624,8 @@ def test_create_user_passwords_no_match(
 ) -> None:
     """Test creation of a new user where passwords don't match.
 
-    :param runner: Fixture derived from the ``create_app`` factory
-        fixture used to call the ``init-db`` command by name.
+    :param runner: Test application cli.
+    :param patch_getpass: Patch ``getpass`` password module.
     """
     user_input = f"{MAIN_USER_USERNAME}\n{MAIN_USER_EMAIL}\n"
     patch_getpass([MAIN_USER_PASSWORD, OTHER_USER_PASSWORD])
@@ -631,9 +637,8 @@ def test_create_user_passwords_no_match(
 def test_create_admin(test_app: Flask, runner: FlaskCliRunner) -> None:
     """Test commands called when invoking ``flask create admin``.
 
-    :param test_app: Test ``Flask`` app object.
-    :param runner: Fixture derived from the ``create_app`` factory
-        fixture used to call the ``init-db`` command by name.
+    :param test_app: Test application.
+    :param runner: Test application cli.
     """
     response = runner.invoke(args=["create", "admin"])
     assert "admin successfully created" in response.output
@@ -646,7 +651,7 @@ def test_create_admin(test_app: Flask, runner: FlaskCliRunner) -> None:
 def test_404_error(client: FlaskClient) -> None:
     """Test ``404 Not Found`` is returned when a route does not exist.
 
-    :param client: Client for testing app.
+    :param client: Test application client.
     """
     response = client.post("/does_not_exist")
     assert response.status_code == 404
@@ -669,8 +674,9 @@ def test_admin_required(
     update and delete views, otherwise a ``403 Forbidden`` status is
     returned.
 
-    :param client: Client for testing app.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
+    :param add_test_objects: Add test objects to test database.
     :param route: Parametrized route path.
     """
     user_test_object = UserTestObject(
@@ -700,9 +706,10 @@ def test_register_invalid_fields(
 ) -> None:
     """Test different invalid input and error messages.
 
-    :param auth: Handle authorization with test app.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
-    :param username: The test username input.
+    :param username: The test user username.
+    :param email: The test user email.
     :param message: The expected message for the response.
     """
     user_test_object = UserTestObject(
@@ -722,9 +729,9 @@ def test_confirmation_email_unconfirmed(
 ) -> None:
     """Test user is moved from confirmed as False to True.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -748,8 +755,8 @@ def test_confirmation_email_confirmed(
 ) -> None:
     """Test user redirected when already confirmed.
 
-    :param test_app: Test ``Flask`` app object.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param auth: Handle authorization.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -778,9 +785,9 @@ def test_confirmation_email_expired(
     """Test user denied when confirmation is expired. Allow resend.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -813,9 +820,9 @@ def test_login_confirmed(
 ) -> None:
     """Test login functionality once user is verified.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     :param client: Flask client testing helper.
-    :param auth: Handle authorization with test app.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -840,8 +847,8 @@ def test_confirmation_email_resend(
 ) -> None:
     """Test user receives email when requesting resend.
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
@@ -857,7 +864,7 @@ def test_request_password_reset_email(
 ) -> None:
     """Test that the correct email is sent to user for password reset.
 
-    :param auth: Handle authorization with test app.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -882,8 +889,8 @@ def test_bad_token(
     """Test user denied when jwt for resetting password is expired.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -908,7 +915,7 @@ def test_bad_token(
 def test_email_does_not_exist(auth: AuthActions) -> None:
     """Test user notified when email does not exist for password reset.
 
-    :param auth: Handle authorization with test app.
+    :param auth: Handle authorization.
     """
     response = auth.request_password_reset(MAIN_USER_EMAIL)
     assert b"An account with that email address doesn't exist" in response.data
@@ -920,8 +927,8 @@ def test_redundant_token(
 ) -> None:
     """Test user notified that them being logged in has voided token.
 
-    :param test_app: Test ``Flask`` app object.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -948,9 +955,9 @@ def test_reset_password(
 ) -> None:
     """Test the password reset process.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1033,7 +1040,7 @@ def test_profile_page(
 ) -> None:
     """Test response when visiting profile page of existing user.
 
-    :param client: App's test-client API.
+    :param client: Test application client.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1050,7 +1057,7 @@ def test_post_page(
 ) -> None:
     """Test for correct contents in post page response.
 
-    :param client: App's test-client API.
+    :param client: Test application client.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1074,7 +1081,8 @@ def test_edit_profile(
 ) -> None:
     """Test edit profile page.
 
-    :param client: App's test-client API.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1104,7 +1112,8 @@ def test_unconfirmed(
 ) -> None:
     """Test when unconfirmed user tries to enter restricted view.
 
-    :param client: App's test-client API.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1125,7 +1134,7 @@ def test_unconfirmed(
 def test_follow(test_app: Flask, add_test_objects: AddTestObjects) -> None:
     """Test functionality of user follows.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     :param add_test_objects: Add test objects to test database.
     """
     with test_app.app_context():
@@ -1160,7 +1169,7 @@ def test_follow_posts(
 ) -> None:
     """Test functionality of post follows.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     :param add_test_objects: Add test objects to test database.
     """
     with test_app.app_context():
@@ -1234,8 +1243,8 @@ def test_post_follow_unfollow_routes(
 ) -> None:
     """Test ``POST`` request to follow and unfollow a user.
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     # create and log in test users
@@ -1280,9 +1289,9 @@ def test_send_message(
     """Test sending of personal messages from one user to another.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object_1 = UserTestObject(
@@ -1384,9 +1393,9 @@ def test_export_post_is_job(
     """Test export post function when a job already exists: is not None.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object_1 = UserTestObject(
@@ -1426,9 +1435,9 @@ def test_export_post(
     """Test export post function when a job does not exist: is None.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1485,9 +1494,9 @@ def test_get_tasks_in_progress_no_task(
     """Test getting of a task when one does not exist.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1517,9 +1526,9 @@ def test_get_tasks_in_progress(
     """Test getting of a task when there is a task in the database.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1552,9 +1561,9 @@ def test_get_tasks_in_progress_error_raised(
     """Test getting of a task when an error is raised: 100%, complete.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1683,9 +1692,9 @@ def test_versions(
 ) -> None:
     """Test versioning of posts route.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1721,8 +1730,8 @@ def test_admin_access_control(
 ) -> None:
     """Test access to admin console restricted to admin user.
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     admin_user_test_object = UserTestObject(
@@ -1761,7 +1770,7 @@ def test_admin_access_without_login(client: FlaskClient) -> None:
         AttributeError:
         'AnonymousUserMixin' object has no attribute 'admin'
 
-    :param client:App's test-client API.
+    :param client: Test application client.
     """
     assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 401
     assert (
@@ -1803,8 +1812,8 @@ def test_inspect_profile_no_user(
     e.g.  Use ``User.query.filter_by(username=username).first_or_404()``
     instead of ``User.query.filter_by(username=username).first()``
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     :param method: Method for interacting with route.
     :param data: Data to write to form.
@@ -1837,8 +1846,9 @@ def test_user_name_change_accessible(
     Only valid if the old name has not already been adopted by someone
     else.
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1929,8 +1939,8 @@ def test_reserved_usernames(
     """Test that reserved names behave as taken names would in register.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param auth: Handle authorization with test app.
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
+    :param auth: Handle authorization.
     """
     monkeypatch.setenv("RESERVED_USERNAMES", "reserved1,reserved2")
     config.init_app(test_app)
@@ -1953,8 +1963,8 @@ def test_versions_update(
 ) -> None:
     """Test versioning of posts route when passing revision to update.
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -1987,8 +1997,8 @@ def test_versioning_handle_index_error(
 ) -> None:
     """Test versioning route when passing to large a revision to update.
 
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -2014,7 +2024,7 @@ def test_config_copyright(
 
     :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     """
     monkeypatch.setattr("os.environ", {})
     license_file = tmp_path / "LICENSE"
@@ -2041,7 +2051,8 @@ def test_navbar_home_config_switch(
     """Test that the navbar Home link appropriately switches on and off.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
+    :param client: Test application client.
     """
     # with `NAVBAR_HOME` set to False
     monkeypatch.setenv("NAVBAR_HOME", "0")
@@ -2075,9 +2086,9 @@ def test_navbar_user_dropdown_config_switch(
     """Test that the user dropdown appropriately switches on and off.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -2135,7 +2146,7 @@ def test_navbar_user_dropdown_config_switch(
 def test_all_routes_covered(test_app: Flask) -> None:
     """Test all routes that need to be tested will be.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     """
     ignore = ["/admin/*", "/static/*", "/bootstrap/*"]
     exception = ["/admin/"]
@@ -2163,7 +2174,7 @@ def test_static_route_default(
 ) -> None:
     """Specifically test all status codes of routes.
 
-    :param client: App's test-client API.
+    :param client: Test application client.
     :param add_test_objects: Add test objects to test database.
     :param interpolate_routes: Interpolate route vars with test values.
     :param code: Status code expected.
@@ -2209,6 +2220,9 @@ def test_mutable_mapping_dunders(
     """Test ``MutableMapping`` dunder methods (coverage).
 
     :param monkeypatch: Mock patch environment and attributes.
+    :param attr: Attribute to monkeypatch.
+    :param obj: Object to monkeypatch attribute with.
+    :param expected_repr: Expected repr result.
     """
     monkeypatch.setattr(attr, obj)
     key = "key"
@@ -2255,9 +2269,9 @@ def test_version_dropdown(
 
     Test all 3 variations of unordered list items.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
-    :param auth: Handle authorization with test app.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
@@ -2337,9 +2351,14 @@ def test_pagination_nav(
 ) -> None:
     """Test links are rendered when more than one page exists.
 
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
+    :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test application.
+    :param client: Test application client.
+    :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
+    :param route: Route to test pagination with.
+    :param test_object: Base object for test objects.
+    :param method: Method to test pagination with.
     """
     # every post apart from the first one will add functionality to the
     # pagination footer navbar
@@ -2411,7 +2430,7 @@ def test_pagination_nav(
 def test_headers(client: FlaskClient, key: str, value: str) -> None:
     """Assert headers are secure.
 
-    :param client: App's test-client API.
+    :param client: Test application client.
     :param key: Header key.
     :param value: Header's value.
     """
@@ -2425,8 +2444,8 @@ def test_csp_report(
     """Test response for CSP violations route.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param client: App's test-client API.
+    :param test_app: Test application.
+    :param client: Test application client.
     """
     with test_app.app_context():
         captured = Recorder()
@@ -2501,8 +2520,8 @@ def test_translate_init_files(
 
     :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param runner: Fixture derived from the ``create_app`` factory.
+    :param test_app: Test application.
+    :param runner: Test application cli.
     """
     pot_file = tmp_path / MESSAGES_POT
     tdir: Path = test_app.config["TRANSLATIONS_DIR"]
@@ -2553,8 +2572,8 @@ def test_translate_update_files(
 
     :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param runner: Fixture derived from the ``create_app`` factory.
+    :param test_app: Test application.
+    :param runner: Test application cli.
     """
     pot_file = tmp_path / MESSAGES_POT
     tdir: Path = test_app.config["TRANSLATIONS_DIR"]
@@ -2609,7 +2628,7 @@ def test_translate_args(
 
     :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
-    :param runner: Fixture derived from the ``create_app`` factory.
+    :param runner: Test application cli.
     """
     commands = []
     pot_file = tmp_path / MESSAGES_POT
@@ -2634,7 +2653,7 @@ def test_translate_update_args(
 
     :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
-    :param runner: Fixture derived from the ``create_app`` factory.
+    :param runner: Test application cli.
     """
     commands = []
     pot_file = tmp_path / MESSAGES_POT
@@ -2657,8 +2676,8 @@ def test_translate_compile(
     """Test commands called when invoking ``flask translate compile``.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test ``Flask`` app object.
-    :param runner: Fixture derived from the ``create_app`` factory.
+    :param test_app: Test application.
+    :param runner: Test application cli.
     """
     po_file: Path = (
         test_app.config["TRANSLATIONS_DIR"]
@@ -2685,7 +2704,7 @@ def test_translate_compile(
 def test_pot_file(test_app: Flask) -> None:
     """Test ``_pot_file`` which is monkeypatched above.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     """
     with test_app.app_context():
         assert lang._pot_file() == Path(MESSAGES_POT)

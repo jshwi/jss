@@ -309,7 +309,11 @@ class AuthActions:
 
     @staticmethod
     def parse_token_route(html: str) -> str:
-        """Parse sent for password resets, verification, etc."""
+        """Parse sent for password resets, verification, etc.
+
+        :param html: HTML to parse.
+        :return: href tag parsed from HTML.
+        """
         return str(
             BeautifulSoup(html, features="html.parser").find("a")["href"]
         )
@@ -361,7 +365,7 @@ class Recorder:
 class AddTestObjects:
     """Add test objects to test database.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     """
 
     def __init__(self, test_app: Flask) -> None:

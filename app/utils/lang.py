@@ -129,7 +129,10 @@ def translate_compile_cli() -> None:
 
 
 def translate_init_cli(lang: str) -> None:
-    """Initialize a new language."""
+    """Initialize a new language.
+
+    :param lang: Language to initialize.
+    """
     _pybabel_extract()
     _pybabel_init(lang)
     _strip_extra_newline(

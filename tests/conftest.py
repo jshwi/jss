@@ -40,7 +40,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
 
     :param tmp_path: Create and return temporary directory.
     :param monkeypatch: Mock patch environment and attributes.
-    :param: Test ``Flask`` app object.
+    :return: Test application
     """
     monkeypatch.setenv("FLASK_ENV", "testing")
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
@@ -60,7 +60,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
 def fixture_init_db(test_app: Flask) -> None:
     """Automatically create a test database for every test instance.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     """
     with test_app.app_context():
         db.create_all()
@@ -70,7 +70,7 @@ def fixture_init_db(test_app: Flask) -> None:
 def fixture_client(test_app: Flask) -> FlaskClient:
     """Make requests to the application without running the server.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     :return: Client for testing app.
     """
     return test_app.test_client()
@@ -80,7 +80,7 @@ def fixture_client(test_app: Flask) -> FlaskClient:
 def fixture_runner(test_app: Flask) -> FlaskCliRunner:
     """Creates a runner that can call the registered commands.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     :return: Cli runner for testing app.
     """
     return test_app.test_cli_runner()
@@ -90,7 +90,7 @@ def fixture_runner(test_app: Flask) -> FlaskCliRunner:
 def fixture_auth(client: FlaskClient) -> AuthActions:
     """Handle authorization with test app.
 
-    :param client: Client for testing app.
+    :param client: Test application client.
     :return: Instantiated ``AuthActions`` object - a class acting as a
         wrapper to change the state of the client.
     """
@@ -137,7 +137,7 @@ def fixture_interpolate_routes() -> t.Callable[..., None]:
 def fixture_add_test_objects(test_app: Flask) -> AddTestObjects:
     """Add test objects to test database.
 
-    :param test_app: Test ``Flask`` app object.
+    :param test_app: Test application.
     :return: Instantiated ``AddTestObjects`` class.
     """
     return AddTestObjects(test_app)
@@ -147,8 +147,8 @@ def fixture_add_test_objects(test_app: Flask) -> AddTestObjects:
 def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
     """Initialize static dir and set in app for testing.
 
+    :param test_app: Test application.
     :param tmp_path: Create and return temporary directory.
-    :param test_app: Test ``Flask`` app object.
     """
     # create and set static
     static_dir = tmp_path / "static"
