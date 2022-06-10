@@ -1829,7 +1829,7 @@ testing = ["coverage", "pytest (>=3.6,<4)", "pytest-cov", "pytest-regressions", 
 
 [[package]]
 name = "sphinx-toolbox"
-version = "3.1.0"
+version = "3.1.1"
 description = "Box of handy tools for Sphinx 🧰 📔"
 category = "dev"
 optional = false
@@ -2212,7 +2212,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "934ca37699a86d5cb5645b26b4acc2dd55fcdf5603999664f6ead33ad779b56d"
+content-hash = "a72fdefd7528f8144041a38c546e11008534140d6ac1f95bae6947f3a26cc25b"
 
 [metadata.files]
 alabaster = [
@@ -3226,8 +3226,8 @@ sphinx-tabs = [
     {file = "sphinx_tabs-3.3.1-py3-none-any.whl", hash = "sha256:73209aa769246501f6de9e33051cfd2d54f5900e0cc28a63367d8e4af4c0db5d"},
 ]
 sphinx-toolbox = [
-    {file = "sphinx_toolbox-3.1.0-py3-none-any.whl", hash = "sha256:4c5c7e8a5d329cd79c76036e5b41d165b0b29bc24000f732d2cdf61b52f3f4aa"},
-    {file = "sphinx_toolbox-3.1.0.tar.gz", hash = "sha256:d3e42641e0c2f42df1a2fd47100dd8cb0916373179b1f212552b9c6d90c027d5"},
+    {file = "sphinx_toolbox-3.1.1-py3-none-any.whl", hash = "sha256:6339345aeb0d57c07c0574cb926200ef2b6227886045a44891ed1552295897ab"},
+    {file = "sphinx_toolbox-3.1.1.tar.gz", hash = "sha256:2f5193e12dbe5c2053b49c5f9e67fa7a2cc69991afb222970488173367ecb507"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},
@@ -3264,6 +3264,7 @@ sqlalchemy = [
     {file = "SQLAlchemy-1.4.37-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:d9050b0c4a7f5538650c74aaba5c80cd64450e41c206f43ea6d194ae6d060ff9"},
     {file = "SQLAlchemy-1.4.37-cp27-cp27m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:b4c92823889cf9846b972ee6db30c0e3a92c0ddfc76c6060a6cda467aa5fb694"},
     {file = "SQLAlchemy-1.4.37-cp27-cp27m-win32.whl", hash = "sha256:b55932fd0e81b43f4aff397c8ad0b3c038f540af37930423ab8f47a20b117e4c"},
+    {file = "SQLAlchemy-1.4.37-cp27-cp27m-win_amd64.whl", hash = "sha256:4a17c1a1152ca4c29d992714aa9df3054da3af1598e02134f2e7314a32ef69d8"},
     {file = "SQLAlchemy-1.4.37-cp27-cp27mu-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:ffe487570f47536b96eff5ef2b84034a8ba4e19aab5ab7647e677d94a119ea55"},
     {file = "SQLAlchemy-1.4.37-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:78363f400fbda80f866e8e91d37d36fe6313ff847ded08674e272873c1377ea5"},
     {file = "SQLAlchemy-1.4.37-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7ee34c85cbda7779d66abac392c306ec78c13f5c73a1f01b8b767916d4895d23"},
