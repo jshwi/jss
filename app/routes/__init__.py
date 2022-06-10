@@ -11,14 +11,22 @@ an outgoing response.
 ``Flask`` can also go the other direction and generate a URL to view
 based on its name and arguments.
 """
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 from flask import Flask, Response, g
 from flask_babel import get_locale
+from flask_login import current_user
 
+from app.extensions import db
 from app.routes import admin, auth, post, public, redirect, report, user
 
 
-def _set_global_locale() -> None:
+def _before_request() -> None:
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
+
     g.locale = str(get_locale())
 
 
@@ -44,7 +52,7 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
-    app.before_request(_set_global_locale)
+    app.before_request(_before_request)
     app.register_blueprint(report.blueprint)
     app.register_blueprint(public.blueprint)
     app.register_blueprint(auth.blueprint)

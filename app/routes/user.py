@@ -25,14 +25,6 @@ from app.utils.security import confirmation_required
 blueprint = Blueprint("user", __name__, url_prefix="/user")
 
 
-@blueprint.before_request
-def before_request() -> None:
-    """Add user's login date and time before first request."""
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.now()
-        db.session.commit()
-
-
 @blueprint.route("/profile/edit", methods=["GET", "POST"])
 @login_required
 @confirmation_required
