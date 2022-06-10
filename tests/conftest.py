@@ -16,15 +16,14 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from app import create_app
 from app.models import db
 
-from .utils import (
+from .const import (
     ADMIN_USER_EMAIL,
     ADMIN_USER_PASSWORD,
     COPYRIGHT_AUTHOR,
     COPYRIGHT_EMAIL,
     MAIN_USER_EMAIL,
-    AddTestObjects,
-    AuthActions,
 )
+from .utils import AddTestObjects, AuthActions
 
 
 @pytest.fixture(name="test_app", autouse=True)

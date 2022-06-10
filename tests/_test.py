@@ -32,7 +32,7 @@ from app.utils.csp import ContentSecurityPolicy, CSPType
 from app.utils.mail import send_email
 from app.utils.register import RegisterContext
 
-from .utils import (
+from .const import (
     ADMIN_ROUTE,
     ADMIN_USER_EMAIL,
     ADMIN_USER_PASSWORD,
@@ -102,6 +102,8 @@ from .utils import (
     TASK_ID,
     TASK_NAME,
     UPDATE1,
+)
+from .utils import (
     AddTestObjects,
     AuthActions,
     MessageTestObject,
