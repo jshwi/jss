@@ -469,12 +469,12 @@ def test_delete(
 
 
 def test_create_command(
-    runner: FlaskCliRunner, monkeypatch: pytest.MonkeyPatch
+    monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
 ) -> None:
     """Test cli.
 
-    :param runner: Test application cli.
     :param monkeypatch: Mock patch environment and attributes.
+    :param runner: Test application cli.
     """
     # flask create user
     state_1 = Recorder()
@@ -2344,9 +2344,9 @@ def test_pagination_nav(
     test_app: Flask,
     client: FlaskClient,
     auth: AuthActions,
+    test_object: TestObject,
     add_test_objects: AddTestObjects,
     route: str,
-    test_object: TestObject,
     method: str,
 ) -> None:
     """Test links are rendered when more than one page exists.
@@ -2355,9 +2355,9 @@ def test_pagination_nav(
     :param test_app: Test application.
     :param client: Test application client.
     :param auth: Handle authorization.
+    :param test_object: Base object for test objects.
     :param add_test_objects: Add test objects to test database.
     :param route: Route to test pagination with.
-    :param test_object: Base object for test objects.
     :param method: Method to test pagination with.
     """
     # every post apart from the first one will add functionality to the
