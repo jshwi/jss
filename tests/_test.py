@@ -33,8 +33,6 @@ from app.utils.mail import send_email
 from app.utils.register import RegisterContext
 
 from .const import (
-    ADMIN_ROUTE,
-    ADMIN_USER_ROUTE,
     APP_MODELS_JOB_FETCH,
     APP_UTILS_LANG_POT_FILE,
     APP_UTILS_LANG_SUBPROCESS_RUN,
@@ -1453,32 +1451,25 @@ def test_versions(
 
 
 @pytest.mark.usefixtures("init_db")
-def test_admin_access_control(
-    client: FlaskClient, runner: FlaskCliRunner, routes: Routes
-) -> None:
+def test_admin_access_control(runner: FlaskCliRunner, routes: Routes) -> None:
     """Test access to admin console restricted to admin user.
 
-    :param client: Test application client.
     :param runner: Test application cli.
     :param routes: Work with application routes.
     """
     runner.invoke(args=["create", "admin"])
     routes.auth.register_index(1)
     routes.auth.login_index(0)
-    assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 200
-    assert (
-        client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 200
-    )
+    assert routes.admin.get(follow_redirects=True).status_code == 200
+    assert routes.admin.users(follow_redirects=True).status_code == 200
     routes.auth.logout()
     routes.auth.login_index(1)
-    assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 401
-    assert (
-        client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 403
-    )
+    assert routes.admin.get(follow_redirects=True).status_code == 401
+    assert routes.admin.users(follow_redirects=True).status_code == 403
 
 
 @pytest.mark.usefixtures("init_db")
-def test_admin_access_without_login(client: FlaskClient) -> None:
+def test_admin_access_without_login(routes: Routes) -> None:
     """Asserts that the ``AnonymousUserMixin`` error will not be raised.
 
     This commit fixes the following error causing app to crash if user
@@ -1487,12 +1478,10 @@ def test_admin_access_without_login(client: FlaskClient) -> None:
         AttributeError:
         'AnonymousUserMixin' object has no attribute 'admin'
 
-    :param client: Test application client.
+    :param routes: Work with application routes.
     """
-    assert client.get(ADMIN_ROUTE, follow_redirects=True).status_code == 401
-    assert (
-        client.get(ADMIN_USER_ROUTE, follow_redirects=True).status_code == 403
-    )
+    assert routes.admin.get(follow_redirects=True).status_code == 401
+    assert routes.admin.users(follow_redirects=True).status_code == 403
 
 
 @pytest.mark.usefixtures("init_db")

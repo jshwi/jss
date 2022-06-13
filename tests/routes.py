@@ -309,6 +309,20 @@ class UserCRUD(CRUD):
         return self.get("/messages", **kwargs)
 
 
+class AdminCRUD(CRUD):
+    """Handle all admin logic."""
+
+    PREFIX = "/admin"
+
+    def users(self, **kwargs: t.Any) -> TestResponse:
+        """Get result from users endpoint.
+
+        :param kwargs: Kwargs to pass to get.
+        :return: Test ``Response`` object.
+        """
+        return self.get("/users", **kwargs)
+
+
 class Routes:
     """Collection of route classes."""
 
@@ -318,6 +332,7 @@ class Routes:
         self._posts = PostCRUD(client, get_objects)
         self._auth = AuthCRUD(test_app, client, get_objects)
         self._user = UserCRUD(client, get_objects)
+        self._admin = AdminCRUD(client, get_objects)
 
     @property
     def posts(self) -> PostCRUD:
@@ -333,3 +348,8 @@ class Routes:
     def user(self) -> UserCRUD:
         """Work with /user."""
         return self._user
+
+    @property
+    def admin(self) -> AdminCRUD:
+        """Work with /admin."""
+        return self._admin
