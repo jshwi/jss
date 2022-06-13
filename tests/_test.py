@@ -26,7 +26,7 @@ from redis import RedisError
 from app import config
 from app.extensions import mail
 from app.log import smtp_handler
-from app.models import Post, User
+from app.models import Post, Task, User
 from app.utils import lang
 from app.utils.csp import ContentSecurityPolicy, CSPType
 from app.utils.mail import send_email
@@ -52,9 +52,7 @@ from .const import (
     POT_CONTENTS,
     PYPROJECT_TOML,
     STATUS_CODE_TO_ROUTE_DEFAULT,
-    TASK_DESCRIPTION,
     TASK_ID,
-    TASK_NAME,
     user_email,
     user_password,
     user_username,
@@ -65,7 +63,6 @@ from .utils import (
     AuthorizeUserFixtureType,
     GetObjects,
     Recorder,
-    TaskTestObject,
 )
 
 
@@ -1164,95 +1161,47 @@ def test_export_post_is_job(
 
 
 @pytest.mark.usefixtures("init_db")
-def test_export_post(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    client: FlaskClient,
-    routes: Routes,
-    get_objects: GetObjects,
-) -> None:
+def test_export_post(test_app: Flask, routes: Routes) -> None:
     """Test export post function when a job does not exist: is None.
 
-    :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test application.
-    :param client: Test application client.
     :param routes: Work with application routes.
-    :param get_objects: Get test objects with db model attributes.
     """
-    u_o = get_objects.user(1)
     routes.auth.register_index(1, confirm=True)
-    routes.auth.login_index(1)
-    routes.posts.create(1)
-    enqueue = Recorder()
-    session_add = Recorder()
+    routes.redirect.add_export_posts_task(TASK_ID)
     with test_app.app_context():
-        test_app.task_queue = Recorder()  # type: ignore
-        test_app.task_queue.enqueue = enqueue  # type: ignore
-        test_app.task_queue.enqueue.get_id = lambda: TASK_ID  # type: ignore
-        monkeypatch.setattr("app.models.User.is_authenticated", True)
-        monkeypatch.setattr("app.models.db.session.add", session_add)
-        # noinspection PyArgumentList
-        u_m = User(username=u_o[1].username, email=u_o[1].email)
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, u_m
-        )
-        app_current_user = u_m
-        app_current_user.get_task_in_progress = lambda _: None  # type: ignore
-        app_current_user.username = u_o[1].username
-        app_current_user.post = Post.query.get(1)
-        monkeypatch.setattr(
-            "app.routes.redirect.current_user", app_current_user
-        )
-        client.get("/redirect/export_posts", follow_redirects=True)
-
-    assert "app.utils.tasks.export_posts" in enqueue.args
-    task = session_add.args[0]
-    assert task.id == task_test_object.id
-    assert task.name == task_test_object.name
-    assert task.description == task_test_object.description
+        task = Task.query.get(TASK_ID)
+        assert task.id == TASK_ID
+        assert task.user_id == 1
+        assert task.complete is False
+        assert task.description == "Exporting posts..."
+        assert task.name == "export_posts"
 
 
-# noinspection DuplicatedCode
 @pytest.mark.usefixtures("init_db")
 def test_get_tasks_in_progress_no_task(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    client: FlaskClient,
-    routes: Routes,
-    add_test_objects: AddTestObjects,
-    get_objects: GetObjects,
+    monkeypatch: pytest.MonkeyPatch, client: FlaskClient, routes: Routes
 ) -> None:
     """Test getting of a task when one does not exist.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test application.
     :param client: Test application client.
     :param routes: Work with application routes.
-    :param add_test_objects: Add test objects to test database.
-    :param get_objects: Get test objects with db model attributes.
     """
-    u_o = get_objects.user(1)
-    with test_app.app_context():
-        routes.auth.register_index(1)
-        u_q = User.query.filter_by(username=u_o[1].username).first()
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, u_q
-        )
-        add_test_objects.add_test_tasks(task_test_object)
-        routes.auth.login_index(1)
-        monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: None)
-        response = client.get("/")
-        assert b"100" in response.data
+    routes.auth.register_index(1)
+    routes.auth.login_index(1)
+    monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: None)
+    response = client.get("/")
+    assert b"100" in response.data
 
 
+# noinspection DuplicatedCode
 @pytest.mark.usefixtures("init_db")
 def test_get_tasks_in_progress(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
     routes: Routes,
-    add_test_objects: AddTestObjects,
-    get_objects: GetObjects,
 ) -> None:
     """Test getting of a task when there is a task in the database.
 
@@ -1260,33 +1209,27 @@ def test_get_tasks_in_progress(
     :param test_app: Test application.
     :param client: Test application client.
     :param routes: Work with application routes.
-    :param add_test_objects: Add test objects to test database.
-    :param get_objects: Get test objects with db model attributes.
     """
-    u_o = get_objects.user(1)
     rq_job = Recorder()
     rq_job.meta = {"progress": MISC_PROGRESS_INT}  # type: ignore
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: rq_job)
+    routes.auth.register_index(1, confirm=True)
+    routes.auth.login_index(1)
+    routes.redirect.add_export_posts_task(TASK_ID)
     with test_app.app_context():
-        # noinspection DuplicatedCode
-        routes.auth.register_index(1)
-        u_q = User.query.filter_by(username=u_o[1].username).first()
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, u_q
-        )
-        add_test_objects.add_test_tasks(task_test_object)
-        routes.auth.login_index(1)
-        response = client.get("/")
-        assert str(MISC_PROGRESS_INT) in response.data.decode()
+        assert Task.query.get(TASK_ID) is not None
+
+    response = client.get("/")
+    assert str(MISC_PROGRESS_INT).encode() in response.data
 
 
+# noinspection DuplicatedCode
 @pytest.mark.usefixtures("init_db")
 def test_get_tasks_in_progress_error_raised(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
     routes: Routes,
-    add_test_objects: AddTestObjects,
     get_objects: GetObjects,
 ) -> None:
     """Test getting of a task when an error is raised: 100%, complete.
@@ -1295,7 +1238,6 @@ def test_get_tasks_in_progress_error_raised(
     :param test_app: Test application.
     :param client: Test application client.
     :param routes: Work with application routes.
-    :param add_test_objects: Add test objects to test database.
     :param get_objects: Get test objects with db model attributes.
     """
     u_o = get_objects.user(1)
@@ -1304,17 +1246,13 @@ def test_get_tasks_in_progress_error_raised(
         raise RedisError("test Redis error")
 
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, _fetch)
+    routes.auth.register(u_o[1], confirm=True)
+    routes.auth.login(u_o[1])
+    routes.redirect.add_export_posts_task(TASK_ID)
     with test_app.app_context():
-        # noinspection DuplicatedCode
-        routes.auth.register_index(1)
-        u_q = User.query.filter_by(username=u_o[1].username).first()
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, u_q
-        )
-        add_test_objects.add_test_tasks(task_test_object)
-        routes.auth.login_index(1)
-        response = client.get("/")
+        assert Task.query.get(TASK_ID) is not None
 
+    response = client.get("/")
     assert b"100" in response.data
 
 
@@ -1324,7 +1262,6 @@ def test_export_posts(
     test_app: Flask,
     routes: Routes,
     get_objects: GetObjects,
-    add_test_objects: AddTestObjects,
     authorize_user: AuthorizeUserFixtureType,
 ) -> None:
     """Test data as sent to user when post export requested.
@@ -1333,7 +1270,6 @@ def test_export_posts(
     :param test_app: Test application.
     :param routes: Work with application routes.
     :param get_objects: Get test objects with db model attributes.
-    :param add_test_objects: Add test objects to test database.
     :param authorize_user: Authorize existing user.
     """
     # this needs to imported *after* `monkeypatch.setenv` has patched
@@ -1342,53 +1278,45 @@ def test_export_posts(
 
     # faster than waiting for `mail.record_messages` to sync
     # catch `Message` object passed to `mail.send`
-    mail_send = Recorder()
-    monkeypatch.setattr("app.utils.mail.mail.send", mail_send)
     monkeypatch.setattr("app.utils.tasks.time.sleep", lambda _: None)
     u_o = get_objects.user(1)
     p_o = get_objects.post(1)
-
-    # running outside `test_app's` context
-    # noinspection PyArgumentList
-    routes.auth.register_index(1)
+    routes.auth.register(u_o[1], confirm=True)
     authorize_user(1)
     routes.auth.login_index(1)
     routes.posts.create(1)
-    u_q = User.query.get(1)
-    task_test_object = TaskTestObject(
-        TASK_ID, TASK_NAME, TASK_DESCRIPTION, u_q
-    )
-    add_test_objects.add_test_tasks(task_test_object)
+    routes.redirect.add_export_posts_task(TASK_ID)
     job = Recorder()
     job.meta = {}  # type: ignore
     job.save_meta = Recorder()  # type: ignore
-    job.get_id = lambda: task_test_object.id  # type: ignore
+    job.get_id = lambda: TASK_ID  # type: ignore
     monkeypatch.setattr("app.utils.tasks.get_current_job", lambda: job)
-    app.utils.tasks.export_posts(1)
-    outbox = mail_send.args[0]
-    with test_app.app_context():
-        p_q = Post.query.get(1)
+    with mail.record_messages() as outbox:
+        app.utils.tasks.export_posts(1)
+        with test_app.app_context():
+            p_q = Post.query.get(1)
 
-    post_obj = [
-        dict(
-            body=p_o[1].body,
-            created=str(p_q.created),
-            edited="None",
-            id="1",
-            title=p_o[1].title,
-            user_id="1",
+        post_obj = [
+            dict(
+                body=p_o[1].body,
+                created=str(p_q.created),
+                edited="None",
+                id="1",
+                title=p_o[1].title,
+                user_id="1",
+            )
+        ]
+        recv = outbox[0]
+        attachment = recv.attachments[0]
+        assert recv.subject == f"[JSS]: Posts by {u_o[1].username}"
+        assert recv.recipients == [u_o[1].email]
+        assert u_o[1].username in recv.html
+        assert "Please find attached the archive of your posts" in recv.html
+        assert attachment.filename == "posts.json"
+        assert attachment.content_type == "application/json"
+        assert attachment.data == json.dumps(
+            {"posts": post_obj}, indent=4, sort_keys=True
         )
-    ]
-    assert outbox.subject == f"[JSS]: Posts by {u_o[1].username}"
-    assert outbox.recipients == [u_o[1].email]
-    assert u_o[1].username in outbox.html
-    assert "Please find attached the archive of your posts" in outbox.html
-    attachment = outbox.attachments[0]
-    assert attachment.filename == "posts.json"
-    assert attachment.content_type == "application/json"
-    assert attachment.data == json.dumps(
-        {"posts": post_obj}, indent=4, sort_keys=True
-    )
 
 
 @pytest.mark.usefixtures("init_db")

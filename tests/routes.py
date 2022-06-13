@@ -3,6 +3,7 @@ tests.routes
 ============
 """
 # pylint: disable=too-few-public-methods
+import contextlib
 import typing as t
 
 from bs4 import BeautifulSoup
@@ -12,7 +13,7 @@ from werkzeug.test import TestResponse
 
 from app.extensions import mail
 
-from .utils import GetObjects, TestObject, UserTestObject
+from .utils import GetObjects, Recorder, TestObject, UserTestObject
 
 
 class CRUD:
@@ -345,6 +346,12 @@ class RedirectCRUD(CRUD):
 
     PREFIX = "/redirect"
 
+    def __init__(
+        self, test_app: Flask, client: FlaskClient, get_objects: GetObjects
+    ) -> None:
+        super().__init__(client, get_objects)
+        self._test_app = test_app
+
     def follow(self, index: int, **kwargs) -> TestResponse:
         """Follow another user.
 
@@ -369,6 +376,30 @@ class RedirectCRUD(CRUD):
             **kwargs,
         )
 
+    @contextlib.contextmanager
+    def _patch_test_app(
+        self, attr: str, value: object
+    ) -> t.Generator[Flask, None, None]:
+        original = getattr(self._test_app, attr)
+        setattr(self._test_app, attr, value)
+        yield self._test_app
+        setattr(self._test_app, attr, original)
+
+    def add_export_posts_task(
+        self, task_id: str, **kwargs: t.Any
+    ) -> TestResponse:
+        """Add task to database.
+
+        :param task_id: ID to give the task.
+        :param kwargs: Kwargs to pass to get.
+        :return: Test ``Response`` object.
+        """
+        task_queue = Recorder()  # type: ignore
+        task_queue.enqueue = Recorder()  # type: ignore
+        task_queue.enqueue.get_id = lambda: task_id  # type: ignore
+        with self._patch_test_app("task_queue", task_queue):
+            return self.get("/export_posts", **kwargs)
+
 
 class Routes:
     """Collection of route classes."""
@@ -381,7 +412,7 @@ class Routes:
         self._user = UserCRUD(client, get_objects)
         self._admin = AdminCRUD(client, get_objects)
         self._profile = ProfileCRUD(client, get_objects)
-        self._redirect = RedirectCRUD(client, get_objects)
+        self._redirect = RedirectCRUD(test_app, client, get_objects)
 
     @property
     def posts(self) -> PostCRUD:

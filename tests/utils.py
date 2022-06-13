@@ -15,7 +15,7 @@ from flask import Flask
 from flask.testing import FlaskClient
 from werkzeug.security import generate_password_hash
 
-from app.models import BaseModel, Task, User, db
+from app.models import BaseModel, User, db
 
 from .const import (
     post_body,
@@ -59,24 +59,6 @@ class PostTestObject(TestObject):
     def __init__(self, title: str, body: str) -> None:
         self.title = title
         self.body = body
-
-
-class TaskTestObject(TestObject):
-    """Test model attributes.
-
-    :param id: ID of the task.
-    :param name: Name of the task.
-    :param description: description of the task.
-    :param user: User initiating the task.
-    """
-
-    def __init__(
-        self, id: str, name: str, description: str, user: User
-    ) -> None:
-        self.id = id
-        self.name = name
-        self.description = description
-        self.user_id = user.id
 
 
 class Recorder:
@@ -123,14 +105,6 @@ class AddTestObjects:
             ``UserTestObject`` instances.
         """
         self._add_object(User, *user_test_objects)
-
-    def add_test_tasks(self, *task_test_objects: TaskTestObject) -> None:
-        """Add task objects to the database.
-
-        :param task_test_objects: Variable number, of any size, of
-            ``TaskTestObject`` instances.
-        """
-        self._add_object(Task, *task_test_objects)
 
 
 class GetObjects:
