@@ -11,7 +11,6 @@ from __future__ import annotations
 import typing as t
 from datetime import datetime
 
-from bs4 import BeautifulSoup
 from click.testing import Result
 from flask import Flask
 from flask.testing import FlaskClient
@@ -43,19 +42,13 @@ class UserTestObject(TestObject):
     """
 
     def __init__(
-        self,
-        username: str,
-        email: str,
-        password: str,
-        message: str,
-        confirmed=False,
+        self, username: str, email: str, password: str, message: str
     ) -> None:
         self.username = username
         self.email = email
         self.password = password
         self.password_hash = generate_password_hash(password)
         self.message = message
-        self.confirmed = confirmed
 
 
 class PostTestObject(TestObject):
@@ -104,106 +97,6 @@ class MessageTestObject(TestObject):
         self.recipient_id = recipient_id
         self.body = body
         self.created = created
-
-
-class AuthActions:
-    """Handle all the authentication logic.
-
-    :param client: The ``client`` fixture defined above.
-    """
-
-    prefix = "auth"
-    register_route = f"{prefix}/register"
-    login_route = f"{prefix}/login"
-    request_password_reset_route = f"{prefix}/request_password_reset"
-
-    def __init__(self, client: FlaskClient) -> None:
-        self._client = client
-
-    def login(
-        self, user_test_object: UserTestObject, follow_redirects: bool = False
-    ) -> TestResponse:
-        """Set client to the login state.
-
-        :param user_test_object: Attributes possessed by user.
-        :param follow_redirects: Follow redirects.
-        :return: Response object.
-        """
-        return self._client.post(
-            self.login_route,
-            data={
-                "username": user_test_object.username,
-                "password": user_test_object.password,
-            },
-            follow_redirects=follow_redirects,
-        )
-
-    def register(
-        self, user_test_object: UserTestObject, follow_redirects: bool = False
-    ) -> TestResponse:
-        """Register a user.
-
-        :param user_test_object: Attributes possessed by user.
-        :param follow_redirects: Follow redirects.
-        :return: Response object.
-        """
-        return self._client.post(
-            self.register_route,
-            data={
-                "username": user_test_object.username,
-                "email": user_test_object.email,
-                "password": user_test_object.password,
-                "confirm_password": user_test_object.password,
-            },
-            follow_redirects=follow_redirects,
-        )
-
-    @staticmethod
-    def parse_token_route(html: str) -> str:
-        """Parse sent for password resets, verification, etc.
-
-        :param html: HTML to parse.
-        :return: href tag parsed from HTML.
-        """
-        return str(
-            BeautifulSoup(html, features="html.parser").find("a")["href"]
-        )
-
-    def follow_token_route(
-        self, html: str, follow_redirects: bool = False
-    ) -> TestResponse:
-        """Follow token sent for password resets, verification, etc.
-
-        :param html: HTML str object.
-        :param follow_redirects: Follow redirects.
-        :return: Response object.
-        """
-        return self._client.get(
-            self.parse_token_route(html), follow_redirects=follow_redirects
-        )
-
-    def request_password_reset(
-        self, email: str, follow_redirects: bool = False
-    ) -> TestResponse:
-        """Request user password reset.
-
-        :param email: Email to request reset with.
-        :param follow_redirects: Follow redirects.
-        :return: Response object.
-        """
-        return self._client.post(
-            self.request_password_reset_route,
-            data={"email": email},
-            follow_redirects=follow_redirects,
-        )
-
-    def logout(self, **kwargs: t.Any) -> TestResponse:
-        """Log the current test user out.
-
-        :param kwargs: Kwargs to pass to get.
-        :return: Test ``Response`` object.
-        """
-        return self._client.get(f"/{self.prefix}/logout", **kwargs)
 
 
 class Recorder:

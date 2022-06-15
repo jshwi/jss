@@ -26,7 +26,6 @@ COPYRIGHT_EMAIL = "john.doe@test.com"
 RECIPIENT_ID = 1
 SENDER_ID = 2
 MESSAGE_BODY = "hello, this is a test message"
-REDIRECT_LOGOUT = "/redirect/logout"
 APP_UTILS_LANG_POT_FILE = "app.utils.lang._pot_file"
 APP_UTILS_LANG_SUBPROCESS_RUN = "app.utils.lang.subprocess.run"
 MESSAGES_POT = "messages.pot"

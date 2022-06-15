@@ -5,10 +5,14 @@ tests.routes
 # pylint: disable=too-few-public-methods
 import typing as t
 
+from bs4 import BeautifulSoup
+from flask import Flask
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 
-from .utils import GetObjects, TestObject
+from app.extensions import mail
+
+from .utils import GetObjects, TestObject, UserTestObject
 
 
 class CRUD:
@@ -112,13 +116,156 @@ class PostCRUD(CRUD):
         return self.post(f"/{post_id}/delete", **kwargs)
 
 
+class AuthCRUD(CRUD):
+    """Handle all the authentication logic."""
+
+    PREFIX = "/auth"
+
+    def __init__(
+        self, test_app: Flask, client: FlaskClient, get_objects: GetObjects
+    ) -> None:
+        super().__init__(client, get_objects)
+        self._test_app = test_app
+
+    @staticmethod
+    def parse_href(html: str) -> str:
+        """Parse sent for password resets, verification, etc.
+
+        :param html: HTML to parse.
+        :return: href tag parsed from HTML.
+        """
+        return BeautifulSoup(html, features="html.parser").find("a")["href"]
+
+    def follow_token(self, html: str) -> TestResponse:
+        """Follow token sent for password resets, verification, etc.
+
+        :param html: HTML str object.
+        :return: Test ``Response`` object.
+        """
+        return self._client.get(self.parse_href(html), follow_redirects=True)
+
+    def reset_password(
+        self, index: int, html: str, **kwargs: t.Any
+    ) -> TestResponse:
+        """Reset password.
+
+        :param index: ``UserTestObject`` index.
+        :param html: HTML str object.
+        :param kwargs: Kwargs to pass to ``post``.
+        :return: Test ``Response`` object.
+        """
+        user = self._get_objects.user(index)[index]
+        return self._client.post(
+            self.parse_href(html),
+            data={
+                "password": user.password,
+                "confirm_password": user.password,
+            },
+            **kwargs,
+        )
+
+    def login(self, user: UserTestObject, **kwargs: t.Any) -> TestResponse:
+        """Set client to the login state by user object.
+
+        :param user: ``UserTestObject`` instance.
+        :param kwargs: Kwargs to pass to ``post``.
+        :return: Test ``Response`` object.
+        """
+        return self.post(
+            "/login",
+            data={"username": user.username, "password": user.password},
+            **kwargs,
+        )
+
+    def login_index(self, index, **kwargs: t.Any) -> TestResponse:
+        """Set client to the login state.
+
+        :param index: ``UserTestObject`` index.
+        :param kwargs: Kwargs to pass to ``post``.
+        :return: Test ``Response`` object.
+        """
+        return self.login(self._get_objects.user(index)[index], **kwargs)
+
+    def logout(self, **kwargs: t.Any) -> TestResponse:
+        """Log the current test user out.
+
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
+        """
+        return self.get("/logout", **kwargs)
+
+    def register(
+        self, user: UserTestObject, confirm: bool = False, **kwargs: t.Any
+    ) -> TestResponse:
+        """Register a user object.
+
+        :param user: ``UserTestObject`` instance.
+        :param confirm: Confirm by following confirmation email.
+        :param kwargs: Kwargs to pass to ``post``.
+        :return: Test ``Response`` object.
+        """
+        with mail.record_messages() as outbox:
+            response = self.post(
+                "/register",
+                data={
+                    "username": user.username,
+                    "email": user.email,
+                    "password": user.password,
+                    "confirm_password": user.password,
+                },
+                **kwargs,
+            )
+            if confirm:
+                with self._test_app.app_context():
+                    return self.follow_token(outbox[0].html)
+
+        return response
+
+    def register_index(
+        self, index: int, confirm: bool = False, **kwargs: t.Any
+    ) -> TestResponse:
+        """Register a user by index.
+
+        :param index: ``UserTestObject`` index.
+        :param confirm: Confirm by following confirmation email.
+        :param kwargs: Kwargs to pass to ``post``.
+        :return: Test ``Response`` object.
+        """
+        return self.register(
+            self._get_objects.user(index)[index], confirm, **kwargs
+        )
+
+    def request_password_reset(
+        self, index: int, **kwargs: t.Any
+    ) -> TestResponse:
+        """Request user password reset.
+
+        :param index: ``UserTestObject`` index.
+        :param kwargs: Kwargs to pass to ``post``.
+        :return: Response object.
+        """
+        return self.post(
+            "/request_password_reset",
+            data={"email": self._get_objects.user(index)[index].email},
+            **kwargs,
+        )
+
+
 class Routes:
     """Collection of route classes."""
 
-    def __init__(self, client: FlaskClient, get_objects: GetObjects) -> None:
+    def __init__(
+        self, test_app: Flask, client: FlaskClient, get_objects: GetObjects
+    ) -> None:
         self._posts = PostCRUD(client, get_objects)
+        self._auth = AuthCRUD(test_app, client, get_objects)
 
     @property
     def posts(self) -> PostCRUD:
         """Work with /post."""
         return self._posts
+
+    @property
+    def auth(self) -> AuthCRUD:
+        """Work with /auth."""
+        return self._auth

@@ -18,12 +18,7 @@ from app.models import User, db
 
 from .const import COPYRIGHT_AUTHOR, COPYRIGHT_EMAIL, user_email, user_password
 from .routes import Routes
-from .utils import (
-    AddTestObjects,
-    AuthActions,
-    AuthorizeUserFixtureType,
-    GetObjects,
-)
+from .utils import AddTestObjects, AuthorizeUserFixtureType, GetObjects
 
 
 @pytest.fixture(name="test_app", autouse=True)
@@ -83,17 +78,6 @@ def fixture_runner(test_app: Flask) -> FlaskCliRunner:
     :return: Cli runner for testing app.
     """
     return test_app.test_cli_runner()
-
-
-@pytest.fixture(name="auth")
-def fixture_auth(client: FlaskClient) -> AuthActions:
-    """Handle authorization with test app.
-
-    :param client: Test application client.
-    :return: Instantiated ``AuthActions`` object - a class acting as a
-        wrapper to change the state of the client.
-    """
-    return AuthActions(client)
 
 
 @pytest.fixture(name="patch_getpass")
@@ -210,11 +194,14 @@ def fixture_authorize_user(
 
 
 @pytest.fixture(name="routes")
-def fixture_routes(client: FlaskClient, get_objects: GetObjects) -> Routes:
+def fixture_routes(
+    test_app: Flask, client: FlaskClient, get_objects: GetObjects
+) -> Routes:
     """Work with application routes.
 
+    :param test_app: Test application.
     :param client: Test client.
     :param get_objects: Get test objects with db model attributes.
     :return: Instantiated ``Routes`` object.
     """
-    return Routes(client, get_objects)
+    return Routes(test_app, client, get_objects)
