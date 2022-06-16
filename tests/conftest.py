@@ -17,6 +17,7 @@ from app import create_app
 from app.models import User, db
 
 from .const import COPYRIGHT_AUTHOR, COPYRIGHT_EMAIL, user_email, user_password
+from .routes import Routes
 from .utils import (
     AddTestObjects,
     AuthActions,
@@ -206,3 +207,14 @@ def fixture_authorize_user(
             db.session.commit()
 
     return _authorize_user
+
+
+@pytest.fixture(name="routes")
+def fixture_routes(client: FlaskClient, get_objects: GetObjects) -> Routes:
+    """Work with application routes.
+
+    :param client: Test client.
+    :param get_objects: Get test objects with db model attributes.
+    :return: Instantiated ``Routes`` object.
+    """
+    return Routes(client, get_objects)

@@ -18,7 +18,7 @@ from flask.testing import FlaskClient
 from werkzeug.security import generate_password_hash
 from werkzeug.test import TestResponse
 
-from app.models import BaseModel, Message, Post, Task, User, db
+from app.models import BaseModel, Message, Task, User, db
 
 from .const import (
     post_body,
@@ -63,15 +63,11 @@ class PostTestObject(TestObject):
 
     :param title: Title of the post.
     :param body: Main content of the post.
-    :param user_id: ID of the user who made the post.
     """
 
-    def __init__(
-        self, title: str, body: str, user_id: t.Optional[int] = None
-    ) -> None:
+    def __init__(self, title: str, body: str) -> None:
         self.title = title
         self.body = body
-        self.user_id = user_id
 
 
 class TaskTestObject(TestObject):
@@ -255,13 +251,23 @@ class AddTestObjects:
         """
         self._add_object(User, *user_test_objects)
 
-    def add_test_posts(self, *post_test_objects: PostTestObject) -> None:
-        """Add post objects to the database.
+    def add_test_post(
+        self, post_test_object: PostTestObject, **kwargs: t.Any
+    ) -> TestResponse:
+        """Add post to the database.
 
-        :param post_test_objects: Variable number, of any size, of
-            ``PostTestObject`` instances.
+        :param post_test_object: ``PostTestObject`` instances.
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
         """
-        self._add_object(Post, *post_test_objects)
+        return self.test_client.post(
+            "/post/create",
+            data={
+                "title": post_test_object.title,
+                "body": post_test_object.body,
+            },
+            **kwargs,
+        )
 
     def add_test_tasks(self, *task_test_objects: TaskTestObject) -> None:
         """Add task objects to the database.
@@ -297,7 +303,7 @@ class GetObjects:
         :return: Tuple of ``PostTestObject`` instances.
         """
         return [
-            PostTestObject(post_title[i], post_body[i], 1)
+            PostTestObject(post_title[i], post_body[i])
             for i in range(max_index + 1)
         ]
 

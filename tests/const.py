@@ -6,7 +6,6 @@ from datetime import datetime
 
 from templatest.utils import VarSeq, VarSeqSuffix
 
-UPDATE1 = "/post/1/update"
 MESSAGE_CREATED = datetime(2018, 1, 1, 0, 0, 5)
 INVALID_OR_EXPIRED = "invalid or has expired."
 MAIL_SERVER = "localhost"
@@ -28,7 +27,6 @@ RECIPIENT_ID = 1
 SENDER_ID = 2
 MESSAGE_BODY = "hello, this is a test message"
 REDIRECT_LOGOUT = "/redirect/logout"
-POST_1 = "/post/1"
 APP_UTILS_LANG_POT_FILE = "app.utils.lang._pot_file"
 APP_UTILS_LANG_SUBPROCESS_RUN = "app.utils.lang.subprocess.run"
 MESSAGES_POT = "messages.pot"
