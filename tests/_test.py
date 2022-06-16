@@ -317,6 +317,8 @@ def test_author_required(
 
     # current user doesn't see edit link
     assert b'href="/post/1/update"' not in client.get("/").data
+    response = client.get("/post/1")
+    assert b'href="/post/1/update?revision=-1"' not in response.data
 
 
 @pytest.mark.usefixtures("init_db")

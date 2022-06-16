@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Moves `/redirect/<int:id>/delete` to `/post/<int:id>/delete`
 
+### Fixed
+- Removes update link for incorrect user in `/post/<int:id>`
+
 [1.19.1](https://github.com/jshwi/jss/releases/tag/v1.19.1) - 2022-06-04
 ------------------------------------------------------------------------
 ### Fixed

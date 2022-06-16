@@ -27,10 +27,12 @@
     {{ post.body|markdown }}
 
     {# if revision has been passed display button to restore version #}
-    {% if revision == -1 %}
-        {% set display = _("Update") %}
-    {% else %}
-        {% set display = _("Restore") %}
+    {% if current_user.id == post.user_id %}
+      {% if revision == -1 %}
+          {% set display = _("Update") %}
+      {% else %}
+          {% set display = _("Restore") %}
+      {% endif %}
+      <a class="btn btn-primary" href="{{ url_for('post.update', id=post.id, revision=revision) }}" role="button">{{ display }}</a>
     {% endif %}
-    <a class="btn btn-primary" href="{{ url_for('post.update', id=post.id, revision=revision) }}" role="button">{{ display }}</a>
 {% endblock %}
