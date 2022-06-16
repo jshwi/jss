@@ -69,28 +69,6 @@ from .const import (
     OTHER_USER_PASSWORD,
     OTHER_USER_USERNAME,
     POST_1,
-    POST_AUTHOR_ID_1,
-    POST_AUTHOR_ID_2,
-    POST_AUTHOR_ID_3,
-    POST_AUTHOR_ID_4,
-    POST_BODY_1,
-    POST_BODY_2,
-    POST_BODY_3,
-    POST_BODY_4,
-    POST_BODY_V1,
-    POST_BODY_V2,
-    POST_BODY_V3,
-    POST_CREATED_1,
-    POST_CREATED_2,
-    POST_CREATED_3,
-    POST_CREATED_4,
-    POST_TITLE_1,
-    POST_TITLE_2,
-    POST_TITLE_3,
-    POST_TITLE_4,
-    POST_TITLE_V1,
-    POST_TITLE_V2,
-    POST_TITLE_V3,
     POT_CONTENTS,
     PROFILE_EDIT,
     PYPROJECT_TOML,
@@ -102,10 +80,13 @@ from .const import (
     TASK_ID,
     TASK_NAME,
     UPDATE1,
+    post_body,
+    post_title,
 )
 from .utils import (
     AddTestObjects,
     AuthActions,
+    GetObjects,
     MessageTestObject,
     PostTestObject,
     Recorder,
@@ -216,7 +197,10 @@ def test_logout(client: FlaskClient, auth: AuthActions) -> None:
 
 @pytest.mark.usefixtures("init_db")
 def test_index(
-    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
+    client: FlaskClient,
+    get_objects: GetObjects,
+    auth: AuthActions,
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test login and subsequent requests from the client.
 
@@ -229,6 +213,7 @@ def test_index(
     or register. When logged in there's a link to log out.
 
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -242,17 +227,15 @@ def test_index(
         confirmed=True,
         authorized=True,
     )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(1)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(post_test_object)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
     decoded_response = client.get("/").data.decode()
     assert "Logout" in decoded_response
-    assert post_test_object.title in decoded_response
+    assert p_o[1].title in decoded_response
     assert user_test_object.username in decoded_response
-    assert post_test_object.body in decoded_response
+    assert p_o[1].body in decoded_response
     assert 'href="/post/1/update"' in decoded_response
 
 
@@ -278,6 +261,7 @@ def test_login_required(client: FlaskClient, route: str) -> None:
 def test_author_required(
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -293,6 +277,7 @@ def test_author_required(
 
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -306,14 +291,12 @@ def test_author_required(
         OTHER_USER_USERNAME, OTHER_USER_EMAIL, OTHER_USER_PASSWORD
     )
     add_test_objects.add_test_users(user_test_object, other_user_test_object)
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    add_test_objects.add_test_posts(post_test_object)
+    p_o = get_objects.post(1)
+    add_test_objects.add_test_posts(p_o[1])
     # change the post author to another author
     with test_app.app_context():
-        post = Post.query.get(1)
-        post.user_id = 2
+        p_q = Post.query.get(1)
+        p_q.user_id = 2
         db.session.commit()
 
     auth.login(user_test_object)
@@ -331,6 +314,7 @@ def test_author_required(
 @pytest.mark.parametrize("route", ["/2/update", "/2/delete"])
 def test_exists_required(
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
     route: str,
@@ -338,6 +322,7 @@ def test_exists_required(
     """Test ``404 Not Found`` is returned when a route does not exist.
 
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     :param route: Parametrized route path.
@@ -348,11 +333,9 @@ def test_exists_required(
         AUTHORIZED_USER_PASSWORD,
         authorized=True,
     )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(1)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(post_test_object)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
     response = client.post(route, follow_redirects=True)
     assert response.status_code == 404
@@ -362,6 +345,7 @@ def test_exists_required(
 def test_create(
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -372,6 +356,7 @@ def test_create(
 
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -381,11 +366,12 @@ def test_create(
         AUTHORIZED_USER_PASSWORD,
         authorized=True,
     )
+    p_o = get_objects.post(1)
     add_test_objects.add_test_users(user_test_object)
     auth.login(user_test_object)
     assert client.get("/post/create").status_code == 200
     client.post(
-        "/post/create", data={"title": POST_TITLE_1, "body": POST_BODY_1}
+        "/post/create", data={"title": p_o[1].title, "body": p_o[1].body}
     )
     with test_app.app_context():
         count = Post.query.count()
@@ -396,6 +382,7 @@ def test_create(
 def test_update(
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -403,6 +390,7 @@ def test_update(
 
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -412,24 +400,17 @@ def test_update(
         AUTHORIZED_USER_PASSWORD,
         authorized=True,
     )
-    created_post = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    updated_post = PostTestObject(
-        "updated title", "updated body", POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(2)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(created_post)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
     assert client.get(UPDATE1, follow_redirects=True).status_code == 200
     assert "Edited" not in client.get(POST_1).data.decode()
-    client.post(
-        UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
-    )
+    client.post(UPDATE1, data={"title": p_o[2].title, "body": p_o[2].body})
     with test_app.app_context():
-        post = Post.query.get(1)
-        assert post.title == updated_post.title
-        assert post.body == updated_post.body
+        p_q = Post.query.get(1)
+        assert p_q.title == p_o[2].title
+        assert p_q.body == p_o[2].body
 
     assert "Edited" in client.get(POST_1).data.decode()
 
@@ -438,6 +419,7 @@ def test_update(
 def test_delete(
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -448,6 +430,7 @@ def test_delete(
 
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -458,10 +441,8 @@ def test_delete(
         authorized=True,
     )
     add_test_objects.add_test_users(user_test_object)
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    add_test_objects.add_test_posts(post_test_object)
+    p_o = get_objects.post(1)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
     response = client.post("/post/1/delete")
     assert response.headers["Location"] == "https://localhost/"
@@ -491,32 +472,34 @@ def test_create_command(
     assert state_2.called
 
 
-def test_export() -> None:
-    """Test export to dict_ function for models."""
-    # noinspection PyArgumentList
-    post = Post(title=POST_TITLE_1, body=POST_BODY_1, created=POST_CREATED_1)
-    as_dict = post.export()
-    assert as_dict["title"] == POST_TITLE_1
-    assert as_dict["body"] == POST_BODY_1
-    assert as_dict["created"] == str(POST_CREATED_1)
+def test_export(get_objects: GetObjects) -> None:
+    """Test export to dict_ function for models.
+
+    :param get_objects: Get test objects with db model attributes.
+    """
+    p_o = get_objects.post(1)
+    p_m = Post(title=p_o[1].title, body=p_o[1].body)
+    as_dict = p_m.export()
+    assert as_dict["title"] == p_o[1].title
+    assert as_dict["body"] == p_o[1].body
 
 
 @pytest.mark.parametrize("sync", [True, False])
-def test_send_mail(test_app: Flask, sync: bool) -> None:
+def test_send_mail(
+    test_app: Flask, get_objects: GetObjects, sync: bool
+) -> None:
     """Test sending of mail by app's email client.
 
     :param test_app: Test application.
+    :param get_objects: Get test objects with db model attributes.
     :param sync: Asynchronous: True or False.
     """
+    p_o = get_objects.post(1)
     subject = "mail subject line"
     recipients = [MAIN_USER_EMAIL, OTHER_USER_EMAIL]
     html = "<p>email body<p>"
     sender = "admin@localhost"
-    data = {
-        "title": POST_TITLE_1,
-        "body": POST_BODY_1,
-        "created": f"{POST_CREATED_1.isoformat()}Z",
-    }
+    data = {"title": p_o[1].title, "body": p_o[1].body}
     attachment = {
         "filename": "file.json",
         "content_type": "application/json",
@@ -1055,26 +1038,27 @@ def test_profile_page(
 
 @pytest.mark.usefixtures("init_db")
 def test_post_page(
-    client: FlaskClient, add_test_objects: AddTestObjects
+    client: FlaskClient,
+    get_objects: GetObjects,
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test for correct contents in post page response.
 
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param add_test_objects: Add test objects to test database.
     """
     user_test_object = UserTestObject(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(1)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(post_test_object)
+    add_test_objects.add_test_posts(p_o[1])
     response = client.get(POST_1)
     assert (
-        f"    <h1>\n     {POST_TITLE_1}\n    </h1>\n"
+        f"    <h1>\n     {p_o[1].title}\n    </h1>\n"
     ) in response.data.decode()
-    assert POST_BODY_1 in response.data.decode()
+    assert p_o[1].body in response.data.decode()
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1167,11 +1151,12 @@ def test_follow(test_app: Flask, add_test_objects: AddTestObjects) -> None:
 
 @pytest.mark.usefixtures("init_db")
 def test_follow_posts(
-    test_app: Flask, add_test_objects: AddTestObjects
+    test_app: Flask, get_objects: GetObjects, add_test_objects: AddTestObjects
 ) -> None:
     """Test functionality of post follows.
 
     :param test_app: Test application.
+    :param get_objects: Get test objects with db model attributes.
     :param add_test_objects: Add test objects to test database.
     """
     with test_app.app_context():
@@ -1194,32 +1179,20 @@ def test_follow_posts(
             user_test_object_3,
             user_test_object_4,
         )
-        post_test_object_1 = PostTestObject(
-            POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-        )
-        post_test_object_2 = PostTestObject(
-            POST_TITLE_2, POST_BODY_2, POST_AUTHOR_ID_2, POST_CREATED_4
-        )
-        post_test_object_3 = PostTestObject(
-            POST_TITLE_3, POST_BODY_3, POST_AUTHOR_ID_3, POST_CREATED_3
-        )
-        post_test_object_4 = PostTestObject(
-            POST_TITLE_4, POST_BODY_4, POST_AUTHOR_ID_4, POST_CREATED_2
-        )
-        add_test_objects.add_test_posts(
-            post_test_object_1,
-            post_test_object_2,
-            post_test_object_3,
-            post_test_object_4,
-        )
+        p_o = get_objects.post(4)
+        p_o[1].user_id = 1
+        p_o[2].user_id = 2
+        p_o[3].user_id = 3
+        p_o[4].user_id = 4
+        add_test_objects.add_test_posts(p_o[1], p_o[2], p_o[3], p_o[4])
         user_1 = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
         user_2 = User.query.filter_by(username=MAIN_USER_USERNAME).first()
         user_3 = User.query.filter_by(username=OTHER_USER_USERNAME).first()
         user_4 = User.query.filter_by(username=LAST_USER_USERNAME).first()
-        post_1 = Post.query.filter_by(title=POST_TITLE_1).first()
-        post_2 = Post.query.filter_by(title=POST_TITLE_2).first()
-        post_3 = Post.query.filter_by(title=POST_TITLE_3).first()
-        post_4 = Post.query.filter_by(title=POST_TITLE_4).first()
+        p_q_1 = Post.query.filter_by(title=p_o[1].title).first()
+        p_q_2 = Post.query.filter_by(title=p_o[2].title).first()
+        p_q_3 = Post.query.filter_by(title=p_o[3].title).first()
+        p_q_4 = Post.query.filter_by(title=p_o[4].title).first()
 
         # set up the followers
         user_1.follow(user_2)
@@ -1233,10 +1206,10 @@ def test_follow_posts(
         followed_2 = user_2.followed_posts().all()
         followed_3 = user_3.followed_posts().all()
         followed_4 = user_4.followed_posts().all()
-        assert followed_1 == [post_2, post_4, post_1]
-        assert followed_2 == [post_2, post_3]
-        assert followed_3 == [post_3, post_4]
-        assert followed_4 == [post_4]
+        assert followed_1 == [p_q_4, p_q_2, p_q_1]
+        assert followed_2 == [p_q_3, p_q_2]
+        assert followed_3 == [p_q_4, p_q_3]
+        assert followed_4 == [p_q_4]
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1389,6 +1362,7 @@ def test_export_post_is_job(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -1397,6 +1371,7 @@ def test_export_post_is_job(
     :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -1406,11 +1381,9 @@ def test_export_post_is_job(
         ADMIN_USER_PASSWORD,
         confirmed=True,
     )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(1)
     add_test_objects.add_test_users(user_test_object_1)
-    add_test_objects.add_test_posts(post_test_object)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object_1)
     app_current_user = Recorder()
     app_current_user.is_authenticated = lambda: True  # type: ignore
@@ -1431,6 +1404,7 @@ def test_export_post(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -1439,6 +1413,7 @@ def test_export_post(
     :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -1448,11 +1423,9 @@ def test_export_post(
         ADMIN_USER_PASSWORD,
         confirmed=True,
     )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(1)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(post_test_object)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
     enqueue = Recorder()
     session_add = Recorder()
@@ -1592,11 +1565,16 @@ def test_get_tasks_in_progress_error_raised(
 
 @pytest.mark.usefixtures("init_db")
 def test_export_posts(
-    monkeypatch: pytest.MonkeyPatch, add_test_objects: AddTestObjects
+    monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
+    get_objects: GetObjects,
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test data as sent to user when post export requested.
 
     :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test application.
+    :param get_objects: Get test objects with db model attributes.
     :param add_test_objects: Add test objects to test database.
     """
     # this needs to imported *after* `monkeypatch.setenv` has patched
@@ -1611,9 +1589,7 @@ def test_export_posts(
     user_test_object = UserTestObject(
         ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
     )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(1)
 
     # running outside `test_app's` context
     # noinspection PyArgumentList
@@ -1624,7 +1600,7 @@ def test_export_posts(
     )
     db.session.add(test_user)
     db.session.commit()
-    add_test_objects.add_test_posts(post_test_object)
+    add_test_objects.add_test_posts(p_o[1])
     user = User.query.get(1)
     task_test_object = TaskTestObject(
         TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
@@ -1637,13 +1613,16 @@ def test_export_posts(
     monkeypatch.setattr("app.utils.tasks.get_current_job", lambda: job)
     app.utils.tasks.export_posts(1)
     outbox = mail_send.args[0]
+    with test_app.app_context():
+        p_q = Post.query.get(1)
+
     post_obj = [
         dict(
-            body=post_test_object.body,
-            created=str(post_test_object.created),
+            body=p_o[1].body,
+            created=str(p_q.created),
             edited="None",
             id="1",
-            title=post_test_object.title,
+            title=p_o[1].title,
             user_id="1",
         )
     ]
@@ -1689,6 +1668,7 @@ def test_export_posts_err(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_versions(
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -1696,6 +1676,7 @@ def test_versions(
 
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -1706,16 +1687,14 @@ def test_versions(
         authorized=True,
         confirmed=True,
     )
-    post_test_object = PostTestObject(
-        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(2)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(post_test_object)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
     with test_app.app_context():
         post = Post.query.get(1)
-        post.title = POST_TITLE_V2
-        post.body = POST_BODY_V2
+        post.title = p_o[2].title
+        post.body = p_o[2].body
         db.session.commit()
 
     assert (
@@ -1961,11 +1940,15 @@ def test_reserved_usernames(
 
 @pytest.mark.usefixtures("init_db")
 def test_versions_update(
-    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
+    client: FlaskClient,
+    get_objects: GetObjects,
+    auth: AuthActions,
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test versioning of posts route when passing revision to update.
 
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -1976,30 +1959,27 @@ def test_versions_update(
         authorized=True,
         confirmed=True,
     )
-    created_post = PostTestObject(
-        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    updated_post = PostTestObject(
-        POST_TITLE_V2, POST_BODY_V2, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(2)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(created_post)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
-    client.post(
-        UPDATE1, data={"title": updated_post.title, "body": updated_post.body}
-    )
+    client.post(UPDATE1, data={"title": p_o[2].title, "body": p_o[2].body})
     response = client.get("/post/1/update?revision=0", follow_redirects=True)
-    assert created_post.title in response.data.decode()
-    assert created_post.body in response.data.decode()
+    assert p_o[1].title in response.data.decode()
+    assert p_o[1].body in response.data.decode()
 
 
 @pytest.mark.usefixtures("init_db")
 def test_versioning_handle_index_error(
-    client: FlaskClient, auth: AuthActions, add_test_objects: AddTestObjects
+    client: FlaskClient,
+    get_objects: GetObjects,
+    auth: AuthActions,
+    add_test_objects: AddTestObjects,
 ) -> None:
     """Test versioning route when passing to large a revision to update.
 
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -2010,11 +1990,9 @@ def test_versioning_handle_index_error(
         authorized=True,
         confirmed=True,
     )
-    created_post = PostTestObject(
-        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
+    p_o = get_objects.post(1)
     add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(created_post)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
     assert client.get("/post/1/update?revision=1").status_code == 404
 
@@ -2169,6 +2147,7 @@ def test_all_routes_covered(test_app: Flask) -> None:
 )
 def test_static_route_default(
     client: FlaskClient,
+    get_objects: GetObjects,
     add_test_objects: AddTestObjects,
     interpolate_routes: t.Callable[..., None],
     code: int,
@@ -2177,6 +2156,7 @@ def test_static_route_default(
     """Specifically test all status codes of routes.
 
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param add_test_objects: Add test objects to test database.
     :param interpolate_routes: Interpolate route vars with test values.
     :param code: Status code expected.
@@ -2186,10 +2166,8 @@ def test_static_route_default(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     add_test_objects.add_test_users(user_test_object)
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    add_test_objects.add_test_posts(post_test_object)
+    p_o = get_objects.post(1)
+    add_test_objects.add_test_posts(p_o[1])
     interpolate_routes(routes, 1, 0, MAIN_USER_USERNAME)
     assert all(
         client.get(r, follow_redirects=True).status_code == code
@@ -2264,6 +2242,7 @@ def test_register_text(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_version_dropdown(
     test_app: Flask,
     client: FlaskClient,
+    get_objects: GetObjects,
     auth: AuthActions,
     add_test_objects: AddTestObjects,
 ) -> None:
@@ -2273,6 +2252,7 @@ def test_version_dropdown(
 
     :param test_app: Test application.
     :param client: Test application client.
+    :param get_objects: Get test objects with db model attributes.
     :param auth: Handle authorization.
     :param add_test_objects: Add test objects to test database.
     """
@@ -2284,21 +2264,19 @@ def test_version_dropdown(
         confirmed=True,
     )
     add_test_objects.add_test_users(user_test_object)
-    post_test_object = PostTestObject(
-        POST_TITLE_V1, POST_BODY_V1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    add_test_objects.add_test_posts(post_test_object)
+    p_o = get_objects.post(3)
+    add_test_objects.add_test_posts(p_o[1])
     auth.login(user_test_object)
 
     # create 3 versions (2 other, apart from the original) for all
     # naming branches
     with test_app.app_context():
-        post = Post.query.get(1)
-        post.title = POST_TITLE_V2
-        post.body = POST_BODY_V2
+        p_q = Post.query.get(1)
+        p_q.title = p_o[2].title
+        p_q.body = p_o[2].body
         db.session.commit()
-        post.title = POST_TITLE_V3
-        post.body = POST_BODY_V3
+        p_q.title = p_o[3].title
+        p_q.body = p_o[3].body
         db.session.commit()
 
     response = client.get("/")
@@ -2319,16 +2297,12 @@ def test_version_dropdown(
     [
         (
             "/",
-            PostTestObject(
-                POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-            ),
+            PostTestObject(post_title[1], post_body[1], 1),
             "add_test_posts",
         ),
         (
             f"/profile/{ADMIN_USER_USERNAME}",
-            PostTestObject(
-                POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-            ),
+            PostTestObject(post_title[1], post_body[1], 1),
             "add_test_posts",
         ),
         (

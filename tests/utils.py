@@ -18,6 +18,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.test import TestResponse
 
 from app.models import BaseModel, Message, Post, Task, User, db
+from tests.const import post_body, post_title
 
 
 class TestObject:
@@ -58,16 +59,14 @@ class PostTestObject(TestObject):
     :param title: Title of the post.
     :param body: Main content of the post.
     :param user_id: ID of the user who made the post.
-    :param created: When the post was created.
     """
 
     def __init__(
-        self, title: str, body: str, user_id: int, created: datetime
+        self, title: str, body: str, user_id: t.Optional[int] = None
     ) -> None:
         self.title = title
         self.body = body
         self.user_id = user_id
-        self.created = created
 
 
 class TaskTestObject(TestObject):
@@ -267,3 +266,20 @@ class AddTestObjects:
             ``MessageTestObject`` instances.
         """
         self._add_object(Message, *message_test_objects)
+
+
+class GetObjects:
+    """Get test objects with db model attributes."""
+
+    @staticmethod
+    def post(max_index: int = 0) -> t.List[PostTestObject]:
+        """Get a tuple of ``PostTestObject`` instances.
+
+        :param max_index: Maximum number of objects to return by list
+            index (0 will return 1 object, 1 will return 2, and so on).
+        :return: Tuple of ``PostTestObject`` instances.
+        """
+        return [
+            PostTestObject(post_title[i], post_body[i], 1)
+            for i in range(max_index + 1)
+        ]

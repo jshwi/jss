@@ -4,6 +4,8 @@ tests.const
 """
 from datetime import datetime
 
+from templatest.utils import VarSeq
+
 UPDATE1 = "/post/1/update"
 ADMIN_USER_USERNAME = "admin"
 ADMIN_USER_EMAIL = "admin@test.com"
@@ -20,28 +22,6 @@ OTHER_USER_PASSWORD = "pass3"
 LAST_USER_USERNAME = "last"
 LAST_USER_EMAIL = "last@test.com"
 LAST_USER_PASSWORD = "pass4"
-POST_TITLE_1 = "test title 1"
-POST_BODY_1 = "test 1\nbody 1"
-POST_AUTHOR_ID_1 = 1
-POST_TITLE_2 = "test title 2"
-POST_BODY_2 = "test 2\nbody 2"
-POST_AUTHOR_ID_2 = 2
-POST_TITLE_3 = "test title 3"
-POST_BODY_3 = "test 3\nbody 3"
-POST_AUTHOR_ID_3 = 3
-POST_TITLE_4 = "test title 4"
-POST_BODY_4 = "test 4\nbody 4"
-POST_AUTHOR_ID_4 = 4
-POST_TITLE_V1 = "title-v1"
-POST_TITLE_V2 = "body-v1"
-POST_BODY_V1 = "title-v2"
-POST_BODY_V2 = "body-v2"
-POST_TITLE_V3 = "title-v3"
-POST_BODY_V3 = "body-v3"
-POST_CREATED_1 = datetime(2018, 1, 1, 0, 0, 1)
-POST_CREATED_2 = datetime(2018, 1, 1, 0, 0, 2)
-POST_CREATED_3 = datetime(2018, 1, 1, 0, 0, 3)
-POST_CREATED_4 = datetime(2018, 1, 1, 0, 0, 4)
 MESSAGE_CREATED = datetime(2018, 1, 1, 0, 0, 5)
 INVALID_OR_EXPIRED = "invalid or has expired."
 MAIL_SERVER = "localhost"
@@ -453,3 +433,6 @@ msgid "Send Message to"
 msgstr ""
 
 """
+
+post_title = VarSeq("postTitle", suffix="")
+post_body = VarSeq("postBody", suffix="")

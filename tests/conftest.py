@@ -23,7 +23,7 @@ from .const import (
     COPYRIGHT_EMAIL,
     MAIN_USER_EMAIL,
 )
-from .utils import AddTestObjects, AuthActions
+from .utils import AddTestObjects, AuthActions, GetObjects
 
 
 @pytest.fixture(name="test_app", autouse=True)
@@ -172,3 +172,12 @@ def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
     ]
     for item in items:
         Path(build_dir / item).touch()
+
+
+@pytest.fixture(name="get_objects")
+def fixture_get_objects() -> GetObjects:
+    """Get test objects with db model attributes.
+
+    :return: Instantiated ``GetObjects`` instance.
+    """
+    return GetObjects()
