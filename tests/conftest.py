@@ -205,3 +205,13 @@ def fixture_routes(
     :return: Instantiated ``Routes`` object.
     """
     return Routes(test_app, client, get_objects)
+
+
+@pytest.fixture(name="create_admin")
+def fixture_create_admin(runner: FlaskCliRunner) -> None:
+    """Create admin user.
+
+    :param runner: Test application cli.
+    """
+    response = runner.invoke(args=["create", "admin"])
+    assert "admin successfully created" in response.output

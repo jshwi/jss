@@ -522,19 +522,14 @@ def test_create_user_passwords_no_match(
     assert "passwords do not match: could not add user" in response.output
 
 
-@pytest.mark.usefixtures("init_db")
-def test_create_admin(
-    test_app: Flask, runner: FlaskCliRunner, get_objects: GetObjects
-) -> None:
+@pytest.mark.usefixtures("init_db", "create_admin")
+def test_create_admin(test_app: Flask, get_objects: GetObjects) -> None:
     """Test commands called when invoking ``flask create admin``.
 
     :param test_app: Test application.
-    :param runner: Test application cli.
     :param get_objects: Get test objects with db model attributes.
     """
     u_o = get_objects.user(0)
-    response = runner.invoke(args=["create", "admin"])
-    assert "admin successfully created" in response.output
     with test_app.app_context():
         u_q = User.query.filter_by(username=u_o[0].username).first()
         assert u_q.email == u_o[0].email
@@ -1364,14 +1359,12 @@ def test_versions(
     assert routes.posts.read(1, 2).status_code == 404
 
 
-@pytest.mark.usefixtures("init_db")
-def test_admin_access_control(runner: FlaskCliRunner, routes: Routes) -> None:
+@pytest.mark.usefixtures("init_db", "create_admin")
+def test_admin_access_control(routes: Routes) -> None:
     """Test access to admin console restricted to admin user.
 
-    :param runner: Test application cli.
     :param routes: Work with application routes.
     """
-    runner.invoke(args=["create", "admin"])
     routes.auth.register_index(1)
     routes.auth.login_index(0)
     assert routes.admin.get(follow_redirects=True).status_code == 200
