@@ -26,7 +26,7 @@ from redis import RedisError
 from app import config
 from app.extensions import mail
 from app.log import smtp_handler
-from app.models import Post, User, db
+from app.models import Post, User
 from app.utils import lang
 from app.utils.csp import ContentSecurityPolicy, CSPType
 from app.utils.mail import send_email
@@ -854,18 +854,13 @@ def test_get_smtp_handler(
 
 
 @pytest.mark.usefixtures("init_db")
-def test_profile_page(
-    client: FlaskClient, routes: Routes, get_objects: GetObjects
-) -> None:
+def test_profile_page(routes: Routes) -> None:
     """Test response when visiting profile page of existing user.
 
-    :param client: Test application client.
     :param routes: Work with application routes.
-    :param get_objects: Get test objects with db model attributes.
     """
-    u_o = get_objects.user(1)
     routes.auth.register_index(1)
-    response = client.get(f"/profile/{u_o[1].username}")
+    response = routes.profile.user(1)
     assert b'src="https://gravatar.com/avatar/' in response.data
 
 
@@ -947,21 +942,20 @@ def test_follow(
     """
     with test_app.app_context():
         u_o = get_objects.user(2)
-        routes.auth.register_index(1)
+        routes.auth.register_index(1, confirm=True)
         routes.auth.register_index(2)
         u_q_1 = User.query.filter_by(username=u_o[1].username).first()
         u_q_2 = User.query.filter_by(username=u_o[2].username).first()
         assert u_q_1.followed.all() == []
         assert u_q_1.followers.all() == []
-        u_q_1.follow(u_q_2)
-        db.session.commit()
+        routes.auth.login_index(1)
+        routes.redirect.follow(2)
         assert u_q_1.is_following(u_q_2)
         assert u_q_1.followed.count() == 1
         assert u_q_1.followed.first().username == u_o[2].username
         assert u_q_2.followers.count() == 1
         assert u_q_2.followers.first().username == u_o[1].username
-        u_q_1.unfollow(u_q_2)
-        db.session.commit()
+        routes.redirect.unfollow(2)
         assert not u_q_1.is_following(u_q_2)
         assert u_q_1.followed.count() == 0
         assert u_q_2.followers.count() == 0
@@ -986,9 +980,9 @@ def test_follow_posts(
         # create four users
         u_o = get_objects.user(4)
         p_o = get_objects.post(4)
-        routes.auth.register_index(1)
-        routes.auth.register_index(2)
-        routes.auth.register_index(3)
+        routes.auth.register_index(1, confirm=True)
+        routes.auth.register_index(2, confirm=True)
+        routes.auth.register_index(3, confirm=True)
         routes.auth.register_index(4)
         authorize_user(1)
         authorize_user(2)
@@ -997,14 +991,18 @@ def test_follow_posts(
 
         routes.auth.login_index(1)
         routes.posts.create(1)
+        routes.redirect.follow(2)
+        routes.redirect.follow(4)
         routes.auth.logout()
 
         routes.auth.login_index(2)
         routes.posts.create(2)
+        routes.redirect.follow(3)
         routes.auth.logout()
 
         routes.auth.login_index(3)
         routes.posts.create(3)
+        routes.redirect.follow(4)
         routes.auth.logout()
 
         routes.auth.login_index(4)
@@ -1020,13 +1018,6 @@ def test_follow_posts(
         p_q_3 = Post.query.filter_by(title=p_o[3].title).first()
         p_q_4 = Post.query.filter_by(title=p_o[4].title).first()
 
-        # set up the followers
-        u_q_1.follow(u_q_2)
-        u_q_1.follow(u_q_4)
-        u_q_2.follow(u_q_3)
-        u_q_3.follow(u_q_4)
-        db.session.commit()
-
         # check the followed posts of each user
         followed_1 = u_q_1.followed_posts().all()
         followed_2 = u_q_2.followed_posts().all()
@@ -1040,11 +1031,10 @@ def test_follow_posts(
 
 @pytest.mark.usefixtures("init_db")
 def test_post_follow_unfollow_routes(
-    client: FlaskClient, routes: Routes, get_objects: GetObjects
+    routes: Routes, get_objects: GetObjects
 ) -> None:
     """Test ``POST`` request to follow and unfollow a user.
 
-    :param client: Test application client.
     :param routes: Work with application routes.
     :param get_objects: Get test objects with db model attributes.
     """
@@ -1054,13 +1044,9 @@ def test_post_follow_unfollow_routes(
     routes.auth.register_index(2, confirm=True)
     routes.auth.login_index(1)
     routes.auth.login_index(2)
-    response = client.post(
-        f"/redirect/follow/{u_o[2].username}", follow_redirects=True
-    )
+    response = routes.redirect.follow(2, follow_redirects=True)
     assert f"You are now following {u_o[2].username}" in response.data.decode()
-    response = client.post(
-        f"/redirect/unfollow/{u_o[2].username}", follow_redirects=True
-    )
+    response = routes.redirect.unfollow(2, follow_redirects=True)
     assert (
         f"You are no longer following {u_o[2].username}"
         in response.data.decode()
@@ -1532,10 +1518,7 @@ def test_inspect_profile_no_user(
 
 @pytest.mark.usefixtures("init_db")
 def test_user_name_change_accessible(
-    test_app: Flask,
-    client: FlaskClient,
-    routes: Routes,
-    get_objects: GetObjects,
+    test_app: Flask, routes: Routes, get_objects: GetObjects
 ) -> None:
     """Test that even after name-change user is accessible by old name.
 
@@ -1543,7 +1526,6 @@ def test_user_name_change_accessible(
     else.
 
     :param test_app: Test application.
-    :param client: Test application client.
     :param routes: Work with application routes.
     :param get_objects: Get test objects with db model attributes.
     """
@@ -1556,7 +1538,7 @@ def test_user_name_change_accessible(
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 1
 
-    response = client.get(f"/profile/{u_o[1].username}")
+    response = routes.profile.user(1)
     assert u_o[1].username in response.data.decode()
 
     # assert that name change is successful
@@ -1565,7 +1547,7 @@ def test_user_name_change_accessible(
         u_q = User.resolve_all_names(u_o[2].username)
         assert u_q.id == 1
 
-    response = client.get(f"/profile/{u_o[1].username}")
+    response = routes.profile.user(1)
     assert response.status_code != 404
     assert u_o[2].username in response.data.decode()
 
@@ -1576,7 +1558,7 @@ def test_user_name_change_accessible(
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 1
 
-    response = client.get(f"/profile/{u_o[1].username}")
+    response = routes.profile.user(1)
     assert u_o[2].username in response.data.decode()
 
     # assert that od name is now a valid choice for a new user
@@ -1589,7 +1571,7 @@ def test_user_name_change_accessible(
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 2
 
-    response = client.get(f"/profile/{u_o[1].username}")
+    response = routes.profile.user(1)
     assert u_o[1].username in response.data.decode()
 
     # assert that name change is successful for second user
@@ -1598,7 +1580,7 @@ def test_user_name_change_accessible(
         u_q = User.resolve_all_names(u_o[3].username)
         assert u_q.id == 2
 
-    response = client.get(f"/profile/{u_o[3].username}")
+    response = routes.profile.user(1)
     assert u_o[3].username in response.data.decode()
 
     # assert that the latest user can be referenced by the old username
@@ -1608,7 +1590,7 @@ def test_user_name_change_accessible(
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 2
 
-    response = client.get(f"/profile/{u_o[1].username}")
+    response = routes.profile.user(1)
     assert response.status_code != 404
     assert u_o[3].username in response.data.decode()
 

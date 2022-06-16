@@ -323,6 +323,53 @@ class AdminCRUD(CRUD):
         return self.get("/users", **kwargs)
 
 
+class ProfileCRUD(CRUD):
+    """Handle all profile logic."""
+
+    PREFIX = "/profile"
+
+    def user(self, index: int, **kwargs: t.Any) -> TestResponse:
+        """Get user profile.
+
+        :param index: ``UserTestObject`` index.
+        :param kwargs: Kwargs to pass to get.
+        :return: Test ``Response`` object.
+        """
+        return self.get(
+            f"/{self._get_objects.user(index)[index].username}", **kwargs
+        )
+
+
+class RedirectCRUD(CRUD):
+    """Handle /redirect."""
+
+    PREFIX = "/redirect"
+
+    def follow(self, index: int, **kwargs) -> TestResponse:
+        """Follow another user.
+
+        :param index: ``UserTestObject`` index.
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
+        """
+        return self.post(
+            f"/follow/{self._get_objects.user(index)[index].username}",
+            **kwargs,
+        )
+
+    def unfollow(self, index: int, **kwargs) -> TestResponse:
+        """Unfollow another user.
+
+        :param index: ``UserTestObject`` index.
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
+        """
+        return self.post(
+            f"/unfollow/{self._get_objects.user(index)[index].username}",
+            **kwargs,
+        )
+
+
 class Routes:
     """Collection of route classes."""
 
@@ -333,6 +380,8 @@ class Routes:
         self._auth = AuthCRUD(test_app, client, get_objects)
         self._user = UserCRUD(client, get_objects)
         self._admin = AdminCRUD(client, get_objects)
+        self._profile = ProfileCRUD(client, get_objects)
+        self._redirect = RedirectCRUD(client, get_objects)
 
     @property
     def posts(self) -> PostCRUD:
@@ -353,3 +402,13 @@ class Routes:
     def admin(self) -> AdminCRUD:
         """Work with /admin."""
         return self._admin
+
+    @property
+    def profile(self) -> ProfileCRUD:
+        """Work with /profile."""
+        return self._profile
+
+    @property
+    def redirect(self) -> RedirectCRUD:
+        """Work with /redirect."""
+        return self._redirect
