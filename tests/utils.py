@@ -12,13 +12,22 @@ import typing as t
 from datetime import datetime
 
 from bs4 import BeautifulSoup
+from click.testing import Result
 from flask import Flask
 from flask.testing import FlaskClient
 from werkzeug.security import generate_password_hash
 from werkzeug.test import TestResponse
 
 from app.models import BaseModel, Message, Post, Task, User, db
-from tests.const import post_body, post_title
+
+from .const import (
+    post_body,
+    post_title,
+    test_message,
+    user_email,
+    user_password,
+    user_username,
+)
 
 
 class TestObject:
@@ -31,8 +40,6 @@ class UserTestObject(TestObject):
     :param username: Username of user object.
     :param email: Email of user object.
     :param password: Password, for raw text and comparison hash.
-    :param admin: Is user admin? True or False.
-    :param authorized: Is user authorized? True or False.
     """
 
     def __init__(
@@ -40,16 +47,14 @@ class UserTestObject(TestObject):
         username: str,
         email: str,
         password: str,
-        admin: bool = False,
-        authorized=False,
+        message: str,
         confirmed=False,
     ) -> None:
         self.username = username
         self.email = email
         self.password = password
         self.password_hash = generate_password_hash(password)
-        self.admin = admin
-        self.authorized = authorized
+        self.message = message
         self.confirmed = confirmed
 
 
@@ -196,6 +201,14 @@ class AuthActions:
             follow_redirects=follow_redirects,
         )
 
+    def logout(self, **kwargs: t.Any) -> TestResponse:
+        """Log the current test user out.
+
+        :param kwargs: Kwargs to pass to get.
+        :return: Test ``Response`` object.
+        """
+        return self._client.get(f"/{self.prefix}/logout", **kwargs)
+
 
 class Recorder:
     """Record  command when invoked."""
@@ -218,8 +231,9 @@ class AddTestObjects:
     :param test_app: Test application.
     """
 
-    def __init__(self, test_app: Flask) -> None:
+    def __init__(self, test_app: Flask, client: FlaskClient) -> None:
         self.test_app = test_app
+        self.test_client = client
 
     def _add_object(
         self, model: t.Type[BaseModel], *test_objects: TestObject
@@ -271,6 +285,9 @@ class AddTestObjects:
 class GetObjects:
     """Get test objects with db model attributes."""
 
+    def __init__(self, test_app: Flask) -> None:
+        self._test_app = test_app
+
     @staticmethod
     def post(max_index: int = 0) -> t.List[PostTestObject]:
         """Get a tuple of ``PostTestObject`` instances.
@@ -283,3 +300,28 @@ class GetObjects:
             PostTestObject(post_title[i], post_body[i], 1)
             for i in range(max_index + 1)
         ]
+
+    def user(self, max_index: int = 0) -> t.List[UserTestObject]:
+        """Get a tuple of ``UserTestObject`` instances.
+
+        :param max_index: Maximum number of objects to return by list
+            index (0 will return 1 object, 1 will return 2, and so on).
+        :return: Tuple of ``UserTestObject`` instances.
+        """
+        return [
+            UserTestObject(
+                "admin" if i == 0 else user_username[i],
+                self._test_app.config["ADMINS"][0]
+                if i == 0
+                else user_email[i],
+                user_password[i],
+                test_message[i],
+            )
+            for i in range(max_index + 1)
+        ]
+
+
+UserFixtureType = t.Callable[[int], None]
+ConfirmUserFixtureType = UserFixtureType
+AuthorizeUserFixtureType = UserFixtureType
+CreateAdminFixtureType = t.Callable[..., Result]

@@ -14,16 +14,15 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from app import create_app
-from app.models import db
+from app.models import User, db
 
-from .const import (
-    ADMIN_USER_EMAIL,
-    ADMIN_USER_PASSWORD,
-    COPYRIGHT_AUTHOR,
-    COPYRIGHT_EMAIL,
-    MAIN_USER_EMAIL,
+from .const import COPYRIGHT_AUTHOR, COPYRIGHT_EMAIL, user_email, user_password
+from .utils import (
+    AddTestObjects,
+    AuthActions,
+    AuthorizeUserFixtureType,
+    GetObjects,
 )
-from .utils import AddTestObjects, AuthActions, GetObjects
 
 
 @pytest.fixture(name="test_app", autouse=True)
@@ -45,10 +44,10 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
     monkeypatch.setenv("SECRET_KEY", "testing")
     monkeypatch.setenv("MAIL_SUBJECT_PREFIX", "[JSS]: ")
-    monkeypatch.setenv("ADMINS", f"{ADMIN_USER_EMAIL},{MAIN_USER_EMAIL}")
+    monkeypatch.setenv("ADMINS", f"{user_email[0]},{user_email[1]}")
     monkeypatch.setenv("DEFAULT_MAIL_SENDER", "no-reply@test.com")
     monkeypatch.setenv("DEBUG_TB_ENABLED", "0")
-    monkeypatch.setenv("ADMIN_SECRET", ADMIN_USER_PASSWORD)
+    monkeypatch.setenv("ADMIN_SECRET", user_password[0])
     monkeypatch.setenv("TRANSLATIONS_DIR", str(tmp_path / "translations"))
     monkeypatch.setenv("COPYRIGHT_AUTHOR", COPYRIGHT_AUTHOR)
     monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)
@@ -133,13 +132,16 @@ def fixture_interpolate_routes() -> t.Callable[..., None]:
 
 
 @pytest.fixture(name="add_test_objects")
-def fixture_add_test_objects(test_app: Flask) -> AddTestObjects:
+def fixture_add_test_objects(
+    test_app: Flask, client: FlaskClient
+) -> AddTestObjects:
     """Add test objects to test database.
 
     :param test_app: Test application.
+    :param client: Client for testing app.
     :return: Instantiated ``AddTestObjects`` class.
     """
-    return AddTestObjects(test_app)
+    return AddTestObjects(test_app, client)
 
 
 @pytest.fixture(name="init_static")
@@ -175,9 +177,32 @@ def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
 
 
 @pytest.fixture(name="get_objects")
-def fixture_get_objects() -> GetObjects:
+def fixture_get_objects(test_app: Flask) -> GetObjects:
     """Get test objects with db model attributes.
 
+    :param test_app: Test application.
     :return: Instantiated ``GetObjects`` instance.
     """
-    return GetObjects()
+    return GetObjects(test_app)
+
+
+@pytest.fixture(name="authorize_user")
+def fixture_authorize_user(
+    test_app: Flask, get_objects: GetObjects
+) -> AuthorizeUserFixtureType:
+    """Authorize existing user.
+
+    :param test_app: Test application.
+    :param get_objects: Get test objects with db model attributes.
+    :return: Function for using this fixture.
+    """
+
+    def _authorize_user(index: int) -> None:
+        with test_app.app_context():
+            u_q = User.query.filter_by(
+                username=get_objects.user(index + 1)[index].username
+            ).first()
+            u_q.authorized = True
+            db.session.commit()
+
+    return _authorize_user

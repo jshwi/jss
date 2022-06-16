@@ -4,28 +4,13 @@ tests.const
 """
 from datetime import datetime
 
-from templatest.utils import VarSeq
+from templatest.utils import VarSeq, VarSeqSuffix
 
 UPDATE1 = "/post/1/update"
-ADMIN_USER_USERNAME = "admin"
-ADMIN_USER_EMAIL = "admin@test.com"
-ADMIN_USER_PASSWORD = "pass0"
-AUTHORIZED_USER_USERNAME = "authorized"
-AUTHORIZED_USER_EMAIL = "authorized@test.com"
-AUTHORIZED_USER_PASSWORD = "pass1"
-MAIN_USER_USERNAME = "main"
-MAIN_USER_EMAIL = "main@test.com"
-MAIN_USER_PASSWORD = "pass2"
-OTHER_USER_USERNAME = "other"
-OTHER_USER_EMAIL = "other@test.com"
-OTHER_USER_PASSWORD = "pass3"
-LAST_USER_USERNAME = "last"
-LAST_USER_EMAIL = "last@test.com"
-LAST_USER_PASSWORD = "pass4"
 MESSAGE_CREATED = datetime(2018, 1, 1, 0, 0, 5)
 INVALID_OR_EXPIRED = "invalid or has expired."
 MAIL_SERVER = "localhost"
-MAIL_USERNAME = MAIN_USER_USERNAME
+MAIL_USERNAME = "mail_username"
 MAIL_PASSWORD = "unique"
 MAIL_PORT = 25
 PROFILE_EDIT = "/user/profile/edit"
@@ -436,3 +421,9 @@ msgstr ""
 
 post_title = VarSeq("postTitle", suffix="")
 post_body = VarSeq("postBody", suffix="")
+
+user_username = VarSeq("user")
+user_email = VarSeqSuffix("user", "@email.com")
+user_password = VarSeq("pass")
+
+test_message = VarSeq("message")
