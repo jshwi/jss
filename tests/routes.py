@@ -251,6 +251,64 @@ class AuthCRUD(CRUD):
         )
 
 
+class UserCRUD(CRUD):
+    """Handle all the user logic."""
+
+    PREFIX = "/user"
+
+    def edit(
+        self,
+        username: t.Optional[str] = None,
+        about_me: t.Optional[str] = None,
+        **kwargs: t.Any,
+    ) -> TestResponse:
+        """Edit logged-in test user profile page.
+
+        :param username: New username if provided.
+        :param about_me: New ``About Me`` info is provided.
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
+        """
+        data = {}
+        if username is not None:
+            data["username"] = username
+
+        if about_me is not None:
+            data["about_me"] = about_me
+
+        return self.post("/profile/edit", data=data, **kwargs)
+
+    def send_message(self, index: int, **kwargs: t.Any) -> TestResponse:
+        """Send messages to test user from logged-in test user.
+
+        :param index: ``UserTestObject`` index to send message to.
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
+        """
+        user = self._get_objects.user(index)[index]
+        return self.post(
+            f"/send_message/{user.username}",
+            data={"message": user.message},
+            **kwargs,
+        )
+
+    def notifications(self, **kwargs: t.Any) -> TestResponse:
+        """Get request to notifications route.
+
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
+        """
+        return self.get("/notifications", **kwargs)
+
+    def messages(self, **kwargs: t.Any) -> TestResponse:
+        """Get request to /messages.
+
+        :param kwargs: Kwargs to pass to post.
+        :return: Test ``Response`` object.
+        """
+        return self.get("/messages", **kwargs)
+
+
 class Routes:
     """Collection of route classes."""
 
@@ -259,6 +317,7 @@ class Routes:
     ) -> None:
         self._posts = PostCRUD(client, get_objects)
         self._auth = AuthCRUD(test_app, client, get_objects)
+        self._user = UserCRUD(client, get_objects)
 
     @property
     def posts(self) -> PostCRUD:
@@ -269,3 +328,8 @@ class Routes:
     def auth(self) -> AuthCRUD:
         """Work with /auth."""
         return self._auth
+
+    @property
+    def user(self) -> UserCRUD:
+        """Work with /user."""
+        return self._user

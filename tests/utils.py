@@ -9,15 +9,13 @@ Utilities for testing.
 from __future__ import annotations
 
 import typing as t
-from datetime import datetime
 
 from click.testing import Result
 from flask import Flask
 from flask.testing import FlaskClient
 from werkzeug.security import generate_password_hash
-from werkzeug.test import TestResponse
 
-from app.models import BaseModel, Message, Task, User, db
+from app.models import BaseModel, Task, User, db
 
 from .const import (
     post_body,
@@ -81,24 +79,6 @@ class TaskTestObject(TestObject):
         self.user_id = user.id
 
 
-class MessageTestObject(TestObject):
-    """Test model attributes.
-
-    :param sender_id: ID of sender.
-    :param recipient_id: ID of recipient.
-    :param body: Main content of the post.
-    :param created: When the post was created.
-    """
-
-    def __init__(
-        self, sender_id: int, recipient_id: int, body: str, created: datetime
-    ) -> None:
-        self.sender_id = sender_id
-        self.recipient_id = recipient_id
-        self.body = body
-        self.created = created
-
-
 class Recorder:
     """Record  command when invoked."""
 
@@ -144,24 +124,6 @@ class AddTestObjects:
         """
         self._add_object(User, *user_test_objects)
 
-    def add_test_post(
-        self, post_test_object: PostTestObject, **kwargs: t.Any
-    ) -> TestResponse:
-        """Add post to the database.
-
-        :param post_test_object: ``PostTestObject`` instances.
-        :param kwargs: Kwargs to pass to post.
-        :return: Test ``Response`` object.
-        """
-        return self.test_client.post(
-            "/post/create",
-            data={
-                "title": post_test_object.title,
-                "body": post_test_object.body,
-            },
-            **kwargs,
-        )
-
     def add_test_tasks(self, *task_test_objects: TaskTestObject) -> None:
         """Add task objects to the database.
 
@@ -169,16 +131,6 @@ class AddTestObjects:
             ``TaskTestObject`` instances.
         """
         self._add_object(Task, *task_test_objects)
-
-    def add_test_messages(
-        self, *message_test_objects: MessageTestObject
-    ) -> None:
-        """Add message objects to the database.
-
-        :param message_test_objects: Variable number, of any size, of
-            ``MessageTestObject`` instances.
-        """
-        self._add_object(Message, *message_test_objects)
 
 
 class GetObjects:

@@ -48,22 +48,15 @@ from .const import (
     MAIL_PORT,
     MAIL_SERVER,
     MAIL_USERNAME,
-    MESSAGE_BODY,
-    MESSAGE_CREATED,
     MESSAGES_PO,
     MESSAGES_POT,
     MISC_PROGRESS_INT,
     POT_CONTENTS,
-    PROFILE_EDIT,
     PYPROJECT_TOML,
-    RECIPIENT_ID,
-    SENDER_ID,
     STATUS_CODE_TO_ROUTE_DEFAULT,
     TASK_DESCRIPTION,
     TASK_ID,
     TASK_NAME,
-    post_body,
-    post_title,
     user_email,
     user_password,
     user_username,
@@ -73,11 +66,8 @@ from .utils import (
     AddTestObjects,
     AuthorizeUserFixtureType,
     GetObjects,
-    MessageTestObject,
-    PostTestObject,
     Recorder,
     TaskTestObject,
-    TestObject,
 )
 
 
@@ -907,44 +897,38 @@ def test_post_page(
 
 
 @pytest.mark.usefixtures("init_db")
-def test_edit_profile(
-    client: FlaskClient, routes: Routes, get_objects: GetObjects
-) -> None:
+def test_edit_profile(routes: Routes, get_objects: GetObjects) -> None:
     """Test edit profile page.
 
-    :param client: Test application client.
     :param routes: Work with application routes.
     :param get_objects: Get test objects with db model attributes.
     """
     u_o = get_objects.user(2)
     routes.auth.register_index(1, confirm=True)
     routes.auth.login_index(1)
-    response = client.get(PROFILE_EDIT, follow_redirects=True)
+    response = routes.user.get("/profile/edit", follow_redirects=True)
     assert b"Edit Profile" in response.data
     assert b"Profile" in response.data
     assert b"Logout" in response.data
     assert b"Edit Profile" in response.data
     assert u_o[1].username in response.data.decode()
     assert b"About me" in response.data
-    response = client.post(
-        PROFILE_EDIT,
-        data={"username": u_o[2].username, "about_me": "testing about me"},
-        follow_redirects=True,
+    response = routes.user.edit(
+        u_o[2].username, "testing about me", follow_redirects=True
     )
     assert u_o[2].username in response.data.decode()
     assert b"testing about me" in response.data
 
 
 @pytest.mark.usefixtures("init_db")
-def test_unconfirmed(client: FlaskClient, routes: Routes) -> None:
+def test_unconfirmed(routes: Routes) -> None:
     """Test when unconfirmed user tries to enter restricted view.
 
-    :param client: Test application client.
     :param routes: Work with application routes.
     """
     routes.auth.register_index(1)
     routes.auth.login_index(1)
-    response = client.get(PROFILE_EDIT, follow_redirects=True)
+    response = routes.user.get("/profile/edit", follow_redirects=True)
     assert b"Account Verification Pending" in response.data
     assert b"You have not verified your account" in response.data
     assert b"Please check your inbox " in response.data
@@ -1105,13 +1089,9 @@ def test_send_message(
     routes.auth.register_index(1, confirm=True)
     routes.auth.register_index(2, confirm=True)
     routes.auth.login_index(1)
-    response = client.post(
-        f"/user/send_message/{u_o[2].username}",
-        data={"message": f"test message from {u_o[1].username}"},
-        follow_redirects=True,
-    )
+    response = routes.user.send_message(2, follow_redirects=True)
     assert b"Your message has been sent." in response.data
-    response = client.get(f"/user/send_message/{u_o[2].username}")
+    response = routes.user.get(f"/send_message/{u_o[2].username}")
     assert f"Send Message to {u_o[2].username}" in response.data.decode()
     routes.auth.logout()
     routes.auth.login_index(2)
@@ -1153,7 +1133,7 @@ def test_send_message(
             " 1",
         ]
     )
-    response = client.get("/user/notifications")
+    response = routes.user.notifications()
     if response.json is not None:
         obj = response.json[0]
         assert all(i in obj for i in ["data", "name", "timestamp"])
@@ -1161,8 +1141,8 @@ def test_send_message(
 
         # entering this view will confirm that the messages have been
         # viewed and there will be no badge with a count displayed
-        response = client.get("/user/messages")
-        assert f"test message from {u_o[1].username}" in response.data.decode()
+        response = routes.user.messages()
+        assert u_o[2].message in response.data.decode()
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1591,9 +1571,7 @@ def test_user_name_change_accessible(
     assert u_o[1].username in response.data.decode()
 
     # assert that name change is successful
-    client.post(
-        PROFILE_EDIT, data={"username": u_o[2].username}, follow_redirects=True
-    )
+    routes.user.edit(u_o[2].username, follow_redirects=True)
     with test_app.app_context():
         u_q = User.resolve_all_names(u_o[2].username)
         assert u_q.id == 1
@@ -1626,9 +1604,7 @@ def test_user_name_change_accessible(
     assert u_o[1].username in response.data.decode()
 
     # assert that name change is successful for second user
-    client.post(
-        PROFILE_EDIT, data={"username": u_o[3].username}, follow_redirects=True
-    )
+    routes.user.edit(u_o[3].username, follow_redirects=True)
     with test_app.app_context():
         u_q = User.resolve_all_names(u_o[3].username)
         assert u_q.id == 2
@@ -1986,21 +1962,11 @@ def test_version_dropdown(
 
 @pytest.mark.usefixtures("init_db")
 @pytest.mark.parametrize(
-    "route,test_object,method",
+    "route,test_object,prop,method,user_do,user_view",
     [
-        ("/", PostTestObject(post_title[0], post_body[0]), "add_test_post"),
-        (
-            f"/profile/{user_username[1]}",
-            PostTestObject(post_title[0], post_body[0]),
-            "add_test_post",
-        ),
-        (
-            "/user/messages",
-            MessageTestObject(
-                SENDER_ID, RECIPIENT_ID, MESSAGE_BODY, MESSAGE_CREATED
-            ),
-            "add_test_messages",
-        ),
+        ("/", 1, "posts", "create", 1, 1),
+        (f"/profile/{user_username[1]}", 1, "posts", "create", 1, 1),
+        ("/user/messages", 2, "user", "send_message", 1, 2),
     ],
     ids=["index", "profile", "messages"],
 )
@@ -2009,11 +1975,13 @@ def test_pagination_nav(
     test_app: Flask,
     client: FlaskClient,
     routes: Routes,
-    test_object: TestObject,
-    add_test_objects: AddTestObjects,
+    test_object: int,
     authorize_user: AuthorizeUserFixtureType,
     route: str,
+    prop: str,
     method: str,
+    user_do: int,
+    user_view: int,
 ) -> None:
     """Test links are rendered when more than one page exists.
 
@@ -2022,10 +1990,12 @@ def test_pagination_nav(
     :param client: Test application client.
     :param routes: Work with application routes.
     :param test_object: Base object for test objects.
-    :param add_test_objects: Add test objects to test database.
     :param authorize_user: Authorize existing user.
     :param route: Route to test pagination with.
+    :param prop: Property belonging to ``routes``.
     :param method: Method to test pagination with.
+    :param user_do: User index to perform task with.
+    :param user_view: User index to view page result with.
     """
     # every post apart from the first one will add functionality to the
     # pagination footer navbar
@@ -2034,7 +2004,7 @@ def test_pagination_nav(
     routes.auth.register_index(1, confirm=True)
     routes.auth.register_index(2, confirm=True)
     authorize_user(1)
-    routes.auth.login_index(1)
+    routes.auth.login_index(user_do)
     expected_default = [
         '<li class="page-item disabled">',
         '<a class="page-link" href="#" tabindex="-1">',
@@ -2053,9 +2023,12 @@ def test_pagination_nav(
     ]
 
     # add two posts to add an extra page
-    getattr(add_test_objects, method)(test_object)
-    getattr(add_test_objects, method)(test_object)
+    getattr(getattr(routes, prop), method)(test_object)
+    getattr(getattr(routes, prop), method)(test_object)
 
+    routes.auth.logout()
+
+    routes.auth.login_index(user_view)
     response = client.get(route).data.decode()
     assert all(i in response for i in expected_default)
 
