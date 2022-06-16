@@ -18,7 +18,13 @@ from app.models import User, db
 
 from .const import COPYRIGHT_AUTHOR, COPYRIGHT_EMAIL, user_email, user_password
 from .routes import Routes
-from .utils import AddTestObjects, AuthorizeUserFixtureType, GetObjects
+from .utils import (
+    AddTestObjects,
+    AuthorizeUserFixtureType,
+    GetObjects,
+    InterpolateRoutesType,
+    PatchGetpassType,
+)
 
 
 @pytest.fixture(name="test_app", autouse=True)
@@ -81,9 +87,7 @@ def fixture_runner(test_app: Flask) -> FlaskCliRunner:
 
 
 @pytest.fixture(name="patch_getpass")
-def fixture_patch_getpass(
-    monkeypatch: pytest.MonkeyPatch,
-) -> t.Callable[[t.List[str]], None]:
+def fixture_patch_getpass(monkeypatch: pytest.MonkeyPatch) -> PatchGetpassType:
     """Patch getpass in the cli module.
 
     :param monkeypatch: Mock patch environment and attributes.
@@ -97,7 +101,7 @@ def fixture_patch_getpass(
 
 
 @pytest.fixture(name="interpolate_routes")
-def fixture_interpolate_routes() -> t.Callable[..., None]:
+def fixture_interpolate_routes() -> InterpolateRoutesType:
     """Interpolate route fields with values for testing.
 
     :return: Function for using this fixture.

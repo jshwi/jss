@@ -62,14 +62,14 @@ from .utils import (
     AddTestObjects,
     AuthorizeUserFixtureType,
     GetObjects,
+    InterpolateRoutesType,
+    PatchGetpassType,
     Recorder,
 )
 
 
 @pytest.mark.usefixtures("init_db")
-def test_register(
-    test_app: Flask, routes: Routes, get_objects: GetObjects
-) -> None:
+def test_register(test_app: Flask, routes: Routes) -> None:
     """The register view should render successfully on ``GET``.
 
     On ``POST``, with valid form data, it should redirect to the login
@@ -84,15 +84,12 @@ def test_register(
 
     :param test_app: Test application.
     :param routes: Work with application routes.
-    :param get_objects: Get test objects with db model attributes.
     """
     assert routes.auth.get("/register").status_code == 200
-    u_o = get_objects.user(1)
     response = routes.auth.register_index(1)
     assert response.headers["Location"] == "https://localhost/auth/unconfirmed"
     with test_app.app_context():
-        u_q = User.query.filter_by(username=u_o[1].username).first()
-        assert u_q is not None
+        assert User.query.get(1) is not None
 
 
 @pytest.mark.usefixtures("init_db")
@@ -156,7 +153,27 @@ def test_logout(client: FlaskClient, routes: Routes) -> None:
 
 # noinspection DuplicatedCode
 @pytest.mark.usefixtures("init_db")
-def test_index(
+def test_index_no_user(client: FlaskClient) -> None:
+    """Test login and subsequent requests from the client.
+
+    The index view should display information about the post that was
+    added with the test data. When logged in as the author there should
+    be a link to edit the post.
+
+    We can also test some more authentication behaviour while testing
+    the index view. When not logged in each page shows links to log in
+    or register. When logged in there's a link to log out.
+
+    :param client: Client for testing app.
+    """
+    response = client.get("/")
+    assert b"Login" in response.data
+    assert b"Register" in response.data
+
+
+# noinspection DuplicatedCode
+@pytest.mark.usefixtures("init_db")
+def test_index_user(
     client: FlaskClient,
     routes: Routes,
     get_objects: GetObjects,
@@ -177,21 +194,18 @@ def test_index(
     :param get_objects: Get test objects with db model attributes.
     :param authorize_user: Authorize existing user.
     """
-    response = client.get("/")
-    assert b"Login" in response.data
-    assert b"Register" in response.data
     u_o = get_objects.user(1)
     p_o = get_objects.post(1)
     routes.auth.register_index(1)
     authorize_user(1)
     routes.auth.login_index(1)
     routes.posts.create(1)
-    decoded_response = client.get("/").data.decode()
-    assert "Logout" in decoded_response
-    assert p_o[1].title in decoded_response
-    assert u_o[1].username in decoded_response
-    assert p_o[1].body in decoded_response
-    assert 'href="/post/1/update"' in decoded_response
+    response = client.get("/")
+    assert b"Logout" in response.data
+    assert p_o[1].title.encode() in response.data
+    assert u_o[1].username.encode() in response.data
+    assert p_o[1].body.encode() in response.data
+    assert b'href="/post/1/update"' in response.data
 
 
 @pytest.mark.parametrize(
@@ -210,8 +224,7 @@ def test_login_required(client: FlaskClient, route: str) -> None:
     :param client: Test application client.
     :param route: Parametrized route path.
     """
-    response = client.post(route, follow_redirects=True)
-    assert response.status_code == 401
+    assert client.post(route).status_code == 401
 
 
 @pytest.mark.usefixtures("init_db")
@@ -238,41 +251,19 @@ def test_author_required(
     routes.auth.register_index(2)
     authorize_user(1)
     authorize_user(2)
-
     routes.auth.login_index(1)
     routes.posts.create(1)
     routes.auth.logout()
-
-    # current user cannot modify other user's post
     routes.auth.login_index(2)
     assert routes.posts.update(1, 1).status_code == 403
     assert routes.posts.delete(1).status_code == 403
-
-    # current user doesn't see edit link
-    assert b'href="/post/1/update"' not in client.get("/").data
+    response = client.get("/")
+    assert b'href="/post/1/update"' not in response.data
     response = client.get("/post/1")
     assert b'href="/post/1/update?revision=-1"' not in response.data
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
-@pytest.mark.parametrize("route", ["/2/update", "/2/delete"])
-def test_exists_required(
-    client: FlaskClient, routes: Routes, route: str
-) -> None:
-    """Test ``404 Not Found`` is returned when a route does not exist.
-
-    :param client: Test application client.
-    :param routes: Work with application routes.
-    :param route: Test route.
-    """
-    routes.auth.register_index(1)
-    routes.posts.create(1)
-    routes.auth.login_index(1)
-    response = client.post(route, follow_redirects=True)
-    assert response.status_code == 404
-
-
 @pytest.mark.usefixtures("init_db")
 def test_create(
     test_app: Flask, routes: Routes, authorize_user: AuthorizeUserFixtureType
@@ -308,10 +299,10 @@ def test_update(
     authorize_user(1)
     routes.auth.login_index(1)
     routes.posts.create(1)
-    assert "Edited" not in routes.posts.read(1).data.decode()
+    assert b"Edited" not in routes.posts.read(1).data
     routes.posts.update(2, 1)
     assert routes.posts.get("/1/update").status_code == 200
-    assert "Edited" in routes.posts.read(1).data.decode()
+    assert b"Edited" in routes.posts.read(1).data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -334,29 +325,7 @@ def test_delete(
     response = routes.posts.delete(1)
     assert response.headers["Location"] == "https://localhost/"
     with test_app.app_context():
-        p_q = Post.query.get(1)
-        assert p_q is None
-
-
-def test_create_command(
-    monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
-) -> None:
-    """Test cli.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param runner: Test application cli.
-    """
-    # flask create user
-    state_1 = Recorder()
-    monkeypatch.setattr("app.cli.create_user_cli", state_1)
-    runner.invoke(args=["create", "user"])
-    assert state_1.called
-
-    # flask create admin
-    state_2 = Recorder()
-    monkeypatch.setattr("app.cli.create_admin_cli", state_2)
-    runner.invoke(args=["create", "admin"])
-    assert state_2.called
+        assert Post.query.get(1) is None
 
 
 @pytest.mark.usefixtures("init_db")
@@ -395,19 +364,15 @@ def test_send_mail(
     :param sync: Asynchronous: True or False.
     """
     u_o = get_objects.user(1)
-    p_o = get_objects.post(1)
     subject = "mail subject line"
     recipients = [u_o[0].email, u_o[1].email]
     html = "<p>email body<p>"
     sender = "admin@localhost"
-    data = {"title": p_o[1].title, "body": p_o[1].body}
-    attachment = {
-        "filename": "file.json",
-        "content_type": "application/json",
-        "data": json.dumps({"posts": data}, indent=4),
-    }
-    with mail.record_messages() as outbox:
-        with test_app.app_context():
+    attachment = dict(
+        filename="file.txt", content_type="application/json", data="testing"
+    )
+    with test_app.app_context():
+        with mail.record_messages() as outbox:
             send_email(
                 subject=subject,
                 recipients=recipients,
@@ -421,105 +386,9 @@ def test_send_mail(
     assert outbox[0].recipients == recipients
     assert outbox[0].html == html
     assert outbox[0].sender == sender
-
-
-@pytest.mark.usefixtures("init_db")
-def test_create_user_no_exist(
-    test_app: Flask,
-    runner: FlaskCliRunner,
-    get_objects: GetObjects,
-    patch_getpass: t.Callable[[t.List[str]], None],
-) -> None:
-    """Test creation of a new user that doesn't exist.
-
-    :param test_app: Test application.
-    :param runner: Test application cli.
-    :param get_objects: Get test objects with db model attributes.
-    :param patch_getpass: Patch ``getpass`` password module.
-    """
-    u_o = get_objects.user(1)
-    user_input = f"{u_o[1].username}\n{u_o[1].email}\n"
-    patch_getpass([u_o[1].password, u_o[1].password])
-    response = runner.invoke(args=["create", "user"], input=user_input)
-    assert "user successfully created" in response.output
-    with test_app.app_context():
-        u_q = User.query.filter_by(username=u_o[1].username).first()
-        assert u_q.email == u_o[1].email
-        assert u_q.check_password(u_o[1].password)
-
-
-@pytest.mark.parametrize(
-    "username,email,expected",
-    [
-        (user_username[1], user_email[2], "username is taken"),
-        (
-            user_username[2],
-            user_email[1],
-            "a user with this email address is already registered",
-        ),
-    ],
-    ids=["username", "email"],
-)
-@pytest.mark.usefixtures("init_db")
-def test_create_user_exists(
-    runner: FlaskCliRunner,
-    routes: Routes,
-    username: str,
-    email: str,
-    expected: str,
-) -> None:
-    """Test creation of a new user that exists.
-
-    :param runner: Test application cli.
-    :param routes: Work with application routes.
-    :param username: The test user username.
-    :param email: The test user email.
-    :param expected: Expected result.
-    """
-    routes.auth.register_index(1)
-    response = runner.invoke(
-        args=["create", "user"], input=f"{username}\n{email}\n"
-    )
-    assert expected in response.output
-
-
-@pytest.mark.usefixtures("init_db")
-def test_create_user_email_exists(
-    runner: FlaskCliRunner, get_objects: GetObjects, routes: Routes
-) -> None:
-    """Test creation of a new user whose email is already registered.
-
-    :param runner: Test application cli.
-    :param get_objects: Get test objects with db model attributes.
-    :param routes: Work with application routes.
-    """
-    u_o = get_objects.user(2)
-    user_input = f"{u_o[2].username}\n{u_o[1].email}"
-    routes.auth.register_index(1)
-    response = runner.invoke(args=["create", "user"], input=user_input)
-    assert (
-        "a user with this email address is already registered"
-        in response.output
-    )
-
-
-@pytest.mark.usefixtures("init_db")
-def test_create_user_passwords_no_match(
-    runner: FlaskCliRunner,
-    get_objects: GetObjects,
-    patch_getpass: t.Callable[[t.List[str]], None],
-) -> None:
-    """Test creation of a new user where passwords don't match.
-
-    :param runner: Test application cli.
-    :param get_objects: Get test objects with db model attributes.
-    :param patch_getpass: Patch ``getpass`` password module.
-    """
-    u_o = get_objects.user(2)
-    user_input = f"{u_o[1].username}\n{u_o[1].email}\n"
-    patch_getpass([u_o[1].password, u_o[2].password])
-    response = runner.invoke(args=["create", "user"], input=user_input)
-    assert "passwords do not match: could not add user" in response.output
+    assert outbox[0].attachments[0].content_type == attachment["content_type"]
+    assert outbox[0].attachments[0].data == attachment["data"]
+    assert outbox[0].attachments[0].filename == attachment["filename"]
 
 
 @pytest.mark.usefixtures("init_db", "create_admin")
@@ -531,18 +400,93 @@ def test_create_admin(test_app: Flask, get_objects: GetObjects) -> None:
     """
     u_o = get_objects.user(0)
     with test_app.app_context():
-        u_q = User.query.filter_by(username=u_o[0].username).first()
+        u_q = User.query.get(1)
         assert u_q.email == u_o[0].email
         assert u_q.check_password(u_o[0].password)
 
 
-def test_404_error(client: FlaskClient) -> None:
-    """Test ``404 Not Found`` is returned when a route does not exist.
+@pytest.mark.usefixtures("init_db")
+def test_create_user_cli(
+    test_app: Flask,
+    runner: FlaskCliRunner,
+    get_objects: GetObjects,
+    patch_getpass: PatchGetpassType,
+) -> None:
+    """Test commands called when invoking ``flask create user``.
 
-    :param client: Test application client.
+    :param test_app: Test application.
+    :param runner: Test application cli.
+    :param get_objects: Get test objects with db model attributes.
+    :param patch_getpass: Patch ``getpass`` password module.
     """
-    response = client.post("/does_not_exist")
-    assert response.status_code == 404
+    u_o = get_objects.user(1)
+    patch_getpass([u_o[1].password, u_o[1].password])
+    response = runner.invoke(
+        args=["create", "user"], input=f"{u_o[1].username}\n{u_o[1].email}\n"
+    )
+    assert "user successfully created" in response.output
+    with test_app.app_context():
+        u_q = User.query.get(1)
+        assert u_q.email == u_o[1].email
+        assert u_q.check_password(u_o[1].password)
+
+
+@pytest.mark.parametrize(
+    "username,email,passwords,expected",
+    [
+        (
+            user_username[1],
+            user_email[2],
+            [user_password[1], user_password[2]],
+            "username is taken",
+        ),
+        (
+            user_username[2],
+            user_email[1],
+            [user_password[1], user_password[1]],
+            "already registered",
+        ),
+        (
+            user_username[2],
+            user_email[2],
+            [user_password[1], user_password[2]],
+            "passwords do not match",
+        ),
+    ],
+    ids=["username", "email", "pass"],
+)
+@pytest.mark.usefixtures("init_db")
+def test_create_user_fail(
+    runner: FlaskCliRunner,
+    routes: Routes,
+    authorize_user: AuthorizeUserFixtureType,
+    get_objects: GetObjects,
+    patch_getpass: PatchGetpassType,
+    username: str,
+    email: str,
+    passwords: t.List[str],
+    expected: str,
+) -> None:
+    """Test creation of a new user that fails.
+
+    :param runner: Test application cli.
+    :param routes: Work with application routes.
+    :param authorize_user: Authorize existing user.
+    :param get_objects: Get test objects with db model attributes.
+    :param patch_getpass: Patch ``getpass`` password module.
+    :param username: The test user username.
+    :param email: The test user email.
+    :param passwords: Password and password confirmation.
+    :param expected: Expected result.
+    """
+    u_o = get_objects.user(1)
+    routes.auth.register(u_o[1])
+    authorize_user(1)
+    patch_getpass(passwords)
+    response = runner.invoke(
+        args=["create", "user"], input=f"{username}\n{email}\n"
+    )
+    assert expected in response.output
 
 
 @pytest.mark.usefixtures("init_db")
@@ -567,13 +511,12 @@ def test_admin_required(
     """
     routes.auth.register_index(1)
     routes.auth.login_index(1)
-    response = client.post(route, follow_redirects=True)
-    assert response.status_code == 401
+    assert client.post(route).status_code == 401
 
 
 @pytest.mark.usefixtures("init_db")
 @pytest.mark.parametrize(
-    "username,email,message",
+    "username,email,expected",
     [
         (user_username[1], user_email[2], b"Username is taken"),
         (user_username[2], user_email[1], b"already registered"),
@@ -585,7 +528,7 @@ def test_register_invalid_fields(
     get_objects: GetObjects,
     username: str,
     email: str,
-    message: str,
+    expected: str,
 ) -> None:
     """Test different invalid input and error messages.
 
@@ -593,50 +536,45 @@ def test_register_invalid_fields(
     :param get_objects: Get test objects with db model attributes.
     :param username: The test user username.
     :param email: The test user email.
-    :param message: The expected message for the response.
+    :param expected: Expected result.
     """
     u_o = get_objects.user(1)
     routes.auth.register_index(1)
     u_o[1].username = username
     u_o[1].email = email
     response = routes.auth.register(u_o[1])
-    assert message in response.data
+    assert expected in response.data
 
 
 @pytest.mark.usefixtures("init_db")
-def test_confirmation_email_unconfirmed(
-    test_app: Flask, routes: Routes, get_objects: GetObjects
-) -> None:
+def test_confirmation_email(test_app: Flask, routes: Routes) -> None:
     """Test user is moved from confirmed as False to True.
 
     :param test_app: Test application.
     :param routes: Work with application routes.
-    :param get_objects: Get test objects with db model attributes.
     """
-    u_o = get_objects.user(1)
     with mail.record_messages() as outbox:
         routes.auth.register_index(1)
         response = routes.auth.get("/unconfirmed")
+
+    with test_app.app_context():
         assert b"A confirmation email has been sent." in response.data
-        with test_app.app_context():
-            u_q = User.query.filter_by(username=u_o[1].username).first()
-            assert u_q.confirmed is False
-            routes.auth.follow_token(outbox[0].html)
-            assert u_q.confirmed is True
+        assert User.query.get(1).confirmed is False
+        routes.auth.follow_token(outbox[0].html)
+        assert User.query.get(1).confirmed is True
 
 
 @pytest.mark.usefixtures("init_db")
-def test_confirmation_email_confirmed(test_app: Flask, routes: Routes) -> None:
+def test_confirmation_email_confirmed(routes: Routes) -> None:
     """Test user redirected when already confirmed.
 
-    :param test_app: Test application.
     :param routes: Work with application routes.
     """
     with mail.record_messages() as outbox:
         routes.auth.register_index(1, confirm=True)
-        with test_app.app_context():
-            response = routes.auth.follow_token(outbox[0].html)
-            assert b"Account already confirmed. Please login." in response.data
+
+    response = routes.auth.follow_token(outbox[0].html)
+    assert b"Account already confirmed. Please login." in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -655,21 +593,21 @@ def test_confirmation_email_expired(
     """
     with mail.record_messages() as outbox:
         routes.auth.register_index(1)
-        with test_app.app_context():
-            route = routes.auth.parse_href(outbox[0].html)
-            token = route.replace("https://localhost/auth", "")
-            serializer = URLSafeTimedSerializer(test_app.config["SECRET_KEY"])
-            confirm_token = functools.partial(
-                serializer.loads,
-                token,
-                salt=test_app.config["SECURITY_PASSWORD_SALT"],
-                max_age=1,
-            )
-            monkeypatch.setattr(
-                "app.routes.redirect.confirm_token", lambda _: confirm_token()
-            )
-            response = client.get(route, follow_redirects=True)
-            assert INVALID_OR_EXPIRED in response.data.decode()
+
+    route = routes.auth.parse_href(outbox[0].html)
+    token = route.replace("https://localhost/auth", "")
+    serializer = URLSafeTimedSerializer(test_app.config["SECRET_KEY"])
+    confirm_token = functools.partial(
+        serializer.loads,
+        token,
+        salt=test_app.config["SECURITY_PASSWORD_SALT"],
+        max_age=1,
+    )
+    monkeypatch.setattr(
+        "app.routes.redirect.confirm_token", lambda _: confirm_token()
+    )
+    response = client.get(route, follow_redirects=True)
+    assert INVALID_OR_EXPIRED in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -726,26 +664,22 @@ def test_request_password_reset_email(
 
 
 @pytest.mark.usefixtures("init_db")
-def test_bad_token(
-    monkeypatch: pytest.MonkeyPatch, test_app: Flask, routes: Routes
-) -> None:
+def test_bad_token(monkeypatch: pytest.MonkeyPatch, routes: Routes) -> None:
     """Test user denied when jwt for resetting password is expired.
 
     :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test application.
     :param routes: Work with application routes.
     """
     routes.auth.register_index(1)
-    with test_app.app_context():
-        with mail.record_messages() as outbox:
-            monkeypatch.setattr(
-                "app.routes.auth.generate_reset_password_token",
-                lambda *_, **__: "bad_token",
-            )
-            routes.auth.request_password_reset(1)
+    with mail.record_messages() as outbox:
+        monkeypatch.setattr(
+            "app.routes.auth.generate_reset_password_token",
+            lambda *_, **__: "bad_token",
+        )
+        routes.auth.request_password_reset(1)
 
-        response = routes.auth.follow_token(outbox[0].html)
-        assert INVALID_OR_EXPIRED in response.data.decode()
+    response = routes.auth.follow_token(outbox[0].html)
+    assert INVALID_OR_EXPIRED in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -759,20 +693,18 @@ def test_email_does_not_exist(routes: Routes) -> None:
 
 
 @pytest.mark.usefixtures("init_db")
-def test_redundant_token(test_app: Flask, routes: Routes) -> None:
+def test_redundant_token(routes: Routes) -> None:
     """Test user notified that them being logged in has voided token.
 
-    :param test_app: Test application.
     :param routes: Work with application routes.
     """
     routes.auth.register_index(1)
-    with test_app.app_context():
-        with mail.record_messages() as outbox:
-            routes.auth.request_password_reset(1)
+    with mail.record_messages() as outbox:
+        routes.auth.request_password_reset(1)
 
-        routes.auth.login_index(1)
-        response = routes.auth.follow_token(outbox[0].html)
-        assert INVALID_OR_EXPIRED in response.data.decode()
+    routes.auth.login_index(1)
+    response = routes.auth.follow_token(outbox[0].html)
+    assert INVALID_OR_EXPIRED in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -795,7 +727,7 @@ def test_reset_password(
         routes.auth.request_password_reset(1)
 
     with test_app.app_context():
-        u_q = User.query.filter_by(username=u_o[1].username).first()
+        u_q = User.query.get(1)
         assert u_q.check_password(u_o[1].password)
         routes.auth.reset_password(2, outbox[0].html)
         assert not u_q.check_password(u_o[1].password)
@@ -825,10 +757,7 @@ def test_get_smtp_handler(
     app.config["ADMINS"] = [MAIL_USERNAME]  # type: ignore
     app.logger = Recorder()  # type: ignore
     app.logger.handlers = []  # type: ignore
-    app.logger.addHandler = (  # type: ignore
-        # pylint: disable=unnecessary-lambda
-        lambda x: app.logger.handlers.append(x)  # type: ignore
-    )
+    app.logger.addHandler = app.logger.handlers.append  # type: ignore
     state = Recorder()
     state.loglevel = 0  # type: ignore
     state.setLevel = lambda x: x  # type: ignore
@@ -875,10 +804,8 @@ def test_post_page(
     routes.auth.login_index(1)
     routes.posts.create(1)
     response = routes.posts.read(1)
-    assert (
-        f"    <h1>\n     {p_o[1].title}\n    </h1>\n"
-    ) in response.data.decode()
-    assert p_o[1].body in response.data.decode()
+    assert p_o[1].title.encode() in response.data
+    assert p_o[1].body.encode() in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -891,17 +818,18 @@ def test_edit_profile(routes: Routes, get_objects: GetObjects) -> None:
     u_o = get_objects.user(2)
     routes.auth.register_index(1, confirm=True)
     routes.auth.login_index(1)
-    response = routes.user.get("/profile/edit", follow_redirects=True)
+    response = routes.user.get("/profile/edit")
     assert b"Edit Profile" in response.data
     assert b"Profile" in response.data
     assert b"Logout" in response.data
     assert b"Edit Profile" in response.data
-    assert u_o[1].username in response.data.decode()
     assert b"About me" in response.data
+    assert u_o[1].username.encode() in response.data
     response = routes.user.edit(
         u_o[2].username, "testing about me", follow_redirects=True
     )
-    assert u_o[2].username in response.data.decode()
+    assert u_o[1].username.encode() not in response.data
+    assert u_o[2].username.encode() in response.data
     assert b"testing about me" in response.data
 
 
@@ -915,11 +843,6 @@ def test_unconfirmed(routes: Routes) -> None:
     routes.auth.login_index(1)
     response = routes.user.get("/profile/edit", follow_redirects=True)
     assert b"Account Verification Pending" in response.data
-    assert b"You have not verified your account" in response.data
-    assert b"Please check your inbox " in response.data
-    assert b"or junk folder for a confirmation link." in response.data
-    assert b"Didn't get the email?" in response.data
-    assert b"Resend" in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -932,10 +855,10 @@ def test_follow(
     :param routes: Work with application routes.
     :param get_objects: Get test objects with db model attributes.
     """
+    u_o = get_objects.user(2)
+    routes.auth.register_index(1, confirm=True)
+    routes.auth.register_index(2)
     with test_app.app_context():
-        u_o = get_objects.user(2)
-        routes.auth.register_index(1, confirm=True)
-        routes.auth.register_index(2)
         u_q_1 = User.query.filter_by(username=u_o[1].username).first()
         u_q_2 = User.query.filter_by(username=u_o[2].username).first()
         assert u_q_1.followed.all() == []
@@ -968,10 +891,9 @@ def test_follow_posts(
     :param get_objects: Get test objects with db model attributes.
     :param authorize_user: Authorize existing user.
     """
+    u_o = get_objects.user(4)
+    p_o = get_objects.post(4)
     with test_app.app_context():
-        # create four users
-        u_o = get_objects.user(4)
-        p_o = get_objects.post(4)
         routes.auth.register_index(1, confirm=True)
         routes.auth.register_index(2, confirm=True)
         routes.auth.register_index(3, confirm=True)
@@ -1037,11 +959,11 @@ def test_post_follow_unfollow_routes(
     routes.auth.login_index(1)
     routes.auth.login_index(2)
     response = routes.redirect.follow(2, follow_redirects=True)
-    assert f"You are now following {u_o[2].username}" in response.data.decode()
+    assert f"You are now following {u_o[2].username}".encode() in response.data
     response = routes.redirect.unfollow(2, follow_redirects=True)
     assert (
-        f"You are no longer following {u_o[2].username}"
-        in response.data.decode()
+        f"You are no longer following {u_o[2].username}".encode()
+        in response.data
     )
 
 
@@ -1068,7 +990,7 @@ def test_send_message(
     response = routes.user.send_message(2, follow_redirects=True)
     assert b"Your message has been sent." in response.data
     response = routes.user.get(f"/send_message/{u_o[2].username}")
-    assert f"Send Message to {u_o[2].username}" in response.data.decode()
+    assert f"Send Message to {u_o[2].username}".encode() in response.data
     routes.auth.logout()
     routes.auth.login_index(2)
 
@@ -1079,20 +1001,12 @@ def test_send_message(
     # ensure the badge (<span> tag) is displayed when there are messages
     # held for the user
     response = client.get("/")
-    for i in [
-        (
-            '<a class="nav-link btn-lg btn-link" href="/user/messages" '
-            'title="Messages">'
-        ),
-        '<span class="bi-bell">',
-        (
-            '<span class="badge badge-pill badge-primary badge-notify" '
-            'id="message_count">'
-        ),
-        "1",
-    ]:
-        assert i in response.data.decode()
-
+    assert b"nav-link btn-lg btn-link" in response.data
+    assert b'href="/user/messages' in response.data
+    assert b'title="Messages"' in response.data
+    assert b'class="bi-bell"' in response.data
+    assert b"badge badge-pill badge-primary badge-notify" in response.data
+    assert b'id="message_count' in response.data
     # for reliable testing ensure navbar not set to display icons
     monkeypatch.setenv("NAVBAR_ICONS", "0")
     config.init_app(test_app)
@@ -1100,25 +1014,23 @@ def test_send_message(
     # ensure the badge (<span> tag) is displayed when there are messages
     # held for the user
     response = client.get("/")
-    assert all(
-        i in response.data.decode()
-        for i in [
-            '<a class="nav-link" href="/user/messages" title="Messages">',
-            "Messages",
-            '<span class="badge" id="message_count">',
-            " 1",
-        ]
-    )
+    assert b'nav-link" href="/user/messages' in response.data
+    assert b'title="Messages' in response.data
+    assert b"Messages" in response.data
+    assert b"badge" in response.data
+    assert b'id="message_count' in response.data
     response = routes.user.notifications()
-    if response.json is not None:
-        obj = response.json[0]
-        assert all(i in obj for i in ["data", "name", "timestamp"])
-        assert all(i in obj.values() for i in [1, "unread_message_count"])
+    obj = response.json[0]  # type: ignore
+    assert "data" in obj
+    assert "name" in obj
+    assert "timestamp" in obj
+    assert 1 in obj.values()
+    assert "unread_message_count" in obj.values()
 
-        # entering this view will confirm that the messages have been
-        # viewed and there will be no badge with a count displayed
-        response = routes.user.messages()
-        assert u_o[2].message in response.data.decode()
+    # entering this view will confirm that the messages have been
+    # viewed and there will be no badge with a count displayed
+    response = routes.user.messages()
+    assert u_o[2].message.encode() in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1155,6 +1067,7 @@ def test_export_post_is_job(
     assert b"An export task is already in progress" in response.data
 
 
+# noinspection DuplicatedCode
 @pytest.mark.usefixtures("init_db")
 def test_export_post(test_app: Flask, routes: Routes) -> None:
     """Test export post function when a job does not exist: is None.
@@ -1235,12 +1148,12 @@ def test_get_tasks_in_progress_error_raised(
     :param routes: Work with application routes.
     :param get_objects: Get test objects with db model attributes.
     """
-    u_o = get_objects.user(1)
 
     def _fetch(*_: t.Any, **__: t.Any) -> None:
         raise RedisError("test Redis error")
 
     monkeypatch.setattr(APP_MODELS_JOB_FETCH, _fetch)
+    u_o = get_objects.user(1)
     routes.auth.register(u_o[1], confirm=True)
     routes.auth.login(u_o[1])
     routes.redirect.add_export_posts_task(TASK_ID)
@@ -1251,6 +1164,7 @@ def test_get_tasks_in_progress_error_raised(
     assert b"100" in response.data
 
 
+# noinspection DuplicatedCode
 @pytest.mark.usefixtures("init_db")
 def test_export_posts(
     monkeypatch: pytest.MonkeyPatch,
@@ -1431,10 +1345,7 @@ def test_inspect_profile_no_user(
     :param bad_route: Route containing reference to non-existing u_o.
     """
     routes.auth.login_index(1)
-    response = getattr(client, method)(
-        bad_route, data=data, follow_redirects=True
-    )
-    assert response.status_code == 404
+    assert getattr(client, method)(bad_route, data=data).status_code == 404
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1454,66 +1365,61 @@ def test_user_name_change_accessible(
     routes.auth.register_index(1, confirm=True)
     routes.auth.login_index(1)
 
-    # assert that user's profile is available via profile route
     with test_app.app_context():
+        # assert that user's profile is available via profile route
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 1
 
-    response = routes.profile.user(1)
-    assert u_o[1].username in response.data.decode()
+        response = routes.profile.user(1)
+        assert u_o[1].username.encode() in response.data
 
-    # assert that name change is successful
-    routes.user.edit(u_o[2].username, follow_redirects=True)
-    with test_app.app_context():
+        # assert that name change is successful
+        routes.user.edit(u_o[2].username)
         u_q = User.resolve_all_names(u_o[2].username)
         assert u_q.id == 1
 
-    response = routes.profile.user(1)
-    assert response.status_code != 404
-    assert u_o[2].username in response.data.decode()
+        response = routes.profile.user(1)
+        assert response.status_code != 404
+        assert u_o[2].username.encode() in response.data
 
-    # assert that user can be referenced by their old username
-    # they're new name shows up in their profile page
-    # the old username is still attached to the same user id
-    with test_app.app_context():
+        # assert that user can be referenced by their old username
+        # they're new name shows up in their profile page
+        # the old username is still attached to the same user id
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 1
 
-    response = routes.profile.user(1)
-    assert u_o[2].username in response.data.decode()
+        response = routes.profile.user(1)
+        assert u_o[2].username.encode() in response.data
 
-    # assert that od name is now a valid choice for a new user
-    u_o[2].username = u_o[1].username
-    routes.auth.register(u_o[2], confirm=True)
-    routes.auth.login(u_o[2])
+        # assert that od name is now a valid choice for a new user
+        u_o[2].username = u_o[1].username
+        routes.auth.register(u_o[2], confirm=True)
+        routes.auth.login(u_o[2])
 
-    # assert that user's profile is available via profile route
-    with test_app.app_context():
+        # assert that user's profile is available via profile route
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 2
 
-    response = routes.profile.user(1)
-    assert u_o[1].username in response.data.decode()
+        response = routes.profile.user(1)
+        assert u_o[1].username.encode() in response.data
 
-    # assert that name change is successful for second user
-    routes.user.edit(u_o[3].username, follow_redirects=True)
-    with test_app.app_context():
+        # assert that name change is successful for second user
+        routes.user.edit(u_o[3].username)
         u_q = User.resolve_all_names(u_o[3].username)
         assert u_q.id == 2
 
-    response = routes.profile.user(1)
-    assert u_o[3].username in response.data.decode()
+        response = routes.profile.user(1)
+        assert u_o[3].username.encode() in response.data
 
-    # assert that the latest user can be referenced by the old username
-    # they're new name shows up in their profile page
-    # the old username is still attached to the same user id
-    with test_app.app_context():
+        # assert that the latest user can be referenced by the old username
+        # they're new name shows up in their profile page
+        # the old username is still attached to the same user id
         u_q = User.resolve_all_names(u_o[1].username)
         assert u_q.id == 2
 
-    response = routes.profile.user(1)
-    assert response.status_code != 404
-    assert u_o[3].username in response.data.decode()
+        response = routes.profile.user(1)
+        assert response.status_code != 404
+        assert u_o[3].username.encode() in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1565,8 +1471,8 @@ def test_versions_update(
     routes.posts.create(1)
     routes.posts.update(2, 1)
     response = routes.posts.read(1, 0)
-    assert p_o[1].title in response.data.decode()
-    assert p_o[1].body in response.data.decode()
+    assert p_o[1].title.encode() in response.data
+    assert p_o[1].body.encode() in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1593,12 +1499,8 @@ def test_config_copyright(
     monkeypatch.setattr("os.environ", {})
     license_file = tmp_path / "LICENSE"
     pyproject_toml = tmp_path / "pyproject.toml"
-    with open(license_file, "w", encoding="utf-8") as fout:
-        fout.write(LICENSE)
-
-    with open(pyproject_toml, "w", encoding="utf-8") as fout:
-        fout.write(PYPROJECT_TOML)
-
+    license_file.write_text(LICENSE, encoding="utf-8")
+    pyproject_toml.write_text(PYPROJECT_TOML, encoding="utf-8")
     monkeypatch.setenv("LICENSE", str(license_file))
     monkeypatch.setenv("PYPROJECT_TOML", str(pyproject_toml))
     config.init_app(test_app)
@@ -1623,80 +1525,48 @@ def test_navbar_home_config_switch(
     config.init_app(test_app)
     assert test_app.config["NAVBAR_HOME"] is False
     response = client.get("/")
-    assert (
-        '<a class="nav-link" href="/"">Home</a>' not in response.data.decode()
-    )
+    assert b"Home" not in response.data
 
     # with `NAVBAR_HOME` set to True
     monkeypatch.setenv("NAVBAR_HOME", "1")
     config.init_app(test_app)
     assert test_app.config["NAVBAR_HOME"] is True
     response = client.get("/")
-    assert (
-        '<a class="nav-link" href="/"">Home</a>'
-        not in response.data.decode()
-        in response.data.decode()
-    )
+    assert b"Home" in response.data
 
 
+@pytest.mark.parametrize(
+    "env,expected",
+    [
+        ("0", b'<div class="list-group list-group-horizontal">'),
+        ("1", b'<ul class="dropdown-menu dropdown-menu-right">'),
+    ],
+    ids=["disabled", "enabled"],
+)
 @pytest.mark.usefixtures("init_db")
 def test_navbar_user_dropdown_config_switch(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
     client: FlaskClient,
-    runner: FlaskCliRunner,
     routes: Routes,
+    env: str,
+    expected: bytes,
 ) -> None:
     """Test that the user dropdown appropriately switches on and off.
 
     :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test application.
     :param client: Test application client.
-    :param runner: Test application cli.
     :param routes: Work with application routes.
+    :param env: Value for ``NAVBAR_USER_DROPDOWN``.
+    :param expected: Expected result.
     """
-    runner.invoke(args=["create", "admin"])
-    routes.auth.login_index(0)
-
-    # test user subgroup when dropdown set to False
-    monkeypatch.setenv("NAVBAR_USER_DROPDOWN", "0")
+    routes.auth.register_index(1)
+    routes.auth.login_index(1)
+    monkeypatch.setenv("NAVBAR_USER_DROPDOWN", env)
     config.init_app(test_app)
     response = client.get("/")
-    assert all(
-        i in response.data.decode()
-        for i in [
-            '<div class="list-group list-group-horizontal">',
-            '<li class="nav-item" href="/admin" title="Console">',
-            '<a class="nav-link" href="/admin">',
-            "Console",
-            '<li class="nav-item" href="/profile/admin" title="Profile">',
-            '<a class="nav-link" href="/profile/admin">',
-            "Profile",
-            '<li class="nav-item" href="/auth/logout" title="Logout">',
-            '<a class="nav-link" href="/auth/logout">',
-            "Logout",
-        ]
-    )
-
-    # test user subgroup when dropdown set to True
-    monkeypatch.setenv("NAVBAR_USER_DROPDOWN", "1")
-    config.init_app(test_app)
-    response = client.get("/")
-    assert all(
-        i in response.data.decode()
-        for i in [
-            '<ul class="dropdown-menu dropdown-menu-right">',
-            '<li class="nav-item" href="/admin" title="Console">',
-            '<a class="nav-link" href="/admin">',
-            "Console",
-            '<li class="nav-item" href="/profile/admin" title="Profile">',
-            '<a class="nav-link" href="/profile/admin">',
-            "Profile",
-            '<li class="nav-item" href="/auth/logout" title="Logout">',
-            '<a class="nav-link" href="/auth/logout">',
-            "Logout",
-        ]
-    )
+    assert expected in response.data
 
 
 def test_all_routes_covered(test_app: Flask) -> None:
@@ -1726,7 +1596,7 @@ def test_static_route_default(
     routes: Routes,
     get_objects: GetObjects,
     authorize_user: AuthorizeUserFixtureType,
-    interpolate_routes: t.Callable[..., None],
+    interpolate_routes: InterpolateRoutesType,
     code: int,
     test_routes: t.List[str],
 ) -> None:
@@ -1841,15 +1711,13 @@ def test_version_dropdown(
     routes.posts.update(3, 1)
 
     response = client.get("/")
-    for i in [
-        '<a href="/post/1?revision=0">',
-        "v1",
-        '<a href="/post/1?revision=1">',
-        "v2: Previous revision",
-        '<a class="current-version-anchor" href="/post/1?revision=2">',
-        "v3: This revision",
-    ]:
-        assert i in response.data.decode()
+    assert b'<a href="/post/1?revision=0">' in response.data
+    assert b"v1" in response.data
+    assert b'<a href="/post/1?revision=1">' in response.data
+    assert b"v2: Previous revision" in response.data
+    assert b"current-version-anchor" in response.data
+    assert b'href="/post/1?revision=2' in response.data
+    assert b"v3: This revision" in response.data
 
 
 @pytest.mark.usefixtures("init_db")
@@ -1897,22 +1765,6 @@ def test_pagination_nav(
     routes.auth.register_index(2, confirm=True)
     authorize_user(1)
     routes.auth.login_index(user_do)
-    expected_default = [
-        '<li class="page-item disabled">',
-        '<a class="page-link" href="#" tabindex="-1">',
-        "Previous",
-        '<li class="page-item">',
-        "?page=2",
-        "Next",
-    ]
-    expected_page_2 = [
-        '<li class="page-item disabled">',
-        '<a class="page-link" href="#" tabindex="-1">',
-        "Previous",
-        '<li class="page-item">',
-        "?page=1",
-        "Next",
-    ]
 
     # add two posts to add an extra page
     getattr(getattr(routes, prop), method)(test_object)
@@ -1921,11 +1773,21 @@ def test_pagination_nav(
     routes.auth.logout()
 
     routes.auth.login_index(user_view)
-    response = client.get(route).data.decode()
-    assert all(i in response for i in expected_default)
+    response = client.get(route)
+    assert b'<li class="page-item disabled">' in response.data
+    assert b'<a class="page-link" href="#" tabindex="-1">' in response.data
+    assert b"Previous" in response.data
+    assert b'<li class="page-item">' in response.data
+    assert b"?page=2" in response.data
+    assert b"Next" in response.data
 
-    response = client.get(f"{route}?page=2").data.decode()
-    assert all(i in response for i in expected_page_2)
+    response = client.get(f"{route}?page=2")
+    assert b'<li class="page-item disabled">' in response.data
+    assert b'<a class="page-link" href="#" tabindex="-1">' in response.data
+    assert b"Previous" in response.data
+    assert b'<li class="page-item">' in response.data
+    assert b"?page=1" in response.data
+    assert b"Next" in response.data
 
 
 @pytest.mark.usefixtures("init_db")

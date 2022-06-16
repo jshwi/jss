@@ -7,7 +7,7 @@ from datetime import datetime
 from templatest.utils import VarSeq, VarSeqSuffix
 
 MESSAGE_CREATED = datetime(2018, 1, 1, 0, 0, 5)
-INVALID_OR_EXPIRED = "invalid or has expired."
+INVALID_OR_EXPIRED = b"invalid or has expired."
 MAIL_SERVER = "localhost"
 MAIL_USERNAME = "mail_username"
 MAIL_PASSWORD = "unique"

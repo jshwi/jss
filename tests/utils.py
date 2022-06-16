@@ -150,3 +150,5 @@ UserFixtureType = t.Callable[[int], None]
 ConfirmUserFixtureType = UserFixtureType
 AuthorizeUserFixtureType = UserFixtureType
 CreateAdminFixtureType = t.Callable[..., Result]
+PatchGetpassType = t.Callable[[t.List[str]], None]
+InterpolateRoutesType = t.Callable[..., None]
