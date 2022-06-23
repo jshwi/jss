@@ -140,7 +140,7 @@ USER $USER
 ENTRYPOINT ["./entrypoint"]
 
 # ============================== Nginx =================================
-FROM nginx:1.21.4-alpine AS nginx
+FROM nginx:1.23.0-alpine AS nginx
 
 # remove default config in `nginx` container
 RUN rm /etc/nginx/conf.d/default.conf
