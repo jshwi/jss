@@ -99,7 +99,7 @@ hiredis = "^2.0.0"
 itsdangerous = "^2.1.2"
 psycopg2 = "^2.9.3"
 python = "^3.8"
-redis = "^4.3.3"
+redis = "^4.3.4"
 rq = "^1.10.1"
 tomli = "^2.0.1"
 
