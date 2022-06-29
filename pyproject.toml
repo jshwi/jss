@@ -115,7 +115,7 @@ pytest = "^7.1.2"
 pytest-randomly = "^3.12.0"
 pytest-xdist = "^2.5.0"
 restview = "^3.0.0"
-sphinx-toolbox = "^3.1.1"
+sphinx-toolbox = "^3.1.2"
 
 [tool.pyaud.audit]
 modules = [
