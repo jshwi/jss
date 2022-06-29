@@ -127,6 +127,7 @@ modules = [
     "typecheck",
     "unused",
     "lint",
+    "params",
     "test",
     "docs",
 ]
