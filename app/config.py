@@ -362,6 +362,11 @@ class _Config(Env):
 
         return self.list("LANGUAGES", default=default)
 
+    @property
+    def ELASTICSEARCH_URL(self) -> str | None:
+        """URL to ``Elasticsearch`` server."""
+        return self.str("ELASTICSEARCH_URL", default=None)
+
 
 config = _Config()
 config.read_env()

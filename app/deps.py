@@ -4,6 +4,7 @@ app.deps
 
 Register dependencies that are not part of a ``Flask`` extension.
 """
+from elasticsearch import Elasticsearch
 from flask import Flask
 from redis import Redis
 from rq import Queue
@@ -23,3 +24,8 @@ def init_app(app: Flask) -> None:
     """
     app.redis = Redis.from_url(app.config["REDIS_URL"])  # type: ignore
     app.task_queue = Queue("jss-tasks", connection=app.redis)  # type: ignore
+    app.elasticsearch = (  # type: ignore
+        Elasticsearch([app.config["ELASTICSEARCH_URL"]])
+        if app.config["ELASTICSEARCH_URL"] is not None
+        else None
+    )

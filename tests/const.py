@@ -82,6 +82,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/profile/<username>",
             "/auth/logout",
             "/auth/reset_password/<token>",
+            "/search",
         ],
     ),
     (

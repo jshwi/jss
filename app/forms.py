@@ -5,7 +5,7 @@ app.forms
 All classes derived from ``FlaskForm`` imported from ``Flask-WTF``.
 ``Flask-WTF`` is a ``Flask`` extension built on top of ``WTForms``.
 """
-from flask import current_app
+from flask import current_app, request
 from flask_babel import lazy_gettext as _l
 from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm
@@ -129,3 +129,16 @@ class MessageForm(FlaskForm):
         _l("Message"), validators=[DataRequired(), Length(min=0, max=140)]
     )
     submit = SubmitField(_l("Submit"))
+
+
+class SearchForm(FlaskForm):
+    """Form for searching for posts."""
+
+    q = StringField(_l("Search"), validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        if "formdata" not in kwargs:
+            kwargs["formdata"] = request.args
+        if "meta" not in kwargs:
+            kwargs["meta"] = {"csrf": False}
+        super().__init__(*args, **kwargs)

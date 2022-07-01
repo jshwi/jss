@@ -30,6 +30,15 @@
     </span>
     <span class="navbar-toggler-icon"></span>
   </button>
+  {% if g.search_form %}
+    <form class="navbar-form navbar-left" method="get"
+            action="{{ url_for('public.search') }}">
+        <div class="form-group">
+            {{ g.search_form.q(size=20, class='form-control',
+                placeholder=g.search_form.q.label.text) }}
+        </div>
+    </form>
+  {% endif %}
   <div class="collapse navbar-collapse"
        id="bd71281a6300e77ea836b0c9bbd3083ef2c23e12">
     <ul class="navbar-nav mr-auto">

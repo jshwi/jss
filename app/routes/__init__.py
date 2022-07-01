@@ -19,6 +19,7 @@ from flask_babel import get_locale
 from flask_login import current_user
 
 from app.extensions import db
+from app.forms import SearchForm
 from app.routes import admin, auth, post, public, redirect, report, user
 
 
@@ -27,6 +28,7 @@ def _before_request() -> None:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
+    g.search_form = SearchForm()
     g.locale = str(get_locale())
 
 

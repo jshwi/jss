@@ -10,7 +10,7 @@
   "scripts": {
     "audit": "npm-run-all audit:*",
     "audit:js": "npx prettier -c . && npm run lint:js && npm run test:js",
-    "audit:py": "poetry run pyaud audit",
+    "audit:py": "poetry run pyaud audit && npm run test:py",
     "audit:py:debug": "poetry run pyaud audit --rcfile .github/pyaud.toml",
     "build": "npm run webpack:prod",
     "build:dev": "npm run webpack:dev",
@@ -41,7 +41,7 @@
     "static:compile": "poetry run flask digest compile",
     "test": "npm-run-all test:*",
     "test:js": "jest",
-    "test:py": "poetry run pyaud tests",
+    "test:py": "docker compose run test",
     "test:py:doctest": "poetry run pyaud doctest",
     "test:py:doctest:package": "poetry run pyaud doctest-package",
     "test:py:doctest:readme": "poetry run pyaud doctest-readme",

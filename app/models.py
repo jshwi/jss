@@ -19,13 +19,14 @@ from flask_sqlalchemy import BaseQuery
 from redis import RedisError
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
-from sqlalchemy.orm import RelationshipProperty
+from sqlalchemy.orm import RelationshipProperty, scoped_session
 from sqlalchemy_continuum import make_versioned
 from sqlalchemy_continuum.model_builder import ModelBuilder
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.extensions import db
+from app.utils.search import add_to_index, query_index, remove_from_index
 
 _USER_ID = "user.id"
 
@@ -36,6 +37,72 @@ followers = db.Table(
     db.Column("follower_id", db.Integer, db.ForeignKey(_USER_ID)),
     db.Column("followed_id", db.Integer, db.ForeignKey(_USER_ID)),
 )
+
+
+class SearchableMixin:
+    """Add searchable methods to model."""
+
+    __searchable__: t.List[str] = []
+
+    @classmethod
+    def search(
+        cls, expression: str, page: int, per_page: int
+    ) -> t.Tuple[BaseQuery, int]:
+        """Query searchable strings in search index.
+
+        :param expression: Search expression.
+        :param page: Page number.
+        :param per_page: Queries per page.
+        :return: Query object for search and total value of results.
+        """
+        ids, total = query_index(
+            cls.__tablename__, expression, page, per_page  # type: ignore
+        )
+        if total == 0:
+            return cls.query.filter_by(id=0), 0  # type: ignore
+        when = []
+        for count, id in enumerate(ids):
+            when.append((id, count))
+        return (
+            cls.query.filter(cls.id.in_(ids)).order_by(  # type: ignore
+                db.case(when, value=cls.id)  # type: ignore
+            ),
+            total,
+        )
+
+    @classmethod
+    def before_commit(cls, session) -> None:
+        """Action to take before committing search.
+
+        :param session: ``db.session`` object to add ``_changes`` to.
+        """
+        session._changes = {  # pylint: disable=protected-access
+            "add": list(session.new),
+            "update": list(session.dirty),
+            "delete": list(session.deleted),
+        }
+
+    @classmethod
+    def after_commit(cls, session: scoped_session) -> None:
+        """Action to take after committing search.
+
+        :param session: ``db.session`` object to query ``_changes``
+            from.
+        """
+        for obj in session._changes["add"]:  # pylint: disable=protected-access
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)  # type: ignore
+        for obj in session._changes[  # pylint: disable=protected-access
+            "update"
+        ]:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)  # type: ignore
+        for obj in session._changes[  # pylint: disable=protected-access
+            "delete"
+        ]:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)  # type: ignore
+        session._changes = None  # pylint: disable=protected-access
 
 
 @generic_repr("id")
@@ -251,10 +318,11 @@ class User(UserMixin, BaseModel):
         return user
 
 
-class Post(BaseModel):
+class Post(SearchableMixin, BaseModel):
     """Database schema for posts."""
 
     __versioned__: t.Dict[t.Any, t.Any] = {}
+    __searchable__ = ["body"]
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
@@ -395,3 +463,9 @@ class Usernames(BaseModel):
 
 
 db.configure_mappers()
+db.event.listen(  # type: ignore
+    db.session, "before_commit", SearchableMixin.before_commit
+)
+db.event.listen(  # type: ignore
+    db.session, "after_commit", SearchableMixin.after_commit
+)

@@ -4,7 +4,7 @@ app.routes.views
 """
 from __future__ import annotations
 
-from flask import Blueprint, current_app, render_template, request, url_for
+from flask import Blueprint, current_app, g, render_template, request, url_for
 from werkzeug import Response
 
 from app.forms import EmptyForm
@@ -75,4 +75,31 @@ def profile(username: str) -> str | Response:
             if posts.has_prev
             else None
         ),
+    )
+
+
+@blueprint.route("/search")
+def search() -> str | Response:
+    """Route for search results.
+
+    :return: Response object or redirect.
+    """
+    if not g.search_form.validate():
+        return redirect.index()
+    page = request.args.get("page", 1, type=int)
+    posts, total = Post.search(
+        g.search_form.q.data, page, current_app.config["POSTS_PER_PAGE"]
+    )
+    next_url = (
+        url_for("main.search", q=g.search_form.q.data, page=page + 1)
+        if total > page * current_app.config["POSTS_PER_PAGE"]
+        else None
+    )
+    prev_url = (
+        url_for("main.search", q=g.search_form.q.data, page=page - 1)
+        if page > 1
+        else None
+    )
+    return render_template(
+        "public/search.html", posts=posts, next_url=next_url, prev_url=prev_url
     )

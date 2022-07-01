@@ -2092,3 +2092,105 @@ def test_pot_file(test_app: Flask) -> None:
     """
     with test_app.app_context():
         assert lang._pot_file() == Path(MESSAGES_POT)
+
+
+# noinspection DuplicatedCode
+@pytest.mark.usefixtures("init_db")
+def test_search_post_success(
+    client: FlaskClient,
+    routes: Routes,
+    get_objects: GetObjects,
+    authorize_user: AuthorizeUserFixtureType,
+) -> None:
+    """Test for successful post search.
+
+    :param client: App's test-client API.
+    :param routes: Work with application routes.
+    :param get_objects: Get test objects with db model attributes.
+    :param authorize_user: Authorize existing user.
+    """
+    get_objects.user(1)
+    p_o = get_objects.post(2)
+    routes.auth.register_index(1)
+    authorize_user(1)
+    routes.auth.login_index(1)
+    routes.posts.create(1)
+    routes.posts.create(2)
+    response = client.get("/")
+    assert p_o[1].title.encode() in response.data
+    assert p_o[1].title.encode() in response.data
+    response = routes.posts.read(1)
+    assert p_o[1].title.encode() in response.data
+    response = routes.posts.read(2)
+    assert p_o[1].title.encode() in response.data
+    response = client.get(f"/search?q={p_o[1].body}")
+    assert b"Search Results" in response.data
+    assert p_o[1].title.encode() in response.data
+    assert p_o[2].title.encode() not in response.data
+
+
+# noinspection DuplicatedCode
+@pytest.mark.usefixtures("init_db")
+def test_search_post_failure(
+    client: FlaskClient,
+    routes: Routes,
+    get_objects: GetObjects,
+    authorize_user: AuthorizeUserFixtureType,
+) -> None:
+    """Test for failed post search.
+
+    :param client: App's test-client API.
+    :param routes: Work with application routes.
+    :param get_objects: Get test objects with db model attributes.
+    :param authorize_user: Authorize existing user.
+    """
+    get_objects.user(1)
+    p_o = get_objects.post(3)
+    routes.auth.register_index(1)
+    authorize_user(1)
+    routes.auth.login_index(1)
+    routes.posts.create(1)
+    routes.posts.create(2)
+    response = client.get("/")
+    assert p_o[1].title.encode() in response.data
+    assert p_o[2].title.encode() in response.data
+    response = routes.posts.read(1)
+    assert p_o[1].title.encode() in response.data
+    response = routes.posts.read(2)
+    assert p_o[2].title.encode() in response.data
+    response = routes.posts.read(3)
+    assert p_o[3].title.encode() not in response.data
+    response = client.get(f"/search?q={p_o[3].body}")
+    assert b"Search Results" in response.data
+    assert p_o[1].title.encode() not in response.data
+    assert p_o[2].title.encode() not in response.data
+    assert p_o[3].title.encode() not in response.data
+
+
+# noinspection DuplicatedCode
+@pytest.mark.usefixtures("init_db")
+def test_search_post_no_elasticsearch(
+    test_app: Flask,
+    client: FlaskClient,
+    routes: Routes,
+    get_objects: GetObjects,
+    authorize_user: AuthorizeUserFixtureType,
+) -> None:
+    """Test for search when no ``Elasticsearch`` client is available.
+
+    :param test_app: Test application.
+    :param client: App's test-client API.
+    :param routes: Work with application routes.
+    :param get_objects: Get test objects with db model attributes.
+    :param authorize_user: Authorize existing user.
+    """
+    test_app.elasticsearch = None  # type: ignore
+    get_objects.user(1)
+    p_o = get_objects.post(1)
+    routes.auth.register_index(1)
+    authorize_user(1)
+    routes.auth.login_index(1)
+    routes.posts.create(1)
+    response = client.get(f"/search?q={p_o[1].body}")
+    assert b"Search Results" in response.data
+    assert p_o[1].title.encode() not in response.data

@@ -37,6 +37,7 @@ x-development: &development
       - ./app:/home/jss/app/
       - ./migrations:/home/jss/migrations/
       - ./tests:/home/jss/tests/
+      - ./pyproject.toml:/home/jss/pyproject.toml
 
 x-elasticsearch: &elasticsearch
   image: elasticsearch:7.8.0
