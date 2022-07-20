@@ -1165,6 +1165,7 @@ def test_get_tasks_in_progress_error_raised(
 
 
 # noinspection DuplicatedCode
+@pytest.mark.flaky(max_runs=5)
 @pytest.mark.usefixtures("init_db")
 def test_export_posts(
     monkeypatch: pytest.MonkeyPatch,
