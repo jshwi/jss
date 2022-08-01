@@ -1659,7 +1659,7 @@ readme-renderer = "*"
 
 [[package]]
 name = "rq"
-version = "1.10.1"
+version = "1.11.0"
 description = "RQ is a simple, lightweight, library for creating background jobs, and processing them."
 category = "main"
 optional = false
@@ -2214,7 +2214,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3a971b4ab97160fc681b5062bb529301c9908852c836d00ea1c70c7728e4901b"
+content-hash = "cbcb4be9539652e9debc9cd51166790b38c5afa68377a3288b14e4a1752b9f9a"
 
 [metadata.files]
 alabaster = [
@@ -3173,8 +3173,8 @@ restview = [
     {file = "restview-3.0.0.tar.gz", hash = "sha256:2b989610aaed2fd42da64f6cdc539cf3ee70ce370bcba872db72421ad515dd1e"},
 ]
 rq = [
-    {file = "rq-1.10.1-py2.py3-none-any.whl", hash = "sha256:92f4cf38b2364c1697b541e77c0fe62b7e5242fa864324f262be126ee2a07e3a"},
-    {file = "rq-1.10.1.tar.gz", hash = "sha256:62d06b44c3acfa5d1933c5a4ec3fbc2484144a8af60e318d0b8447c5236271e2"},
+    {file = "rq-1.11.0-py2.py3-none-any.whl", hash = "sha256:c0bbf898b56817da053cdc992ab46da2729a7ccd70dd50316ad9209b7d7b71c1"},
+    {file = "rq-1.11.0.tar.gz", hash = "sha256:50d0cf687cfb2530eac9396c7426e420958a166e8f4666bd2096bdcf7f4ad03e"},
 ]
 "ruamel.yaml" = [
     {file = "ruamel.yaml-0.17.21-py3-none-any.whl", hash = "sha256:742b35d3d665023981bd6d16b3d24248ce5df75fdb4e2924e93a05c1f8b61ca7"},
