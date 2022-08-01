@@ -98,7 +98,7 @@ itsdangerous = "^2.1.2"
 psycopg2 = "^2.9.3"
 python = "^3.8"
 redis = "^4.3.4"
-rq = "^1.10.1"
+rq = "^1.11.0"
 tomli = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
