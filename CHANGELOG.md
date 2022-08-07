@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.20.0...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Removes `webpack-pwa-manifest` from `devDependencies`
 
 [1.20.0](https://github.com/jshwi/jss/releases/tag/v1.20.0) - 2022-07-01
 ------------------------------------------------------------------------

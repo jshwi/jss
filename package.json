@@ -8,11 +8,12 @@
     "test": "tests"
   },
   "scripts": {
+    "add:manifest": "cp ./assets/json/site.webmanifest app/static",
     "audit": "npm-run-all audit:*",
     "audit:js": "npx prettier -c . && npm run lint:js && npm run test:js",
     "audit:py": "poetry run pyaud audit",
     "audit:py:debug": "poetry run pyaud audit --rcfile .github/pyaud.toml",
-    "build": "npm run webpack:prod",
+    "build": "npm run webpack:prod && npm run add:manifest",
     "build:dev": "npm run webpack:dev",
     "bump:major": "poetry run bump2version major",
     "bump:minor": "poetry run bump2version minor",
@@ -26,7 +27,7 @@
     "format:py:code": "poetry run pyaud format",
     "format:py:docs": "poetry run pyaud format-docs",
     "format:py:str": "poetry run pyaud format-str",
-    "init:dev": "npm install && npm run webpack:dev && ./bin/post_compile",
+    "init:dev": "npm install && npm run webpack:dev && npm run add:manifest && ./bin/post_compile",
     "lighthouse": "lighthouse http://localhost:5000 --view --chrome-flags=--headless --output-path=\"$(mktemp).html\"",
     "lint": "npm-run-all lint:*",
     "lint:js": "npx eslint",
@@ -195,7 +196,6 @@
     "url-loader": "^4.1.0",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
-    "webpack-pwa-manifest": "^4.3.0",
     "workbox-webpack-plugin": "^6.5.4"
   }
 }

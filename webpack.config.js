@@ -3,14 +3,12 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const { DefinePlugin, ProvidePlugin } = require("webpack");
-const WebpackPwaManifest = require("webpack-pwa-manifest");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 
 const CWD = path.resolve(__dirname);
 const ASSETS = path.join(CWD, "assets");
 const ASSETS_JS = path.join(ASSETS, "js");
 const ASSETS_CSS = path.join(ASSETS, "css");
-const ASSETS_IMG = path.join(ASSETS, "img");
 
 const debug = process.env.NODE_ENV !== "production";
 const ProductionPlugins = [
@@ -21,55 +19,6 @@ const ProductionPlugins = [
   }),
 ];
 const minimizerPlugins = [new CssMinimizerPlugin(), new TerserPlugin()];
-const siteWebmanifest = {
-  filename: "site.webmanifest",
-  name: "Jshwi Solutions",
-  short_name: "JSS",
-  description: "A Flask web app",
-  theme_color: "#ffffff",
-  background_color: "#ffffff",
-  start_url: "/",
-  display: "standalone",
-  scope: "/",
-  icons: [
-    {
-      src: path.join(ASSETS_IMG, "favicon.ico"),
-      size: "48x48",
-    },
-    {
-      src: path.join(ASSETS_IMG, "android-chrome-192x192.png"),
-      size: "192x192",
-      purpose: "maskable",
-    },
-    {
-      src: path.join(ASSETS_IMG, "android-chrome-512x512.png"),
-      size: "512x512",
-      purpose: "maskable",
-    },
-    {
-      src: path.join(ASSETS_IMG, "apple-touch-icon.png"),
-      size: "180x180",
-      purpose: "maskable",
-    },
-    {
-      src: path.join(ASSETS_IMG, "favicon-16x16.png"),
-      size: "16x16",
-    },
-    {
-      src: path.join(ASSETS_IMG, "favicon-32x32.png"),
-      size: "32x32",
-    },
-    {
-      src: path.join(ASSETS_IMG, "mstile-150x150.png"),
-      size: "270x270",
-    },
-    {
-      src: path.join(ASSETS_IMG, "safari-pinned-tab.svg"),
-      size: "683x683",
-    },
-  ],
-  fingerprints: false,
-};
 
 // noinspection JSUnresolvedFunction
 module.exports = {
@@ -98,7 +47,6 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({ filename: "[name].bundle.css" }),
     new ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
-    new WebpackPwaManifest(siteWebmanifest),
     new WorkboxPlugin.GenerateSW({
       clientsClaim: true,
       skipWaiting: true,
