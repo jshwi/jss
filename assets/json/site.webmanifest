@@ -1,47 +1,47 @@
 {
   "icons": [
     {
-      "src": "/static/icon_683x683.svg",
-      "sizes": "683x683",
-      "type": "image/svg+xml"
-    },
-    {
-      "src": "/static/icon_270x270.png",
-      "sizes": "270x270",
-      "type": "image/png"
-    },
-    {
-      "src": "/static/icon_32x32.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "/static/icon_16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "/static/icon_180x180.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/static/icon_512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/static/icon_192x192.png",
+      "src": "/static/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/static/icon_48x48.ico",
+      "src": "/static/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/favicon.ico",
       "sizes": "48x48",
       "type": "image/vnd.microsoft.icon"
+    },
+    {
+      "src": "/static/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/mstile-150x150.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/safari-pinned-tab.svg",
+      "sizes": "683x683",
+      "type": "image/svg+xml"
     }
   ],
   "name": "Jshwi Solutions",
