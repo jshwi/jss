@@ -60,7 +60,7 @@ packages = [
 ]
 readme = "README.rst"
 repository = "https://github.com/jshwi/jss"
-version = "1.20.2"
+version = "1.20.3"
 
 [tool.poetry.dependencies]
 Bootstrap-Flask = "^2.0.2"
