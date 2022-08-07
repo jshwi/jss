@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.20.1...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- Adds `six` to `dependencies`
 
 [1.20.1](https://github.com/jshwi/jss/releases/tag/v1.20.1) - 2022-08-07
 ------------------------------------------------------------------------
