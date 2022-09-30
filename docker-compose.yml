@@ -38,22 +38,6 @@ x-development: &development
       - ./migrations:/home/jss/migrations/
       - ./tests:/home/jss/tests/
 
-x-elasticsearch: &elasticsearch
-  image: elasticsearch:7.8.0
-  ports:
-    - "9200:9200"
-  environment:
-    - "node.name=elasticsearch"
-    - "discovery.seed_hosts=elasticsearch"
-    - "cluster.initial_master_nodes=elasticsearch"
-    - "cluster.name=docker-cluster"
-    - "bootstrap.memory_lock=true"
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-  ulimits:
-    memlock:
-      soft: -1
-      hard: -1
-
 x-redis: &redis
   image: redis:6.2-alpine
   ports:
@@ -77,13 +61,9 @@ services:
     depends_on:
       - dev-postgres
       - dev-redis
-      - dev-elasticsearch
       - dev-worker
     environment:
       <<: *dev-environment
-      ELASTICSEARCH_URL: "http://dev-elasticsearch:9200"
-      ES_HOST: "dev-elasticsearch"
-      ES_PORT: "9200"
     ports:
       - "5000:5000"
 
@@ -110,12 +90,6 @@ services:
     volumes:
       - dev_redis_dump:/data/
 
-  dev-elasticsearch:
-    <<: *elasticsearch
-    container_name: jss-dev-elasticsearch
-    volumes:
-      - dev_elasticsearch_data:/usr/share/elasticsearch/data/
-
   test:
     <<: *testing
     entrypoint: ./entrypoint
@@ -124,13 +98,9 @@ services:
     depends_on:
       - test-postgres
       - test-redis
-      - test-elasticsearch
       - test-worker
     environment:
       <<: *test-environment
-      ELASTICSEARCH_URL: "http://test-elasticsearch:9200"
-      ES_HOST: "test-elasticsearch"
-      ES_PORT: "9200"
     ports:
       - "5001:5000"
 
@@ -156,12 +126,6 @@ services:
     container_name: jss-test-redis
     ports:
       - "6380:6379"
-
-  test-elasticsearch:
-    <<: *elasticsearch
-    container_name: jss-test-elasticsearch
-    ports:
-      - "9201:9200"
 
   production:
     build:
@@ -216,7 +180,6 @@ services:
       - static_volume:/home/jss/app/static/
 
 volumes:
-  dev_elasticsearch_data:
   dev_postgres_data:
   dev_redis_dump:
   static_volume:
