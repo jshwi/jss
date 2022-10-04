@@ -1828,7 +1828,7 @@ testing = ["bs4", "coverage", "pygments", "pytest (>=7.1,<8)", "pytest-cov", "py
 
 [[package]]
 name = "sphinx-toolbox"
-version = "3.1.2"
+version = "3.2.0"
 description = "Box of handy tools for Sphinx 🧰 📔"
 category = "dev"
 optional = false
@@ -1840,7 +1840,7 @@ autodocsumm = ">=0.2.0"
 beautifulsoup4 = ">=4.9.1"
 cachecontrol = {version = ">=0.12.6", extras = ["filecache"]}
 dict2css = ">=0.2.3"
-docutils = ">=0.16,<0.18"
+docutils = ">=0.16,<0.19"
 domdf-python-tools = ">=2.9.0"
 html5lib = ">=1.1"
 lockfile = ">=0.12.2"
@@ -2218,7 +2218,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "97f0365294ad130dd231094000478e292308414b2eb69fc3b67072139349e284"
+content-hash = "dd1d9e9d8b4d3bd3c665cd89db809e1b33bb60ff628d94665a8b96484d0c806d"
 
 [metadata.files]
 alabaster = [
@@ -3265,8 +3265,8 @@ sphinx-tabs = [
     {file = "sphinx_tabs-3.4.0-py3-none-any.whl", hash = "sha256:31dbe7594b5ef4cfa76a7960448d4607dca167ff21467000213920572c302072"},
 ]
 sphinx-toolbox = [
-    {file = "sphinx_toolbox-3.1.2-py3-none-any.whl", hash = "sha256:71b615c135ac993dd8cc4b7d291888ad2f5437049071f2299152dbae69a1db41"},
-    {file = "sphinx_toolbox-3.1.2.tar.gz", hash = "sha256:c05860b44e9ad17d16df52a594736839190ded72e55bb38e80f4972afea47b74"},
+    {file = "sphinx_toolbox-3.2.0-py3-none-any.whl", hash = "sha256:944591edd27116b96df3fb9cdd36aab2ee849569a84c0a5b0c7a391ae688edae"},
+    {file = "sphinx_toolbox-3.2.0.tar.gz", hash = "sha256:58f721ba9229312fba870cdea042b32903986fc6333214179a896a0635d82220"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},
