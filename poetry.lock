@@ -690,8 +690,8 @@ Flask = ">=0.7"
 misaka = ">=2.0,<3.0"
 
 [[package]]
-name = "flask-moment"
-version = "1.0.4"
+name = "Flask-Moment"
+version = "1.0.5"
 description = "Formatting of dates and times in Flask templates using moment.js."
 category = "main"
 optional = false
@@ -2209,7 +2209,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "c6f67d893086c2b770e6030efc808c2c26310dbfb6d848e7f18e1909f4062282"
+content-hash = "e171e85aa6bb2b2aff91d3583af7b63465f53e1f19b68abc4889c277677f9101"
 
 [metadata.files]
 alabaster = [
@@ -2639,9 +2639,9 @@ flask-misaka = [
     {file = "Flask-Misaka-1.0.0.tar.gz", hash = "sha256:f423c3beb5502742a57330a272f81d53223f6f99d45cc45b03926e3a3034f589"},
     {file = "Flask_Misaka-1.0.0-py3-none-any.whl", hash = "sha256:d0cfb0efd9e5afacda76defd4a605a68390f4fb1bef283c71534fd3ce0d3efb5"},
 ]
-flask-moment = [
-    {file = "Flask-Moment-1.0.4.tar.gz", hash = "sha256:161b0f473a7c46c1d46f9eadb807d56353bb28c00cc0ee34208c5b2ead9645c2"},
-    {file = "Flask_Moment-1.0.4-py3-none-any.whl", hash = "sha256:4a6caf71f62339d112bad53f8b9e7e2bd9b01d022ded7f7937e677cf90009d61"},
+Flask-Moment = [
+    {file = "Flask-Moment-1.0.5.tar.gz", hash = "sha256:33307ecd4af8290b6df6a9828ff55ac0977d0567817f9bc0f69803d22ed2b55c"},
+    {file = "Flask_Moment-1.0.5-py3-none-any.whl", hash = "sha256:6e7b3eef89e2137bbbee975405f241a68a44edfa34bf052c92d84364992adca6"},
 ]
 flask-pagedown = [
     {file = "Flask-PageDown-0.4.0.tar.gz", hash = "sha256:10f3836f9d9b82210169af499241b7510a352491bee7a305eca7c783f15292d0"},
