@@ -170,7 +170,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/eslint-parser": "^7.19.1",
-    "@babel/preset-env": "^7.19.3",
+    "@babel/preset-env": "^7.19.4",
     "babel-jest": "^28.1.3",
     "babel-loader": "^8.2.5",
     "concurrently": "^7.4.0",
