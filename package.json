@@ -173,7 +173,7 @@
     "@babel/preset-env": "^7.19.4",
     "babel-jest": "^29.2.2",
     "babel-loader": "^8.2.5",
-    "concurrently": "^7.4.0",
+    "concurrently": "^7.5.0",
     "css-loader": "^5.0.1",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "eslint": "^8.25.0",
