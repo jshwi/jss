@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.20.3...HEAD)
 ------------------------------------------------------------------------
 ### Security
+- Pins `cryptography` version to ^38.0.3
 - Bumps `loader-utils` from 2.0.2 to 2.0.3
 
 [1.20.3](https://github.com/jshwi/jss/releases/tag/v1.20.3) - 2022-08-07
