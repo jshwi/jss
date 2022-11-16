@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.20.4...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Bumps `loader-utils` from 2.0.3 to 2.0.4
 
 [1.20.4](https://github.com/jshwi/jss/releases/tag/v1.20.4) - 2022-11-09
 ------------------------------------------------------------------------
