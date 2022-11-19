@@ -20,7 +20,7 @@ module.exports = {
   mode: process.env.NODE_ENV,
   devtool: "inline-source-map",
   entry: {
-    main_js: "./assets/js/index.js",
+    index: "./assets/js/index.js",
     main_css: [
       "@fortawesome/fontawesome-free/css/all.css",
       "bootstrap/dist/css/bootstrap.css",

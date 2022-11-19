@@ -87,12 +87,12 @@
     {{ moment.lang(g.locale) }}
 
     {# import JavaScript functions #}
-    <script src="{{ static_url_for("static", filename="main_js.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
+    <script src="{{ static_url_for("static", filename="index.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
 
     <!--suppress JSUnresolvedVariable -->
     {% if current_user.is_authenticated %}
         <script>
-            $ = window.main_js.$
+            $ = window.index.$
             $(function () {
               let since = 0
               setInterval(function () {
@@ -101,10 +101,10 @@
                     for (let i = 0; i < notifications.length; i++) {
                       switch (notifications[i].name) {
                         case "unread_message_count":
-                          window.main_js.setMessageCount(notifications[i].data)
+                          window.index.setMessageCount(notifications[i].data)
                           break
                         case "task_progress":
-                          window.main_js.setTaskProgress(
+                          window.index.setTaskProgress(
                             notifications[i].data.task_id,
                             notifications[i].data.progress
                           )
