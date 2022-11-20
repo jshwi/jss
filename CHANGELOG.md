@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - make `MyModelView` private
 
+### Fixed
+- fix favicon
+
 [1.28.0](https://github.com/jshwi/jss/releases/tag/v1.28.0) - 2023-07-26
 ------------------------------------------------------------------------
 ### Changed
