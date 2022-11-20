@@ -5,7 +5,6 @@
  *
  * This file bundles all JavaScript files together using ``Webpack``.
  */
-require("jquery");
 const DarkMode = require("./darkMode");
 const registerServiceWorker = require("./serviceWorker");
 
