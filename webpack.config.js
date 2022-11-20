@@ -78,5 +78,6 @@ module.exports = {
   optimization: {
     minimize: debug !== true,
     minimizer: [].concat(debug ? [] : minimizerPlugins),
+    runtimeChunk: "single",
   },
 };
