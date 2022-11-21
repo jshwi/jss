@@ -21,6 +21,7 @@ module.exports = {
   devtool: "inline-source-map",
   entry: {
     index: "./assets/js/index.js",
+    highlight: "./assets/js/highlight.js",
     main_css: [
       "@fortawesome/fontawesome-free/css/all.css",
       "bootstrap/dist/css/bootstrap.css",

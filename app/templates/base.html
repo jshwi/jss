@@ -88,6 +88,7 @@
 
     {# import JavaScript functions #}
     <script src="{{ static_url_for("static", filename="index.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
+    <script src="{{ static_url_for("static", filename="highlight.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
 
     <!--suppress JSUnresolvedVariable -->
     {% if current_user.is_authenticated %}
