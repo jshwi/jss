@@ -23,6 +23,7 @@ module.exports = {
     index: "./assets/js/index.js",
     highlight: "./assets/js/highlight.js",
     messages: "./assets/js/messages.js",
+    bootstrap: "bootstrap/dist/js/bootstrap.min.js",
     main_css: [
       "@fortawesome/fontawesome-free/css/all.css",
       "bootstrap/dist/css/bootstrap.css",
