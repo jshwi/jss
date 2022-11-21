@@ -89,11 +89,12 @@
     {# import JavaScript functions #}
     <script src="{{ static_url_for("static", filename="index.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
     <script src="{{ static_url_for("static", filename="highlight.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
+    <script src="{{ static_url_for("static", filename="messages.bundle.js") }}" nonce="{{ csp_nonce() }}"></script>
 
     <!--suppress JSUnresolvedVariable -->
     {% if current_user.is_authenticated %}
         <script>
-            $ = window.index.$
+            $ = window.messages.$
             $(function () {
               let since = 0
               setInterval(function () {
@@ -102,10 +103,10 @@
                     for (let i = 0; i < notifications.length; i++) {
                       switch (notifications[i].name) {
                         case "unread_message_count":
-                          window.index.setMessageCount(notifications[i].data)
+                          window.messages.setMessageCount(notifications[i].data)
                           break
                         case "task_progress":
-                          window.index.setTaskProgress(
+                          window.messages.setTaskProgress(
                             notifications[i].data.task_id,
                             notifications[i].data.progress
                           )
