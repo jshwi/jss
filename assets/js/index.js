@@ -8,7 +8,6 @@
 require("@fortawesome/fontawesome-free");
 require("jquery");
 require("bootstrap-icons/font/bootstrap-icons.css");
-require("bootstrap4-toggle");
 const DarkMode = require("./darkMode");
 const registerServiceWorker = require("./serviceWorker");
 

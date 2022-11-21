@@ -24,6 +24,7 @@ module.exports = {
     highlight: "./assets/js/highlight.js",
     messages: "./assets/js/messages.js",
     bootstrap: "bootstrap/dist/js/bootstrap.min.js",
+    bootstrap_toggle: "bootstrap4-toggle/js/bootstrap4-toggle.min.js",
     main_css: [
       "@fortawesome/fontawesome-free/css/all.css",
       "bootstrap/dist/css/bootstrap.css",
