@@ -5,11 +5,6 @@ const TerserPlugin = require("terser-webpack-plugin");
 const { DefinePlugin, ProvidePlugin } = require("webpack");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 
-const CWD = path.resolve(__dirname);
-const ASSETS = path.join(CWD, "assets");
-const ASSETS_JS = path.join(ASSETS, "js");
-const ASSETS_CSS = path.join(ASSETS, "css");
-
 const debug = process.env.NODE_ENV !== "production";
 const ProductionPlugins = [
   new DefinePlugin({
@@ -25,14 +20,14 @@ module.exports = {
   mode: process.env.NODE_ENV,
   devtool: "inline-source-map",
   entry: {
-    main_js: path.join(ASSETS_JS, "index"),
+    main_js: "./assets/js/index.js",
     main_css: [
-      path.join("@fortawesome", "fontawesome-free", "css", "all.css"),
-      path.join("bootstrap", "dist", "css", "bootstrap.css"),
-      path.join("bootstrap4-toggle", "css", "bootstrap4-toggle.min.css"),
-      path.join("bootstrap-icons", "font", "bootstrap-icons.css"),
-      path.join(ASSETS_CSS, "style.css"),
-      path.join(ASSETS_CSS, "highlight", "default.css"),
+      "@fortawesome/fontawesome-free/css/all.css",
+      "bootstrap/dist/css/bootstrap.css",
+      "bootstrap4-toggle/css/bootstrap4-toggle.min.css",
+      "bootstrap-icons/font/bootstrap-icons.css",
+      "./assets/css/style.css",
+      "./assets/css/highlight/default.css",
     ],
   },
   output: {
