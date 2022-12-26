@@ -2029,7 +2029,7 @@ test = ["Flask (>=0.9)", "Flask-Login (>=0.2.9)", "Flask-SQLAlchemy (>=1.0)", "P
 
 [[package]]
 name = "SQLAlchemy-Utils"
-version = "0.38.3"
+version = "0.39.0"
 description = "Various utility functions for SQLAlchemy."
 category = "main"
 optional = false
@@ -2246,7 +2246,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8a39b40f8d7d8dc20e8f968b2cfadd1416a7cd9d326a6f6f53fc6655879c8c58"
+content-hash = "07618643d67ece95559ad5c666ebd077c9b353de87a5310ad0c4d8b7061994f9"
 
 [metadata.files]
 alabaster = [
@@ -3417,8 +3417,8 @@ SQLAlchemy-Continuum = [
     {file = "SQLAlchemy_Continuum-1.3.13-py3-none-any.whl", hash = "sha256:849737bd5c946e950386480a3738f8d87611ce6a485afa854743aae3c590ef8b"},
 ]
 SQLAlchemy-Utils = [
-    {file = "SQLAlchemy-Utils-0.38.3.tar.gz", hash = "sha256:9f9afba607a40455cf703adfa9846584bf26168a0c5a60a70063b70d65051f4d"},
-    {file = "SQLAlchemy_Utils-0.38.3-py3-none-any.whl", hash = "sha256:5c13b5d08adfaa85f3d4e8ec09a75136216fad41346980d02974a70a77988bf9"},
+    {file = "SQLAlchemy-Utils-0.39.0.tar.gz", hash = "sha256:b37240917d81c14fe1b6e5096a402bace472b179121384e47c10d854dbf5af92"},
+    {file = "SQLAlchemy_Utils-0.39.0-py3-none-any.whl", hash = "sha256:9da26a9b20c6979167772ba5dc2a1d01265648f18c82995f082279a399ea308b"},
 ]
 stack-data = [
     {file = "stack_data-0.6.2-py3-none-any.whl", hash = "sha256:cbb2a53eb64e5785878201a97ed7c7b94883f48b87bfb0bbe8b623c74679e4a8"},
