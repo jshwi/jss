@@ -2,7 +2,7 @@
 {# path discoverable through `Flask-Admin` plugin #}
 {% extends 'admin/base.html' %}
 
-{# override `Flask-Admin` CSS with dark mode (equivilent of `styles`) #}
+{# override `Flask-Admin` CSS with dark mode (equivalent of `styles`) #}
 {% block head_css %}
     {{ super() }}
     <link rel="stylesheet" href="{{ static_url_for('static', filename='darkreader.css') }}">
