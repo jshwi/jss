@@ -1,0 +1,23 @@
+policies:
+  - type: commit
+    spec:
+      header:
+        length: 72
+        imperative: true
+        invalidLastCharacters: .
+      dco: true
+      gpg:
+        required: true
+      spellcheck:
+        locale: US
+      conventional:
+        types:
+          - type
+          - chore
+          - change
+          - doc
+          - test
+          - refactor
+        scopes:
+          - scope
+        descriptionLength: 72
