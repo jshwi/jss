@@ -18,6 +18,13 @@ exclude = '''
 line-length = 79
 skip-magic-trailing-comma = true
 
+[tool.constcheck]
+ignore_strings = [
+  "store",
+  "store_true",
+  "utf-8"
+]
+
 [tool.coverage.report]
 fail_under = 100
 
@@ -25,6 +32,19 @@ fail_under = 100
 omit = [
   "whitelist.py"
 ]
+
+[tool.docsig]
+check-class = true
+summary = true
+
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 79
+multi_line_output = 3
+profile = "black"
+use_parentheses = true
 
 [tool.poetry]
 authors = [
@@ -41,7 +61,7 @@ classifiers = [
   "Typing :: Typed"
 ]
 description = "A Flask webapp"
-documentation = "https://jss.readthedocs.io/en/latest/?badge=latest"
+documentation = "https://jss.readthedocs.io/en/latest"
 homepage = "https://jshwisolutions.com"
 keywords = [
   "blog",
@@ -121,24 +141,22 @@ templatest = "^0.7.0"
 
 [tool.pyaud.audit]
 modules = [
+  "const",
   "docs",
+  "files",
   "format",
   "format-docs",
   "format-str",
   "imports",
   "lint",
   "params",
-  "sort-pyproject",
   "test",
-  "toc",
   "typecheck",
-  "unused",
-  "whitelist"
+  "unused"
 ]
 
 [tool.pyaud.clean]
 exclude = [
-  "*.egg*",
   ".env",
   ".mypy_cache",
   "instance",
@@ -149,7 +167,6 @@ exclude = [
 exclude = [
   "conf.py",
   "migrations",
-  "node_modules",
   "whitelist.py",
   "wsgi.py"
 ]
@@ -183,15 +200,11 @@ addopts = [
   "-n=auto",
   "-vv"
 ]
-filterwarnings = [
-  "ignore::DeprecationWarning",
-  "ignore::RuntimeWarning",
-  "ignore::UserWarning"
-]
+filterwarnings = "ignore::DeprecationWarning"
 norecursedirs = [
-  "*.egg-info",
   ".git",
   ".idea",
   ".mypy_cache",
+  ".pytest_cache",
   "docs"
 ]
