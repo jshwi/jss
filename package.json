@@ -1,148 +1,5 @@
 {
-  "name": "jss",
-  "version": "1.20.5",
-  "description": "A Flask webapp",
-  "private": true,
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
-  "scripts": {
-    "add:manifest": "cp ./assets/json/site.webmanifest app/static",
-    "audit": "npm-run-all audit:*",
-    "audit:js": "npx prettier -c . && npm run lint:js && npm run test:js",
-    "audit:py": "poetry run pyaud audit",
-    "audit:py:debug": "poetry run pyaud audit --rcfile .github/pyaud.toml",
-    "build": "npm run webpack:prod && npm run add:manifest",
-    "build:dev": "npm run webpack:dev",
-    "bump:major": "poetry run bump2version major",
-    "bump:minor": "poetry run bump2version minor",
-    "bump:patch": "poetry run bump2version patch",
-    "clean": "poetry run pyaud clean",
-    "create:admin": "poetry run flask create admin",
-    "db:upgrade": "poetry run flask db upgrade",
-    "format": "npm-run-all format:*",
-    "format:misc": "prettier -w .",
-    "format:py": "npm-run-all format:py:*",
-    "format:py:code": "poetry run pyaud format",
-    "format:py:docs": "poetry run pyaud format-docs",
-    "format:py:str": "poetry run pyaud format-str",
-    "init:dev": "npm install && npm run webpack:dev && npm run add:manifest && ./bin/post_compile",
-    "lighthouse": "lighthouse http://localhost:5000 --view --chrome-flags=--headless --output-path=\"$(mktemp).html\"",
-    "lint": "npm-run-all lint:*",
-    "lint:js": "npx eslint",
-    "lint:py": "poetry run pyaud lint",
-    "prebuild:dev": "npm run static:clean",
-    "prestart:dev:watch": "npm run static:clean",
-    "release": "run-s build db:upgrade create:admin",
-    "start": "poetry run gunicorn wsgi:app",
-    "start:dev": "poetry run flask run",
-    "start:dev:watch": "concurrently -n 'WATCH,SERVER' -c 'bgBlue.bold,bgMagenta.bold' 'npm run webpack:watch' 'npm run start:dev'",
-    "static:clean": "poetry run flask digest clean",
-    "static:compile": "poetry run flask digest compile",
-    "test": "npm-run-all test:*",
-    "test:js": "jest",
-    "test:py": "poetry run pyaud tests",
-    "test:py:doctest": "poetry run pyaud doctest",
-    "test:py:doctest:package": "poetry run pyaud doctest-package",
-    "test:py:doctest:readme": "poetry run pyaud doctest-readme",
-    "translate:update": "poetry run flask translate update",
-    "translate:compile": "poetry run flask translate compile",
-    "toml:sort": "poetry run pyaud sort-pyproject",
-    "types": "npm-run-all types:*",
-    "types:py": "poetry run pyaud typecheck",
-    "webpack:dev": "NODE_ENV=development webpack --progress",
-    "webpack:prod": "NODE_ENV=production webpack",
-    "webpack:watch": "NODE_ENV=development webpack --watch --progress"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jshwi/jss.git"
-  },
-  "keywords": [
-    "flask",
-    "webapp",
-    "pwa",
-    "jshwisolutions",
-    "blog"
-  ],
   "author": "Stephen Whitlock",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jshwi/jss/issues"
-  },
-  "homepage": "https://github.com/jshwi/jss#readme",
-  "eslintConfig": {
-    "extends": [
-      "airbnb-base",
-      "prettier",
-      "plugin:json/recommended"
-    ],
-    "parser": "@babel/eslint-parser",
-    "parserOptions": {
-      "requireConfigFile": false
-    },
-    "rules": {
-      "no-param-reassign": "off",
-      "no-console": "off",
-      "no-underscore-dangle": "off",
-      "max-len": [
-        "error",
-        {
-          "code": 79,
-          "comments": 72,
-          "ignoreComments": false,
-          "ignoreTrailingComments": false,
-          "ignoreUrls": false,
-          "ignoreStrings": false,
-          "ignoreTemplateLiterals": false,
-          "ignoreRegExpLiterals": false
-        }
-      ]
-    },
-    "env": {
-      "browser": true,
-      "node": true
-    },
-    "globals": {
-      "__dirname": true,
-      "jQuery": true,
-      "$": true
-    }
-  },
-  "eslintIgnore": [
-    ".mypy_cache/",
-    ".pytest_cache/",
-    "Pipfile.lock",
-    "app/static",
-    "dist/",
-    "docs/_build/",
-    "docs/_themes/",
-    "instance/",
-    "node_modules/",
-    "package-lock.json"
-  ],
-  "jest": {
-    "clearMocks": true,
-    "collectCoverage": true,
-    "coverageDirectory": "coverage",
-    "setupFilesAfterEnv": [
-      "./tests/setup.js"
-    ],
-    "testEnvironment": "jsdom",
-    "resetMocks": false,
-    "setupFiles": [
-      "jest-localstorage-mock"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
-    }
-  },
   "babel": {
     "presets": [
       [
@@ -154,6 +11,9 @@
         }
       ]
     ]
+  },
+  "bugs": {
+    "url": "https://github.com/jshwi/jss/issues"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.2.1",
@@ -167,6 +27,7 @@
     "jquery": "^3.6.3",
     "moment": "^2.29.4"
   },
+  "description": "A Flask webapp",
   "devDependencies": {
     "@babel/core": "^7.20.7",
     "@babel/eslint-parser": "^7.19.1",
@@ -197,5 +58,151 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "workbox-webpack-plugin": "^6.5.4"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "extends": [
+      "airbnb-base",
+      "prettier",
+      "plugin:json/recommended"
+    ],
+    "globals": {
+      "$": true,
+      "__dirname": true,
+      "jQuery": true
+    },
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false
+    },
+    "rules": {
+      "max-len": [
+        "error",
+        {
+          "code": 79,
+          "comments": 72,
+          "ignoreComments": false,
+          "ignoreRegExpLiterals": false,
+          "ignoreStrings": false,
+          "ignoreTemplateLiterals": false,
+          "ignoreTrailingComments": false,
+          "ignoreUrls": false
+        }
+      ],
+      "no-console": "off",
+      "no-param-reassign": "off",
+      "no-underscore-dangle": "off"
+    }
+  },
+  "eslintIgnore": [
+    ".mypy_cache/",
+    ".pytest_cache/",
+    "Pipfile.lock",
+    "app/static",
+    "dist/",
+    "docs/_build/",
+    "docs/_themes/",
+    "instance/",
+    "node_modules/",
+    "package-lock.json"
+  ],
+  "homepage": "https://github.com/jshwi/jss#readme",
+  "jest": {
+    "clearMocks": true,
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "resetMocks": false,
+    "setupFiles": [
+      "jest-localstorage-mock"
+    ],
+    "setupFilesAfterEnv": [
+      "./tests/setup.js"
+    ],
+    "testEnvironment": "jsdom"
+  },
+  "keywords": [
+    "flask",
+    "webapp",
+    "pwa",
+    "jshwisolutions",
+    "blog"
+  ],
+  "license": "MIT",
+  "name": "jss",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jshwi/jss.git"
+  },
+  "scripts": {
+    "add:manifest": "cp ./assets/json/site.webmanifest app/static",
+    "audit": "npm-run-all audit:*",
+    "audit:js": "npx prettier -c . && npm run lint:js && npm run test:js",
+    "audit:misc": "npx prettier -c .",
+    "audit:py": "poetry run pyaud audit",
+    "audit:py:debug": "poetry run pyaud audit --rcfile .github/pyaud.toml",
+    "build": "npm run webpack:prod && npm run add:manifest",
+    "build:dev": "npm run webpack:dev",
+    "bump:major": "poetry run bump2version major",
+    "bump:minor": "poetry run bump2version minor",
+    "bump:patch": "poetry run bump2version patch",
+    "clean": "poetry run pyaud clean",
+    "const": "poetry run pyaud const",
+    "create:admin": "poetry run flask create admin",
+    "db:upgrade": "poetry run flask db upgrade",
+    "format": "npm-run-all format:*",
+    "format:misc": "prettier -w .",
+    "format:py": "npm-run-all format:py:*",
+    "format:py:code": "poetry run pyaud format",
+    "format:py:docs": "poetry run pyaud format-docs",
+    "format:py:str": "poetry run pyaud format-str",
+    "init:dev": "npm install && npm run webpack:dev && npm run add:manifest && ./bin/post_compile",
+    "lighthouse": "lighthouse http://localhost:5000 --view --chrome-flags=--headless --output-path=\"$(mktemp).html\"",
+    "lint": "poetry run pyaud lint",
+    "lint:js": "npx eslint",
+    "lint:py": "poetry run pyaud lint",
+    "params": "poetry run pyaud params",
+    "prebuild:dev": "npm run static:clean",
+    "prestart:dev:watch": "npm run static:clean",
+    "release": "run-s build db:upgrade create:admin",
+    "start": "poetry run gunicorn wsgi:app",
+    "start:dev": "poetry run flask run",
+    "start:dev:watch": "concurrently -n 'WATCH,SERVER' -c 'bgBlue.bold,bgMagenta.bold' 'npm run webpack:watch' 'npm run start:dev'",
+    "static:clean": "poetry run flask digest clean",
+    "static:compile": "poetry run flask digest compile",
+    "test": "poetry run pyaud test",
+    "test:doctest": "poetry run pyaud doctest",
+    "test:doctest:package": "poetry run pyaud doctest-package",
+    "test:doctest:readme": "poetry run pyaud doctest-readme",
+    "test:js": "jest",
+    "test:py": "poetry run pyaud tests",
+    "test:py:doctest": "poetry run pyaud doctest",
+    "test:py:doctest:package": "poetry run pyaud doctest-package",
+    "test:py:doctest:readme": "poetry run pyaud doctest-readme",
+    "test:unit": "poetry run pyaud tests",
+    "toml:sort": "poetry run pyaud sort-pyproject",
+    "translate:compile": "poetry run flask translate compile",
+    "translate:update": "poetry run flask translate update",
+    "types": "poetry run pyaud typecheck",
+    "types:py": "poetry run pyaud typecheck",
+    "webpack:dev": "NODE_ENV=development webpack --progress",
+    "webpack:prod": "NODE_ENV=production webpack",
+    "webpack:watch": "NODE_ENV=development webpack --watch --progress"
+  },
+  "version": "1.20.5"
 }
