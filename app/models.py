@@ -7,10 +7,10 @@ Define app's database models.
 # pylint: disable=too-few-public-methods
 from __future__ import annotations
 
+import hashlib
 import json
 import typing as t
 from datetime import datetime
-from hashlib import md5
 from time import time
 
 from flask import abort, current_app
@@ -119,7 +119,9 @@ class User(UserMixin, BaseModel):
         :param size: Size of the avatar.
         :return: URL leading to avatar for img link.
         """
-        digest = md5(self.email.lower().encode()).hexdigest()
+        digest = hashlib.new(  # type: ignore
+            "md5", self.email.lower().encode(), usedforsecurity=False
+        ).hexdigest()
         return f"https://gravatar.com/avatar/{digest}?d=identicon&s={size}"
 
     def follow(self, user: User) -> None:
