@@ -16,7 +16,15 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from app import create_app
 from app.models import User, db
 
-from .const import COPYRIGHT_AUTHOR, COPYRIGHT_EMAIL, user_email, user_password
+from .const import (
+    COPYRIGHT_AUTHOR,
+    COPYRIGHT_EMAIL,
+    CREATE,
+    INIT_DB,
+    TRANSLATIONS_DIR,
+    user_email,
+    user_password,
+)
 from .routes import Routes
 from .utils import (
     AddTestObjects,
@@ -50,13 +58,13 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("DEFAULT_MAIL_SENDER", "no-reply@test.com")
     monkeypatch.setenv("DEBUG_TB_ENABLED", "0")
     monkeypatch.setenv("ADMIN_SECRET", user_password[0])
-    monkeypatch.setenv("TRANSLATIONS_DIR", str(tmp_path / "translations"))
+    monkeypatch.setenv(TRANSLATIONS_DIR, str(tmp_path / "translations"))
     monkeypatch.setenv("COPYRIGHT_AUTHOR", COPYRIGHT_AUTHOR)
     monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)
     return create_app()
 
 
-@pytest.fixture(name="init_db")
+@pytest.fixture(name=INIT_DB)
 def fixture_init_db(test_app: Flask) -> None:
     """Automatically create a test database for every test instance.
 
@@ -217,5 +225,5 @@ def fixture_create_admin(runner: FlaskCliRunner) -> None:
 
     :param runner: Test application cli.
     """
-    response = runner.invoke(args=["create", "admin"])
+    response = runner.invoke(args=[CREATE, "admin"])
     assert "admin successfully created" in response.output

@@ -28,7 +28,24 @@ APP_UTILS_LANG_POT_FILE = "app.utils.lang._pot_file"
 APP_UTILS_LANG_SUBPROCESS_RUN = "app.utils.lang.subprocess.run"
 MESSAGES_POT = "messages.pot"
 MESSAGES_PO = "messages.po"
-LICENSE = f"""\
+LICENSE = "LICENSE"
+USERNAME_IS_TAKEN = b"Username is taken"
+COMPILE = "compile"
+INIT = "init"
+PASSWORD = "password"
+POSTS = "posts"
+PYBABEL = "pybabel"
+USER = "user"
+USERNAME = "username"
+LOCATION = "Location"
+NAVBAR_HOME = "NAVBAR_HOME"
+CREATE = "create"
+ENCODING = "utf-8"
+TRANSLATE = "translate"
+INIT_DB = "init_db"
+POST = "post"
+TRANSLATIONS_DIR = "TRANSLATIONS_DIR"
+LICENSE_CONTENTS = f"""\
 MIT License
 
 Copyright (c) {COPYRIGHT_YEAR} {COPYRIGHT_AUTHOR}
@@ -417,8 +434,8 @@ msgstr ""
 post_title = VarSeq("postTitle", suffix="")
 post_body = VarSeq("postBody", suffix="")
 
-user_username = VarSeq("user")
-user_email = VarSeqSuffix("user", "@email.com")
+user_username = VarSeq(USER)
+user_email = VarSeqSuffix(USER, "@email.com")
 user_password = VarSeq("pass")
 
 test_message = VarSeq("message")

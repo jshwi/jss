@@ -13,6 +13,7 @@ from werkzeug.test import TestResponse
 
 from app.extensions import mail
 
+from .const import PASSWORD, USERNAME
 from .utils import GetObjects, Recorder, TestObject, UserTestObject
 
 
@@ -158,10 +159,7 @@ class AuthCRUD(CRUD):
         user = self._get_objects.user(index)[index]
         return self._client.post(
             self.parse_href(html),
-            data={
-                "password": user.password,
-                "confirm_password": user.password,
-            },
+            data={PASSWORD: user.password, "confirm_password": user.password},
             **kwargs,
         )
 
@@ -174,7 +172,7 @@ class AuthCRUD(CRUD):
         """
         return self.post(
             "/login",
-            data={"username": user.username, "password": user.password},
+            data={USERNAME: user.username, PASSWORD: user.password},
             **kwargs,
         )
 
@@ -209,9 +207,9 @@ class AuthCRUD(CRUD):
             response = self.post(
                 "/register",
                 data={
-                    "username": user.username,
+                    USERNAME: user.username,
                     "email": user.email,
-                    "password": user.password,
+                    PASSWORD: user.password,
                     "confirm_password": user.password,
                 },
                 **kwargs,
@@ -272,7 +270,7 @@ class UserCRUD(CRUD):
         """
         data = {}
         if username is not None:
-            data["username"] = username
+            data[USERNAME] = username
 
         if about_me is not None:
             data["about_me"] = about_me
