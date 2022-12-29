@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.20.5...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Add `usedforsecurity=False` to `hashlib`'
 
 [1.20.5](https://github.com/jshwi/jss/releases/tag/v1.20.5) - 2022-11-16
 ------------------------------------------------------------------------
