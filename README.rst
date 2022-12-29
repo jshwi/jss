@@ -3,9 +3,12 @@ jss
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
     :target: https://opensource.org/licenses/MIT
     :alt: License
-.. image:: https://github.com/jshwi/jss/workflows/build/badge.svg
-    :target: https://github.com/jshwi/jss/workflows/build/badge.svg
+.. image:: https://github.com/jshwi/jss/actions/workflows/build.yml/badge.svg
+    :target: https://github.com/jshwi/jss/actions/workflows/build.yml
     :alt: Build
+.. image:: https://results.pre-commit.ci/badge/github/jshwi/jss/master.svg
+   :target: https://results.pre-commit.ci/latest/github/jshwi/jss/master
+   :alt: pre-commit.ci status
 .. image:: https://github.com/jshwi/jss/actions/workflows/codeql-analysis.yml/badge.svg
     :target: https://github.com/jshwi/jss/actions/workflows/codeql-analysis.yml
     :alt: CodeQL
@@ -20,10 +23,10 @@ jss
     :alt: python3.8
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
-    :alt: black
-.. image:: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
-    :target: https://github.com/prettier/prettier
-    :alt: prettier
+    :alt: Black
+.. image:: https://img.shields.io/badge/linting-pylint-yellowgreen
+    :target: https://github.com/PyCQA/pylint
+    :alt: pylint
 
 A Flask webapp
 --------------
