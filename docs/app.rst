@@ -13,6 +13,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.deps
    :members:
    :undoc-members:
