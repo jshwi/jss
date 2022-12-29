@@ -36,12 +36,19 @@ from .const import (
     APP_MODELS_JOB_FETCH,
     APP_UTILS_LANG_POT_FILE,
     APP_UTILS_LANG_SUBPROCESS_RUN,
+    COMPILE,
     COPYRIGHT_AUTHOR,
     COPYRIGHT_EMAIL,
     COPYRIGHT_YEAR,
     COVERED_ROUTES,
+    CREATE,
+    ENCODING,
+    INIT,
+    INIT_DB,
     INVALID_OR_EXPIRED,
     LICENSE,
+    LICENSE_CONTENTS,
+    LOCATION,
     MAIL_PASSWORD,
     MAIL_PORT,
     MAIL_SERVER,
@@ -49,10 +56,19 @@ from .const import (
     MESSAGES_PO,
     MESSAGES_POT,
     MISC_PROGRESS_INT,
+    NAVBAR_HOME,
+    POST,
+    POSTS,
     POT_CONTENTS,
+    PYBABEL,
     PYPROJECT_TOML,
     STATUS_CODE_TO_ROUTE_DEFAULT,
     TASK_ID,
+    TRANSLATE,
+    TRANSLATIONS_DIR,
+    USER,
+    USERNAME,
+    USERNAME_IS_TAKEN,
     user_email,
     user_password,
     user_username,
@@ -68,7 +84,7 @@ from .utils import (
 )
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_register(test_app: Flask, routes: Routes) -> None:
     """The register view should render successfully on ``GET``.
 
@@ -87,12 +103,12 @@ def test_register(test_app: Flask, routes: Routes) -> None:
     """
     assert routes.auth.get("/register").status_code == 200
     response = routes.auth.register_index(1)
-    assert response.headers["Location"] == "https://localhost/auth/unconfirmed"
+    assert response.headers[LOCATION] == "https://localhost/auth/unconfirmed"
     with test_app.app_context():
         assert User.query.get(1) is not None
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_login(
     client: FlaskClient, routes: Routes, get_objects: GetObjects
 ) -> None:
@@ -105,13 +121,13 @@ def test_login(
     u_o = get_objects.user(1)
     routes.auth.register_index(1)
     response = routes.auth.login_index(1)
-    assert response.headers["Location"] == "https://localhost/auth/unconfirmed"
+    assert response.headers[LOCATION] == "https://localhost/auth/unconfirmed"
     with client:
         client.get("/")
         assert current_user.username == u_o[1].username
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "username,password",
     [
@@ -138,7 +154,7 @@ def test_login_validate(
     assert b"Invalid username or password" in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_logout(client: FlaskClient, routes: Routes) -> None:
     """Test logout functionality.
 
@@ -152,7 +168,7 @@ def test_logout(client: FlaskClient, routes: Routes) -> None:
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_index_no_user(client: FlaskClient) -> None:
     """Test login and subsequent requests from the client.
 
@@ -172,7 +188,7 @@ def test_index_no_user(client: FlaskClient) -> None:
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_index_user(
     client: FlaskClient,
     routes: Routes,
@@ -214,7 +230,7 @@ def test_index_user(
 def test_login_required(client: FlaskClient, route: str) -> None:
     """Test requirement that user be logged in to post.
 
-    A user must be logged in to access the "create", "update", and
+    A user must be logged in to access the CREATE, "update", and
     "delete" views.
 
     The logged-in user must be the author of the post to access the
@@ -227,7 +243,7 @@ def test_login_required(client: FlaskClient, route: str) -> None:
     assert client.post(route).status_code == 401
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_author_required(
     client: FlaskClient,
     routes: Routes,
@@ -264,7 +280,7 @@ def test_author_required(
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_create(
     test_app: Flask, routes: Routes, authorize_user: AuthorizeUserFixtureType
 ) -> None:
@@ -286,7 +302,7 @@ def test_create(
         assert Post.query.count() == 1
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_update(
     routes: Routes, authorize_user: AuthorizeUserFixtureType
 ) -> None:
@@ -305,7 +321,7 @@ def test_update(
     assert b"Edited" in routes.posts.read(1).data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_delete(
     test_app: Flask, routes: Routes, authorize_user: AuthorizeUserFixtureType
 ) -> None:
@@ -323,12 +339,12 @@ def test_delete(
     routes.auth.login_index(1)
     routes.posts.create(1)
     response = routes.posts.delete(1)
-    assert response.headers["Location"] == "https://localhost/"
+    assert response.headers[LOCATION] == "https://localhost/"
     with test_app.app_context():
         assert Post.query.get(1) is None
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_export(
     test_app: Flask,
     routes: Routes,
@@ -391,7 +407,7 @@ def test_send_mail(
     assert outbox[0].attachments[0].filename == attachment["filename"]
 
 
-@pytest.mark.usefixtures("init_db", "create_admin")
+@pytest.mark.usefixtures(INIT_DB, "create_admin")
 def test_create_admin(test_app: Flask, get_objects: GetObjects) -> None:
     """Test commands called when invoking ``flask create admin``.
 
@@ -405,7 +421,7 @@ def test_create_admin(test_app: Flask, get_objects: GetObjects) -> None:
         assert u_q.check_password(u_o[0].password)
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_create_user_cli(
     test_app: Flask,
     runner: FlaskCliRunner,
@@ -422,7 +438,7 @@ def test_create_user_cli(
     u_o = get_objects.user(1)
     patch_getpass([u_o[1].password, u_o[1].password])
     response = runner.invoke(
-        args=["create", "user"], input=f"{u_o[1].username}\n{u_o[1].email}\n"
+        args=[CREATE, USER], input=f"{u_o[1].username}\n{u_o[1].email}\n"
     )
     assert "user successfully created" in response.output
     with test_app.app_context():
@@ -453,9 +469,9 @@ def test_create_user_cli(
             "passwords do not match",
         ),
     ],
-    ids=["username", "email", "pass"],
+    ids=[USERNAME, "email", "pass"],
 )
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_create_user_fail(
     runner: FlaskCliRunner,
     routes: Routes,
@@ -484,12 +500,12 @@ def test_create_user_fail(
     authorize_user(1)
     patch_getpass(passwords)
     response = runner.invoke(
-        args=["create", "user"], input=f"{username}\n{email}\n"
+        args=[CREATE, USER], input=f"{username}\n{email}\n"
     )
     assert expected in response.output
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "route", ["/post/create", "/post/1/update", "/post/1/delete"]
 )
@@ -498,7 +514,7 @@ def test_admin_required(
 ) -> None:
     """Test requirement that admin user be logged in to post.
 
-    An admin user must be logged in to access the "create", "update",
+    An admin user must be logged in to access the CREATE, "update",
     and "delete" views.
 
     The logged-in user must be the author of the post to access the
@@ -514,14 +530,14 @@ def test_admin_required(
     assert client.post(route).status_code == 401
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "username,email,expected",
     [
-        (user_username[1], user_email[2], b"Username is taken"),
+        (user_username[1], user_email[2], USERNAME_IS_TAKEN),
         (user_username[2], user_email[1], b"already registered"),
     ],
-    ids=["username", "email"],
+    ids=[USERNAME, "email"],
 )
 def test_register_invalid_fields(
     routes: Routes,
@@ -546,7 +562,7 @@ def test_register_invalid_fields(
     assert expected in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_confirmation_email(test_app: Flask, routes: Routes) -> None:
     """Test user is moved from confirmed as False to True.
 
@@ -564,7 +580,7 @@ def test_confirmation_email(test_app: Flask, routes: Routes) -> None:
         assert User.query.get(1).confirmed is True
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_confirmation_email_confirmed(routes: Routes) -> None:
     """Test user redirected when already confirmed.
 
@@ -577,7 +593,7 @@ def test_confirmation_email_confirmed(routes: Routes) -> None:
     assert b"Account already confirmed. Please login." in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_confirmation_email_expired(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -610,7 +626,7 @@ def test_confirmation_email_expired(
     assert INVALID_OR_EXPIRED in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_login_confirmed(
     client: FlaskClient, routes: Routes, get_objects: GetObjects
 ) -> None:
@@ -623,13 +639,13 @@ def test_login_confirmed(
     u_o = get_objects.user(1)
     routes.auth.register_index(1, confirm=True)
     response = routes.auth.login_index(1)
-    assert response.headers["Location"] == "https://localhost/"
+    assert response.headers[LOCATION] == "https://localhost/"
     with client:
         client.get("/")
         assert current_user.username == u_o[1].username
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_confirmation_email_resend(
     client: FlaskClient, routes: Routes
 ) -> None:
@@ -643,7 +659,7 @@ def test_confirmation_email_resend(
     assert b"A new confirmation email has been sent." in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_request_password_reset_email(
     routes: Routes, get_objects: GetObjects, add_test_objects: AddTestObjects
 ) -> None:
@@ -663,7 +679,7 @@ def test_request_password_reset_email(
     assert b"Please enter your new password" in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_bad_token(monkeypatch: pytest.MonkeyPatch, routes: Routes) -> None:
     """Test user denied when jwt for resetting password is expired.
 
@@ -682,7 +698,7 @@ def test_bad_token(monkeypatch: pytest.MonkeyPatch, routes: Routes) -> None:
     assert INVALID_OR_EXPIRED in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_email_does_not_exist(routes: Routes) -> None:
     """Test user notified when email does not exist for password reset.
 
@@ -692,7 +708,7 @@ def test_email_does_not_exist(routes: Routes) -> None:
     assert b"An account with that email address doesn't exist" in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_redundant_token(routes: Routes) -> None:
     """Test user notified that them being logged in has voided token.
 
@@ -707,7 +723,7 @@ def test_redundant_token(routes: Routes) -> None:
     assert INVALID_OR_EXPIRED in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_reset_password(
     test_app: Flask,
     routes: Routes,
@@ -774,7 +790,7 @@ def test_get_smtp_handler(
     assert kwargs["secure"] == secure
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_profile_page(routes: Routes) -> None:
     """Test response when visiting profile page of existing user.
 
@@ -786,7 +802,7 @@ def test_profile_page(routes: Routes) -> None:
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_post_page(
     routes: Routes,
     get_objects: GetObjects,
@@ -808,7 +824,7 @@ def test_post_page(
     assert p_o[1].body.encode() in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_edit_profile(routes: Routes, get_objects: GetObjects) -> None:
     """Test edit profile page.
 
@@ -833,7 +849,7 @@ def test_edit_profile(routes: Routes, get_objects: GetObjects) -> None:
     assert b"testing about me" in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_unconfirmed(routes: Routes) -> None:
     """Test when unconfirmed user tries to enter restricted view.
 
@@ -845,7 +861,7 @@ def test_unconfirmed(routes: Routes) -> None:
     assert b"Account Verification Pending" in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_follow(
     test_app: Flask, routes: Routes, get_objects: GetObjects
 ) -> None:
@@ -877,7 +893,7 @@ def test_follow(
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_follow_posts(
     test_app: Flask,
     routes: Routes,
@@ -943,7 +959,7 @@ def test_follow_posts(
         assert followed_4 == [p_q_4]
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_post_follow_unfollow_routes(
     routes: Routes, get_objects: GetObjects
 ) -> None:
@@ -967,7 +983,7 @@ def test_post_follow_unfollow_routes(
     )
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_send_message(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -1033,7 +1049,7 @@ def test_send_message(
     assert u_o[2].message.encode() in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_export_post_is_job(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -1068,7 +1084,7 @@ def test_export_post_is_job(
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_export_post(test_app: Flask, routes: Routes) -> None:
     """Test export post function when a job does not exist: is None.
 
@@ -1086,7 +1102,7 @@ def test_export_post(test_app: Flask, routes: Routes) -> None:
         assert task.name == "export_posts"
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_get_tasks_in_progress_no_task(
     monkeypatch: pytest.MonkeyPatch, client: FlaskClient, routes: Routes
 ) -> None:
@@ -1104,7 +1120,7 @@ def test_get_tasks_in_progress_no_task(
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_get_tasks_in_progress(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -1132,7 +1148,7 @@ def test_get_tasks_in_progress(
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_get_tasks_in_progress_error_raised(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -1166,7 +1182,7 @@ def test_get_tasks_in_progress_error_raised(
 
 # noinspection DuplicatedCode
 @pytest.mark.flaky(max_runs=5)
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_export_posts(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -1225,11 +1241,11 @@ def test_export_posts(
         assert attachment.filename == "posts.json"
         assert attachment.content_type == "application/json"
         assert attachment.data == json.dumps(
-            {"posts": post_obj}, indent=4, sort_keys=True
+            {POSTS: post_obj}, indent=4, sort_keys=True
         )
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_export_posts_err(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test data as sent to user when post export requested with error.
 
@@ -1255,7 +1271,7 @@ def test_export_posts_err(monkeypatch: pytest.MonkeyPatch) -> None:
     app.utils.tasks.export_posts(1)
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_versions(
     routes: Routes, authorize_user: AuthorizeUserFixtureType
 ) -> None:
@@ -1274,7 +1290,7 @@ def test_versions(
     assert routes.posts.read(1, 2).status_code == 404
 
 
-@pytest.mark.usefixtures("init_db", "create_admin")
+@pytest.mark.usefixtures(INIT_DB, "create_admin")
 def test_admin_access_control(routes: Routes) -> None:
     """Test access to admin console restricted to admin user.
 
@@ -1290,7 +1306,7 @@ def test_admin_access_control(routes: Routes) -> None:
     assert routes.admin.users(follow_redirects=True).status_code == 403
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_admin_access_without_login(routes: Routes) -> None:
     """Asserts that the ``AnonymousUserMixin`` error will not be raised.
 
@@ -1306,14 +1322,14 @@ def test_admin_access_without_login(routes: Routes) -> None:
     assert routes.admin.users(follow_redirects=True).status_code == 403
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "method,data,bad_route",
     [
         ("get", {}, "profile/noname"),
-        ("post", {}, "follow/noname"),
-        ("post", {}, "unfollow/noname"),
-        ("post", {"message": "testing"}, "send_message/noname"),
+        (POST, {}, "follow/noname"),
+        (POST, {}, "unfollow/noname"),
+        (POST, {"message": "testing"}, "send_message/noname"),
     ],
     ids=["profile", "follow", "unfollow", "send_message"],
 )
@@ -1349,7 +1365,7 @@ def test_inspect_profile_no_user(
     assert getattr(client, method)(bad_route, data=data).status_code == 404
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_user_name_change_accessible(
     test_app: Flask, routes: Routes, get_objects: GetObjects
 ) -> None:
@@ -1423,7 +1439,7 @@ def test_user_name_change_accessible(
         assert u_o[3].username.encode() in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_reserved_usernames(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -1447,13 +1463,13 @@ def test_reserved_usernames(
         u_o[2].username,
     ]
     response = routes.auth.register_index(1)
-    assert b"Username is taken" in response.data
+    assert USERNAME_IS_TAKEN in response.data
     response = routes.auth.register_index(2)
-    assert b"Username is taken" in response.data
+    assert USERNAME_IS_TAKEN in response.data
 
 
 # noinspection DuplicatedCode
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_versions_update(
     routes: Routes,
     get_objects: GetObjects,
@@ -1476,7 +1492,7 @@ def test_versions_update(
     assert p_o[1].body.encode() in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_versioning_handle_index_error(routes: Routes) -> None:
     """Test versioning route when passing to large a revision to update.
 
@@ -1498,20 +1514,20 @@ def test_config_copyright(
     :param test_app: Test application.
     """
     monkeypatch.setattr("os.environ", {})
-    license_file = tmp_path / "LICENSE"
+    license_file = tmp_path / LICENSE
     pyproject_toml = tmp_path / "pyproject.toml"
-    license_file.write_text(LICENSE, encoding="utf-8")
-    pyproject_toml.write_text(PYPROJECT_TOML, encoding="utf-8")
-    monkeypatch.setenv("LICENSE", str(license_file))
+    license_file.write_text(LICENSE_CONTENTS, encoding=ENCODING)
+    pyproject_toml.write_text(PYPROJECT_TOML, encoding=ENCODING)
+    monkeypatch.setenv(LICENSE, str(license_file))
     monkeypatch.setenv("PYPROJECT_TOML", str(pyproject_toml))
     config.init_app(test_app)
-    assert test_app.config["LICENSE"] == license_file
+    assert test_app.config[LICENSE] == license_file
     assert test_app.config["COPYRIGHT_YEAR"] == COPYRIGHT_YEAR
     assert test_app.config["COPYRIGHT_AUTHOR"] == COPYRIGHT_AUTHOR
     assert test_app.config["COPYRIGHT_EMAIL"] == COPYRIGHT_EMAIL
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_navbar_home_config_switch(
     monkeypatch: pytest.MonkeyPatch, test_app: Flask, client: FlaskClient
 ) -> None:
@@ -1522,16 +1538,16 @@ def test_navbar_home_config_switch(
     :param client: Test application client.
     """
     # with `NAVBAR_HOME` set to False
-    monkeypatch.setenv("NAVBAR_HOME", "0")
+    monkeypatch.setenv(NAVBAR_HOME, "0")
     config.init_app(test_app)
-    assert test_app.config["NAVBAR_HOME"] is False
+    assert test_app.config[NAVBAR_HOME] is False
     response = client.get("/")
     assert b"Home" not in response.data
 
     # with `NAVBAR_HOME` set to True
-    monkeypatch.setenv("NAVBAR_HOME", "1")
+    monkeypatch.setenv(NAVBAR_HOME, "1")
     config.init_app(test_app)
-    assert test_app.config["NAVBAR_HOME"] is True
+    assert test_app.config[NAVBAR_HOME] is True
     response = client.get("/")
     assert b"Home" in response.data
 
@@ -1544,7 +1560,7 @@ def test_navbar_home_config_switch(
     ],
     ids=["disabled", "enabled"],
 )
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_navbar_user_dropdown_config_switch(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
@@ -1588,7 +1604,7 @@ def test_all_routes_covered(test_app: Flask) -> None:
     assert all(r in COVERED_ROUTES for r in filter_covered)
 
 
-@pytest.mark.usefixtures("init_db", "init_static")
+@pytest.mark.usefixtures(INIT_DB, "init_static")
 @pytest.mark.parametrize(
     "code,test_routes", STATUS_CODE_TO_ROUTE_DEFAULT, ids=[200, 401, 405]
 )
@@ -1687,7 +1703,7 @@ def test_register_text(monkeypatch: pytest.MonkeyPatch) -> None:
     assert registered["dom_text_registered_text"]() == test_str
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 def test_version_dropdown(
     client: FlaskClient,
     routes: Routes,
@@ -1721,13 +1737,13 @@ def test_version_dropdown(
     assert b"v3: This revision" in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "route,test_object,prop,method,user_do,user_view",
     [
-        ("/", 1, "posts", "create", 1, 1),
-        (f"/profile/{user_username[1]}", 1, "posts", "create", 1, 1),
-        ("/user/messages", 2, "user", "send_message", 1, 2),
+        ("/", 1, POSTS, CREATE, 1, 1),
+        (f"/profile/{user_username[1]}", 1, POSTS, CREATE, 1, 1),
+        ("/user/messages", 2, USER, "send_message", 1, 2),
     ],
     ids=["index", "profile", "messages"],
 )
@@ -1791,7 +1807,7 @@ def test_pagination_nav(
     assert b"Next" in response.data
 
 
-@pytest.mark.usefixtures("init_db")
+@pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "key,value",
     [
@@ -1908,7 +1924,7 @@ def test_translate_init_files(
     :param runner: Test application cli.
     """
     pot_file = tmp_path / MESSAGES_POT
-    tdir: Path = test_app.config["TRANSLATIONS_DIR"]
+    tdir: Path = test_app.config[TRANSLATIONS_DIR]
     lang_arg = "es"
     lc_dir = tdir / lang_arg / "LC_MESSAGES"
     po_file = lc_dir / MESSAGES_PO
@@ -1928,9 +1944,9 @@ def test_translate_init_files(
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
     monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
     result = runner.invoke(
-        args=["translate", "init", lang_arg], catch_exceptions=False
+        args=[TRANSLATE, INIT, lang_arg], catch_exceptions=False
     )
-    po_contents = po_file.read_text(encoding="utf-8")
+    po_contents = po_file.read_text(encoding=ENCODING)
     assert "<Result okay>" in str(result)
     assert POT_CONTENTS[-3:] == '"\n\n'
     assert not pot_file.is_file()
@@ -1960,7 +1976,7 @@ def test_translate_update_files(
     :param runner: Test application cli.
     """
     pot_file = tmp_path / MESSAGES_POT
-    tdir: Path = test_app.config["TRANSLATIONS_DIR"]
+    tdir: Path = test_app.config[TRANSLATIONS_DIR]
     lang_arg = "es"
     lc_dir = tdir / lang_arg / "LC_MESSAGES"
     po_file = lc_dir / MESSAGES_PO
@@ -1986,10 +2002,8 @@ def test_translate_update_files(
 
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
     monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
-    result = runner.invoke(
-        args=["translate", "update"], catch_exceptions=False
-    )
-    po_contents = po_file.read_text(encoding="utf-8")
+    result = runner.invoke(args=[TRANSLATE, "update"], catch_exceptions=False)
+    po_contents = po_file.read_text(encoding=ENCODING)
     assert "<Result okay>" in str(result)
     assert POT_CONTENTS[-3:] == '"\n\n'
     assert not pot_file.is_file()
@@ -2023,10 +2037,10 @@ def test_translate_args(
         pot_file.write_text(POT_CONTENTS)
 
     monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
-    runner.invoke(args=["translate", "init", "es"])
-    assert "pybabel" in commands
+    runner.invoke(args=[TRANSLATE, INIT, "es"])
+    assert PYBABEL in commands
     assert "extract" in commands
-    assert "init" in commands
+    assert INIT in commands
 
 
 # noinspection DuplicatedCode
@@ -2048,8 +2062,8 @@ def test_translate_update_args(
         pot_file.write_text(POT_CONTENTS)
 
     monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
-    runner.invoke(args=["translate", "update"])
-    assert "pybabel" in commands
+    runner.invoke(args=[TRANSLATE, "update"])
+    assert PYBABEL in commands
     assert "extract" in commands
 
 
@@ -2064,25 +2078,20 @@ def test_translate_compile(
     :param runner: Test application cli.
     """
     po_file: Path = (
-        test_app.config["TRANSLATIONS_DIR"]
-        / "es"
-        / "LC_MESSAGES"
-        / MESSAGES_PO
+        test_app.config[TRANSLATIONS_DIR] / "es" / "LC_MESSAGES" / MESSAGES_PO
     )
     commands = []
     monkeypatch.setattr(
         APP_UTILS_LANG_SUBPROCESS_RUN, lambda x, **y: commands.extend(x)
     )
-    result = runner.invoke(
-        args=["translate", "compile"], catch_exceptions=False
-    )
+    result = runner.invoke(args=[TRANSLATE, COMPILE], catch_exceptions=False)
     assert "No message catalogs to compile" in result.output
     assert not commands
     po_file.parent.mkdir(parents=True)
     po_file.touch()
-    runner.invoke(args=["translate", "compile"], catch_exceptions=False)
-    assert "pybabel" in commands
-    assert "compile" in commands
+    runner.invoke(args=[TRANSLATE, COMPILE], catch_exceptions=False)
+    assert PYBABEL in commands
+    assert COMPILE in commands
 
 
 def test_pot_file(test_app: Flask) -> None:
