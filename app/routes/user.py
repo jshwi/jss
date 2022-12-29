@@ -18,6 +18,7 @@ from flask import (
 from flask_login import current_user, login_required
 from werkzeug import Response
 
+from app.constants import GET, POST
 from app.forms import EditProfile, MessageForm
 from app.models import Message, Notification, User, Usernames, db
 from app.utils import redirect
@@ -26,7 +27,7 @@ from app.utils.security import confirmation_required
 blueprint = Blueprint("user", __name__, url_prefix="/user")
 
 
-@blueprint.route("/profile/edit", methods=["GET", "POST"])
+@blueprint.route("/profile/edit", methods=[GET, POST])
 @login_required
 @confirmation_required
 def edit_profile() -> str | Response:
@@ -58,7 +59,7 @@ def edit_profile() -> str | Response:
     return render_template("user/edit_profile.html", form=form)
 
 
-@blueprint.route("/send_message/<recipient>", methods=["GET", "POST"])
+@blueprint.route("/send_message/<recipient>", methods=[GET, POST])
 @login_required
 @confirmation_required
 def send_message(recipient: str) -> str | Response:
