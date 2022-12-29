@@ -1,0 +1,13 @@
+"""
+app.constants
+=============
+"""
+COPYRIGHT_AUTHOR = "COPYRIGHT_AUTHOR"
+PASSWORD = "Password"
+ENCODING = "utf-8"
+SECRET_KEY = "SECRET_KEY"
+SUBMIT = "Submit"
+TRANSLATIONS_DIR = "TRANSLATIONS_DIR"
+DYNAMIC = "dynamic"
+POST = "POST"
+GET = "GET"

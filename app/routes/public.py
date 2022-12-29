@@ -7,6 +7,7 @@ from __future__ import annotations
 from flask import Blueprint, current_app, render_template, request, url_for
 from werkzeug import Response
 
+from app.constants import GET, POST
 from app.forms import EmptyForm
 from app.models import Post, User
 from app.utils import redirect
@@ -15,7 +16,7 @@ blueprint = Blueprint("public", __name__)
 
 
 # noinspection DuplicatedCode
-@blueprint.route("/", methods=["GET", "POST"])
+@blueprint.route("/", methods=[GET, POST])
 def index() -> str:
     """App's index page.
 
@@ -42,7 +43,7 @@ def index() -> str:
     )
 
 
-@blueprint.route("/profile/<username>", methods=["GET", "POST"])
+@blueprint.route("/profile/<username>", methods=[GET, POST])
 def profile(username: str) -> str | Response:
     """Render user's profile page.
 

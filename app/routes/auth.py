@@ -9,6 +9,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from jwt import InvalidTokenError
 from werkzeug import Response
 
+from app.constants import GET, POST
 from app.forms import (
     LoginForm,
     RegistrationForm,
@@ -28,7 +29,7 @@ from app.utils.user import create_user
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@blueprint.route("/register", methods=["GET", "POST"])
+@blueprint.route("/register", methods=[GET, POST])
 def register() -> str | Response:
     """Register a new user account.
 
@@ -65,7 +66,7 @@ def register() -> str | Response:
     return render_template("auth/register.html", form=form)
 
 
-@blueprint.route("/login", methods=["GET", "POST"])
+@blueprint.route("/login", methods=[GET, POST])
 def login() -> str | Response:
     """Log in to an existing account.
 
@@ -104,7 +105,7 @@ def login() -> str | Response:
     return render_template("auth/login.html", form=form)
 
 
-@blueprint.route("/logout", methods=["GET"])
+@blueprint.route("/logout", methods=[GET])
 def logout() -> Response:
     """Log user out.
 
@@ -122,7 +123,7 @@ def logout() -> Response:
     return redirect.index()
 
 
-@blueprint.route("/unconfirmed", methods=["GET"])
+@blueprint.route("/unconfirmed", methods=[GET])
 @login_required
 def unconfirmed() -> str:
     """Unconfirmed email route.
@@ -132,7 +133,7 @@ def unconfirmed() -> str:
     return render_template("auth/unconfirmed.html")
 
 
-@blueprint.route("/request_password_reset", methods=["GET", "POST"])
+@blueprint.route("/request_password_reset", methods=[GET, POST])
 def request_password_reset() -> str | Response:
     """Allow user to reset their password.
 
@@ -168,7 +169,7 @@ def request_password_reset() -> str | Response:
     return render_template("auth/request_password_reset.html", form=form)
 
 
-@blueprint.route("/reset_password/<token>", methods=["GET", "POST"])
+@blueprint.route("/reset_password/<token>", methods=[GET, POST])
 def reset_password(token: str) -> str | Response:
     """This route contains the token securely sent to the user's inbox.
 

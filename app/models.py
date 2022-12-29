@@ -25,6 +25,7 @@ from sqlalchemy_continuum.model_builder import ModelBuilder
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from app.constants import DYNAMIC
 from app.extensions import db
 
 _USER_ID = "user.id"
@@ -65,7 +66,7 @@ class User(UserMixin, BaseModel):
     password_hash = db.Column(db.String(128))
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     admin = db.Column(db.Boolean, default=False)
-    posts = db.relationship("Post", backref="author", lazy="dynamic")
+    posts = db.relationship("Post", backref="author", lazy=DYNAMIC)
     confirmed = db.Column(db.Boolean, default=False)
     confirmed_on = db.Column(db.DateTime)
     about_me = db.Column(db.String(140))
@@ -76,26 +77,26 @@ class User(UserMixin, BaseModel):
         secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref("followers", lazy="dynamic"),
-        lazy="dynamic",
+        backref=db.backref("followers", lazy=DYNAMIC),
+        lazy=DYNAMIC,
     )
     messages_sent = db.relationship(
         "Message",
         foreign_keys="Message.sender_id",
         backref="author",
-        lazy="dynamic",
+        lazy=DYNAMIC,
     )
     messages_received = db.relationship(
         "Message",
         foreign_keys="Message.recipient_id",
         backref="recipient",
-        lazy="dynamic",
+        lazy=DYNAMIC,
     )
     last_message_read_time = db.Column(db.DateTime)
     notifications = db.relationship(
-        "Notification", backref="user", lazy="dynamic"
+        "Notification", backref="user", lazy=DYNAMIC
     )
-    tasks = db.relationship("Task", backref="user", lazy="dynamic")
+    tasks = db.relationship("Task", backref="user", lazy=DYNAMIC)
 
     def set_password(self, password: str) -> None:
         """Hash and store a new user password.

@@ -16,6 +16,13 @@ import tomli
 from environs import Env
 from flask import Flask
 
+from app.constants import (
+    COPYRIGHT_AUTHOR,
+    ENCODING,
+    SECRET_KEY,
+    TRANSLATIONS_DIR,
+)
+
 
 class _Config(Env):
     @property
@@ -41,7 +48,7 @@ class _Config(Env):
     @property
     def SECRET_KEY(self) -> str | None:
         """Value is not public."""
-        return self.str("SECRET_KEY", default=None)
+        return self.str(SECRET_KEY, default=None)
 
     @property
     def SEND_FILE_MAX_AGE_DEFAULT(self) -> int:
@@ -210,7 +217,7 @@ class _Config(Env):
         """Return the copyright line from LICENSE else None."""
         declaration = None
         if self.LICENSE.is_file():
-            with open(self.LICENSE, encoding="utf-8") as fin:
+            with open(self.LICENSE, encoding=ENCODING) as fin:
                 for line in fin.read().splitlines():
                     if "Copyright" in line:
                         declaration = line
@@ -247,7 +254,7 @@ class _Config(Env):
         if self.COPYRIGHT is not None:
             author = " ".join(self.COPYRIGHT.split()[3:])
 
-        return self.str("COPYRIGHT_AUTHOR", default=author)
+        return self.str(COPYRIGHT_AUTHOR, default=author)
 
     @property
     def COPYRIGHT_EMAIL(self) -> str:
@@ -350,7 +357,7 @@ class _Config(Env):
     def TRANSLATIONS_DIR(self) -> Path:
         """Dir to store translations in."""
         return self.path(
-            "TRANSLATIONS_DIR", default=Path("app") / "translations"
+            TRANSLATIONS_DIR, default=Path("app") / "translations"
         )
 
     @property
