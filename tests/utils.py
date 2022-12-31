@@ -37,6 +37,7 @@ class UserTestObject(TestObject):
     :param username: Username of user object.
     :param email: Email of user object.
     :param password: Password, for raw text and comparison hash.
+    :param message: Message for test user to post.
     """
 
     def __init__(
@@ -80,6 +81,7 @@ class AddTestObjects:
     """Add test objects to test database.
 
     :param test_app: Test application.
+    :param client: Test application client.
     """
 
     def __init__(self, test_app: Flask, client: FlaskClient) -> None:
@@ -108,7 +110,10 @@ class AddTestObjects:
 
 
 class GetObjects:
-    """Get test objects with db model attributes."""
+    """Get test objects with db model attributes.]
+
+    :param test_app: Test application.
+    """
 
     def __init__(self, test_app: Flask) -> None:
         self._test_app = test_app

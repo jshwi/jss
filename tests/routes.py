@@ -21,6 +21,7 @@ class CRUD:
     """Work with create, reading, updating, and deleting routes.
 
     :param client: Test client.
+    :param get_objects: Get test objects with db model attributes.
     """
 
     PREFIX = ""
@@ -119,7 +120,12 @@ class PostCRUD(CRUD):
 
 
 class AuthCRUD(CRUD):
-    """Handle all the authentication logic."""
+    """Handle all the authentication logic.
+
+    :param test_app: Test application.
+    :param client: Test client.
+    :param get_objects: Get test objects with db model attributes.
+    """
 
     PREFIX = "/auth"
 
@@ -340,7 +346,12 @@ class ProfileCRUD(CRUD):
 
 
 class RedirectCRUD(CRUD):
-    """Handle /redirect."""
+    """Handle /redirect.
+
+    :param test_app: Test application.
+    :param client: Test client.
+    :param get_objects: Get test objects with db model attributes.
+    """
 
     PREFIX = "/redirect"
 
@@ -400,7 +411,12 @@ class RedirectCRUD(CRUD):
 
 
 class Routes:
-    """Collection of route classes."""
+    """Collection of route classes.
+
+    :param test_app: Test application.
+    :param client: Test client.
+    :param get_objects: Get test objects with db model attributes.
+    """
 
     def __init__(
         self, test_app: Flask, client: FlaskClient, get_objects: GetObjects
