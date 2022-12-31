@@ -18,6 +18,11 @@ exclude = '''
 line-length = 79
 skip-magic-trailing-comma = true
 
+[tool.constcheck]
+ignore_strings = [
+    "utf-8",
+]
+
 [tool.coverage.report]
 fail_under = 100
 
@@ -25,6 +30,10 @@ fail_under = 100
 omit = [
     "whitelist.py",
 ]
+
+[tool.docsig]
+check-class = true
+summary = true
 
 [tool.isort]
 ensure_newline_before_comments = true
@@ -50,7 +59,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 description = "A Flask webapp"
-documentation = "https://jss.readthedocs.io/en/latest/?badge=latest"
+documentation = "https://jss.readthedocs.io/en/latest"
 homepage = "https://jshwisolutions.com"
 keywords = [
     "flask",
@@ -140,6 +149,7 @@ modules = [
     "typecheck",
     "unused",
     "lint",
+    "const",
     "params",
     "test",
     "docs",
@@ -147,7 +157,6 @@ modules = [
 
 [tool.pyaud.clean]
 exclude = [
-    "*.egg*",
     ".mypy_cache",
     ".env",
     "instance",
