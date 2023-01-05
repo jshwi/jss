@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.20.5...HEAD)
 ------------------------------------------------------------------------
+### Added
+- Add py.typed
+
 ### Security
 - Add `usedforsecurity=False` to `hashlib`'
 
