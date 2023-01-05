@@ -152,8 +152,7 @@
   "scripts": {
     "add:manifest": "cp ./assets/json/site.webmanifest app/static",
     "audit": "npm-run-all audit:*",
-    "audit:js": "npx prettier -c . && npm run lint:js && npm run test:js",
-    "audit:misc": "npx prettier -c .",
+    "audit:js": "npm run lint:js && npm run test:js",
     "audit:py": "poetry run pyaud audit",
     "audit:py:debug": "poetry run pyaud audit --rcfile .github/pyaud.toml",
     "build": "npm run webpack:prod && npm run add:manifest",
