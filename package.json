@@ -154,7 +154,6 @@
     "audit": "npm-run-all audit:*",
     "audit:js": "npm run lint:js && npm run test:js",
     "audit:py": "poetry run pyaud audit",
-    "audit:py:debug": "poetry run pyaud audit --rcfile .github/pyaud.toml",
     "build": "npm run webpack:prod && npm run add:manifest",
     "build:dev": "npm run webpack:dev",
     "bump:major": "poetry run bump2version major",
