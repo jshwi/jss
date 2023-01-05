@@ -1,11 +1,11 @@
-*.egg-*
 *.mo
+*build/
 *coverage*
+*venv
+.DS_Store
 .env*
-/build/
 /dist/
 __pycache__/
-_build/
 app/static/
 dump.rdb
 instance/
