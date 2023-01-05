@@ -1,7 +1,7 @@
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
-    "poetry-core>=1.0.0",
+  "poetry-core>=1.0.0"
 ]
 
 [tool.black]
@@ -23,40 +23,40 @@ fail_under = 100
 
 [tool.coverage.run]
 omit = [
-    "whitelist.py",
+  "whitelist.py"
 ]
 
 [tool.poetry]
 authors = [
-    "jshwi <stephen@jshwisolutions.com>",
+  "jshwi <stephen@jshwisolutions.com>"
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Environment :: Web Environment",
-    "Framework :: Flask",
-    "Intended Audience :: Developers",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Topic :: Software Development",
-    "Typing :: Typed",
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Framework :: Flask",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development",
+  "Typing :: Typed"
 ]
 description = "A Flask webapp"
 documentation = "https://jss.readthedocs.io/en/latest/?badge=latest"
 homepage = "https://jshwisolutions.com"
 keywords = [
-    "flask",
-    "webapp",
-    "pwa",
-    "jshwisolutions",
-    "blog",
+  "blog",
+  "flask",
+  "jshwisolutions",
+  "pwa",
+  "webapp"
 ]
 license = "MIT"
 maintainers = [
-    "jshwi <stephen@jshwisolutions.com>",
+  "jshwi <stephen@jshwisolutions.com>"
 ]
 name = "jss"
 packages = [
-    { include = "app" },
+  {include = "app"}
 ]
 readme = "README.rst"
 repository = "https://github.com/jshwi/jss"
@@ -121,37 +121,37 @@ templatest = "^0.7.0"
 
 [tool.pyaud.audit]
 modules = [
-    "toc",
-    "whitelist",
-    "sort-pyproject",
-    "format",
-    "format-docs",
-    "format-str",
-    "imports",
-    "typecheck",
-    "unused",
-    "lint",
-    "params",
-    "test",
-    "docs",
+  "docs",
+  "format",
+  "format-docs",
+  "format-str",
+  "imports",
+  "lint",
+  "params",
+  "sort-pyproject",
+  "test",
+  "toc",
+  "typecheck",
+  "unused",
+  "whitelist"
 ]
 
 [tool.pyaud.clean]
 exclude = [
-    "*.egg*",
-    ".mypy_cache",
-    ".env",
-    "instance",
-    "node_modules",
+  "*.egg*",
+  ".env",
+  ".mypy_cache",
+  "instance",
+  "node_modules"
 ]
 
 [tool.pyaud.indexing]
 exclude = [
-    "whitelist.py",
-    "conf.py",
-    "migrations",
-    "node_modules",
-    "wsgi.py",
+  "conf.py",
+  "migrations",
+  "node_modules",
+  "whitelist.py",
+  "wsgi.py"
 ]
 
 [tool.pyaud.logging]
@@ -170,30 +170,28 @@ when = "d"
 
 [tool.pyaud.logging.root]
 handlers = [
-    "default",
+  "default"
 ]
 level = "DEBUG"
 propagate = false
 
 [tool.pytest.ini_options]
 addopts = [
-    "--durations=5",
-    "-vv",
-    "--color=yes",
-    "--cov-report",
-    "term-missing",
-    "-n",
-    "auto",
+  "--color=yes",
+  "--cov-report=term-missing",
+  "--durations=5",
+  "-n=auto",
+  "-vv"
 ]
 filterwarnings = [
-    "ignore::DeprecationWarning",
-    "ignore::UserWarning",
-    "ignore::RuntimeWarning",
+  "ignore::DeprecationWarning",
+  "ignore::RuntimeWarning",
+  "ignore::UserWarning"
 ]
 norecursedirs = [
-    "docs",
-    "*.egg-info",
-    ".git",
-    ".mypy_cache",
-    ".idea",
+  "*.egg-info",
+  ".git",
+  ".idea",
+  ".mypy_cache",
+  "docs"
 ]
