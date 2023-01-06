@@ -726,8 +726,8 @@ blinker = "*"
 Flask = "*"
 
 [[package]]
-name = "Flask-Migrate"
-version = "4.0.0"
+name = "flask-migrate"
+version = "4.0.1"
 description = "SQLAlchemy database migrations for Flask applications using Alembic."
 category = "main"
 optional = false
@@ -2336,7 +2336,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "a74360a5798d43c4c37ae79836d519faa8edc2552311874cf796187a45d11503"
+content-hash = "6c411445bc2473a0b669f728a3bfc5fedb3c85992c44c3701de593ee37d4941d"
 
 [metadata.files]
 alabaster = [
@@ -2798,9 +2798,9 @@ Flask-Login = [
 Flask-Mail = [
     {file = "Flask-Mail-0.9.1.tar.gz", hash = "sha256:22e5eb9a940bf407bcf30410ecc3708f3c56cc44b29c34e1726fe85006935f41"},
 ]
-Flask-Migrate = [
-    {file = "Flask-Migrate-4.0.0.tar.gz", hash = "sha256:2a301c3040af6844f29d9149abe428a0f08ebc8fa149e72113bbb36fa341920a"},
-    {file = "Flask_Migrate-4.0.0-py3-none-any.whl", hash = "sha256:e75a46b657e3062296b9f6e92f31e19662f76cfee8abd6ae94640cbcb79fe016"},
+flask-migrate = [
+    {file = "Flask-Migrate-4.0.1.tar.gz", hash = "sha256:f62b51f9cd2c4f444deac111726a2335d0b846dcf51909a97e261d2098b816f7"},
+    {file = "Flask_Migrate-4.0.1-py3-none-any.whl", hash = "sha256:eaf85579b273874b25944016745ff84c7dc712297c42b7b71f4dc6cae8a2934d"},
 ]
 Flask-Misaka = [
     {file = "Flask-Misaka-1.0.0.tar.gz", hash = "sha256:f423c3beb5502742a57330a272f81d53223f6f99d45cc45b03926e3a3034f589"},
