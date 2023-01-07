@@ -205,6 +205,7 @@ class User(UserMixin, BaseModel):
         rq_job = current_app.task_queue.enqueue(  # type: ignore
             f"app.utils.tasks.{name}", self.id, *args, **kwargs
         )
+        # noinspection PyArgumentList
         task = Task(
             id=rq_job.get_id(),
             name=name,
