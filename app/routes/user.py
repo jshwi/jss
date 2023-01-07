@@ -46,6 +46,7 @@ def edit_profile() -> str | Response:
         db.session.commit()
         flash("Your changes have been saved.")
         if old_username != current_user.username:
+            # noinspection PyArgumentList
             usernames = Usernames(
                 username=old_username, user_id=current_user.id
             )
@@ -72,6 +73,7 @@ def send_message(recipient: str) -> str | Response:
     user = User.query.filter_by(username=recipient).first_or_404()
     form = MessageForm()
     if form.validate_on_submit():
+        # noinspection PyArgumentList
         message = Message(
             # `author` and `recipient` are backrefs in `User` and are
             # not defined as columns
