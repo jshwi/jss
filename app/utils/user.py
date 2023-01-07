@@ -31,6 +31,7 @@ def create_user(
     db.session.add(user)
     db.session.commit()
     user = User.resolve_all_names(username=username)
+    # noinspection PyArgumentList
     usernames = Usernames(username=user.username, user_id=user.id)
     db.session.add(usernames)
     db.session.commit()
