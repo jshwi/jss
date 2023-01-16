@@ -2314,7 +2314,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "88fa9c417b8ba7c74601324b0b78fa2f3b509d327420f062fb909c0abdf2c0b3"
+content-hash = "e7560c2a44b64172e2295c1618ea38e87d09625140bc82f06d753b2db2ef4f5c"
 
 [metadata.files]
 alabaster = [
