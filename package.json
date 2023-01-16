@@ -136,11 +136,11 @@
     "testEnvironment": "jsdom"
   },
   "keywords": [
+    "blog",
     "flask",
-    "webapp",
-    "pwa",
     "jshwisolutions",
-    "blog"
+    "pwa",
+    "webapp"
   ],
   "license": "MIT",
   "name": "jss",
