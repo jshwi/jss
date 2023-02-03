@@ -384,9 +384,11 @@ def test_send_mail(
     recipients = [u_o[0].email, u_o[1].email]
     html = "<p>email body<p>"
     sender = "admin@localhost"
-    attachment = dict(
-        filename="file.txt", content_type="application/json", data="testing"
-    )
+    attachment = {
+        "filename": "file.txt",
+        "content_type": "application/json",
+        "data": "testing",
+    }
     with test_app.app_context():
         with mail.record_messages() as outbox:
             send_email(
@@ -1223,14 +1225,14 @@ def test_export_posts(
             p_q = Post.query.get(1)
 
         post_obj = [
-            dict(
-                body=p_o[1].body,
-                created=str(p_q.created),
-                edited="None",
-                id="1",
-                title=p_o[1].title,
-                user_id="1",
-            )
+            {
+                "body": p_o[1].body,
+                "created": str(p_q.created),
+                "edited": "None",
+                "id": "1",
+                "title": p_o[1].title,
+                "user_id": "1",
+            }
         ]
         recv = outbox[0]
         attachment = recv.attachments[0]
