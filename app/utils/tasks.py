@@ -64,11 +64,13 @@ def export_posts(user_id: int) -> None:
                 "email/export_posts.html", username=user.username
             ),
             attachments=[
-                dict(
-                    filename="posts.json",
-                    content_type="application/json",
-                    data=json.dumps({"posts": data}, indent=4, sort_keys=True),
-                )
+                {
+                    "filename": "posts.json",
+                    "content_type": "application/json",
+                    "data": json.dumps(
+                        {"posts": data}, indent=4, sort_keys=True
+                    ),
+                }
             ],
             sync=True,
         )
