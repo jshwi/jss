@@ -151,5 +151,5 @@ upgrade  # unused function (migrations/versions/bad10c411e03_adds_followers_tabl
 upgrade  # unused function (migrations/versions/d30fd601c9b3_adds_task_model.py:19)
 upgrade  # unused function (migrations/versions/ebbce252449a_adds_message_and_notification_models.py:19)
 upgrade  # unused function (migrations/versions/ee3c6c0702a6_adds_versioning_user_authorized.py:19)
-user_login  # unused function (app/utils/user.py:100)
+user_login  # unused function (app/utils/user.py:99)
 y  # unused variable (tests/_test.py:2086)
