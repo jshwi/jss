@@ -124,7 +124,7 @@ rq = "^1.11.1"
 six = "^1.16.0"
 tomli = "^2.0.1"
 
-[tool.poetry.group.dev.dependencies]
+[tool.poetry.dev-dependencies]
 bump2version = "^1.0.1"
 flaky = "^3.7.0"
 flask-shell-ipython = "^0.4.1"
