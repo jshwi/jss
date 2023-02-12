@@ -19,7 +19,7 @@ exclude: |
     | migrations\/.*
     | \.bumpversion\.cfg
     | whitelist\.py
-    | \.idea
+    | \.idea\/.*
   )$
 repos:
   - repo: local
