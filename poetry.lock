@@ -125,14 +125,14 @@ files = [
 
 [[package]]
 name = "astroid"
-version = "2.14.1"
+version = "2.14.2"
 description = "An abstract syntax tree for Python with inference support."
 category = "dev"
 optional = false
 python-versions = ">=3.7.2"
 files = [
-    {file = "astroid-2.14.1-py3-none-any.whl", hash = "sha256:23c718921acab5f08cbbbe9293967f1f8fec40c336d19cd75dc12a9ea31d2eb2"},
-    {file = "astroid-2.14.1.tar.gz", hash = "sha256:bd1aa4f9915c98e8aaebcd4e71930154d4e8c9aaf05d35ac0a63d1956091ae3f"},
+    {file = "astroid-2.14.2-py3-none-any.whl", hash = "sha256:0e0e3709d64fbffd3037e4ff403580550f14471fd3eaae9fa11cc9a5c7901153"},
+    {file = "astroid-2.14.2.tar.gz", hash = "sha256:a3cf9f02c53dd259144a7e8f3ccd75d67c9a8c716ef183e0c1f291bc5d7bb3cf"},
 ]
 
 [package.dependencies]
@@ -3500,14 +3500,14 @@ test = ["Flask (>=0.9)", "Flask-Login (>=0.2.9)", "Flask-SQLAlchemy (>=1.0,<3.0.
 
 [[package]]
 name = "sqlalchemy-utils"
-version = "0.39.0"
+version = "0.40.0"
 description = "Various utility functions for SQLAlchemy."
 category = "main"
 optional = false
-python-versions = "~=3.6"
+python-versions = ">=3.6"
 files = [
-    {file = "SQLAlchemy-Utils-0.39.0.tar.gz", hash = "sha256:b37240917d81c14fe1b6e5096a402bace472b179121384e47c10d854dbf5af92"},
-    {file = "SQLAlchemy_Utils-0.39.0-py3-none-any.whl", hash = "sha256:9da26a9b20c6979167772ba5dc2a1d01265648f18c82995f082279a399ea308b"},
+    {file = "SQLAlchemy-Utils-0.40.0.tar.gz", hash = "sha256:af803089a7929803faeb6173b90f29d1a67ad02f1d1e732f40b054a8eb3c7370"},
+    {file = "SQLAlchemy_Utils-0.40.0-py3-none-any.whl", hash = "sha256:4c7098d4857d5cad1248bf7cd940727aecb75b596a5574b86a93b37079929520"},
 ]
 
 [package.dependencies]
@@ -3893,4 +3893,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "47b9155816cbcaf0e47e95341062714bbbbd9ff67327faaed993077cb47f162b"
+content-hash = "85164280757b27bd280df97349e7635f7d011795ce53329416d7c4c080b9f529"
