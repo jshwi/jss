@@ -2925,14 +2925,14 @@ readme-renderer = "<37"
 
 [[package]]
 name = "rq"
-version = "1.12.0"
+version = "1.13.0"
 description = "RQ is a simple, lightweight, library for creating background jobs, and processing them."
 category = "main"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 files = [
-    {file = "rq-1.12.0-py2.py3-none-any.whl", hash = "sha256:b268947a94a1da7de3c5f3925a59db60bffdede782ca1f23da654bf985a83c7a"},
-    {file = "rq-1.12.0.tar.gz", hash = "sha256:16ebbfa8891ece999485cb7d1e0559550ac576da43585138e6951db23654bbf6"},
+    {file = "rq-1.13.0-py2.py3-none-any.whl", hash = "sha256:621966d7cbf96d5609557a4bd3fd77f749d6d10997d2e353a3e89a14e08eea16"},
+    {file = "rq-1.13.0.tar.gz", hash = "sha256:5bb0380a17597200520731686766bb72faf16ebffb602663560d91ea2c9e7103"},
 ]
 
 [package.dependencies]
@@ -3893,4 +3893,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "6eef9f52deee5942318423365e3595f18a2c697a30a4ff7a5d8b9551c64437f5"
+content-hash = "04f5d65d6eae1b9ac0b2dcd3dc6545bae80c1950cbd2a2824c0566354b68f67c"
