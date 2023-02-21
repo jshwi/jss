@@ -1096,13 +1096,14 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "flask-admin"
-version = "1.6.0"
+version = "1.6.1"
 description = "Simple and extensible admin interface framework for Flask"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Admin-1.6.0.tar.gz", hash = "sha256:424ffc79b7b0dfff051555686ea12e86e48dffacac14beaa319fb4502ac40988"},
+    {file = "Flask-Admin-1.6.1.tar.gz", hash = "sha256:24cae2af832b6a611a01d7dc35f42d266c1d6c75a426b869d8cb241b78233369"},
+    {file = "Flask_Admin-1.6.1-py3-none-any.whl", hash = "sha256:fd8190f1ec3355913a22739c46ed3623f1d82b8112cde324c60a6fc9b21c9406"},
 ]
 
 [package.dependencies]
@@ -3893,4 +3894,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "04f5d65d6eae1b9ac0b2dcd3dc6545bae80c1950cbd2a2824c0566354b68f67c"
+content-hash = "a91c8a9ecee5399f01fa3d963964721292fadcd4d7471e13a996ecb2c473923e"
