@@ -20,6 +20,7 @@ exclude: |
     | \.bumpversion\.cfg
     | whitelist\.py
     | \.idea\/.*
+    | docs\/conf\.py
   )$
 repos:
   - repo: local
