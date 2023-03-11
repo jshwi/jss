@@ -12,6 +12,7 @@ from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 
 from app.extensions import mail
+from app.models import Task
 
 from .const import PASSWORD, USERNAME
 from .utils import GetObjects, Recorder, TestObject, UserTestObject
@@ -407,7 +408,21 @@ class RedirectCRUD(CRUD):
         task_queue.enqueue = Recorder()  # type: ignore
         task_queue.enqueue.get_id = lambda: task_id  # type: ignore
         with self._patch_test_app("task_queue", task_queue):
-            return self.get("/export_posts", **kwargs)
+            # do not return a value until task is not None
+            # hack to prevent flaky tests
+            # for some reason `/export_posts` will not always add a task
+            # (approx 1/6), which would result in the following when
+            # referencing an attribute
+            #
+            # ERROR    app:tasks.py:83 Unhandled exception
+            # Traceback (most recent call last):
+            # ...
+            # AttributeError: 'NoneType' object has no attribute 'user'
+            with self._test_app.app_context():
+                while Task.query.get(task_id) is None:
+                    status = self.get("/export_posts", **kwargs)
+
+            return status
 
 
 class Routes:
