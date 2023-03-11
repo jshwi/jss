@@ -126,7 +126,6 @@ tomli = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 bump2version = "^1.0.1"
-flaky = "^3.7.0"
 flask-shell-ipython = "^0.4.1"
 ipython = "^8.6.0"
 pre-commit = "^2.21.0"
