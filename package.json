@@ -55,7 +55,7 @@
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.6",
     "url-loader": "^4.1.0",
-    "webpack": "^5.75.0",
+    "webpack": "^5.76.2",
     "webpack-cli": "^5.0.1",
     "workbox-webpack-plugin": "^6.5.4"
   },
