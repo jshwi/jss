@@ -2581,18 +2581,18 @@ testutils = ["gitpython (>3)"]
 
 [[package]]
 name = "pyopenssl"
-version = "23.0.0"
+version = "23.1.1"
 description = "Python wrapper module around the OpenSSL library"
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pyOpenSSL-23.0.0-py3-none-any.whl", hash = "sha256:df5fc28af899e74e19fccb5510df423581047e10ab6f1f4ba1763ff5fde844c0"},
-    {file = "pyOpenSSL-23.0.0.tar.gz", hash = "sha256:c1cc5f86bcacefc84dada7d31175cae1b1518d5f60d3d0bb595a67822a868a6f"},
+    {file = "pyOpenSSL-23.1.1-py3-none-any.whl", hash = "sha256:9e0c526404a210df9d2b18cd33364beadb0dc858a739b885677bc65e105d4a4c"},
+    {file = "pyOpenSSL-23.1.1.tar.gz", hash = "sha256:841498b9bec61623b1b6c47ebbc02367c07d60e0e195f19790817f10cc8db0b7"},
 ]
 
 [package.dependencies]
-cryptography = ">=38.0.0,<40"
+cryptography = ">=38.0.0,<41"
 
 [package.extras]
 docs = ["sphinx (!=5.2.0,!=5.2.0.post0)", "sphinx-rtd-theme"]
@@ -3860,4 +3860,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "cdf42fa291b19f6b552d3bb95b3cf7a38efe1f4a338778e8a17f3ad5e26753c5"
+content-hash = "f99d3faa2a3803eab0afe46917f2fe414688450b614bd421de85d661ed84c505"
