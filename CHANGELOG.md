@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.21.1...HEAD)
 ------------------------------------------------------------------------
 ### Fixed
+- Dockerfile to reduce vulnerabilities
 - Upgrade @fortawesome/fontawesome-free from 6.2.0 to 6.2.1
 
 [1.21.1](https://github.com/jshwi/jss/releases/tag/v1.21.1) - 2023-01-07
