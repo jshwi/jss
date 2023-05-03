@@ -20,6 +20,7 @@ skip-magic-trailing-comma = true
 
 [tool.constcheck]
 ignore_strings = [
+  "data",
   "store",
   "store_true",
   "utf-8"
@@ -131,7 +132,7 @@ ipython = "^8.6.0"
 pre-commit = "^2.21.0"
 prompt-toolkit = "^3.0.32"
 pyOpenSSL = "^22.1.0"
-pyaud = "^4.0.2"
+pyaud = "^6.2.2"
 pylint = "^2.15.5"
 pytest = "^7.2.0"
 pytest-randomly = "^3.12.0"
@@ -140,8 +141,8 @@ restview = "^3.0.0"
 sphinx-toolbox = "^3.2.0"
 templatest = "^0.7.0"
 
-[tool.pyaud.audit]
-modules = [
+[tool.pyaud]
+audit = [
   "const",
   "docs",
   "files",
@@ -155,43 +156,17 @@ modules = [
   "typecheck",
   "unused"
 ]
-
-[tool.pyaud.clean]
-exclude = [
-  ".env",
-  ".mypy_cache",
-  "instance",
-  "node_modules"
-]
-
-[tool.pyaud.indexing]
-exclude = [
-  "conf.py",
-  "migrations",
-  "whitelist.py",
-  "wsgi.py"
-]
-
-[tool.pyaud.logging]
-disable_existing_loggers = true
-version = 1
-
-[tool.pyaud.logging.formatters.standard]
-format = "%(asctime)s %(levelname)s %(name)s %(message)s"
-
-[tool.pyaud.logging.handlers.default]
-backupCount = 60
-class = "logging.handlers.TimedRotatingFileHandler"
-filename = "~/.cache/pyaud/log/pyaud.log"
-formatter = "standard"
-when = "d"
-
-[tool.pyaud.logging.root]
-handlers = [
-  "default"
-]
-level = "DEBUG"
-propagate = false
+exclude = '''
+  (?x)^(
+    | poetry\.lock
+    | package-lock\.json
+    | migrations\/.*
+    | \.bumpversion\.cfg
+    | docs\/conf\.py
+    | whitelist\.py
+    | wsgi\.py
+  )$
+'''
 
 [tool.pytest.ini_options]
 addopts = [
