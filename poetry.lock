@@ -1248,19 +1248,18 @@ WTForms = "*"
 
 [[package]]
 name = "flask-shell-ipython"
-version = "0.4.1"
+version = "0.5.1"
 description = "Replace default `flask shell` command by similar command running IPython."
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6, <4"
 files = [
-    {file = "flask-shell-ipython-0.4.1.tar.gz", hash = "sha256:fb3b390f4dc03d7a960c62c5b51ce4deca19ceff77e4db3d4670012adc529ebd"},
-    {file = "flask_shell_ipython-0.4.1-py2.py3-none-any.whl", hash = "sha256:f212b4fad6831edf652799c719cd05fd0716edfaa5506eb41ff9ef09109890d3"},
+    {file = "flask_shell_ipython-0.5.1-py2.py3-none-any.whl", hash = "sha256:8c948c0721bcc5b8eb274e1831c8a428dfc693099609c33d2f330091782cce10"},
 ]
 
 [package.dependencies]
 click = "*"
-flask = ">=1.0"
+Flask = ">=1.0"
 IPython = ">=5.0.0"
 
 [[package]]
@@ -3742,4 +3741,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "3ceeb720dd40cff6c64282a57d03cfba14479bc830fbeaf0ac90638b83701676"
+content-hash = "67f34e16a899010d362e789ea6c76245359b2ded0cf06213af8d393ff00f0e67"
