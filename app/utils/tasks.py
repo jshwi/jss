@@ -74,7 +74,6 @@ def export_posts(user_id: int) -> None:
         )
 
     except Exception:  # pylint: disable=broad-except
-
         # come back to this once you know what errors need excepting
         # all exceptions need to be caught to prevent the app from
         # crashing entirely, and clean-up still needs to be done with
