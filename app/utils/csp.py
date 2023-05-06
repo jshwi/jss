@@ -44,7 +44,6 @@ class ContentSecurityPolicy(CSPType):
 
         # loop through both to determine the types of each
         for item in theirs, ours:
-
             # if one of the items is a list concatenate it to the list
             # we are constructing
             if isinstance(item, list):

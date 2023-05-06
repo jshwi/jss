@@ -82,7 +82,6 @@ def create_user_cli() -> None:
 def create_admin_cli() -> None:
     """Create admin user."""
     if User.query.get(1) is None:
-
         # no need to add to the app config
         # this will only need to be called once
         # raising an error won't be necessary after the first time
