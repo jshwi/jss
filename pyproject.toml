@@ -85,7 +85,7 @@ version = "1.21.1"
 
 [tool.poetry.dependencies]
 Bootstrap-Flask = "^2.0.2"
-Flask = "~2.0.2"
+Flask = "~2.2.5"
 Flask-Admin = "^1.6.1"
 Flask-Babel = "^2.0.0"
 Flask-Compress = "^1.13"
