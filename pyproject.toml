@@ -120,7 +120,7 @@ itsdangerous = "^2.1.2"
 psycopg2 = "^2.9.6"
 python = "^3.8"
 redis = "^4.5.4"
-rq = "^1.13.0"
+rq = "^1.14.1"
 six = "^1.16.0"
 tomli = "^2.0.1"
 
