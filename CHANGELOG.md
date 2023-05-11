@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.21.1...HEAD)
 ------------------------------------------------------------------------
+### Security
+- Bump werkzeug from 2.0.3 to 2.3.4
 
 [1.21.1](https://github.com/jshwi/jss/releases/tag/v1.21.1) - 2023-01-07
 ------------------------------------------------------------------------

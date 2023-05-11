@@ -157,7 +157,7 @@ def test_register(
         MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD
     )
     response = auth.register(user_test_object)
-    assert response.headers[LOCATION] == "https://localhost/auth/unconfirmed"
+    assert response.headers[LOCATION] == "/auth/unconfirmed"
     with test_app.app_context():
         user = User.query.filter_by(username=user_test_object.username).first()
         assert user is not None
@@ -178,7 +178,7 @@ def test_login(
     )
     add_test_objects.add_test_users(user_test_object)
     response = auth.login(user_test_object)
-    assert response.headers[LOCATION] == "https://localhost/auth/unconfirmed"
+    assert response.headers[LOCATION] == "/auth/unconfirmed"
     with client:
         client.get("/")
         assert current_user.username == user_test_object.username
@@ -479,7 +479,7 @@ def test_delete(
     add_test_objects.add_test_posts(post_test_object)
     auth.login(user_test_object)
     response = client.post(POST_1_DELETE)
-    assert response.headers[LOCATION] == "https://localhost/"
+    assert response.headers[LOCATION] == "/"
     with test_app.app_context():
         post = Post.query.get(1)
         assert post is None
@@ -778,7 +778,7 @@ def test_login_confirmed(
         db.session.commit()
 
     response = auth.login(user_test_object)
-    assert response.headers[LOCATION] == "https://localhost/"
+    assert response.headers[LOCATION] == "/"
     with client:
         client.get("/")
         assert current_user.username == user_test_object.username
