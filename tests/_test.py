@@ -103,7 +103,7 @@ def test_register(test_app: Flask, routes: Routes) -> None:
     """
     assert routes.auth.get("/register").status_code == 200
     response = routes.auth.register_index(1)
-    assert response.headers[LOCATION] == "https://localhost/auth/unconfirmed"
+    assert response.headers[LOCATION] == "/auth/unconfirmed"
     with test_app.app_context():
         assert User.query.get(1) is not None
 
@@ -121,7 +121,7 @@ def test_login(
     u_o = get_objects.user(1)
     routes.auth.register_index(1)
     response = routes.auth.login_index(1)
-    assert response.headers[LOCATION] == "https://localhost/auth/unconfirmed"
+    assert response.headers[LOCATION] == "/auth/unconfirmed"
     with client:
         client.get("/")
         assert current_user.username == u_o[1].username
@@ -339,7 +339,7 @@ def test_delete(
     routes.auth.login_index(1)
     routes.posts.create(1)
     response = routes.posts.delete(1)
-    assert response.headers[LOCATION] == "https://localhost/"
+    assert response.headers[LOCATION] == "/"
     with test_app.app_context():
         assert Post.query.get(1) is None
 
@@ -641,7 +641,7 @@ def test_login_confirmed(
     u_o = get_objects.user(1)
     routes.auth.register_index(1, confirm=True)
     response = routes.auth.login_index(1)
-    assert response.headers[LOCATION] == "https://localhost/"
+    assert response.headers[LOCATION] == "/"
     with client:
         client.get("/")
         assert current_user.username == u_o[1].username
