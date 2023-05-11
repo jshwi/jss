@@ -1286,13 +1286,14 @@ SQLAlchemy = ">=0.8.0"
 
 [[package]]
 name = "flask-static-digest"
-version = "0.2.1"
+version = "0.3.0"
 description = "Flask extension for md5 tagging and gzipping static files."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Static-Digest-0.2.1.tar.gz", hash = "sha256:7528b08a2c12dc3a828096b66ee2612f323d50be36d01f2817b767fbb1ceca6e"},
+    {file = "Flask-Static-Digest-0.3.0.tar.gz", hash = "sha256:1df26ec459058f782d5024c0f654e07a7246da6445e84b844ed6e83b2f9473bb"},
+    {file = "Flask_Static_Digest-0.3.0-py3-none-any.whl", hash = "sha256:cc9bbd93b1381d745c94bade73a7bc7205c5a2a6de413622bb8ab6b497c627e8"},
 ]
 
 [package.dependencies]
@@ -2849,6 +2850,8 @@ files = [
     {file = "ruamel.yaml.clib-0.2.7-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:045e0626baf1c52e5527bd5db361bc83180faaba2ff586e763d3d5982a876a9e"},
     {file = "ruamel.yaml.clib-0.2.7-cp311-cp311-macosx_12_6_arm64.whl", hash = "sha256:721bc4ba4525f53f6a611ec0967bdcee61b31df5a56801281027a3a6d1c2daf5"},
     {file = "ruamel.yaml.clib-0.2.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:41d0f1fa4c6830176eef5b276af04c89320ea616655d01327d5ce65e50575c94"},
+    {file = "ruamel.yaml.clib-0.2.7-cp311-cp311-win32.whl", hash = "sha256:f6d3d39611ac2e4f62c3128a9eed45f19a6608670c5a2f4f07f24e8de3441d38"},
+    {file = "ruamel.yaml.clib-0.2.7-cp311-cp311-win_amd64.whl", hash = "sha256:da538167284de58a52109a9b89b8f6a53ff8437dd6dc26d33b57bf6699153122"},
     {file = "ruamel.yaml.clib-0.2.7-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:4b3a93bb9bc662fc1f99c5c3ea8e623d8b23ad22f861eb6fce9377ac07ad6072"},
     {file = "ruamel.yaml.clib-0.2.7-cp36-cp36m-macosx_12_0_arm64.whl", hash = "sha256:a234a20ae07e8469da311e182e70ef6b199d0fbeb6c6cc2901204dd87fb867e8"},
     {file = "ruamel.yaml.clib-0.2.7-cp36-cp36m-manylinux2014_aarch64.whl", hash = "sha256:15910ef4f3e537eea7fe45f8a5d19997479940d9196f357152a09031c5be59f3"},
@@ -3745,4 +3748,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "6aea18c492a8785778ecfac321ae15d9effc045f54165cc665235fec8799dad2"
+content-hash = "acd6c68b3a815d20b8fa5316884815dff1e956246901ea33074c781d03e6d3be"
