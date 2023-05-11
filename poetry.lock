@@ -1298,13 +1298,14 @@ SQLAlchemy = ">=0.8.0"
 
 [[package]]
 name = "flask-static-digest"
-version = "0.2.1"
+version = "0.3.0"
 description = "Flask extension for md5 tagging and gzipping static files."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Static-Digest-0.2.1.tar.gz", hash = "sha256:7528b08a2c12dc3a828096b66ee2612f323d50be36d01f2817b767fbb1ceca6e"},
+    {file = "Flask-Static-Digest-0.3.0.tar.gz", hash = "sha256:1df26ec459058f782d5024c0f654e07a7246da6445e84b844ed6e83b2f9473bb"},
+    {file = "Flask_Static_Digest-0.3.0-py3-none-any.whl", hash = "sha256:cc9bbd93b1381d745c94bade73a7bc7205c5a2a6de413622bb8ab6b497c627e8"},
 ]
 
 [package.dependencies]
@@ -2291,18 +2292,18 @@ files = [
 
 [[package]]
 name = "platformdirs"
-version = "3.5.0"
+version = "3.5.1"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-3.5.0-py3-none-any.whl", hash = "sha256:47692bc24c1958e8b0f13dd727307cff1db103fca36399f457da8e05f222fdc4"},
-    {file = "platformdirs-3.5.0.tar.gz", hash = "sha256:7954a68d0ba23558d753f73437c55f89027cf8f5108c19844d4b82e5af396335"},
+    {file = "platformdirs-3.5.1-py3-none-any.whl", hash = "sha256:e2378146f1964972c03c085bb5662ae80b2b8c06226c54b2ff4aa9483e8a13a5"},
+    {file = "platformdirs-3.5.1.tar.gz", hash = "sha256:412dae91f52a6f84830f39a8078cecd0e866cb72294a5c66808e74d5e88d251f"},
 ]
 
 [package.extras]
-docs = ["furo (>=2023.3.27)", "proselint (>=0.13)", "sphinx (>=6.1.3)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
+docs = ["furo (>=2023.3.27)", "proselint (>=0.13)", "sphinx (>=6.2.1)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
 test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.3.1)", "pytest-cov (>=4)", "pytest-mock (>=3.10)"]
 
 [[package]]
@@ -3757,4 +3758,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "127a2bffa4451e1b71fa6b9f7e9894fc059f90cc6d9c55cfd20ce07b2dc578dd"
+content-hash = "2559a711aee8b5e21c907a566e3a340844917ef79fb94691577fb72919224d80"
