@@ -21,12 +21,11 @@ describe("test dark-mode", () => {
     'should have called `documentElement` with "data-theme" and "$theme"',
     ({ theme }) => {
       localStorage.setItem("theme", theme);
-      // noinspection JSCheckFunctionSignatures
       const myMock = jest.spyOn(document.documentElement, "setAttribute");
       // eslint-disable-next-line no-unused-vars
       const darkMode = new DarkMode();
       expect(myMock).toHaveBeenCalledWith("data-theme", theme);
-    },
+    }
   );
   it.each`
     checked  | mode         | theme
@@ -35,7 +34,6 @@ describe("test dark-mode", () => {
   `("should be $theme", ({ checked, mode, theme }) => {
     const darkMode = new DarkMode();
     darkMode.toggleSwitch.checked = checked;
-    // noinspection JSCheckFunctionSignatures
     const spyOnDocument = jest.spyOn(document.documentElement, "setAttribute");
     const spyOnDarkReader = jest.spyOn(darkreader, mode);
     darkMode.toggle();
@@ -50,7 +48,7 @@ describe("test dark-mode", () => {
     expect(addEventListener).toHaveBeenCalledWith(
       "change",
       darkMode.toggle,
-      false,
+      false
     );
   });
 });
@@ -70,7 +68,7 @@ describe("test service worker", () => {
       });
   });
   it("should not have been passed to `window.addEventListener`", () => {
-    // noinspection JSValidateTypes,JSCheckFunctionSignatures
+    // noinspection JSValidateTypes
     const spy = jest.spyOn(window, "addEventListener");
     registerServiceWorker();
     expect(spy).not.toBeCalled();
@@ -86,7 +84,6 @@ describe("test service worker", () => {
     };
     // noinspection JSValidateTypes
     global.navigator.serviceWorker = serviceWorker;
-    // noinspection JSCheckFunctionSignatures
     const spyOnWindowAddEventListener = jest.spyOn(window, "addEventListener");
     registerServiceWorker();
     events.load();
@@ -102,9 +99,7 @@ describe("test messages", () => {
     ${0} | ${"hidden"}
     ${1} | ${"visible"}
   `("should be $visibility", ({ n, visibility }) => {
-    // noinspection JSCheckFunctionSignatures
     const spyOn$Text = jest.spyOn($.fn, "text");
-    // noinspection JSCheckFunctionSignatures
     const spyOn$Css = jest.spyOn($.fn, "css");
     messages.setMessageCount(n);
     expect(spyOn$Text).toHaveBeenCalledWith(n);
@@ -112,7 +107,6 @@ describe("test messages", () => {
   });
   it("should have been called with progress", () => {
     const data = { progress: Math.random().toString() };
-    // noinspection JSCheckFunctionSignatures
     const spyOn$Text = jest.spyOn($.fn, "text");
     messages.setTaskProgress(data);
     expect(spyOn$Text).toHaveBeenCalledWith(data.progress);

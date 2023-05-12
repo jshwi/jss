@@ -849,7 +849,7 @@ domdf-python-tools = ">=2.2.0"
 name = "dill"
 version = "0.3.6"
 description = "serialize all of python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -2811,6 +2811,22 @@ pygments = "*"
 readme-renderer = "<37"
 
 [[package]]
+name = "route"
+version = "0.1.4"
+description = "Python library for interacting with the file system"
+category = "main"
+optional = false
+python-versions = "~=3.6"
+files = [
+    {file = "route-0.1.4-py3-none-any.whl", hash = "sha256:49d87a68e47acfda14356023340ff93190dce3ff0a14fd376358849f6155c033"},
+    {file = "route-0.1.4.tar.gz", hash = "sha256:81c49f0e28b3d8dc1271492c4c9dbcdad9396a296b9695dbddbac78d5f52d90b"},
+]
+
+[package.dependencies]
+dill = "*"
+send2trash = "*"
+
+[[package]]
 name = "rq"
 version = "1.14.1"
 description = "RQ is a simple, lightweight, library for creating background jobs, and processing them."
@@ -2888,6 +2904,23 @@ files = [
     {file = "ruamel.yaml.clib-0.2.7-cp39-cp39-win_amd64.whl", hash = "sha256:184faeaec61dbaa3cace407cffc5819f7b977e75360e8d5ca19461cd851a5fc5"},
     {file = "ruamel.yaml.clib-0.2.7.tar.gz", hash = "sha256:1f08fd5a2bea9c4180db71678e850b995d2a5f4537be0e94557668cf0f5f9497"},
 ]
+
+[[package]]
+name = "send2trash"
+version = "1.8.2"
+description = "Send file to trash natively under Mac OS X, Windows and Linux"
+category = "main"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
+files = [
+    {file = "Send2Trash-1.8.2-py3-none-any.whl", hash = "sha256:a384719d99c07ce1eefd6905d2decb6f8b7ed054025bb0e618919f945de4f679"},
+    {file = "Send2Trash-1.8.2.tar.gz", hash = "sha256:c132d59fa44b9ca2b1699af5c86f57ce9f4c5eb56629d5d55fbb7a35f84e2312"},
+]
+
+[package.extras]
+nativelib = ["pyobjc-framework-Cocoa", "pywin32"]
+objc = ["pyobjc-framework-Cocoa"]
+win32 = ["pywin32"]
 
 [[package]]
 name = "setuptools"
@@ -3758,4 +3791,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "2559a711aee8b5e21c907a566e3a340844917ef79fb94691577fb72919224d80"
+content-hash = "cca257a9064e9f153b315fd984fd303c8970447ae0675c21c34842262456f03b"
