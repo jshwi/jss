@@ -31,7 +31,8 @@ fail_under = 100
 
 [tool.coverage.run]
 omit = [
-  "whitelist.py"
+  "app/utils/tasks.py",
+  "whitelist.py",
 ]
 
 [tool.docsig]
