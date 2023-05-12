@@ -25,7 +25,7 @@ describe("test dark-mode", () => {
       // eslint-disable-next-line no-unused-vars
       const darkMode = new DarkMode();
       expect(myMock).toHaveBeenCalledWith("data-theme", theme);
-    }
+    },
   );
   it.each`
     checked  | mode         | theme
@@ -48,7 +48,7 @@ describe("test dark-mode", () => {
     expect(addEventListener).toHaveBeenCalledWith(
       "change",
       darkMode.toggle,
-      false
+      false,
     );
   });
 });
