@@ -14,25 +14,18 @@ from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
 from app import create_app
-from app.models import User, db
+from app.models import db
 
 from .const import (
+    ADMIN_USER_EMAIL,
+    ADMIN_USER_PASSWORD,
     COPYRIGHT_AUTHOR,
     COPYRIGHT_EMAIL,
-    CREATE,
     INIT_DB,
+    MAIN_USER_EMAIL,
     TRANSLATIONS_DIR,
-    user_email,
-    user_password,
 )
-from .routes import Routes
-from .utils import (
-    AddTestObjects,
-    AuthorizeUserFixtureType,
-    GetObjects,
-    InterpolateRoutesType,
-    PatchGetpassType,
-)
+from .utils import AddTestObjects, AuthActions
 
 
 @pytest.fixture(name="test_app", autouse=True)
@@ -54,10 +47,10 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
     monkeypatch.setenv("SECRET_KEY", "testing")
     monkeypatch.setenv("MAIL_SUBJECT_PREFIX", "[JSS]: ")
-    monkeypatch.setenv("ADMINS", f"{user_email[0]},{user_email[1]}")
+    monkeypatch.setenv("ADMINS", f"{ADMIN_USER_EMAIL},{MAIN_USER_EMAIL}")
     monkeypatch.setenv("DEFAULT_MAIL_SENDER", "no-reply@test.com")
     monkeypatch.setenv("DEBUG_TB_ENABLED", "0")
-    monkeypatch.setenv("ADMIN_SECRET", user_password[0])
+    monkeypatch.setenv("ADMIN_SECRET", ADMIN_USER_PASSWORD)
     monkeypatch.setenv(TRANSLATIONS_DIR, str(tmp_path / "translations"))
     monkeypatch.setenv("COPYRIGHT_AUTHOR", COPYRIGHT_AUTHOR)
     monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)
@@ -94,8 +87,21 @@ def fixture_runner(test_app: Flask) -> FlaskCliRunner:
     return test_app.test_cli_runner()
 
 
+@pytest.fixture(name="auth")
+def fixture_auth(client: FlaskClient) -> AuthActions:
+    """Handle authorization with test app.
+
+    :param client: Test application client.
+    :return: Instantiated ``AuthActions`` object - a class acting as a
+        wrapper to change the state of the client.
+    """
+    return AuthActions(client)
+
+
 @pytest.fixture(name="patch_getpass")
-def fixture_patch_getpass(monkeypatch: pytest.MonkeyPatch) -> PatchGetpassType:
+def fixture_patch_getpass(
+    monkeypatch: pytest.MonkeyPatch,
+) -> t.Callable[[t.List[str]], None]:
     """Patch getpass in the cli module.
 
     :param monkeypatch: Mock patch environment and attributes.
@@ -109,7 +115,7 @@ def fixture_patch_getpass(monkeypatch: pytest.MonkeyPatch) -> PatchGetpassType:
 
 
 @pytest.fixture(name="interpolate_routes")
-def fixture_interpolate_routes() -> InterpolateRoutesType:
+def fixture_interpolate_routes() -> t.Callable[..., None]:
     """Interpolate route fields with values for testing.
 
     :return: Function for using this fixture.
@@ -129,16 +135,13 @@ def fixture_interpolate_routes() -> InterpolateRoutesType:
 
 
 @pytest.fixture(name="add_test_objects")
-def fixture_add_test_objects(
-    test_app: Flask, client: FlaskClient
-) -> AddTestObjects:
+def fixture_add_test_objects(test_app: Flask) -> AddTestObjects:
     """Add test objects to test database.
 
     :param test_app: Test application.
-    :param client: Client for testing app.
     :return: Instantiated ``AddTestObjects`` class.
     """
-    return AddTestObjects(test_app, client)
+    return AddTestObjects(test_app)
 
 
 @pytest.fixture(name="init_static")
@@ -171,59 +174,3 @@ def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
     ]
     for item in items:
         Path(build_dir / item).touch()
-
-
-@pytest.fixture(name="get_objects")
-def fixture_get_objects(test_app: Flask) -> GetObjects:
-    """Get test objects with db model attributes.
-
-    :param test_app: Test application.
-    :return: Instantiated ``GetObjects`` instance.
-    """
-    return GetObjects(test_app)
-
-
-@pytest.fixture(name="authorize_user")
-def fixture_authorize_user(
-    test_app: Flask, get_objects: GetObjects
-) -> AuthorizeUserFixtureType:
-    """Authorize existing user.
-
-    :param test_app: Test application.
-    :param get_objects: Get test objects with db model attributes.
-    :return: Function for using this fixture.
-    """
-
-    def _authorize_user(index: int) -> None:
-        with test_app.app_context():
-            u_q = User.query.filter_by(
-                username=get_objects.user(index + 1)[index].username
-            ).first()
-            u_q.authorized = True
-            db.session.commit()
-
-    return _authorize_user
-
-
-@pytest.fixture(name="routes")
-def fixture_routes(
-    test_app: Flask, client: FlaskClient, get_objects: GetObjects
-) -> Routes:
-    """Work with application routes.
-
-    :param test_app: Test application.
-    :param client: Test client.
-    :param get_objects: Get test objects with db model attributes.
-    :return: Instantiated ``Routes`` object.
-    """
-    return Routes(test_app, client, get_objects)
-
-
-@pytest.fixture(name="create_admin")
-def fixture_create_admin(runner: FlaskCliRunner) -> None:
-    """Create admin user.
-
-    :param runner: Test application cli.
-    """
-    response = runner.invoke(args=[CREATE, "admin"])
-    assert "admin successfully created" in response.output
