@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-[Unreleased](https://github.com/jshwi/jss/compare/v1.21.1...HEAD)
+[Unreleased](https://github.com/jshwi/jss/compare/v1.21.2...HEAD)
+------------------------------------------------------------------------
+
+[1.21.2](https://github.com/jshwi/jss/releases/tag/v1.21.2) - 2023-05-12
 ------------------------------------------------------------------------
 ### Security
 - Bump cryptography from 38.0.4 to 39.0.1
