@@ -4,12 +4,48 @@ tests.const
 """
 from datetime import datetime
 
-from templatest.utils import VarSeq, VarSeqSuffix
-
+UPDATE1 = "/post/1/update"
+ADMIN_USER_USERNAME = "admin"
+ADMIN_USER_EMAIL = "admin@test.com"
+ADMIN_USER_PASSWORD = "pass0"
+AUTHORIZED_USER_USERNAME = "authorized"
+AUTHORIZED_USER_EMAIL = "authorized@test.com"
+AUTHORIZED_USER_PASSWORD = "pass1"
+MAIN_USER_USERNAME = "main"
+MAIN_USER_EMAIL = "main@test.com"
+MAIN_USER_PASSWORD = "pass2"
+OTHER_USER_USERNAME = "other"
+OTHER_USER_EMAIL = "other@test.com"
+OTHER_USER_PASSWORD = "pass3"
+LAST_USER_USERNAME = "last"
+LAST_USER_EMAIL = "last@test.com"
+LAST_USER_PASSWORD = "pass4"
+POST_TITLE_1 = "test title 1"
+POST_BODY_1 = "test 1\nbody 1"
+POST_AUTHOR_ID_1 = 1
+POST_TITLE_2 = "test title 2"
+POST_BODY_2 = "test 2\nbody 2"
+POST_AUTHOR_ID_2 = 2
+POST_TITLE_3 = "test title 3"
+POST_BODY_3 = "test 3\nbody 3"
+POST_AUTHOR_ID_3 = 3
+POST_TITLE_4 = "test title 4"
+POST_BODY_4 = "test 4\nbody 4"
+POST_AUTHOR_ID_4 = 4
+POST_TITLE_V1 = "title-v1"
+POST_TITLE_V2 = "body-v1"
+POST_BODY_V1 = "title-v2"
+POST_BODY_V2 = "body-v2"
+POST_TITLE_V3 = "title-v3"
+POST_BODY_V3 = "body-v3"
+POST_CREATED_1 = datetime(2018, 1, 1, 0, 0, 1)
+POST_CREATED_2 = datetime(2018, 1, 1, 0, 0, 2)
+POST_CREATED_3 = datetime(2018, 1, 1, 0, 0, 3)
+POST_CREATED_4 = datetime(2018, 1, 1, 0, 0, 4)
 MESSAGE_CREATED = datetime(2018, 1, 1, 0, 0, 5)
-INVALID_OR_EXPIRED = b"invalid or has expired."
+INVALID_OR_EXPIRED = "invalid or has expired."
 MAIL_SERVER = "localhost"
-MAIL_USERNAME = "mail_username"
+MAIL_USERNAME = MAIN_USER_USERNAME
 MAIL_PASSWORD = "unique"
 MAIL_PORT = 25
 PROFILE_EDIT = "/user/profile/edit"
@@ -18,12 +54,16 @@ TASK_NAME = "export_posts"
 TASK_DESCRIPTION = "Exporting posts..."
 MISC_PROGRESS_INT = 37
 APP_MODELS_JOB_FETCH = "app.models.Job.fetch"
-COPYRIGHT_YEAR = "2021"
-COPYRIGHT_AUTHOR = "John Doe"
+ADMIN_ROUTE = "/admin"
+ADMIN_USER_ROUTE = "/admin/users"
+COPYRIGHT_YEAR = "2023"
+COPYRIGHT_AUTHOR = ""
 COPYRIGHT_EMAIL = "john.doe@test.com"
 RECIPIENT_ID = 1
 SENDER_ID = 2
 MESSAGE_BODY = "hello, this is a test message"
+REDIRECT_LOGOUT = "/redirect/logout"
+POST_1 = "/post/1"
 APP_UTILS_LANG_POT_FILE = "app.utils.lang._pot_file"
 APP_UTILS_LANG_SUBPROCESS_RUN = "app.utils.lang.subprocess.run"
 MESSAGES_POT = "messages.pot"
@@ -33,7 +73,6 @@ USERNAME_IS_TAKEN = b"Username is taken"
 COMPILE = "compile"
 INIT = "init"
 PASSWORD = "password"
-POSTS = "posts"
 PYBABEL = "pybabel"
 USER = "user"
 USERNAME = "username"
@@ -45,29 +84,13 @@ TRANSLATE = "translate"
 INIT_DB = "init_db"
 POST = "post"
 TRANSLATIONS_DIR = "TRANSLATIONS_DIR"
-LICENSE_CONTENTS = f"""\
-MIT License
-
-Copyright (c) {COPYRIGHT_YEAR} {COPYRIGHT_AUTHOR}
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
+TITLE = "title"
+LOGOUT = "Logout"
+ROUTE = "route"
+POST_1_DELETE = "/post/1/delete"
+ADMIN = "admin"
+POST_CREATE = "/post/create"
+BODY = "body"
 PYPROJECT_TOML = f"""\
 [tool.poetry]
 authors = [
@@ -210,7 +233,7 @@ msgid "Reset Password"
 msgstr ""
 
 #: app/forms.py:112
-msgid "username"
+msgid USERNAME
 msgstr ""
 
 #: app/forms.py:114
@@ -242,7 +265,7 @@ msgid "Profile"
 msgstr ""
 
 #: app/dom/navbar.py:44
-msgid "Logout"
+msgid LOGOUT
 msgstr ""
 
 #: app/dom/navbar.py:48
@@ -369,7 +392,7 @@ msgid ""
 "message"
 msgstr ""
 
-#: app/templates/post/create.html:6
+#: app/templatesPOST_CREATE.html:6
 msgid "New Post"
 msgstr ""
 
@@ -430,12 +453,3 @@ msgid "Send Message to"
 msgstr ""
 
 """
-
-post_title = VarSeq("postTitle", suffix="")
-post_body = VarSeq("postBody", suffix="")
-
-user_username = VarSeq(USER)
-user_email = VarSeqSuffix(USER, "@email.com")
-user_password = VarSeq("pass")
-
-test_message = VarSeq("message")
