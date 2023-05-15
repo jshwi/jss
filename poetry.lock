@@ -1296,18 +1296,21 @@ SQLAlchemy = ">=0.8.0"
 
 [[package]]
 name = "flask-static-digest"
-version = "0.3.0"
-description = "Flask extension for md5 tagging and gzipping static files."
+version = "0.4.0"
+description = "Flask extension for md5 tagging and compressing (gzip / brotli) static files."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Static-Digest-0.3.0.tar.gz", hash = "sha256:1df26ec459058f782d5024c0f654e07a7246da6445e84b844ed6e83b2f9473bb"},
-    {file = "Flask_Static_Digest-0.3.0-py3-none-any.whl", hash = "sha256:cc9bbd93b1381d745c94bade73a7bc7205c5a2a6de413622bb8ab6b497c627e8"},
+    {file = "Flask-Static-Digest-0.4.0.tar.gz", hash = "sha256:52d89e52d77dbc63949d365e597109f382bc6d600fa59bbf2347bddd7ae4ddeb"},
+    {file = "Flask_Static_Digest-0.4.0-py3-none-any.whl", hash = "sha256:7464fbc4b07f9ae980d30a35d876cc4a92d28a4626db6ea1110eace8963b296f"},
 ]
 
 [package.dependencies]
 Flask = ">=1.0"
+
+[package.extras]
+brotli = ["Brotli (>=1.0.9)"]
 
 [[package]]
 name = "flask-talisman"
@@ -3761,4 +3764,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "35294ee7328facbb7ecd29c05e791215fea15bd22c3faca38344959aa0e04f20"
+content-hash = "b9ca167dc42aa5741766244f8841b149c7902f2446766c497eb32356194c716b"
