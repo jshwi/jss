@@ -118,7 +118,7 @@ class _Config(Env):
 
     @property
     def MAIL_SUBJECT_PREFIX(self) -> str:
-        """str object to prefix mail client's subject line with."""
+        """Str object to prefix mail client's subject line with."""
         return self.str("MAIL_SUBJECT_PREFIX", default="")
 
     @property
