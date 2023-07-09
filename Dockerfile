@@ -35,7 +35,7 @@ ENV PATH $POETRY_HOME/bin:$PATH
 ENV PIP_DEFAULT_TIMEOUT 100
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV PIP_NO_CACHE_DIR 1
-ENV POETRY_VERSION 1.1.13
+ENV POETRY_VERSION 1.5.1
 
 # install dependencies for building `poetry`, and other Python packages
 # (`cryptography` and `psycopg2` etc.), then build and install `poetry`
