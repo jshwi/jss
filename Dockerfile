@@ -19,7 +19,7 @@ RUN adduser --disabled-password $USER && apk add --no-cache libpq libstdc++
 # set new user's $HOME as WORKDIR
 WORKDIR $WORKDIR
 
-FROM base as dev-base
+FROM base AS dev-base
 
 # install `netcat` to listen for `postgresql` container
 RUN apk add --no-cache netcat-openbsd
