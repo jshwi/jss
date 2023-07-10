@@ -2442,7 +2442,7 @@ def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
     """
     csp = ContentSecurityPolicy(default)
     csp.update_policy(add)
-    assert dict(csp) == expected
+    assert dict(csp) == expected  # type: ignore
 
 
 def test_jinja2_required_extensions() -> None:
