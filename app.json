@@ -1,0 +1,32 @@
+{
+  "addons": [
+    "logdna",
+    "heroku-postgresql",
+    "heroku-redis"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/moneymeets/python-poetry-buildpack.git"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "description": "A Flask webapp",
+  "env": {
+    "PYTHON_RUNTIME_VERSION": "3.9.17"
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    },
+    "worker": {
+      "quantity": 1
+    }
+  },
+  "name": "jss",
+  "stack": "heroku-20"
+}
