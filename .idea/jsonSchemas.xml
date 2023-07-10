@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="app">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="app" />
+              <option name="relativePathToSchema" value="https://raw.githubusercontent.com/crcastle/schemastore/06174ef73fcaa1f9734e4aed8b7d40e6df586f76/src/schemas/json/app.json" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="app.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>
