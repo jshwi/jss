@@ -50,7 +50,7 @@ http://localhost:5000
 .. code-block:: console
 
     $ npm run init:dev
-    $ docker compose up development
+    $ docker compose up dev
 
 Production
 ----------
