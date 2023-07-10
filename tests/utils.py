@@ -17,7 +17,7 @@ from flask.testing import FlaskClient
 from werkzeug.security import generate_password_hash
 from werkzeug.test import TestResponse
 
-from app.models import BaseModel, Message, Post, Task, User, db
+from app.models import BaseModel, Message, Post, User, db
 from tests.const import USERNAME
 
 
@@ -70,24 +70,6 @@ class PostTestObject(TestObject):
         self.body = body
         self.user_id = user_id
         self.created = created
-
-
-class TaskTestObject(TestObject):
-    """Test model attributes.
-
-    :param id: ID of the task.
-    :param name: Name of the task.
-    :param description: description of the task.
-    :param user: User initiating the task.
-    """
-
-    def __init__(
-        self, id: str, name: str, description: str, user: User
-    ) -> None:
-        self.id = id
-        self.name = name
-        self.description = description
-        self.user_id = user.id
 
 
 class MessageTestObject(TestObject):
@@ -251,14 +233,6 @@ class AddTestObjects:
             ``PostTestObject`` instances.
         """
         self._add_object(Post, *post_test_objects)
-
-    def add_test_tasks(self, *task_test_objects: TaskTestObject) -> None:
-        """Add task objects to the database.
-
-        :param task_test_objects: Variable number, of any size, of
-            ``TaskTestObject`` instances.
-        """
-        self._add_object(Task, *task_test_objects)
 
     def add_test_messages(
         self, *message_test_objects: MessageTestObject

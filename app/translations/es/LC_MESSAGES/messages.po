@@ -160,10 +160,6 @@ msgstr "Ahora estás siguiendo a %(username)s"
 msgid "You are no longer following %(username)s"
 msgstr "Ya no sigues a %(username)s"
 
-#: app/routes/redirect.py:162
-msgid "An export task is already in progress"
-msgstr "Ya hay una tarea de exportación en curso"
-
 #: app/templates/posts.html:23 app/templates/public/profile.html:35
 msgid "Edit"
 msgstr "Editar"

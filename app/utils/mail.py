@@ -20,11 +20,7 @@ def _send_async_email(app: Flask, msg: Message) -> None:
         mail.send(msg)
 
 
-def send_email(
-    attachments: t.Iterable[t.Dict[str, str]] | None = None,
-    sync: bool = False,
-    **kwargs: t.Any,
-) -> None:
+def send_email(**kwargs: t.Any) -> None:
     """Send a threaded email.
 
     Without threading the app will wait until the email has been sent
@@ -61,8 +57,6 @@ def send_email(
         * content_type: file mimetype
         * data:         the raw file data
 
-    :param attachments: Iterable of kwargs to construct attachment.
-    :param sync: Don't thread if True: Defaults to False.
     :param kwargs: Keyword args to pass to ``Message``:
         See ``flask_mail.Message``.
     """
@@ -74,12 +68,5 @@ def send_email(
     kwargs["subject"] = f"{subject_prefix}{subject}"
     kwargs["sender"] = kwargs.get("sender", app.config["DEFAULT_MAIL_SENDER"])
     message = Message(**kwargs)
-    if attachments:
-        for attachment in attachments:
-            message.attach(**attachment)
-
-    if sync:
-        mail.send(message)
-    else:
-        thread = Thread(target=_send_async_email, args=(app, message))
-        thread.start()
+    thread = Thread(target=_send_async_email, args=(app, message))
+    thread.start()

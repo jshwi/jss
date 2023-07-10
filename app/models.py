@@ -13,12 +13,9 @@ import typing as t
 from datetime import datetime
 from time import time
 
-from flask import abort, current_app
+from flask import abort
 from flask_login import UserMixin, current_user
 from flask_sqlalchemy import BaseQuery
-from redis import RedisError
-from rq.exceptions import NoSuchJobError
-from rq.job import Job
 from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy_continuum import make_versioned
 from sqlalchemy_continuum.model_builder import ModelBuilder
@@ -191,31 +188,6 @@ class User(UserMixin, BaseModel):
         db.session.commit()
         return notification
 
-    def launch_task(
-        self, name: str, description: str, *args: t.Any, **kwargs: t.Any
-    ) -> Task:
-        """Launch a user triggered task.
-
-        :param name: Name of the task.
-        :param description: Friendly description of task.
-        :param args: Misc positional arguments to pass to `Task`.
-        :param kwargs: Misc keyword arguments to pass to `Task`.
-        :return: Instantiated `Task` object.
-        """
-        rq_job = current_app.task_queue.enqueue(  # type: ignore
-            f"app.utils.tasks.{name}", self.id, *args, **kwargs
-        )
-        # noinspection PyArgumentList
-        task = Task(
-            id=rq_job.get_id(),
-            name=name,
-            description=description,
-            # `user` is a backref and not defined as a column
-            user=self,  # type: ignore
-        )
-        db.session.add(task)
-        return task
-
     def get_tasks_in_progress(self) -> t.List[BaseQuery]:
         """Get the currently running tasks triggered by user.
 
@@ -223,16 +195,6 @@ class User(UserMixin, BaseModel):
             tasks.
         """
         return Task.query.filter_by(user=self, complete=False).all()
-
-    def get_task_in_progress(self, name: str) -> BaseQuery | None:
-        """Return first task currently running under this user.
-
-        :param name: Name of running task.
-        :return: First running task retrieved.
-        """
-        return Task.query.filter_by(
-            name=name, user=self, complete=False
-        ).first()
 
     @classmethod
     def resolve_all_names(cls, username: str) -> User:
@@ -367,27 +329,6 @@ class Task(BaseModel):
     description = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
     complete = db.Column(db.Boolean, default=False)
-
-    def get_rq_job(self) -> Job | None:
-        """Get a ``Redis`` queued job.
-
-        :return: RQ job if it exists, else return None.
-        """
-        try:
-            return Job.fetch(
-                self.id, connection=current_app.redis  # type: ignore
-            )
-
-        except (RedisError, NoSuchJobError):
-            return None
-
-    def get_progress(self) -> int:
-        """Get progress of instantiated task.
-
-        :return: Integer percentage. If there is no job assume 100%.
-        """
-        job = self.get_rq_job()
-        return 100 if job is None else job.meta.get("progress", 0)
 
 
 class Usernames(BaseModel):

@@ -33,11 +33,6 @@
 
             {# if user is on their own profile page display option to edit it #}
             <p><a href="{{ url_for('user.edit_profile') }}">{{ _("Edit") }}</a></p>
-
-            {# user can start a new task if one isn"t already running #}
-            {% if not current_user.get_task_in_progress('export_posts') %}
-                <p><a href="{{ url_for('redirect.export_posts') }}">{{ _("Export posts") }}</a></p>
-            {% endif %}
         {% else %}
             {# option to send a message to other user #}
             <p><a href="{{ url_for('user.send_message', recipient=user.username) }}">{{ _("Send private message") }}</a></p>

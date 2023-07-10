@@ -125,24 +125,3 @@ def unfollow(username: str) -> Response:
         flash(_("You are no longer following %(username)s", username=username))
 
     return redirect.Public.profile(username=username)
-
-
-@blueprint.route("/export_posts")
-@login_required
-@confirmation_required
-def export_posts() -> Response:
-    """Redirect user to /export_posts route which triggers event.
-
-    There is no view for this route and so the user will be redirected
-    to the profile view.
-
-    :return: response object redirect to profile view of user that has
-        requested the post export (current user).
-    """
-    if current_user.get_task_in_progress("export_posts"):
-        flash(_("An export task is already in progress"))
-    else:
-        current_user.launch_task("export_posts", "Exporting posts...")
-        db.session.commit()
-
-    return redirect.Public.profile(username=current_user.username)

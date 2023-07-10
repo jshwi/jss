@@ -33,7 +33,6 @@ from flask import Flask
 from app import (
     cli,
     config,
-    deps,
     exceptions,
     extensions,
     lang,
@@ -56,7 +55,6 @@ def create_app() -> Flask:
     app = Flask(__name__)
     config.init_app(app)
     log.init_app(app)
-    deps.init_app(app)
     extensions.init_app(app)
     routes.init_app(app)
     exceptions.init_app(app)

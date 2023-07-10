@@ -7,7 +7,6 @@ tests._test
 from __future__ import annotations
 
 import fnmatch
-import json
 import logging
 import os
 import shutil
@@ -19,7 +18,6 @@ import pytest
 from flask import Flask, session
 from flask.testing import FlaskClient, FlaskCliRunner
 from flask_login import current_user
-from redis import RedisError
 
 from app import config
 from app.extensions import mail
@@ -36,7 +34,6 @@ from .const import (
     ADMIN_USER_PASSWORD,
     ADMIN_USER_ROUTE,
     ADMIN_USER_USERNAME,
-    APP_MODELS_JOB_FETCH,
     APP_UTILS_LANG_POT_FILE,
     APP_UTILS_LANG_SUBPROCESS_RUN,
     AUTHORIZED_USER_EMAIL,
@@ -69,7 +66,6 @@ from .const import (
     MESSAGE_CREATED,
     MESSAGES_PO,
     MESSAGES_POT,
-    MISC_PROGRESS_INT,
     NAVBAR_HOME,
     OTHER_USER_EMAIL,
     OTHER_USER_PASSWORD,
@@ -109,9 +105,6 @@ from .const import (
     ROUTE,
     SENDER_ID,
     STATUS_CODE_TO_ROUTE_DEFAULT,
-    TASK_DESCRIPTION,
-    TASK_ID,
-    TASK_NAME,
     TITLE,
     TRANSLATE,
     TRANSLATIONS_DIR,
@@ -126,7 +119,6 @@ from .utils import (
     MessageTestObject,
     PostTestObject,
     Recorder,
-    TaskTestObject,
     TestObject,
     UserTestObject,
 )
@@ -1323,307 +1315,6 @@ def test_send_message(
             " Messages",
         ]
     )
-
-
-@pytest.mark.usefixtures(INIT_DB)
-def test_export_post_is_job(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_objects: AddTestObjects,
-) -> None:
-    """Test export post function when a job already exists: is not None.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test application.
-    :param client: Test application client.
-    :param auth: Handle authorization.
-    :param add_test_objects: Add test objects to test database.
-    """
-    user_test_object_1 = UserTestObject(
-        ADMIN_USER_USERNAME,
-        ADMIN_USER_EMAIL,
-        ADMIN_USER_PASSWORD,
-        confirmed=True,
-    )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    add_test_objects.add_test_users(user_test_object_1)
-    add_test_objects.add_test_posts(post_test_object)
-    auth.login(user_test_object_1)
-    app_current_user = Recorder()
-    app_current_user.is_authenticated = lambda: True  # type: ignore
-    app_current_user.get_task_in_progress = lambda _: 1  # type: ignore
-    app_current_user.username = ADMIN_USER_USERNAME  # type: ignore
-    with test_app.app_context():
-        app_current_user.post = Post.query.get(1)  # type: ignore
-        monkeypatch.setattr(
-            "app.routes.redirect.current_user", app_current_user
-        )
-        response = client.get("/redirect/export_posts", follow_redirects=True)
-
-    assert b"An export task is already in progress" in response.data
-
-
-@pytest.mark.usefixtures(INIT_DB)
-def test_export_post(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_objects: AddTestObjects,
-) -> None:
-    """Test export post function when a job does not exist: is None.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test application.
-    :param client: Test application client.
-    :param auth: Handle authorization.
-    :param add_test_objects: Add test objects to test database.
-    """
-    user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME,
-        ADMIN_USER_EMAIL,
-        ADMIN_USER_PASSWORD,
-        confirmed=True,
-    )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-    add_test_objects.add_test_users(user_test_object)
-    add_test_objects.add_test_posts(post_test_object)
-    auth.login(user_test_object)
-    enqueue = Recorder()
-    session_add = Recorder()
-    with test_app.app_context():
-        test_app.task_queue = Recorder()  # type: ignore
-        test_app.task_queue.enqueue = enqueue  # type: ignore
-        test_app.task_queue.enqueue.get_id = lambda: TASK_ID  # type: ignore
-        monkeypatch.setattr("app.models.User.is_authenticated", True)
-        monkeypatch.setattr("app.models.db.session.add", session_add)
-        # noinspection PyArgumentList
-        user = User(
-            username=user_test_object.username, email=user_test_object.email
-        )
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
-        )
-        app_current_user = user
-        app_current_user.get_task_in_progress = lambda _: None  # type: ignore
-        app_current_user.username = user_test_object.username
-        app_current_user.post = Post.query.get(1)
-        monkeypatch.setattr(
-            "app.routes.redirect.current_user", app_current_user
-        )
-        client.get("/redirect/export_posts", follow_redirects=True)
-
-    assert "app.utils.tasks.export_posts" in enqueue.args
-    task = session_add.args[0]
-    assert task.id == task_test_object.id
-    assert task.name == task_test_object.name
-    assert task.description == task_test_object.description
-
-
-@pytest.mark.usefixtures(INIT_DB)
-def test_get_tasks_in_progress_no_task(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_objects: AddTestObjects,
-) -> None:
-    """Test getting of a task when one does not exist.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test application.
-    :param client: Test application client.
-    :param auth: Handle authorization.
-    :param add_test_objects: Add test objects to test database.
-    """
-    user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
-    )
-    with test_app.app_context():
-        add_test_objects.add_test_users(user_test_object)
-        user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
-        )
-        add_test_objects.add_test_tasks(task_test_object)
-        auth.login(user_test_object)
-        monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: None)
-        response = client.get("/")
-        assert b"100" in response.data
-
-
-@pytest.mark.usefixtures(INIT_DB)
-def test_get_tasks_in_progress(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_objects: AddTestObjects,
-) -> None:
-    """Test getting of a task when there is a task in the database.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test application.
-    :param client: Test application client.
-    :param auth: Handle authorization.
-    :param add_test_objects: Add test objects to test database.
-    """
-    user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
-    )
-    rq_job = Recorder()
-    rq_job.meta = {"progress": MISC_PROGRESS_INT}  # type: ignore
-    monkeypatch.setattr(APP_MODELS_JOB_FETCH, lambda *_, **__: rq_job)
-    with test_app.app_context():
-        # noinspection DuplicatedCode
-        add_test_objects.add_test_users(user_test_object)
-        user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
-        )
-        add_test_objects.add_test_tasks(task_test_object)
-        auth.login(user_test_object)
-        response = client.get("/")
-        assert str(MISC_PROGRESS_INT) in response.data.decode()
-
-
-@pytest.mark.usefixtures(INIT_DB)
-def test_get_tasks_in_progress_error_raised(
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    client: FlaskClient,
-    auth: AuthActions,
-    add_test_objects: AddTestObjects,
-) -> None:
-    """Test getting of a task when an error is raised: 100%, complete.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param test_app: Test application.
-    :param client: Test application client.
-    :param auth: Handle authorization.
-    :param add_test_objects: Add test objects to test database.
-    """
-    user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
-    )
-
-    def _fetch(*_: t.Any, **__: t.Any) -> None:
-        raise RedisError("test Redis error")
-
-    monkeypatch.setattr(APP_MODELS_JOB_FETCH, _fetch)
-    with test_app.app_context():
-        # noinspection DuplicatedCode
-        add_test_objects.add_test_users(user_test_object)
-        user = User.query.filter_by(username=ADMIN_USER_USERNAME).first()
-        task_test_object = TaskTestObject(
-            TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
-        )
-        add_test_objects.add_test_tasks(task_test_object)
-        auth.login(user_test_object)
-        response = client.get("/")
-
-    assert b"100" in response.data
-
-
-@pytest.mark.usefixtures(INIT_DB)
-def test_export_posts(
-    monkeypatch: pytest.MonkeyPatch, add_test_objects: AddTestObjects
-) -> None:
-    """Test data as sent to user when post export requested.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param add_test_objects: Add test objects to test database.
-    """
-    # this needs to imported *after* `monkeypatch.setenv` has patched
-    # the environment
-    import app.utils.tasks
-
-    # faster than waiting for `mail.record_messages` to sync
-    # catch `Message` object passed to `mail.send`
-    mail_send = Recorder()
-    monkeypatch.setattr("app.utils.mail.mail.send", mail_send)
-    monkeypatch.setattr("app.utils.tasks.time.sleep", lambda _: None)
-    user_test_object = UserTestObject(
-        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD
-    )
-    post_test_object = PostTestObject(
-        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
-    )
-
-    # running outside `test_app's` context
-    # noinspection PyArgumentList
-    test_user = User(
-        username=ADMIN_USER_USERNAME,
-        password_hash=ADMIN_USER_PASSWORD,
-        email=ADMIN_USER_EMAIL,
-    )
-    db.session.add(test_user)
-    db.session.commit()
-    add_test_objects.add_test_posts(post_test_object)
-    user = User.query.get(1)
-    task_test_object = TaskTestObject(
-        TASK_ID, TASK_NAME, TASK_DESCRIPTION, user
-    )
-    add_test_objects.add_test_tasks(task_test_object)
-    job = Recorder()
-    job.meta = {}  # type: ignore
-    job.save_meta = Recorder()  # type: ignore
-    job.get_id = lambda: task_test_object.id  # type: ignore
-    monkeypatch.setattr("app.utils.tasks.get_current_job", lambda: job)
-    app.utils.tasks.export_posts(1)
-    outbox = mail_send.args[0]
-    post_obj = [
-        {
-            "body": post_test_object.body,
-            "created": str(post_test_object.created),
-            "edited": "None",
-            "id": "1",
-            "title": post_test_object.title,
-            "user_id": "1",
-        }
-    ]
-    assert outbox.subject == f"[JSS]: Posts by {user_test_object.username}"
-    assert outbox.recipients == [user_test_object.email]
-    assert user_test_object.username in outbox.html
-    assert "Please find attached the archive of your posts" in outbox.html
-    attachment = outbox.attachments[0]
-    assert attachment.filename == "posts.json"
-    assert attachment.content_type == "application/json"
-    assert attachment.data == json.dumps(
-        {"posts": post_obj}, indent=4, sort_keys=True
-    )
-
-
-@pytest.mark.usefixtures(INIT_DB)
-def test_export_posts_err(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Test data as sent to user when post export requested with error.
-
-    Test except and clean-up.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    """
-    # this needs to imported *after* `monkeypatch.setenv` has patched
-    # the environment
-    import app.utils.tasks
-
-    monkeypatch.setattr(
-        "app.utils.tasks._app.logger.error", lambda *_, **__: None
-    )
-
-    def _set_task_progress(progress: int) -> None:
-        # fail when not setting func to 100
-        assert progress == 100
-
-    monkeypatch.setattr(
-        "app.utils.tasks._set_task_progress", _set_task_progress
-    )
-    app.utils.tasks.export_posts(1)
 
 
 @pytest.mark.usefixtures(INIT_DB)
