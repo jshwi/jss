@@ -61,22 +61,10 @@ services:
     depends_on:
       - dev-postgres
       - dev-redis
-      - dev-worker
     environment:
       <<: *dev-environment
     ports:
       - "5000:5000"
-
-  dev-worker:
-    <<: *development
-    container_name: jss-dev-worker
-    depends_on:
-      - dev-postgres
-      - dev-redis
-    entrypoint:
-      ["rq", "worker", "--url", "redis://dev-redis:6379/0", "jss-tasks"]
-    links:
-      - dev-redis
 
   dev-postgres:
     <<: *postgres
@@ -98,22 +86,10 @@ services:
     depends_on:
       - test-postgres
       - test-redis
-      - test-worker
     environment:
       <<: *test-environment
     ports:
       - "5001:5000"
-
-  test-worker:
-    <<: *testing
-    container_name: jss-test-worker
-    depends_on:
-      - test-postgres
-      - test-redis
-    entrypoint:
-      ["rq", "worker", "--url", "redis://test-redis:6379/0", "jss-tasks"]
-    links:
-      - test-redis
 
   test-postgres:
     <<: *postgres
