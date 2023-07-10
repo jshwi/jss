@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - add app.json
 
+### Changed
+- bump heroku stack
+
 [1.22.0](https://github.com/jshwi/jss/releases/tag/v1.22.0) - 2023-07-10
 ------------------------------------------------------------------------
 ### Removed
