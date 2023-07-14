@@ -140,6 +140,7 @@ templatest = "^0.7.0"
 
 [tool.pyaud]
 audit = [
+  "about-tests",
   "commit-policy",
   "const",
   "docs",

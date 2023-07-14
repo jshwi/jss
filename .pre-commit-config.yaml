@@ -8,6 +8,7 @@ ci:
     - vulture
     - tests
     - toc
+    - about-tests
     - commit-policy
 default_language_version:
   python: python3.8
@@ -21,6 +22,7 @@ exclude: |
     | \.bumpversion\.cfg
     | whitelist\.py
     | \.idea\/.*
+    | tests\/TESTS\.md
     | \.github\/COMMIT_POLICY\.md
     | docs\/conf\.py
   )$
@@ -82,6 +84,12 @@ repos:
         name: commit policy
         language: system
         entry: poetry run pyaud commit-policy --fix
+        pass_filenames: false
+      # check tests/TESTS.md is up-to-date
+      - id: about-tests
+        name: about tests
+        language: system
+        entry: poetry run pyaud about-tests --fix
         pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v4.4.0"
