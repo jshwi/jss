@@ -3,6 +3,7 @@ ci:
     - pylint
     - doctest-package
     - doctest-readme
+    - deptry
     - mypy
     - docsig
     - vulture
@@ -90,6 +91,16 @@ repos:
         name: about tests
         language: system
         entry: poetry run pyaud about-tests --fix
+        pass_filenames: false
+      # check imports against dependencies
+      - id: deptry
+        name: deptry
+        description: |
+          deptry is a command line tool to check for issues with dependencies
+          in a Python project, such as obsolete or missing dependencies.
+        entry: poetry run deptry . --exclude migrations --exclude tests
+        language: system
+        always_run: true
         pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v4.4.0"
