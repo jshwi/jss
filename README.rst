@@ -3,8 +3,8 @@ jss
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
     :target: https://opensource.org/licenses/MIT
     :alt: License
-.. image:: https://github.com/jshwi/jss/actions/workflows/build.yml/badge.svg
-    :target: https://github.com/jshwi/jss/actions/workflows/build.yml
+.. image:: https://github.com/jshwi/jss/actions/workflows/build.yaml/badge.svg
+    :target: https://github.com/jshwi/jss/actions/workflows/build.yaml
     :alt: Build
 .. image:: https://results.pre-commit.ci/badge/github/jshwi/jss/master.svg
    :target: https://results.pre-commit.ci/latest/github/jshwi/jss/master
