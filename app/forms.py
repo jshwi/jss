@@ -49,7 +49,7 @@ class RegistrationForm(FlaskForm):
         """WTForms validates methods prefixed with ``validate_``.
 
         :param username: Username to check validity for.
-        :raise: ValidationError if username already exists.
+        :raises ValidationError: if username already exists.
         """
         user = User.query.filter_by(username=username.data).first()
         reserved = username.data in current_app.config["RESERVED_USERNAMES"]
@@ -61,7 +61,7 @@ class RegistrationForm(FlaskForm):
         """WTForms validates methods prefixed with ``validate_``.
 
         :param email: Email to check validity for.
-        :raise: ValidationError if user with email already exists.
+        :raises ValidationError: if user with email already exists.
         """
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
