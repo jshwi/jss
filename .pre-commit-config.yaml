@@ -8,6 +8,7 @@ ci:
     - vulture
     - tests
     - toc
+    - commit-policy
 default_language_version:
   python: python3.8
 default_stages:
@@ -20,6 +21,7 @@ exclude: |
     | \.bumpversion\.cfg
     | whitelist\.py
     | \.idea\/.*
+    | \.github\/COMMIT_POLICY\.md
     | docs\/conf\.py
   )$
 repos:
@@ -74,6 +76,12 @@ repos:
         name: update docs toctree
         language: system
         entry: poetry run pyaud toc --fix
+        pass_filenames: false
+      # check .github/COMMIT_POLICY.md is up-to-date
+      - id: commit-policy
+        name: commit policy
+        language: system
+        entry: poetry run pyaud commit-policy --fix
         pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v4.4.0"
