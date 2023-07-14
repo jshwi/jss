@@ -1,6 +1,5 @@
 {
   "addons": [
-    "logdna",
     "heroku-postgresql"
   ],
   "buildpacks": [
