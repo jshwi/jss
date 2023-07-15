@@ -44,7 +44,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     :param monkeypatch: Mock patch environment and attributes.
     :return: Test application
     """
-    monkeypatch.setenv("FLASK_ENV", "testing")
+    monkeypatch.setenv("TESTING", "1")
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
     monkeypatch.setenv("SECRET_KEY", "testing")
     monkeypatch.setenv("MAIL_SUBJECT_PREFIX", "[JSS]: ")

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.24.2...HEAD)
 ------------------------------------------------------------------------
+### Changed
+- remove reliance on `FLASK_ENV` for testing
 
 [1.24.2](https://github.com/jshwi/jss/releases/tag/v1.24.2) - 2023-07-20
 ------------------------------------------------------------------------

@@ -37,7 +37,7 @@ class _Config(Env):
     @property
     def TESTING(self) -> bool:
         """Value depends on the ``FLASK_ENV`` environment."""
-        return self.bool("TESTING", default=self.ENV == "testing")
+        return self.bool("TESTING", default=False)
 
     @property
     def DATABASE_URL(self) -> str | None:

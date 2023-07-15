@@ -26,7 +26,7 @@ x-development: &development
       context: .
       target: development
     environment: &test-environment
-      FLASK_ENV: "testing"
+      TESTING: "1"
       DATABASE: "postgres"
       DATABASE_URL: "postgresql://jss:jss@test-postgres:5432/jss"
       REDIS_URL: "redis://test-redis:6379/0"
