@@ -14,7 +14,10 @@ ENV PATH $VENV/bin:$PATH
 
 # add user to run container under and install `libpq` for `psycopg2` and
 # `libstdc++` for multiple `Flask` extensions
-RUN adduser --disabled-password $USER && apk add --no-cache libpq libstdc++
+RUN <<EOF
+adduser --disabled-password $USER
+apk add --no-cache libpq libstdc++
+EOF
 
 # set new user's $HOME as WORKDIR
 WORKDIR $WORKDIR
@@ -39,14 +42,16 @@ ENV POETRY_VERSION 1.5.1
 
 # install dependencies for building `poetry`, and other Python packages
 # (`cryptography` and `psycopg2` etc.), then build and install `poetry`
-RUN apk add --no-cache \
-    curl \
-    cargo \
-    g++ \
-    libffi-dev \
-    musl-dev \
-    postgresql-dev && \
-    curl -sSL https://install.python-poetry.org | python3 -
+RUN <<EOF
+apk add --no-cache \
+  curl \
+  cargo \
+  g++ \
+  libffi-dev \
+  musl-dev \
+  postgresql-dev
+curl -sSL https://install.python-poetry.org | python3 -
+EOF
 
 # ========================== Backend Builder ============================
 FROM backend-builder-base AS backend-builder
@@ -89,10 +94,12 @@ COPY --from=frontend-builder ./app/static ./app/static
 
 # run static digest on static assets, make sure static files are
 # readable by `nginx`, then  pass ownership of all files to user
-RUN ./post_compile && \
-    chmod 777 -R ./app/static && \
-    chown -R $USER:$USER ./ && \
-    rm -f ./post_compile
+RUN <<EOF
+./post_compile
+chmod 777 -R ./app/static
+chown -R $USER:$USER ./
+rm -f ./post_compile
+EOF
 
 # get out of root and run container as user
 USER $USER
