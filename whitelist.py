@@ -1,8 +1,3 @@
-APP_MODELS_JOB_FETCH  # unused variable (tests/const.py:56)
-MISC_PROGRESS_INT  # unused variable (tests/const.py:55)
-TASK_DESCRIPTION  # unused variable (tests/const.py:54)
-TASK_ID  # unused variable (tests/const.py:52)
-TASK_NAME  # unused variable (tests/const.py:53)
 _.ADMINS  # unused property (app/config.py:127)
 _.ADMIN_SECRET  # unused property (app/config.py:349)
 _.BABEL_FILENAME  # unused property (app/config.py:354)
