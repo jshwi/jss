@@ -52,7 +52,7 @@ PROFILE_EDIT = "/user/profile/edit"
 ADMIN_ROUTE = "/admin"
 ADMIN_USER_ROUTE = "/admin/users"
 COPYRIGHT_YEAR = "2023"
-COPYRIGHT_AUTHOR = ""
+COPYRIGHT_AUTHOR = "John Doe"
 COPYRIGHT_EMAIL = "john.doe@test.com"
 RECIPIENT_ID = 1
 SENDER_ID = 2
@@ -447,4 +447,27 @@ msgstr ""
 msgid "Send Message to"
 msgstr ""
 
+"""
+LICENSE_CONTENTS = f"""\
+MIT License
+
+Copyright (c) {COPYRIGHT_YEAR} {COPYRIGHT_AUTHOR}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """

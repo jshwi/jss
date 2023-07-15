@@ -22,6 +22,7 @@ from .const import (
     COPYRIGHT_AUTHOR,
     COPYRIGHT_EMAIL,
     INIT_DB,
+    LICENSE,
     MAIN_USER_EMAIL,
     TRANSLATIONS_DIR,
 )
@@ -52,6 +53,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("DEBUG_TB_ENABLED", "0")
     monkeypatch.setenv("ADMIN_SECRET", ADMIN_USER_PASSWORD)
     monkeypatch.setenv(TRANSLATIONS_DIR, str(tmp_path / "translations"))
+    monkeypatch.setenv("LICENSE", str(tmp_path / LICENSE))
     monkeypatch.setenv("COPYRIGHT_AUTHOR", COPYRIGHT_AUTHOR)
     monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)
     return create_app()
