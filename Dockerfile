@@ -76,8 +76,6 @@ RUN npm install && npm run webpack:prod
 # ============================ Production ==============================
 FROM base AS production
 
-ENV FLASK_ENV production
-
 # copy over app, database migrations, and wsgi entry point
 COPY ./app ./app
 COPY ./migrations ./migrations
@@ -110,7 +108,7 @@ ARG DEV_SECRET=dev
 ARG DEV_ADMIN_EMAIL=admin@localhost
 
 # hardcode env for development
-ENV FLASK_ENV development
+ENV FLASK_DEBUG 1
 ENV ADMINS $DEV_ADMIN_EMAIL
 ENV ADMIN_SECRET $DEV_SECRET
 ENV CSP_REPORT_ONLY 1

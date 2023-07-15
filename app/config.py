@@ -25,18 +25,13 @@ from app.constants import (
 
 class _Config(Env):
     @property
-    def ENV(self) -> str:
-        """Default to production."""
-        return self.str("FLASK_ENV", default="production")
-
-    @property
     def DEBUG(self) -> bool:
-        """Value depends on the ``FLASK_ENV`` environment."""
-        return self.bool("FLASK_DEBUG", default=self.ENV == "development")
+        """Debug mode."""
+        return self.bool("FLASK_DEBUG", default=False)
 
     @property
     def TESTING(self) -> bool:
-        """Value depends on the ``FLASK_ENV`` environment."""
+        """Testing mode."""
         return self.bool("TESTING", default=False)
 
     @property

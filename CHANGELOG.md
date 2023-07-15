@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - remove reliance on `FLASK_ENV` for testing
 
+### Removed
+- remove `FLASK_ENV`
+
 [1.24.2](https://github.com/jshwi/jss/releases/tag/v1.24.2) - 2023-07-20
 ------------------------------------------------------------------------
 ### Fixed

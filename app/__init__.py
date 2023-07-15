@@ -47,7 +47,7 @@ from app.version import __version__
 def create_app() -> Flask:
     """Create ``Flask`` web application object.
 
-    Accessible through wsgi.py or if ``FLASK_ENV`` is set to package.
+    Accessible through wsgi.py.
 
     :return: Web application initialized and processed through factory
         pattern.
