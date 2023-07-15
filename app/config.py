@@ -373,10 +373,6 @@ class _Config(Env):
         return self.list("LANGUAGES", default=default)
 
 
-config = _Config()
-config.read_env()
-
-
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.
 
@@ -389,4 +385,6 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
+    config = _Config()
+    config.read_env()
     app.config.from_object(config)
