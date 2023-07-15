@@ -2305,3 +2305,16 @@ def test_pot_file(test_app: Flask) -> None:
     """
     with test_app.app_context():
         assert lang._pot_file() == Path(MESSAGES_POT)
+
+
+def test_has_languages(test_app: Flask) -> None:
+    """Test languages collected for config property.
+
+    :param test_app: Test application.
+    """
+    shutil.copytree(
+        Path(__file__).parent.parent / "app" / "translations",
+        os.environ["TRANSLATIONS_DIR"],
+    )
+    config.init_app(test_app)
+    assert "es" in test_app.config["LANGUAGES"]

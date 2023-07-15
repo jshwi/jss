@@ -187,6 +187,11 @@ Test functionality of post follows.
 Test correct values passed to `SMTPHandler`.
 
 
+### Has languages
+
+Test languages collected for config property.
+
+
 ### Headers
 
 Assert headers are secure.
