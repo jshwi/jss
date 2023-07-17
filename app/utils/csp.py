@@ -7,7 +7,7 @@ from __future__ import annotations
 import typing as t
 
 CSPValType = t.Union[str, t.List[str]]
-CSPType = t.MutableMapping[str, CSPValType]
+CSPType = t.Dict[str, CSPValType]
 
 
 class ContentSecurityPolicy(CSPType):
@@ -17,30 +17,12 @@ class ContentSecurityPolicy(CSPType):
     """
 
     def __init__(self, default_csp: CSPType | None = None) -> None:
-        self._dict: CSPType = default_csp or {}
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} {self._dict}>"
-
-    def __len__(self) -> int:
-        return self._dict.__len__()
-
-    def __delitem__(self, key: str) -> None:
-        self._dict.__delitem__(key)
-
-    def __setitem__(self, key: str, value: CSPValType) -> None:
-        self._dict.__setitem__(key, value)
-
-    def __getitem__(self, key: str) -> CSPValType:
-        return self._dict.__getitem__(key)
-
-    def __iter__(self) -> t.Iterator[str]:
-        return self._dict.__iter__()
+        super().__init__(default_csp or {})
 
     def _format_value(self, key, theirs) -> CSPValType:
         # start with a list, to combine "ours" and "theirs"
         value = []
-        ours = self._dict.get(key)
+        ours = self.get(key)
 
         # loop through both to determine the types of each
         for item in theirs, ours:
@@ -82,4 +64,4 @@ class ContentSecurityPolicy(CSPType):
         :param update: A str or a list of str objects.
         """
         for key, value in update.items():
-            self._dict[key] = self._format_value(key, value)
+            self[key] = self._format_value(key, value)

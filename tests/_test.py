@@ -1830,13 +1830,7 @@ def test_static_route_default(
 
 @pytest.mark.parametrize(
     "attr,obj,expected_repr",
-    [
-        (
-            "app.utils.csp.ContentSecurityPolicy",
-            ContentSecurityPolicy,
-            "<ContentSecurityPolicy {}>",
-        )
-    ],
+    [("app.utils.csp.ContentSecurityPolicy", ContentSecurityPolicy, "{}")],
     ids=["csp"],
 )
 def test_mutable_mapping_dunders(
