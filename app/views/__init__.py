@@ -30,6 +30,7 @@ from app.views import (
     report,
     upload,
     user,
+    calendar,
 )
 
 
@@ -74,6 +75,7 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(order.blueprint)
     app.register_blueprint(admin.blueprint)
     app.register_blueprint(upload.blueprint)
+    app.register_blueprint(calendar.blueprint)
     app.add_url_rule("/", endpoint="index")
     database.init_app(app)
     app.after_request(format_html)  # type: ignore

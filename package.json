@@ -22,6 +22,7 @@
     "bootstrap-icons": "^1.10.2",
     "bootstrap4-toggle": "^3.6.1",
     "darkreader": "^4.9.58",
+    "fullcalendar": "^6.1.8",
     "highlight.js": "^11.7.0",
     "jest-environment-jsdom": "^29.6.2",
     "jquery": "^3.7.0",

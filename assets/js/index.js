@@ -5,6 +5,7 @@
  *
  * This file bundles all JavaScript files together using ``Webpack``.
  */
+require("fullcalendar");
 const DarkMode = require("./darkMode");
 const registerServiceWorker = require("./serviceWorker");
 
