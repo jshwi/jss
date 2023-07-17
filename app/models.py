@@ -15,7 +15,7 @@ from time import time
 
 from flask import abort
 from flask_login import UserMixin, current_user
-from flask_sqlalchemy import BaseQuery
+from flask_sqlalchemy.query import Query
 from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy_continuum import make_versioned
 from sqlalchemy_continuum.model_builder import ModelBuilder
@@ -37,7 +37,7 @@ followers = db.Table(
 
 
 @generic_repr("id")
-class BaseModel(db.Model):
+class BaseModel(db.Model):  # type: ignore
     """Base model for which all models in this app are derived."""
 
     __abstract__ = True
@@ -188,7 +188,7 @@ class User(UserMixin, BaseModel):
         db.session.commit()
         return notification
 
-    def get_tasks_in_progress(self) -> t.List[BaseQuery]:
+    def get_tasks_in_progress(self) -> t.List[Query]:
         """Get the currently running tasks triggered by user.
 
         :return: List of ``BaseQuery`` objects returned as running
