@@ -4,7 +4,7 @@ app.security
 """
 from flask import Flask
 
-from app.extensions import talisman as t
+from app.extensions import talisman
 from app.utils.csp import ContentSecurityPolicy, CSPType
 
 _SELF = "'self'"
@@ -32,8 +32,10 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
-    t.content_security_policy = ContentSecurityPolicy(_CSP)
-    t.content_security_policy.update_policy(app.config["CSP"])
-    t.content_security_policy_report_only = app.config["CSP_REPORT_ONLY"]
-    t.content_security_policy_report_uri = app.config["CSP_REPORT_URI"]
-    t.content_security_policy_nonce_in = ["style-src-attr"]
+    talisman.content_security_policy = ContentSecurityPolicy(_CSP)
+    talisman.content_security_policy.update_policy(app.config["CSP"])
+    talisman.content_security_policy_report_only = app.config[
+        "CSP_REPORT_ONLY"
+    ]
+    talisman.content_security_policy_report_uri = app.config["CSP_REPORT_URI"]
+    talisman.content_security_policy_nonce_in = ["style-src-attr"]
