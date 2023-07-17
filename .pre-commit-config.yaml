@@ -150,7 +150,7 @@ repos:
           - "--write"
         exclude: ^.*\.json$
   - repo: https://github.com/PyCQA/docformatter
-    rev: "v1.7.4"
+    rev: "v1.7.5"
     hooks:
       - id: docformatter
         args:
@@ -208,7 +208,7 @@ repos:
         args:
           - "--config-data={rules: {line-length: {max: 79}}}"
   - repo: https://github.com/psf/black
-    rev: "23.3.0"
+    rev: "23.7.0"
     hooks:
       - id: black
         additional_dependencies:
