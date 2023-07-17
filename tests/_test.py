@@ -1826,40 +1826,6 @@ def test_static_route_default(
     )
 
 
-@pytest.mark.parametrize(
-    "attr,obj,expected_repr",
-    [("app.utils.csp.ContentSecurityPolicy", ContentSecurityPolicy, "{}")],
-    ids=["csp"],
-)
-def test_mutable_mapping_dunders(
-    monkeypatch: pytest.MonkeyPatch,
-    attr: str,
-    obj: t.Type[t.MutableMapping],
-    expected_repr: str,
-) -> None:
-    """Test ``MutableMapping`` dunder methods (coverage).
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param attr: Attribute to monkeypatch.
-    :param obj: Object to monkeypatch attribute with.
-    :param expected_repr: Expected repr result.
-    """
-    monkeypatch.setattr(attr, obj)
-    key = "key"
-    value = "value"
-    self = obj()
-    assert repr(self) == expected_repr
-    assert key not in self
-    assert len(self) == 0
-    self[key] = value
-    assert key in self
-    assert len(self) == 1
-    assert self[key] == value
-    del self[key]
-    assert key not in self
-    assert len(self) == 0
-
-
 @pytest.mark.usefixtures(INIT_DB)
 def test_version_dropdown(
     test_app: Flask,

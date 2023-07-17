@@ -265,11 +265,6 @@ Test incorrect username and password error messages.
 Test logout functionality.
 
 
-### Mutable mapping dunders
-
-Test `MutableMapping` dunder methods (coverage).
-
-
 ### Navbar home config switch
 
 Test that the navbar Home link appropriately switches on and off.
