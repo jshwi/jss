@@ -101,10 +101,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.utils.register
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.utils.security
    :members:
    :undoc-members:

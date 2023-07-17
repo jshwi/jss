@@ -325,11 +325,6 @@ register view redirects to the login view.
 Test different invalid input and error messages.
 
 
-### Register text
-
-Test text is registered.
-
-
 ### Request password reset email
 
 Test that the correct email is sent to user for password reset.

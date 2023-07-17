@@ -25,7 +25,6 @@ from app.log import smtp_handler
 from app.models import Post, User, db
 from app.utils import lang
 from app.utils.csp import ContentSecurityPolicy, CSPType
-from app.utils.register import RegisterContext
 
 from .const import (
     ADMIN,
@@ -1833,17 +1832,12 @@ def test_static_route_default(
     "attr,obj,expected_repr",
     [
         (
-            "app.utils.register.RegisterContext",
-            RegisterContext,
-            "<RegisterContext {}>",
-        ),
-        (
             "app.utils.csp.ContentSecurityPolicy",
             ContentSecurityPolicy,
             "<ContentSecurityPolicy {}>",
-        ),
+        )
     ],
-    ids=["register", "csp"],
+    ids=["csp"],
 )
 def test_mutable_mapping_dunders(
     monkeypatch: pytest.MonkeyPatch,
@@ -1872,24 +1866,6 @@ def test_mutable_mapping_dunders(
     del self[key]
     assert key not in self
     assert len(self) == 0
-
-
-def test_register_text(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Test text is registered.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    """
-    monkeypatch.setattr("app.utils.register.RegisterContext", RegisterContext)
-    text = RegisterContext("dom_text")
-    assert repr(text) == "<RegisterContext {}>"
-    test_str = "Title"
-
-    @text.register
-    def registered_text() -> str:
-        return test_str
-
-    registered = RegisterContext.registered()
-    assert registered["dom_text_registered_text"]() == test_str
 
 
 @pytest.mark.usefixtures(INIT_DB)
