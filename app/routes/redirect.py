@@ -4,7 +4,7 @@ app.routes.redirect
 """
 from datetime import datetime
 
-from flask import Blueprint, flash, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for
 
 # noinspection PyProtectedMember
 from flask_babel import _
@@ -15,7 +15,6 @@ from werkzeug import Response
 from app.constants import GET, POST
 from app.forms import EmptyForm
 from app.models import User, db
-from app.utils import redirect
 from app.utils.mail import send_email
 from app.utils.security import (
     confirm_token,
@@ -52,7 +51,7 @@ def confirm_email(token: str) -> Response:
     except BadSignature:
         flash(_("The confirmation link is invalid or has expired."))
 
-    return redirect.index()
+    return redirect(url_for("index"))
 
 
 @blueprint.route("/resend", methods=[GET])
@@ -78,7 +77,7 @@ def resend_confirmation() -> Response:
         ),
     )
     flash(_("A new confirmation email has been sent."))
-    return redirect.Auth.unconfirmed()
+    return redirect(url_for("auth.unconfirmed"))
 
 
 @blueprint.route("/follow/<username>", methods=[POST])
@@ -101,7 +100,7 @@ def follow(username: str) -> Response:
         db.session.commit()
         flash(_("You are now following %(username)s", username=username))
 
-    return redirect.Public.profile(username=username)
+    return redirect(url_for("public.profile", username=username))
 
 
 @blueprint.route("/unfollow/<username>", methods=[POST])
@@ -124,4 +123,4 @@ def unfollow(username: str) -> Response:
         db.session.commit()
         flash(_("You are no longer following %(username)s", username=username))
 
-    return redirect.Public.profile(username=username)
+    return redirect(url_for("public.profile", username=username))

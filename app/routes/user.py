@@ -11,6 +11,7 @@ from flask import (
     current_app,
     flash,
     jsonify,
+    redirect,
     render_template,
     request,
     url_for,
@@ -21,7 +22,6 @@ from werkzeug import Response
 from app.constants import GET, POST
 from app.forms import EditProfile, MessageForm
 from app.models import Message, Notification, User, Usernames, db
-from app.utils import redirect
 from app.utils.security import confirmation_required
 
 blueprint = Blueprint("user", __name__, url_prefix="/user")
@@ -53,7 +53,9 @@ def edit_profile() -> str | Response:
             db.session.add(usernames)
             db.session.commit()
 
-        return redirect.Public.profile(username=current_user.username)
+        return redirect(
+            url_for("public.profile", username=current_user.username)
+        )
 
     form.username.data = current_user.username
     form.about_me.data = current_user.about_me
@@ -85,7 +87,7 @@ def send_message(recipient: str) -> str | Response:
         user.add_notifications("unread_message_count", user.new_messages())
         db.session.commit()
         flash("Your message has been sent.")
-        return redirect.Public.profile(username=recipient)
+        return redirect(url_for("public.profile", username=recipient))
 
     return render_template(
         "user/send_message.html", form=form, recipient=recipient

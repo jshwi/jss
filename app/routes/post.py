@@ -6,14 +6,13 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from werkzeug import Response
 
 from app.constants import GET, POST
 from app.forms import PostForm
 from app.models import Post, db
-from app.utils import redirect
 from app.utils.security import authorization_required
 
 blueprint = Blueprint("post", __name__, url_prefix="/post")
@@ -43,7 +42,7 @@ def create() -> str | Response:
         )
         db.session.add(post)
         db.session.commit()
-        return redirect.index()
+        return redirect(url_for("index"))
 
     return render_template("post/create.html", form=form)
 
@@ -78,7 +77,7 @@ def update(id: int) -> str | Response:
         post.body = form.body.data
         post.edited = datetime.utcnow()
         db.session.commit()
-        return redirect.index()
+        return redirect(url_for("index"))
 
     return render_template("post/update.html", post=post, form=form)
 
@@ -99,4 +98,4 @@ def delete(id: int) -> Response:
     post = Post.get_post(id)
     db.session.delete(post)
     db.session.commit()
-    return redirect.index()
+    return redirect(url_for("index"))

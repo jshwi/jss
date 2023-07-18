@@ -4,7 +4,7 @@ app.routes.auth
 """
 from __future__ import annotations
 
-from flask import Blueprint, flash, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from jwt import InvalidTokenError
 from werkzeug import Response
@@ -17,7 +17,6 @@ from app.forms import (
     ResetPasswordRequestForm,
 )
 from app.models import User, db
-from app.utils import redirect
 from app.utils.mail import send_email
 from app.utils.security import (
     generate_confirmation_token,
@@ -61,7 +60,7 @@ def register() -> str | Response:
             ),
         )
         flash("A confirmation email has been sent.")
-        return redirect.Auth.unconfirmed()
+        return redirect(url_for("auth.unconfirmed"))
 
     return render_template("auth/register.html", form=form)
 
@@ -95,10 +94,10 @@ def login() -> str | Response:
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             if current_user.confirmed:
-                return redirect.index()
+                return redirect(url_for("index"))
 
             flash("You have not verified your account.")
-            return redirect.Auth.unconfirmed()
+            return redirect(url_for("auth.unconfirmed"))
 
         flash("Invalid username or password.")
 
@@ -120,7 +119,7 @@ def logout() -> Response:
     :return: Response object redirect to index view.
     """
     logout_user()
-    return redirect.index()
+    return redirect(url_for("index"))
 
 
 @blueprint.route("/unconfirmed", methods=[GET])
@@ -164,7 +163,7 @@ def request_password_reset() -> str | Response:
                 "Please check your inbox for instructions on how to reset "
                 "your password"
             )
-            return redirect.Auth.login()
+            return redirect(url_for("auth.login"))
 
     return render_template("auth/request_password_reset.html", form=form)
 
@@ -193,12 +192,12 @@ def reset_password(token: str) -> str | Response:
 
     except InvalidTokenError:
         flash("The confirmation link is invalid or has expired.")
-        return redirect.index()
+        return redirect(url_for("index"))
 
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
         flash("Your password has been reset.")
-        return redirect.Auth.login()
+        return redirect(url_for("auth.login"))
 
     return render_template("auth/reset_password.html", form=form)

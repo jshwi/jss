@@ -4,13 +4,19 @@ app.routes.views
 """
 from __future__ import annotations
 
-from flask import Blueprint, current_app, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from werkzeug import Response
 
 from app.constants import GET, POST
 from app.forms import EmptyForm
 from app.models import Post, User
-from app.utils import redirect
 
 blueprint = Blueprint("public", __name__)
 
@@ -56,7 +62,7 @@ def profile(username: str) -> str | Response:
     """
     user = User.resolve_all_names(username=username)
     if user.username != username:
-        return redirect.Public.profile(username=user.username)
+        return redirect(url_for("public.profile", username=user.username))
 
     form = EmptyForm()
     user = User.query.filter_by(username=username).first()

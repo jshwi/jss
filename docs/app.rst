@@ -97,10 +97,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.utils.redirect
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.utils.security
    :members:
    :undoc-members:
