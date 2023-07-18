@@ -2072,7 +2072,6 @@ def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
 
 def test_jinja2_required_extensions() -> None:
     """Test ``jinja2.ext`` has attrs needed for language support."""
-    # noinspection PyUnresolvedReferences
     assert hasattr(jinja2_ext, "autoescape")
     assert hasattr(jinja2_ext, "with_")
 

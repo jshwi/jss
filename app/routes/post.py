@@ -36,7 +36,6 @@ def create() -> str | Response:
     """
     form = PostForm()
     if form.validate_on_submit():
-        # noinspection PyArgumentList
         post = Post(
             title=form.title.data, body=form.body.data, user_id=current_user.id
         )

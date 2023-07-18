@@ -21,7 +21,6 @@ from app.models import Post, User
 blueprint = Blueprint("public", __name__)
 
 
-# noinspection DuplicatedCode
 @blueprint.route("/", methods=[GET, POST])
 def index() -> str:
     """App's index page.
@@ -34,7 +33,6 @@ def index() -> str:
     :return: Rendered index template.
     """
     page = request.args.get("page", 1, type=int)
-    # noinspection PyUnresolvedReferences
     query = Post.query.order_by(Post.created.desc())
     posts = query.paginate(
         page=page,
@@ -67,7 +65,6 @@ def profile(username: str) -> str | Response:
     form = EmptyForm()
     user = User.query.filter_by(username=username).first()
     page = request.args.get("page", 1, type=int)
-    # noinspection PyUnresolvedReferences
     query = user.posts.order_by(Post.created.desc())
     posts = query.paginate(
         page=page,

@@ -46,7 +46,6 @@ def edit_profile() -> str | Response:
         db.session.commit()
         flash("Your changes have been saved.")
         if old_username != current_user.username:
-            # noinspection PyArgumentList
             usernames = Usernames(
                 username=old_username, user_id=current_user.id
             )
@@ -75,7 +74,6 @@ def send_message(recipient: str) -> str | Response:
     user = User.query.filter_by(username=recipient).first_or_404()
     form = MessageForm()
     if form.validate_on_submit():
-        # noinspection PyArgumentList
         message = Message(
             # `author` and `recipient` are backrefs in `User` and are
             # not defined as columns
@@ -106,7 +104,6 @@ def messages() -> str:
     current_user.add_notifications("unread_message_count", 0)
     db.session.commit()
     page = request.args.get("page", 1, type=int)
-    # noinspection PyUnresolvedReferences
     query = current_user.messages_received.order_by(Message.created.desc())
     posts = query.paginate(
         page=page,
@@ -137,7 +134,6 @@ def notifications() -> Response:
     :return: Response containing JSON payload.
     """
     since = request.args.get("since", 0.0, type=float)
-    # noinspection PyUnresolvedReferences
     query = current_user.notifications.filter(
         Notification.timestamp > since
     ).order_by(Notification.timestamp.asc())
