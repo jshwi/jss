@@ -23,14 +23,14 @@ def translate() -> None:
 
 @translate.command("update")
 @with_appcontext
-def translate_update() -> None:
+def _update() -> None:
     """Update all languages."""
     translate_update_cli()
 
 
 @translate.command("compile")
 @with_appcontext
-def translate_compile() -> None:
+def _compile() -> None:
     """Compile all languages."""
     translate_compile_cli()
 
@@ -38,7 +38,7 @@ def translate_compile() -> None:
 @translate.command("init")
 @click.argument("lang")
 @with_appcontext
-def translate_init(lang: str) -> None:
+def _init(lang: str) -> None:
     """Initialize a new language.
 
     :param lang: Language to initialize.

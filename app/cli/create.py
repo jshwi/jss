@@ -19,13 +19,13 @@ def create() -> None:
 
 @create.command("user")
 @with_appcontext
-def create_user() -> None:
+def _user() -> None:
     """Create a new user with the commandline instead of web form."""
     create_user_cli()
 
 
 @create.command("admin")
 @with_appcontext
-def create_admin() -> None:
+def _admin() -> None:
     """Create a new admin with the commandline instead of web form."""
     create_admin_cli()
