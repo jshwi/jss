@@ -111,7 +111,7 @@ def fixture_patch_getpass(
     """
 
     def _patch_getpass(inputs: t.List[str]) -> None:
-        monkeypatch.setattr("app.utils.user.getpass", lambda _: inputs.pop())
+        monkeypatch.setattr("app.cli.create.getpass", lambda _: inputs.pop())
 
     return _patch_getpass
 
