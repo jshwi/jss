@@ -89,10 +89,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.utils.lang
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.utils.mail
    :members:
    :undoc-members:

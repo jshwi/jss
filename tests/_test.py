@@ -20,11 +20,11 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from flask_login import current_user
 
 from app import config
+from app.cli import translate
 from app.extensions import mail
 from app.extensions.talisman import ContentSecurityPolicy, CSPType
 from app.log import smtp_handler
 from app.models import Post, User, db
-from app.utils import lang
 
 from .const import (
     ADMIN,
@@ -2116,7 +2116,7 @@ def test_translate_init_files(
         commands.pop(0)()
 
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
-    monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
+    monkeypatch.setattr("app.cli.translate._pybabel", _pybabel)
     result = runner.invoke(
         args=[TRANSLATE, INIT, lang_arg], catch_exceptions=False
     )
@@ -2175,7 +2175,7 @@ def test_translate_update_files(
         commands.pop(0)()
 
     monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
-    monkeypatch.setattr("app.utils.lang._pybabel", _pybabel)
+    monkeypatch.setattr("app.cli.translate._pybabel", _pybabel)
     result = runner.invoke(args=[TRANSLATE, "update"], catch_exceptions=False)
     po_contents = po_file.read_text(encoding="utf-8")
     assert "<Result okay>" in str(result)
@@ -2274,7 +2274,7 @@ def test_pot_file(test_app: Flask) -> None:
     :param test_app: Test application.
     """
     with test_app.app_context():
-        assert lang._pot_file() == Path(MESSAGES_POT)
+        assert translate._pot_file() == Path(MESSAGES_POT)
 
 
 def test_has_languages(test_app: Flask) -> None:
