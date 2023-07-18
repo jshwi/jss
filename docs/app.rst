@@ -9,6 +9,14 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.cli.create
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.cli.translate
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.config
    :members:
    :undoc-members:

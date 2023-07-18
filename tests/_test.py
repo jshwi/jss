@@ -487,13 +487,13 @@ def test_create_command(
     """
     # flask create user
     state_1 = Recorder()
-    monkeypatch.setattr("app.cli.create_user_cli", state_1)
+    monkeypatch.setattr("app.cli.create.create_user_cli", state_1)
     runner.invoke(args=[CREATE, USER])
     assert state_1.called
 
     # flask create admin
     state_2 = Recorder()
-    monkeypatch.setattr("app.cli.create_admin_cli", state_2)
+    monkeypatch.setattr("app.cli.create.create_admin_cli", state_2)
     runner.invoke(args=[CREATE, ADMIN])
     assert state_2.called
 
