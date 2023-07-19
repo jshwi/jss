@@ -16,17 +16,15 @@ designed in this package.
 
 Registers:
 
+    * This app's commandline interface
     * Config object from config module
-    * Loggers from logging
-    * Dependencies that aren't part of an extension package.
-    * Extensions, prefixed with ``Flask-``; includes ``init_app`` method
-    * Blueprints containing routing logic
+    * This app's Content Security Policy
     * Exceptions for handling error pages
-    * Shell commands for manipulating state with ``flask shell``
-    * Commandline arguments
-    * Admin page, which does not work effectively with ``init_app`` (the
-      method, not the module function)
-    * Navbar for rendering DOM Python-side
+    * This app's registered ``Flask`` extensions
+    * This app's configured languages
+    * Loggers from logging
+    * Blueprints containing routing logic
+    * This app's interactive shell
 """
 from flask import Flask
 
