@@ -16,7 +16,7 @@ x-development: &development
     MAIL_USERNAME: ${DEV_MAIL_USERNAME}
     MAIL_USE_SSL: ${DEV_MAIL_USE_SSL}
     MAIL_USE_TLS: ${DEV_MAIL_USE_TLS}
-  image: jss-development:1.24.1
+  image: jss-development:1.24.2
   volumes:
     - ./app:/home/jss/app/
     - ./migrations:/home/jss/migrations/
@@ -32,7 +32,7 @@ x-development: &development
       REDIS_URL: "redis://test-redis:6379/0"
       SQL_HOST: "test-postgres"
       SQL_PORT: "5432"
-    image: jss-testing:1.24.1
+    image: jss-testing:1.24.2
     volumes:
       - ./app:/home/jss/app/
       - ./migrations:/home/jss/migrations/
@@ -139,7 +139,7 @@ services:
       - "SEND_FILE_MAX_AGE_DEFAULT"
     expose:
       - 5000
-    image: jss-production:1.24.1
+    image: jss-production:1.24.2
     volumes:
       - static_volume:/home/jss/app/static/
 
@@ -148,7 +148,7 @@ services:
       context: .
       target: nginx
     container_name: jss-nginx
-    image: jss-nginx:1.24.1
+    image: jss-nginx:1.24.2
     ports:
       - "80:80"
       - "443:443"
