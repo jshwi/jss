@@ -104,7 +104,11 @@ class _Config(Env):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         """Alias for ``DATABASE_URL.``"""
-        return self.str("SQLALCHEMY_DATABASE_URI", default=self.DATABASE_URL)
+        default = None
+        if self.DATABASE_URL is not None:
+            default = self.DATABASE_URL.replace("postgres://", "postgresql://")
+
+        return self.str("SQLALCHEMY_DATABASE_URI", default=default)
 
     @property
     def SQLALCHEMY_TRACK_MODIFICATIONS(self) -> bool:
