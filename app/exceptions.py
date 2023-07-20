@@ -46,5 +46,5 @@ def init_app(app: Flask) -> None:
             error_code,
         )
 
-    for errcode in [400, 401, 403, 404, 405, 500]:
+    for errcode in EXCEPTIONS:
         app.errorhandler(errcode)(render_error)
