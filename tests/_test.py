@@ -2054,18 +2054,25 @@ def test_csp_report(
         "merge-two-to-two",
     ],
 )
-def test_csp_class(default: CSPType, add: CSPType, expected: CSPType) -> None:
+def test_csp_class(
+    monkeypatch: pytest.MonkeyPatch,
+    default: CSPType,
+    add: CSPType,
+    expected: CSPType,
+) -> None:
     """Test the ``ContentSecurityPolicy`` object.
 
     Test the assigning of a default policy, and the addition of any
     custom configured policy items.
 
+    :param monkeypatch: Mock patch environment and attributes.
     :param default: The policy to start with.
     :param add: The configured policy directive to add to the existing
         policy.
     :param expected: The expected
     """
-    csp = ContentSecurityPolicy(default)
+    monkeypatch.setattr("json.loads", lambda _: default)
+    csp = ContentSecurityPolicy()
     csp.update_policy(add)
     assert dict(csp) == expected  # type: ignore
 

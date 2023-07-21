@@ -1,0 +1,32 @@
+{
+  "connect-src": [
+    "'self'",
+    "fonts.googleapis.com"
+  ],
+  "default-src": [
+    "'self'"
+  ],
+  "font-src": [
+    "'self'",
+    "fonts.googleapis.com",
+    "data:"
+  ],
+  "img-src": [
+    "'self'",
+    "gravatar.com",
+    "data:"
+  ],
+  "script-src": [
+    "'self'",
+    "'unsafe-inline'"
+  ],
+  "script-src-elem": [
+    "'self'",
+    "'unsafe-inline'",
+    "cdnjs.cloudflare.com"
+  ],
+  "style-src": [
+    "'self'",
+    "'unsafe-inline'"
+  ]
+}

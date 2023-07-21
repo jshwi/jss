@@ -4,7 +4,9 @@ app.extensions.talisman
 """
 from __future__ import annotations
 
+import json
 import typing as t
+from pathlib import Path
 
 from flask_talisman import (
     DEFAULT_CSP_POLICY,
@@ -23,34 +25,18 @@ from flask_talisman.talisman import (
 CSPValType = t.Union[str, t.List[str]]
 CSPType = t.Dict[str, CSPValType]
 
-_SELF = "'self'"
-_JSDELIVR = "cdn.jsdelivr.net"
-_CLOUDFLARE = "cdnjs.cloudflare.com"
-_UNSAFE_INLINE = "'unsafe-inline'"
-_GRAVATAR = "gravatar.com"
-_FONTS_GOOGLE_APIS = "fonts.googleapis.com"
-_DATA = "data:"
-_FONTS_GSTATIC = "fonts.gstatic.com"
-
-_CSP: CSPType = {
-    "default-src": [_SELF],
-    "style-src": [_SELF, _UNSAFE_INLINE],
-    "script-src-elem": [_SELF, _UNSAFE_INLINE, _CLOUDFLARE],
-    "img-src": [_SELF, _GRAVATAR, _DATA],
-    "script-src": [_SELF, _UNSAFE_INLINE],
-    "font-src": [_SELF, _FONTS_GSTATIC, _DATA],
-    "connect-src": [_SELF, _FONTS_GOOGLE_APIS],
-}
-
 
 class ContentSecurityPolicy(CSPType):
-    """Object for setting default CSP and config override.
+    """Object for setting default CSP and config override."""
 
-    :param default_csp: Default CSP, before implementing configurations.
-    """
-
-    def __init__(self, default_csp: CSPType | None = None) -> None:
-        super().__init__(default_csp or {})
+    def __init__(self) -> None:
+        super().__init__(
+            json.loads(
+                (
+                    Path(__file__).parent.parent / "schemas" / "csp.json"
+                ).read_text(encoding="utf-8")
+            )
+        )
 
     def _format_value(self, key: str, theirs: str | list[str]) -> CSPValType:
         # start with a list, to combine "ours" and "theirs"
