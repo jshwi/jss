@@ -6,17 +6,11 @@ Register handling of error-codes and their corresponding pages.
 """
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from flask import Flask, render_template
 from werkzeug.exceptions import HTTPException
-
-EXCEPTIONS = {
-    400: "Bad Request",
-    401: "Unauthorized",
-    403: "Forbidden",
-    404: "Not Found",
-    405: "Method Not Allowed",
-    500: "Internal Server Error",
-}
 
 
 def init_app(app: Flask) -> None:
@@ -24,6 +18,14 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
+    exceptions = {
+        int(k): v
+        for k, v in json.loads(
+            (Path(__file__).parent / "schemas" / "exceptions.json").read_text(
+                encoding="utf-8"
+            )
+        ).items()
+    }
 
     def render_error(error: HTTPException) -> tuple[str, int]:
         """Render error template.
@@ -41,10 +43,10 @@ def init_app(app: Flask) -> None:
             render_template(
                 "exception.html",
                 error_code=error_code,
-                exception=EXCEPTIONS[error_code],
+                exception=exceptions[error_code],
             ),
             error_code,
         )
 
-    for errcode in EXCEPTIONS:
+    for errcode in exceptions:
         app.errorhandler(errcode)(render_error)
