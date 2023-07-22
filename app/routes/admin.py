@@ -4,10 +4,13 @@ app.routes.admin
 
 Admin page initialized with models for reading and writing.
 """
+from __future__ import annotations
+
 from flask import Flask
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib import sqla
 from flask_login import current_user, login_required
+from werkzeug import Response
 
 from app.extensions import db
 from app.models import Message, Notification, Post, Task, User
@@ -40,7 +43,7 @@ class MyAdminIndexView(AdminIndexView):
     @expose("/")
     @login_required
     @admin_required
-    def index(self) -> str:
+    def index(self) -> str | Response:
         """Requires user be logged in as admin.
 
         :return: Admin index page.

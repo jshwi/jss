@@ -21,7 +21,9 @@ from app.extensions import login_manager
 from app.models import User
 
 
-def admin_required(view: t.Callable[..., t.Any]) -> t.Callable[..., t.Any]:
+def admin_required(
+    view: t.Callable[..., str | Response]
+) -> t.Callable[..., str | Response]:
     """Handle views that require an admin be signed in.
 
     Admin needs to be logged in to create, edit, and delete posts.
@@ -35,7 +37,7 @@ def admin_required(view: t.Callable[..., t.Any]) -> t.Callable[..., t.Any]:
     """
 
     @functools.wraps(view)
-    def _wrapped_view(*args: t.Any, **kwargs: t.Any) -> Response:
+    def _wrapped_view(*args: object, **kwargs: object) -> str | Response:
         if not current_user.admin:
             return login_manager.unauthorized()
 
@@ -45,8 +47,8 @@ def admin_required(view: t.Callable[..., t.Any]) -> t.Callable[..., t.Any]:
 
 
 def authorization_required(
-    view: t.Callable[..., t.Any]
-) -> t.Callable[..., t.Any]:
+    view: t.Callable[..., str | Response]
+) -> t.Callable[..., str | Response]:
     """Handle views that require an authorized user be signed in.
 
     The new function checks if an authorized user is loaded and returns
@@ -58,7 +60,7 @@ def authorization_required(
     """
 
     @functools.wraps(view)
-    def _wrapped_view(*args: t.Any, **kwargs: t.Any) -> Response:
+    def _wrapped_view(*args: object, **kwargs: object) -> str | Response:
         if not current_user.authorized:
             return login_manager.unauthorized()
 
@@ -68,8 +70,8 @@ def authorization_required(
 
 
 def confirmation_required(
-    view: t.Callable[..., t.Any]
-) -> t.Callable[..., t.Any]:
+    view: t.Callable[..., str | Response]
+) -> t.Callable[..., str | Response]:
     """Handle views that require a verified logged-in user.
 
     The new function checks if a user is confirmed or not and redirects

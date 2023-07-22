@@ -9,7 +9,6 @@ https://12factor.net/config:
 from __future__ import annotations
 
 import datetime
-import typing as t
 from pathlib import Path
 
 import tomli
@@ -81,7 +80,7 @@ class _Config(Env):
         return self.str("FLASK_STATIC_DIGEST_HOST_URL", default=None)
 
     @property
-    def FLASK_STATIC_DIGEST_BLACKLIST_FILTER(self) -> t.List[str]:
+    def FLASK_STATIC_DIGEST_BLACKLIST_FILTER(self) -> list[str]:
         """Do not md5 tag added extensions.
 
         eg: [".htm", ".html", ".txt"]. Make sure to include the ".".
@@ -126,7 +125,7 @@ class _Config(Env):
         return self.str("MAIL_SUBJECT_PREFIX", default="")
 
     @property
-    def ADMINS(self) -> t.List[str]:
+    def ADMINS(self) -> list[str]:
         """List of web admins."""
         return self.list("ADMINS", default=[])
 
@@ -191,7 +190,7 @@ class _Config(Env):
         return self.str("REDIS_URL", default="redis://")
 
     @property
-    def RESERVED_USERNAMES(self) -> t.List[str]:
+    def RESERVED_USERNAMES(self) -> list[str]:
         """List of names that cannot be registered the standard way."""
         return self.list("RESERVED_USERNAMES", default=[])
 
@@ -323,7 +322,7 @@ class _Config(Env):
         return self.str("PREFERRED_URL_SCHEME", default="https")
 
     @property
-    def CSP(self) -> t.Dict[str, str | t.List[str]]:
+    def CSP(self) -> dict[str, str | list[str]]:
         """Content Security Policy."""
         return self.dict("CSP", default={})
 
@@ -365,7 +364,7 @@ class _Config(Env):
         )
 
     @property
-    def LANGUAGES(self) -> t.List[str]:
+    def LANGUAGES(self) -> list[str]:
         """Supported languages."""
         default = ["en"]
         if self.TRANSLATIONS_DIR.is_dir():

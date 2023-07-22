@@ -42,7 +42,7 @@ class BaseModel(db.Model):  # type: ignore
 
     __abstract__ = True
 
-    def export(self) -> t.Dict[str, str]:
+    def export(self) -> dict[str, str]:
         """Get post attributes as a dict of str objects.
 
         :return: Post as dict.
@@ -148,7 +148,7 @@ class User(UserMixin, BaseModel):
             > 0
         )
 
-    def followed_posts(self) -> t.List[Post]:
+    def followed_posts(self) -> list[Post]:
         """Get all posts that the user is following.
 
         :return: List of posts that the user is following in descending
@@ -173,7 +173,9 @@ class User(UserMixin, BaseModel):
             .count()
         )
 
-    def add_notifications(self, name: str, data: t.Any) -> Notification:
+    def add_notifications(
+        self, name: str, data: dict[str, object]
+    ) -> Notification:
         """Add user's notifications to database.
 
         :param name: Name of the database key.
@@ -188,7 +190,7 @@ class User(UserMixin, BaseModel):
         db.session.commit()
         return notification
 
-    def get_tasks_in_progress(self) -> t.List[Query]:
+    def get_tasks_in_progress(self) -> list[Query]:
         """Get the currently running tasks triggered by user.
 
         :return: List of ``BaseQuery`` objects returned as running
@@ -220,7 +222,7 @@ class User(UserMixin, BaseModel):
 class Post(BaseModel):
     """Database schema for posts."""
 
-    __versioned__: t.Dict[t.Any, t.Any] = {}
+    __versioned__: t.Dict[object, object] = {}
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
@@ -306,14 +308,14 @@ class Notification(BaseModel):
     timestamp = db.Column(db.Float, index=True, default=time)
     mapping = db.Column(db.Text)
 
-    def set_mapping(self, mapping: t.Dict[str, t.Any]) -> None:
+    def set_mapping(self, mapping: dict[str, object]) -> None:
         """Set ``dict`` object as ``str`` (JSON).
 
         :param mapping: Set object as str.
         """
         self.mapping = json.dumps(mapping)
 
-    def get_mapping(self) -> t.Dict[str, t.Any]:
+    def get_mapping(self) -> dict[str, object]:
         """Get dict representation of JSON data.
 
         :return: Dict object of notification data.

@@ -19,7 +19,7 @@ class ContentSecurityPolicy(CSPType):
     def __init__(self, default_csp: CSPType | None = None) -> None:
         super().__init__(default_csp or {})
 
-    def _format_value(self, key, theirs) -> CSPValType:
+    def _format_value(self, key: str, theirs: str | list[str]) -> CSPValType:
         # start with a list, to combine "ours" and "theirs"
         value = []
         ours = self.get(key)

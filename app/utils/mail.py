@@ -6,7 +6,6 @@ Setup app's mailer.
 """
 from __future__ import annotations
 
-import typing as t
 from threading import Thread
 
 from flask import Flask, current_app
@@ -20,7 +19,7 @@ def _send_async_email(app: Flask, msg: Message) -> None:
         mail.send(msg)
 
 
-def send_email(**kwargs: t.Any) -> None:
+def send_email(**kwargs: object) -> None:
     """Send a threaded email.
 
     Without threading the app will wait until the email has been sent

@@ -4,7 +4,7 @@ app.exceptions
 
 Register handling of error-codes and their corresponding pages.
 """
-import typing as t
+from __future__ import annotations
 
 from flask import Flask, render_template
 from werkzeug.exceptions import HTTPException
@@ -25,7 +25,7 @@ def init_app(app: Flask) -> None:
     :param app: Application factory object.
     """
 
-    def render_error(error: HTTPException) -> t.Tuple[str, int]:
+    def render_error(error: HTTPException) -> tuple[str, int]:
         """Render error template.
 
         If a HTTPException, pull the ``code`` attribute; default to 500.
