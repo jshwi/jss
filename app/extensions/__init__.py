@@ -5,7 +5,6 @@ app.extensions
 Each extension is initialized with ``init_app`` method.
 """
 from flask import Flask
-from flask_babel import Babel
 from flask_bootstrap import Bootstrap4
 from flask_compress import Compress
 from flask_debugtoolbar import DebugToolbarExtension
@@ -19,6 +18,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
 from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
+
+from app.extensions.babel import Babel
 
 debug_toolbar = DebugToolbarExtension()
 static_digest = FlaskStaticDigest()

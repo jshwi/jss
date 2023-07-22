@@ -25,11 +25,11 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.forms
+.. automodule:: app.extensions.babel
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.lang
+.. automodule:: app.forms
    :members:
    :undoc-members:
    :show-inheritance:

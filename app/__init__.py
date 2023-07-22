@@ -21,7 +21,6 @@ Registers:
     * This app's Content Security Policy
     * Exceptions for handling error pages
     * This app's registered ``Flask`` extensions
-    * This app's configured languages
     * Loggers from logging
     * Blueprints containing routing logic
     * This app's interactive shell
@@ -33,7 +32,6 @@ from app import (
     config,
     exceptions,
     extensions,
-    lang,
     log,
     routes,
     security,
@@ -59,7 +57,6 @@ def create_app() -> Flask:
     shell.init_app(app)
     cli.init_app(app)
     security.init_app(app)
-    lang.init_app(app)
     return app
 
 
