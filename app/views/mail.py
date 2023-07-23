@@ -1,5 +1,5 @@
 """
-app.utils.mail
+app.views.mail
 ==============
 
 Setup app's mailer.

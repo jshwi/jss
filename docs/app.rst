@@ -53,10 +53,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.utils.mail
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.utils.security
    :members:
    :undoc-members:
@@ -82,6 +78,10 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.views.forms
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.mail
    :members:
    :undoc-members:
    :show-inheritance:

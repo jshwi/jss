@@ -10,7 +10,6 @@ from jwt import InvalidTokenError
 from werkzeug import Response
 
 from app.models import User, db
-from app.utils.mail import send_email
 from app.utils.security import (
     generate_confirmation_token,
     generate_reset_password_token,
@@ -23,6 +22,7 @@ from app.views.forms import (
     ResetPasswordForm,
     ResetPasswordRequestForm,
 )
+from app.views.mail import send_email
 
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
