@@ -20,8 +20,8 @@ from flask_login import current_user, login_required
 from werkzeug import Response
 
 from app.models import Message, Notification, User, Usernames, db
-from app.utils.security import confirmation_required
 from app.views.forms import EditProfile, MessageForm
+from app.views.security import confirmation_required
 
 blueprint = Blueprint("user", __name__, url_prefix="/user")
 

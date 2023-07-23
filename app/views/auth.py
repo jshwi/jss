@@ -10,11 +10,6 @@ from jwt import InvalidTokenError
 from werkzeug import Response
 
 from app.models import User, db
-from app.utils.security import (
-    generate_confirmation_token,
-    generate_reset_password_token,
-    get_requested_reset_password_user,
-)
 from app.utils.user import create_user
 from app.views.forms import (
     LoginForm,
@@ -23,6 +18,11 @@ from app.views.forms import (
     ResetPasswordRequestForm,
 )
 from app.views.mail import send_email
+from app.views.security import (
+    generate_confirmation_token,
+    generate_reset_password_token,
+    get_requested_reset_password_user,
+)
 
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 

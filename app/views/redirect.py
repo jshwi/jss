@@ -13,13 +13,13 @@ from itsdangerous import BadSignature
 from werkzeug import Response
 
 from app.models import User, db
-from app.utils.security import (
+from app.views.forms import EmptyForm
+from app.views.mail import send_email
+from app.views.security import (
     confirm_token,
     confirmation_required,
     generate_confirmation_token,
 )
-from app.views.forms import EmptyForm
-from app.views.mail import send_email
 
 blueprint = Blueprint("redirect", __name__, url_prefix="/redirect")
 

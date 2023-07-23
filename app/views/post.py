@@ -11,8 +11,8 @@ from flask_login import current_user, login_required
 from werkzeug import Response
 
 from app.models import Post, db
-from app.utils.security import authorization_required
 from app.views.forms import PostForm
+from app.views.security import authorization_required
 
 blueprint = Blueprint("post", __name__, url_prefix="/post")
 

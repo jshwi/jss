@@ -1,5 +1,5 @@
 """
-app.utils.security
+app.views.security
 ==================
 
 Define app's security functionality.

@@ -14,7 +14,7 @@ from werkzeug import Response
 
 from app.extensions import db
 from app.models import Message, Notification, Post, Task, User
-from app.utils.security import admin_required
+from app.views.security import admin_required
 
 _INDEX = "index"
 
