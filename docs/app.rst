@@ -49,38 +49,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.routes
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.admin
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.auth
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.post
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.public
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.redirect
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.report
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.routes.user
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.shell
    :members:
    :undoc-members:
@@ -102,6 +70,38 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.admin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.auth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.post
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.public
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.redirect
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.report
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.user
    :members:
    :undoc-members:
    :show-inheritance:

@@ -835,7 +835,7 @@ def test_bad_token(
     with test_app.app_context():
         with mail.record_messages() as outbox:
             monkeypatch.setattr(
-                "app.routes.auth.generate_reset_password_token",
+                "app.views.auth.generate_reset_password_token",
                 lambda *_, **__: "bad_token",
             )
             auth.request_password_reset(MAIN_USER_EMAIL, follow_redirects=True)
@@ -2018,7 +2018,7 @@ def test_csp_report(
     with test_app.app_context():
         captured = Recorder()
         monkeypatch.setattr(
-            "app.routes.report.current_app.logger.info", captured
+            "app.views.report.current_app.logger.info", captured
         )
         application_csp_report = b'{"csp-report":{"report_stuff":"here"}}'
         response = client.post(

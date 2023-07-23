@@ -1,5 +1,5 @@
 """
-app.routes
+app.views
 ==========
 
 A view function is written to respond to application requests.
@@ -19,7 +19,7 @@ from flask_babel import get_locale
 from flask_login import current_user
 
 from app.extensions import db
-from app.routes import admin, auth, post, public, redirect, report, user
+from app.views import admin, auth, post, public, redirect, report, user
 
 
 def _before_request() -> None:

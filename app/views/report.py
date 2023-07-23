@@ -1,5 +1,5 @@
 """
-app.routes.report
+app.views.report
 =================
 """
 import json

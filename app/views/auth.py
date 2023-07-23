@@ -1,5 +1,5 @@
 """
-app.routes.auth
+app.views.auth
 ===============
 """
 from __future__ import annotations

@@ -1,5 +1,5 @@
 """
-app.routes.admin
+app.views.admin
 ================
 
 Admin page initialized with models for reading and writing.

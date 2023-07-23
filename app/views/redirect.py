@@ -1,5 +1,5 @@
 """
-app.routes.redirect
+app.views.redirect
 ===================
 """
 from datetime import datetime

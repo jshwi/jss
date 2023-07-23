@@ -26,7 +26,7 @@ Registers:
 """
 from flask import Flask
 
-from app import cli, config, exceptions, extensions, log, routes, shell
+from app import cli, config, exceptions, extensions, log, shell, views
 from app.version import __version__
 
 
@@ -42,7 +42,7 @@ def create_app() -> Flask:
     config.init_app(app)
     log.init_app(app)
     extensions.init_app(app)
-    routes.init_app(app)
+    views.init_app(app)
     exceptions.init_app(app)
     shell.init_app(app)
     cli.init_app(app)

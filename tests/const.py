@@ -281,33 +281,33 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: app/routes/redirect.py:44
+#: app/views/redirect.py:44
 msgid "Account already confirmed. Please login."
 msgstr ""
 
-#: app/routes/redirect.py:50
+#: app/views/redirect.py:50
 msgid "Your account has been verified."
 msgstr ""
 
-#: app/routes/redirect.py:53
+#: app/views/redirect.py:53
 msgid "The confirmation link is invalid or has expired."
 msgstr ""
 
-#: app/routes/redirect.py:80
+#: app/views/redirect.py:80
 msgid "A new confirmation email has been sent."
 msgstr ""
 
-#: app/routes/redirect.py:121
+#: app/views/redirect.py:121
 #, python-format
 msgid "You are now following %(username)s"
 msgstr ""
 
-#: app/routes/redirect.py:144
+#: app/views/redirect.py:144
 #, python-format
 msgid "You are no longer following %(username)s"
 msgstr ""
 
-#: app/routes/redirect.py:162
+#: app/views/redirect.py:162
 msgid "An export task is already in progress"
 msgstr ""
 

@@ -1,6 +1,6 @@
 """
-app.routes.public
-=================
+app.views.public
+================
 """
 from __future__ import annotations
 
