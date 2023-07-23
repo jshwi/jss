@@ -16,10 +16,10 @@ from flask_moment import Moment
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
-from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
 
 from app.extensions.babel import Babel
+from app.extensions.talisman import Talisman
 
 debug_toolbar = DebugToolbarExtension()
 static_digest = FlaskStaticDigest()

@@ -21,10 +21,10 @@ from flask_login import current_user
 
 from app import config
 from app.extensions import mail
+from app.extensions.talisman import ContentSecurityPolicy, CSPType
 from app.log import smtp_handler
 from app.models import Post, User, db
 from app.utils import lang
-from app.utils.csp import ContentSecurityPolicy, CSPType
 
 from .const import (
     ADMIN,

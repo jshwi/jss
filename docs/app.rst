@@ -29,6 +29,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.extensions.talisman
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.forms
    :members:
    :undoc-members:
@@ -73,19 +77,11 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.security
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.shell
    :members:
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.utils.csp
    :members:
    :undoc-members:
    :show-inheritance:

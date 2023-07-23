@@ -18,7 +18,6 @@ Registers:
 
     * This app's commandline interface
     * Config object from config module
-    * This app's Content Security Policy
     * Exceptions for handling error pages
     * This app's registered ``Flask`` extensions
     * Loggers from logging
@@ -27,16 +26,7 @@ Registers:
 """
 from flask import Flask
 
-from app import (
-    cli,
-    config,
-    exceptions,
-    extensions,
-    log,
-    routes,
-    security,
-    shell,
-)
+from app import cli, config, exceptions, extensions, log, routes, shell
 from app.version import __version__
 
 
@@ -56,7 +46,6 @@ def create_app() -> Flask:
     exceptions.init_app(app)
     shell.init_app(app)
     cli.init_app(app)
-    security.init_app(app)
     return app
 
 
