@@ -14,14 +14,13 @@ from flask import (
 )
 from werkzeug import Response
 
-from app.constants import GET, POST
 from app.forms import EmptyForm
 from app.models import Post, User
 
 blueprint = Blueprint("public", __name__)
 
 
-@blueprint.route("/", methods=[GET, POST])
+@blueprint.route("/", methods=["GET", "POST"])
 def index() -> str:
     """App's index page.
 
@@ -51,7 +50,7 @@ def index() -> str:
     )
 
 
-@blueprint.route("/profile/<username>", methods=[GET, POST])
+@blueprint.route("/profile/<username>", methods=["GET", "POST"])
 def profile(username: str) -> str | Response:
     """Render user's profile page.
 

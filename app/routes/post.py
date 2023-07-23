@@ -10,7 +10,6 @@ from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from werkzeug import Response
 
-from app.constants import GET, POST
 from app.forms import PostForm
 from app.models import Post, db
 from app.utils.security import authorization_required
@@ -18,7 +17,7 @@ from app.utils.security import authorization_required
 blueprint = Blueprint("post", __name__, url_prefix="/post")
 
 
-@blueprint.route("/create", methods=[GET, POST])
+@blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 @authorization_required
 def create() -> str | Response:
@@ -46,7 +45,7 @@ def create() -> str | Response:
     return render_template("post/create.html", form=form)
 
 
-@blueprint.route("/<int:id>", methods=[GET, POST])
+@blueprint.route("/<int:id>", methods=["GET", "POST"])
 def read(id: int) -> str | Response:
     """Render post page for selected post ID.
 
@@ -58,7 +57,7 @@ def read(id: int) -> str | Response:
     return render_template("post/read.html", post=post, revision=revision)
 
 
-@blueprint.route("/<int:id>/update", methods=[GET, POST])
+@blueprint.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
 @authorization_required
 def update(id: int) -> str | Response:
@@ -81,7 +80,7 @@ def update(id: int) -> str | Response:
     return render_template("post/update.html", post=post, form=form)
 
 
-@blueprint.route("/<int:id>/delete", methods=[POST])
+@blueprint.route("/<int:id>/delete", methods=["POST"])
 @login_required
 @authorization_required
 def delete(id: int) -> Response:

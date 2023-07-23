@@ -12,7 +12,6 @@ from flask_login import current_user, login_required
 from itsdangerous import BadSignature
 from werkzeug import Response
 
-from app.constants import GET, POST
 from app.forms import EmptyForm
 from app.models import User, db
 from app.utils.mail import send_email
@@ -25,7 +24,7 @@ from app.utils.security import (
 blueprint = Blueprint("redirect", __name__, url_prefix="/redirect")
 
 
-@blueprint.route("/<token>", methods=[GET])
+@blueprint.route("/<token>", methods=["GET"])
 @login_required
 def confirm_email(token: str) -> Response:
     """Confirm each individual user registering with their email.
@@ -54,7 +53,7 @@ def confirm_email(token: str) -> Response:
     return redirect(url_for("index"))
 
 
-@blueprint.route("/resend", methods=[GET])
+@blueprint.route("/resend", methods=["GET"])
 @login_required
 def resend_confirmation() -> Response:
     """Resend verification email.
@@ -80,7 +79,7 @@ def resend_confirmation() -> Response:
     return redirect(url_for("auth.unconfirmed"))
 
 
-@blueprint.route("/follow/<username>", methods=[POST])
+@blueprint.route("/follow/<username>", methods=["POST"])
 @login_required
 @confirmation_required
 def follow(username: str) -> Response:
@@ -103,7 +102,7 @@ def follow(username: str) -> Response:
     return redirect(url_for("public.profile", username=username))
 
 
-@blueprint.route("/unfollow/<username>", methods=[POST])
+@blueprint.route("/unfollow/<username>", methods=["POST"])
 @login_required
 @confirmation_required
 def unfollow(username: str) -> Response:

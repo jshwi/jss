@@ -22,17 +22,14 @@ from sqlalchemy_continuum.model_builder import ModelBuilder
 from sqlalchemy_utils import generic_repr
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.constants import DYNAMIC
 from app.extensions import db
-
-_USER_ID = "user.id"
 
 make_versioned(user_cls=None)
 
 followers = db.Table(
     "followers",
-    db.Column("follower_id", db.Integer, db.ForeignKey(_USER_ID)),
-    db.Column("followed_id", db.Integer, db.ForeignKey(_USER_ID)),
+    db.Column("follower_id", db.Integer, db.ForeignKey("user.id")),
+    db.Column("followed_id", db.Integer, db.ForeignKey("user.id")),
 )
 
 
@@ -63,7 +60,7 @@ class User(UserMixin, BaseModel):
     password_hash = db.Column(db.String(128))
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     admin = db.Column(db.Boolean, default=False)
-    posts = db.relationship("Post", backref="author", lazy=DYNAMIC)
+    posts = db.relationship("Post", backref="author", lazy="dynamic")
     confirmed = db.Column(db.Boolean, default=False)
     confirmed_on = db.Column(db.DateTime)
     about_me = db.Column(db.String(140))
@@ -74,26 +71,26 @@ class User(UserMixin, BaseModel):
         secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref("followers", lazy=DYNAMIC),
-        lazy=DYNAMIC,
+        backref=db.backref("followers", lazy="dynamic"),
+        lazy="dynamic",
     )
     messages_sent = db.relationship(
         "Message",
         foreign_keys="Message.sender_id",
         backref="author",
-        lazy=DYNAMIC,
+        lazy="dynamic",
     )
     messages_received = db.relationship(
         "Message",
         foreign_keys="Message.recipient_id",
         backref="recipient",
-        lazy=DYNAMIC,
+        lazy="dynamic",
     )
     last_message_read_time = db.Column(db.DateTime)
     notifications = db.relationship(
-        "Notification", backref="user", lazy=DYNAMIC
+        "Notification", backref="user", lazy="dynamic"
     )
-    tasks = db.relationship("Task", backref="user", lazy=DYNAMIC)
+    tasks = db.relationship("Task", backref="user", lazy="dynamic")
 
     def set_password(self, password: str) -> None:
         """Hash and store a new user password.
@@ -226,7 +223,7 @@ class Post(BaseModel):
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String)
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     edited = db.Column(db.DateTime, default=None)
 
     def get_version(self, index: int) -> ModelBuilder | None:
@@ -291,8 +288,8 @@ class Message(BaseModel):
     """Database schema for user messages."""
 
     id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
-    recipient_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+    sender_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    recipient_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     body = db.Column(db.String(140))
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
@@ -327,7 +324,7 @@ class Task(BaseModel):
     id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(128), index=True)
     description = db.Column(db.String(128))
-    user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     complete = db.Column(db.Boolean, default=False)
 
 
@@ -336,7 +333,7 @@ class Usernames(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(_USER_ID))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 
 db.configure_mappers()

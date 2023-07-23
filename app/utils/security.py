@@ -16,7 +16,6 @@ from flask_login import current_user
 from itsdangerous import URLSafeTimedSerializer
 from werkzeug import Response
 
-from app.constants import SECRET_KEY
 from app.extensions import login_manager
 from app.models import User
 
@@ -98,7 +97,7 @@ def generate_confirmation_token(email: str) -> str | bytes:
     :param email: Email of recipient.
     :return: Unique token for user to authenticate with.
     """
-    serializer = URLSafeTimedSerializer(current_app.config[SECRET_KEY])
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
     return serializer.dumps(
         email, salt=current_app.config["SECURITY_PASSWORD_SALT"]
     )
@@ -111,7 +110,7 @@ def confirm_token(token: str, max_age: int = 3600) -> str:
     :param max_age: Max age of token before considered invalid.
     :return: Return user's email if valid.
     """
-    serializer = URLSafeTimedSerializer(current_app.config[SECRET_KEY])
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
     return serializer.loads(
         token,
         salt=current_app.config["SECURITY_PASSWORD_SALT"],
@@ -128,7 +127,7 @@ def generate_reset_password_token(user_id: int, max_age: int = 600) -> str:
     """
     return jwt.encode(
         {"reset_password": user_id, "exp": time() + max_age},
-        current_app.config[SECRET_KEY],
+        current_app.config["SECRET_KEY"],
         algorithm="HS256",
     )
 
@@ -140,6 +139,6 @@ def get_requested_reset_password_user(token: str) -> User:
     :return: User, if the token is valid, else None.
     """
     id = jwt.decode(
-        token, current_app.config[SECRET_KEY], algorithms=["HS256"]
+        token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
     )["reset_password"]
     return User.query.get(id)

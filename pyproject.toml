@@ -20,10 +20,19 @@ skip-magic-trailing-comma = true
 
 [tool.constcheck]
 ignore_strings = [
+  "COPYRIGHT_AUTHOR",
+  "GET",
+  "POST",
+  "Password",
+  "SECRET_KEY",
+  "Submit",
+  "TRANSLATIONS_DIR",
   "data",
+  "dynamic",
   "index",
   "store",
   "store_true",
+  "user.id",
   "utf-8"
 ]
 

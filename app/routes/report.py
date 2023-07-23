@@ -6,13 +6,12 @@ import json
 
 from flask import Blueprint, Response, current_app, make_response, request
 
-from app.constants import POST
 from app.extensions import csrf_protect
 
 blueprint = Blueprint("report", __name__, url_prefix="/report")
 
 
-@blueprint.route("/csp_violations", methods=[POST])
+@blueprint.route("/csp_violations", methods=["POST"])
 @csrf_protect.exempt
 def csp_report() -> Response:
     """Post Content Security Report to ``report-uri``.

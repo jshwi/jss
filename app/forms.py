@@ -24,7 +24,6 @@ from wtforms.validators import (
     ValidationError,
 )
 
-from app.constants import PASSWORD, SUBMIT
 from app.models import User
 
 
@@ -37,7 +36,7 @@ class RegistrationForm(FlaskForm):
     email = StringField(
         _l("Email"), validators=[DataRequired(), Email(), Length(max=120)]
     )
-    password = PasswordField(_l(PASSWORD), validators=[DataRequired()])
+    password = PasswordField(_l("Password"), validators=[DataRequired()])
     confirm_password = PasswordField(
         _l("Confirm Password"),
         validators=[DataRequired(), EqualTo("password")],
@@ -74,7 +73,7 @@ class LoginForm(FlaskForm):
     """Form for logging in an existing user."""
 
     username = StringField(_l("Username"), validators=[DataRequired()])
-    password = PasswordField(_l(PASSWORD), validators=[DataRequired()])
+    password = PasswordField(_l("Password"), validators=[DataRequired()])
     remember_me = BooleanField(_l("Remember Me"))
     submit = SubmitField(_l("Sign In"))
 
@@ -86,7 +85,7 @@ class PostForm(FlaskForm):
     body = PageDownField(
         _l("Body"), validators=[DataRequired()], render_kw={"rows": 12}
     )
-    submit = SubmitField(_l(SUBMIT))
+    submit = SubmitField(_l("Submit"))
 
 
 class ResetPasswordRequestForm(FlaskForm):
@@ -99,7 +98,7 @@ class ResetPasswordRequestForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
     """Form for resetting an existing user's password."""
 
-    password = PasswordField(_l(PASSWORD), validators=[DataRequired()])
+    password = PasswordField(_l("Password"), validators=[DataRequired()])
     confirm_password = PasswordField(
         _l("Confirm Password"),
         validators=[DataRequired(), EqualTo(_l("password"))],
@@ -114,13 +113,13 @@ class EditProfile(FlaskForm):
     about_me = TextAreaField(
         _l("About me"), validators=[Length(min=0, max=140)]
     )
-    submit = SubmitField(_l(SUBMIT))
+    submit = SubmitField(_l("Submit"))
 
 
 class EmptyForm(FlaskForm):
     """Empty form: Submit only."""
 
-    submit = SubmitField(_l(SUBMIT))
+    submit = SubmitField(_l("Submit"))
 
 
 class MessageForm(FlaskForm):
@@ -129,4 +128,4 @@ class MessageForm(FlaskForm):
     message = TextAreaField(
         _l("Message"), validators=[DataRequired(), Length(min=0, max=140)]
     )
-    submit = SubmitField(_l(SUBMIT))
+    submit = SubmitField(_l("Submit"))
