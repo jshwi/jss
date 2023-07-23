@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.25.0...HEAD)
 ------------------------------------------------------------------------
 ### Changed
+- ensure `POT-Creation-Date` is not included in translation headers
 - remove `POT-Creation-Date` from translation headers
 
 [1.25.0](https://github.com/jshwi/jss/releases/tag/v1.25.0) - 2023-07-23
