@@ -1,5 +1,3 @@
-ENCODING  # unused variable (tests/const.py:77)
-PASSWORD  # unused variable (tests/const.py:70)
 _.ADMINS  # unused property (app/config.py:115)
 _.ADMIN_SECRET  # unused property (app/config.py:337)
 _.BABEL_FILENAME  # unused property (app/config.py:342)
