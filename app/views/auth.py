@@ -10,7 +10,7 @@ from jwt import InvalidTokenError
 from werkzeug import Response
 
 from app.models import User, db
-from app.utils.user import create_user
+from app.user import create_user
 from app.views.forms import (
     LoginForm,
     RegistrationForm,

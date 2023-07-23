@@ -12,7 +12,7 @@ from flask import current_app
 from flask.cli import with_appcontext
 
 from app.models import User
-from app.utils.user import create_user
+from app.user import create_user
 
 
 def create_user_override(

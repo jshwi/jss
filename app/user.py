@@ -1,6 +1,6 @@
 """
-app.utils.user
-==============
+app.user
+========
 
 Functionality for user's of the app.
 """

@@ -49,11 +49,7 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.utils.user
+.. automodule:: app.user
    :members:
    :undoc-members:
    :show-inheritance:
