@@ -12,7 +12,6 @@ from flask_login import current_user, login_required
 from itsdangerous import BadSignature
 from werkzeug import Response
 
-from app.forms import EmptyForm
 from app.models import User, db
 from app.utils.mail import send_email
 from app.utils.security import (
@@ -20,6 +19,7 @@ from app.utils.security import (
     confirmation_required,
     generate_confirmation_token,
 )
+from app.views.forms import EmptyForm
 
 blueprint = Blueprint("redirect", __name__, url_prefix="/redirect")
 

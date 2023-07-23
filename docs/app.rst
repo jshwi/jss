@@ -37,10 +37,6 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.forms
-   :members:
-   :undoc-members:
-   :show-inheritance:
 .. automodule:: app.log
    :members:
    :undoc-members:
@@ -82,6 +78,10 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.views.auth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule:: app.views.forms
    :members:
    :undoc-members:
    :show-inheritance:

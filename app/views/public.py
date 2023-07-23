@@ -14,8 +14,8 @@ from flask import (
 )
 from werkzeug import Response
 
-from app.forms import EmptyForm
 from app.models import Post, User
+from app.views.forms import EmptyForm
 
 blueprint = Blueprint("public", __name__)
 
