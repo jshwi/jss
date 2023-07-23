@@ -15,153 +15,64 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.12.1\n"
 
-#: app/forms.py:34 app/forms.py:75
-msgid "Username"
-msgstr "Nombre de usuario"
-
-#: app/forms.py:37 app/forms.py:94
-msgid "Email"
-msgstr "Email"
-
-#: app/forms.py:39 app/forms.py:76 app/forms.py:101
-msgid "Password"
-msgstr "Contraseña"
-
-#: app/forms.py:41 app/forms.py:103
-msgid "Confirm Password"
-msgstr "Confirmar Contraseña"
-
-#: app/dom/navbar.py:90 app/forms.py:44 app/templates/auth/register.html:6
-msgid "Register"
-msgstr "Registrarse"
-
-#: app/forms.py:56
-msgid "Username is taken"
-msgstr "Se toma el nombre de usuario"
-
-#: app/forms.py:68
-msgid "A user with this email address is already registered"
-msgstr "Un usuario con esta dirección de correo electrónico ya está registrado"
-
-#: app/forms.py:77
-msgid "Remember Me"
-msgstr "Recordarme"
-
-#: app/forms.py:78 app/templates/auth/login.html:6
-msgid "Sign In"
-msgstr "Ingresar"
-
-#: app/forms.py:84
-msgid "Title"
-msgstr "Título"
-
-#: app/forms.py:86
-msgid "Body"
-msgstr "Cuerpo"
-
-#: app/forms.py:88 app/forms.py:116 app/forms.py:122 app/forms.py:131
-msgid "Submit"
-msgstr "Presentar"
-
-#: app/forms.py:95
-msgid "Request Password Reset"
-msgstr "Petición para la recuperación de contraseña"
-
-#: app/forms.py:104
-msgid "password"
-msgstr "contraseña"
-
-#: app/forms.py:106 app/templates/auth/reset_password.html:6
-msgid "Reset Password"
-msgstr "Restablecer la contraseña"
-
-#: app/forms.py:112
-msgid "username"
-msgstr "uombre de usuario"
-
-#: app/forms.py:114
-msgid "About me"
-msgstr "Acerca de mí"
-
-#: app/forms.py:129
-msgid "Message"
-msgstr "Mensaje"
-
-#: app/dom/macros.py:51
-msgid "Versions"
-msgstr "Versiones"
-
-#: app/dom/macros.py:131
-msgid "Previous"
-msgstr "Previo"
-
-#: app/dom/macros.py:142
-msgid "Next"
-msgstr "Próximo"
-
-#: app/dom/navbar.py:25 app/templates/user/messages.html:7
-msgid "Messages"
-msgstr "Mensajes"
-
-#: app/dom/navbar.py:42
-msgid "Profile"
-msgstr "Perfil"
-
-#: app/dom/navbar.py:44
-msgid "Logout"
-msgstr "Cerrar sesión"
-
-#: app/dom/navbar.py:48
-msgid "Console"
-msgstr "Consola"
-
-#: app/dom/navbar.py:49
-msgid "RQ Dashboard"
-msgstr "Panel de RQ"
-
-#: app/dom/navbar.py:68
+#: app/templates/navbar.html:39
 msgid "Home"
 msgstr "Hogar"
 
-#: app/dom/navbar.py:76
+#: app/templates/navbar.html:82
 msgid "New"
 msgstr "Nuevo"
 
-#: app/dom/navbar.py:91
+#: app/templates/navbar.html:102
+msgid "Console"
+msgstr "Consola"
+
+#: app/templates/navbar.html:111
+msgid "Profile"
+msgstr "Perfil"
+
+#: app/templates/navbar.html:118
+msgid "Logout"
+msgstr "Cerrar sesión"
+
+#: app/templates/auth/register.html:6 app/templates/navbar.html:125
+#: app/views/forms.py:44
+msgid "Register"
+msgstr "Registrarse"
+
+#: app/templates/navbar.html:130
 msgid "Login"
 msgstr "Acceso"
-
-#: app/routes/redirect.py:44
-msgid "Account already confirmed. Please login."
-msgstr "Cuenta ya confirmada. Por favor Iniciar sesión."
-
-#: app/routes/redirect.py:50
-msgid "Your account has been verified."
-msgstr "Tu cuenta ha sido verificada."
-
-#: app/routes/redirect.py:53
-msgid "The confirmation link is invalid or has expired."
-msgstr "El enlace de confirmación no es válido o ha caducado."
-
-#: app/routes/redirect.py:80
-msgid "A new confirmation email has been sent."
-msgstr "Se ha enviado un nuevo correo electrónico de confirmación."
-
-#: app/routes/redirect.py:121
-#, python-format
-msgid "You are now following %(username)s"
-msgstr "Ahora estás siguiendo a %(username)s"
-
-#: app/routes/redirect.py:144
-#, python-format
-msgid "You are no longer following %(username)s"
-msgstr "Ya no sigues a %(username)s"
 
 #: app/templates/posts.html:23 app/templates/public/profile.html:35
 msgid "Edit"
 msgstr "Editar"
+
+#: app/templates/posts.html:27
+msgid "Versions"
+msgstr "Versiones"
+
+#: app/templates/posts.html:36
+msgid "This revision"
+msgstr ""
+
+#: app/templates/posts.html:40
+msgid "Previous revision"
+msgstr "Previo"
+
+#: app/templates/posts.html:67 app/templates/posts.html:73
+msgid "Previous"
+msgstr "Previo"
+
+#: app/templates/posts.html:80 app/templates/posts.html:86
+msgid "Next"
+msgstr "Próximo"
+
+#: app/templates/auth/login.html:6 app/views/forms.py:78
+msgid "Sign In"
+msgstr "Ingresar"
 
 #: app/templates/auth/login.html:16
 msgid "New User?"
@@ -192,6 +103,10 @@ msgid "Please enter your email to receive a password reset link"
 msgstr ""
 "Ingrese su correo electrónico para recibir un enlace de restablecimiento "
 "de contraseña"
+
+#: app/templates/auth/reset_password.html:6 app/views/forms.py:106
+msgid "Reset Password"
+msgstr "Restablecer la contraseña"
 
 #: app/templates/auth/reset_password.html:10
 msgid "Please enter your new password"
@@ -244,10 +159,18 @@ msgid "New Post"
 msgstr "Nueva publicación"
 
 #: app/templates/post/read.html:19
+msgid "Posted"
+msgstr "Publicaciones"
+
+#: app/templates/post/read.html:22
+msgid "Edited"
+msgstr "Editar"
+
+#: app/templates/post/read.html:32
 msgid "Update"
 msgstr "Actualizar"
 
-#: app/templates/post/read.html:21
+#: app/templates/post/read.html:34
 msgid "Restore"
 msgstr "Restaurar"
 
@@ -275,19 +198,15 @@ msgstr "seguidores"
 msgid "following."
 msgstr "siguiendo"
 
-#: app/templates/public/profile.html:39
-msgid "Export posts"
-msgstr "Exportar publicaciones"
-
-#: app/templates/public/profile.html:43
+#: app/templates/public/profile.html:38
 msgid "Send private message"
 msgstr "Enviar mensaje privado"
 
-#: app/templates/public/profile.html:49
+#: app/templates/public/profile.html:44
 msgid "Follow"
 msgstr "Seguir"
 
-#: app/templates/public/profile.html:56
+#: app/templates/public/profile.html:51
 msgid "Unfollow"
 msgstr "Dejar de seguir"
 
@@ -295,6 +214,97 @@ msgstr "Dejar de seguir"
 msgid "Edit Profile"
 msgstr "Editar Perfil"
 
+#: app/templates/user/messages.html:7
+msgid "Messages"
+msgstr "Mensajes"
+
 #: app/templates/user/send_message.html:6
 msgid "Send Message to"
 msgstr "Enviar mensaje a"
+
+#: app/views/forms.py:34 app/views/forms.py:75
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: app/views/forms.py:37 app/views/forms.py:94
+msgid "Email"
+msgstr "Email"
+
+#: app/views/forms.py:39 app/views/forms.py:76 app/views/forms.py:101
+msgid "Password"
+msgstr "Contraseña"
+
+#: app/views/forms.py:41 app/views/forms.py:103
+msgid "Confirm Password"
+msgstr "Confirmar Contraseña"
+
+#: app/views/forms.py:56
+msgid "Username is taken"
+msgstr "Se toma el nombre de usuario"
+
+#: app/views/forms.py:68
+msgid "A user with this email address is already registered"
+msgstr "Un usuario con esta dirección de correo electrónico ya está registrado"
+
+#: app/views/forms.py:77
+msgid "Remember Me"
+msgstr "Recordarme"
+
+#: app/views/forms.py:84
+msgid "Title"
+msgstr "Título"
+
+#: app/views/forms.py:86
+msgid "Body"
+msgstr "Cuerpo"
+
+#: app/views/forms.py:88 app/views/forms.py:116 app/views/forms.py:122
+#: app/views/forms.py:131
+msgid "Submit"
+msgstr "Presentar"
+
+#: app/views/forms.py:95
+msgid "Request Password Reset"
+msgstr "Petición para la recuperación de contraseña"
+
+#: app/views/forms.py:104
+msgid "password"
+msgstr "contraseña"
+
+#: app/views/forms.py:112
+msgid "username"
+msgstr "uombre de usuario"
+
+#: app/views/forms.py:114
+msgid "About me"
+msgstr "Acerca de mí"
+
+#: app/views/forms.py:129
+msgid "Message"
+msgstr "Mensaje"
+
+#: app/views/redirect.py:42
+msgid "Account already confirmed. Please login."
+msgstr "Cuenta ya confirmada. Por favor Iniciar sesión."
+
+#: app/views/redirect.py:48
+msgid "Your account has been verified."
+msgstr "Tu cuenta ha sido verificada."
+
+#: app/views/redirect.py:51
+msgid "The confirmation link is invalid or has expired."
+msgstr "El enlace de confirmación no es válido o ha caducado."
+
+#: app/views/redirect.py:78
+msgid "A new confirmation email has been sent."
+msgstr "Se ha enviado un nuevo correo electrónico de confirmación."
+
+#: app/views/redirect.py:100
+#, python-format
+msgid "You are now following %(username)s"
+msgstr "Ahora estás siguiendo a %(username)s"
+
+#: app/views/redirect.py:123
+#, python-format
+msgid "You are no longer following %(username)s"
+msgstr "Ya no sigues a %(username)s"

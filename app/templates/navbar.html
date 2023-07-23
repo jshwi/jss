@@ -36,7 +36,7 @@
       {% if config["NAVBAR_HOME"] %}
         <li class="nav-item" href="{{ url_for("index") }}" title="Home">
           <a class="nav-link" href="{{ url_for("index") }}">
-            Home
+            {{ _("Home") }}
           </a>
         </li>
       {% endif %}
@@ -79,7 +79,7 @@
             <a class="nav-link"
                href="{{ url_for("post.create") }}"
                title="New">
-              New
+              {{ _("New") }}
             </a>
           </li>
         {% endif %}
@@ -99,7 +99,7 @@
         {% if current_user.admin %}
           <li class="nav-item" href="/admin" title="Console">
             <a class="nav-link" href="/admin">
-              Console
+              {{ _("Console") }}
             </a>
           </li>
         {% endif %}
@@ -108,26 +108,26 @@
             title="Profile">
           <a class="nav-link"
              href="{{ url_for("public.profile", username=current_user.username) }}">
-            Profile
+            {{ _("Profile") }}
           </a>
         </li>
         <li class="nav-item"
             href="{{ url_for("auth.logout") }}"
             title="Logout">
           <a class="nav-link" href="{{ url_for("auth.logout") }}">
-            Logout
+            {{ _("Logout") }}
           </a>
         </li>
       {% else %}
         <li class="nav-item" href="{{ url_for("auth.register") }}"
             title="Register">
           <a class="nav-link" href="{{ url_for("auth.register") }}">
-            Register
+            {{ _("Register") }}
           </a>
         </li>
         <li class="nav-item" href="{{ url_for("auth.login") }}" title="Login">
           <a class="nav-link" href="{{ url_for("auth.login") }}">
-            Login
+            {{ _("Login") }}
           </a>
         </li>
       {% endif %}
