@@ -43,10 +43,6 @@ def _pybabel(positional: str, *args: str | os.PathLike) -> None:
     subprocess.run(["pybabel", positional, *args], check=True)
 
 
-def _strip_extra_newline(path: Path) -> None:
-    path.write_text(path.read_text()[:-1])
-
-
 def _add_translator() -> None:
     pot_file = _pot_file()
     pot_file.write_text(
@@ -56,6 +52,16 @@ def _add_translator() -> None:
         .replace("EMAIL@ADDRESS", current_app.config["COPYRIGHT_EMAIL"]),
         encoding="utf-8",
     )
+
+
+def _remove_headers(file: Path) -> None:
+    """Remove problematic headers (e.g. that cause merge conflicts)."""
+    lines = []
+    for line in file.read_text(encoding="utf-8").splitlines():
+        if not line.startswith('"POT-Creation-Date:'):
+            lines.append(line)
+
+    file.write_text("\n".join(lines), encoding="utf-8")
 
 
 def _pybabel_extract() -> None:
@@ -114,7 +120,8 @@ def translate_update_cli() -> None:
     _pybabel_extract()
     _pybabel_update()
     for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-        _strip_extra_newline(lang / _lc_dir() / _po_file())
+        file = lang / _lc_dir() / _po_file()
+        _remove_headers(file)
 
     os.remove(_pot_file())
 
@@ -139,9 +146,10 @@ def translate_init_cli(lang: str) -> None:
     """
     _pybabel_extract()
     _pybabel_init(lang)
-    _strip_extra_newline(
+    file = (
         current_app.config["TRANSLATIONS_DIR"] / lang / _lc_dir() / _po_file()
     )
+    _remove_headers(file)
     os.remove(_pot_file())
 
 
