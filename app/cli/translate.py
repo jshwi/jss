@@ -17,11 +17,6 @@ from flask.cli import with_appcontext
 from app.version import __version__
 
 
-#: Evaluated within application context
-def _po_file() -> Path:
-    return Path("messages.po")
-
-
 def _pybabel(positional: str, *args: str | os.PathLike) -> None:
     subprocess.run(["pybabel", positional, *args], check=True)
 
@@ -100,7 +95,7 @@ def translate_update_cli() -> None:
     _pybabel_extract()
     _pybabel_update()
     for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-        file = lang / "LC_MESSAGES" / _po_file()
+        file = lang / "LC_MESSAGES" / "messages.po"
         _remove_headers(file)
 
     os.remove("messages.pot")
@@ -111,7 +106,7 @@ def translate_compile_cli() -> None:
     tdir: Path = current_app.config["TRANSLATIONS_DIR"]
     if tdir.is_dir():
         for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-            catalog = lang / "LC_MESSAGES" / _po_file()
+            catalog = lang / "LC_MESSAGES" / "messages.po"
             if catalog.is_file():
                 _pybabel_compile()
                 break
@@ -130,7 +125,7 @@ def translate_init_cli(lang: str) -> None:
         current_app.config["TRANSLATIONS_DIR"]
         / lang
         / "LC_MESSAGES"
-        / _po_file()
+        / "messages.po"
     )
     _remove_headers(file)
     os.remove("messages.pot")
