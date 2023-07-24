@@ -340,11 +340,6 @@ class _Config(Env):
         return self.str("ADMIN_SECRET", default=None)
 
     @property
-    def BABEL_FILENAME(self) -> str:
-        """Name of .pot file."""
-        return self.str("BABEL_FILENAME", default="messages")
-
-    @property
     def TRANSLATIONS_DIR(self) -> Path:
         """Dir to store translations in."""
         return self.path(

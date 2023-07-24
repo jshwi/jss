@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - fix Spanish translations
 
+### Removed
+- remove `BABEL_FILENAME` config variable
+
 [1.25.0](https://github.com/jshwi/jss/releases/tag/v1.25.0) - 2023-07-23
 ------------------------------------------------------------------------
 ### Changed
