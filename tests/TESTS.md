@@ -290,11 +290,6 @@ Test `POST` request to follow and unfollow a user.
 Test for correct contents in post page response.
 
 
-### Pot file
-
-Test `_pot_file` which is monkeypatched above.
-
-
 ### Profile page
 
 Test response when visiting profile page of existing user.
