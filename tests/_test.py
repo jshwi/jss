@@ -20,7 +20,6 @@ from flask.testing import FlaskClient, FlaskCliRunner
 from flask_login import current_user
 
 from app import config
-from app.cli import translate
 from app.extensions import mail
 from app.extensions.talisman import ContentSecurityPolicy, CSPType
 from app.log import smtp_handler
@@ -33,7 +32,6 @@ from .const import (
     ADMIN_USER_PASSWORD,
     ADMIN_USER_ROUTE,
     ADMIN_USER_USERNAME,
-    APP_UTILS_LANG_POT_FILE,
     APP_UTILS_LANG_SUBPROCESS_RUN,
     AUTHORIZED_USER_EMAIL,
     AUTHORIZED_USER_PASSWORD,
@@ -2085,37 +2083,31 @@ def test_jinja2_required_extensions() -> None:
 
 # noinspection DuplicatedCode
 def test_translate_init_files(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    runner: FlaskCliRunner,
+    monkeypatch: pytest.MonkeyPatch, test_app: Flask, runner: FlaskCliRunner
 ) -> None:
     """Test management of files when running ``flask translate init``.
 
-    :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test application.
     :param runner: Test application cli.
     """
-    pot_file = tmp_path / MESSAGES_POT
     tdir: Path = test_app.config[TRANSLATIONS_DIR]
     lang_arg = "es"
     lc_dir = tdir / lang_arg / "LC_MESSAGES"
     po_file = lc_dir / MESSAGES_PO
 
     def _extract():
-        pot_file.write_text(POT_CONTENTS)
+        Path(MESSAGES_POT).write_text(POT_CONTENTS)
 
     def _init():
         lc_dir.mkdir(parents=True)
-        shutil.copy2(pot_file, po_file)
+        shutil.copy2(MESSAGES_POT, po_file)
 
     commands = [_extract, _init]
 
     def _pybabel(_: str, *__: str | os.PathLike) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
     monkeypatch.setattr("app.cli.translate._pybabel", _pybabel)
     result = runner.invoke(
         args=[TRANSLATE, INIT, lang_arg], catch_exceptions=False
@@ -2123,7 +2115,7 @@ def test_translate_init_files(
     po_contents = po_file.read_text(encoding="utf-8")
     assert "<Result okay>" in str(result)
     assert POT_CONTENTS[-3:] == '"\n\n'
-    assert not pot_file.is_file()
+    assert not Path(MESSAGES_POT).is_file()
     assert po_contents[-3:] == '""\n'
     assert f"{COPYRIGHT_AUTHOR} <{COPYRIGHT_EMAIL}>, 2022" in po_contents
     assert f"Report-Msgid-Bugs-To: {COPYRIGHT_EMAIL}" in po_contents
@@ -2137,50 +2129,44 @@ def test_translate_init_files(
 
 # noinspection DuplicatedCode
 def test_translate_update_files(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    test_app: Flask,
-    runner: FlaskCliRunner,
+    monkeypatch: pytest.MonkeyPatch, test_app: Flask, runner: FlaskCliRunner
 ) -> None:
     """Test management of files when running ``flask translate update``.
 
-    :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
     :param test_app: Test application.
     :param runner: Test application cli.
     """
-    pot_file = tmp_path / MESSAGES_POT
     tdir: Path = test_app.config[TRANSLATIONS_DIR]
     lang_arg = "es"
     lc_dir = tdir / lang_arg / "LC_MESSAGES"
     po_file = lc_dir / MESSAGES_PO
 
     def _extract():
-        pot_file.write_text(POT_CONTENTS)
+        Path(MESSAGES_POT).write_text(POT_CONTENTS)
 
     def _init():
         lc_dir.mkdir(parents=True)
-        shutil.copy2(pot_file, po_file)
+        shutil.copy2(Path(MESSAGES_POT), po_file)
 
     def _update():
-        shutil.copy2(pot_file, po_file)
+        shutil.copy2(Path(MESSAGES_POT), po_file)
 
     _extract()
     _init()
-    os.remove(pot_file)
+    os.remove(Path(MESSAGES_POT))
 
     commands = [_extract, _update]
 
     def _pybabel(_: str, *__: str | os.PathLike) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
     monkeypatch.setattr("app.cli.translate._pybabel", _pybabel)
     result = runner.invoke(args=[TRANSLATE, "update"], catch_exceptions=False)
     po_contents = po_file.read_text(encoding="utf-8")
     assert "<Result okay>" in str(result)
     assert POT_CONTENTS[-3:] == '"\n\n'
-    assert not pot_file.is_file()
+    assert not Path(MESSAGES_POT).is_file()
     assert po_contents[-3:] == '""\n'
     assert f"{COPYRIGHT_AUTHOR} <{COPYRIGHT_EMAIL}>, 2022" in po_contents
     assert f"Report-Msgid-Bugs-To: {COPYRIGHT_EMAIL}" in po_contents
@@ -2194,21 +2180,18 @@ def test_translate_update_files(
 
 # noinspection DuplicatedCode
 def test_translate_args(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
+    monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
 ) -> None:
     """Test commands called when invoking ``flask translate init``.
 
-    :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
     :param runner: Test application cli.
     """
     commands = []
-    pot_file = tmp_path / MESSAGES_POT
-    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
 
     def _subprocess_run(args: t.List[str | os.PathLike], **_: bool) -> None:
         commands.extend(args)
-        pot_file.write_text(POT_CONTENTS)
+        Path(MESSAGES_POT).write_text(POT_CONTENTS)
 
     monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
     runner.invoke(args=[TRANSLATE, INIT, "es"])
@@ -2219,21 +2202,18 @@ def test_translate_args(
 
 # noinspection DuplicatedCode
 def test_translate_update_args(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
+    monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
 ) -> None:
     """Test commands called when invoking ``flask translate update``.
 
-    :param tmp_path: Create and return temporary ``Path`` object.
     :param monkeypatch: Mock patch environment and attributes.
     :param runner: Test application cli.
     """
     commands = []
-    pot_file = tmp_path / MESSAGES_POT
-    monkeypatch.setattr(APP_UTILS_LANG_POT_FILE, lambda: pot_file)
 
     def _subprocess_run(args: t.List[str | os.PathLike], **_: bool) -> None:
         commands.extend(args)
-        pot_file.write_text(POT_CONTENTS)
+        Path(MESSAGES_POT).write_text(POT_CONTENTS)
 
     monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
     runner.invoke(args=[TRANSLATE, "update"])
@@ -2266,15 +2246,6 @@ def test_translate_compile(
     runner.invoke(args=[TRANSLATE, COMPILE], catch_exceptions=False)
     assert PYBABEL in commands
     assert COMPILE in commands
-
-
-def test_pot_file(test_app: Flask) -> None:
-    """Test ``_pot_file`` which is monkeypatched above.
-
-    :param test_app: Test application.
-    """
-    with test_app.app_context():
-        assert translate._pot_file() == Path(MESSAGES_POT)
 
 
 def test_has_languages(test_app: Flask) -> None:

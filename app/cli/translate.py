@@ -18,11 +18,6 @@ from app.version import __version__
 
 
 #: Evaluated within application context
-def _pot_file() -> Path:
-    return Path("messages.pot")
-
-
-#: Evaluated within application context
 def _po_file() -> Path:
     return Path("messages.po")
 
@@ -32,7 +27,7 @@ def _pybabel(positional: str, *args: str | os.PathLike) -> None:
 
 
 def _add_translator() -> None:
-    pot_file = _pot_file()
+    pot_file = Path("messages.pot")
     pot_file.write_text(
         pot_file.read_text(encoding="utf-8")
         .replace("FIRST AUTHOR", current_app.config["COPYRIGHT_AUTHOR"])
@@ -68,7 +63,7 @@ def _pybabel_extract() -> None:
         "--mapping-file",
         "babel.cfg",
         "--output-file",
-        _pot_file(),
+        "messages.pot",
         ".",
     )
     _add_translator()
@@ -78,7 +73,7 @@ def _pybabel_update() -> None:
     _pybabel(
         "update",
         "--input-file",
-        _pot_file(),
+        "messages.pot",
         "--output-dir",
         current_app.config["TRANSLATIONS_DIR"],
     )
@@ -92,7 +87,7 @@ def _pybabel_init(lang: str) -> None:
     _pybabel(
         "init",
         "--input-file",
-        _pot_file(),
+        "messages.pot",
         "--output-dir",
         current_app.config["TRANSLATIONS_DIR"],
         "--locale",
@@ -108,7 +103,7 @@ def translate_update_cli() -> None:
         file = lang / "LC_MESSAGES" / _po_file()
         _remove_headers(file)
 
-    os.remove(_pot_file())
+    os.remove("messages.pot")
 
 
 def translate_compile_cli() -> None:
@@ -138,7 +133,7 @@ def translate_init_cli(lang: str) -> None:
         / _po_file()
     )
     _remove_headers(file)
-    os.remove(_pot_file())
+    os.remove("messages.pot")
 
 
 @click.group()
