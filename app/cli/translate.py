@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import os
 import subprocess
-import tempfile
 from pathlib import Path
 
 import click
@@ -16,12 +15,6 @@ from flask import current_app
 from flask.cli import with_appcontext
 
 from app.version import __version__
-
-MAPPING = """
-[python: app/**.py]
-[jinja2: app/templates/**.html]
-extensions=jinja2.ext.autoescape,jinja2.ext.with_
-"""
 
 
 #: Evaluated within application context
@@ -65,28 +58,25 @@ def _remove_headers(file: Path) -> None:
 
 
 def _pybabel_extract() -> None:
-    with tempfile.NamedTemporaryFile() as tmp:
-        mapping_file = Path(tmp.name)
-        mapping_file.write_text(MAPPING, encoding="utf-8")
-        _pybabel(
-            "extract",
-            "--keywords=_l",
-            "--width=79",
-            "--msgid-bugs-address",
-            current_app.config["COPYRIGHT_EMAIL"],
-            "--copyright-holder",
-            current_app.config["COPYRIGHT_AUTHOR"],
-            "--project",
-            Path.cwd().name,
-            "--version",
-            __version__,
-            "--mapping-file",
-            mapping_file,
-            "--output-file",
-            _pot_file(),
-            ".",
-        )
-        _add_translator()
+    _pybabel(
+        "extract",
+        "--keywords=_l",
+        "--width=79",
+        "--msgid-bugs-address",
+        current_app.config["COPYRIGHT_EMAIL"],
+        "--copyright-holder",
+        current_app.config["COPYRIGHT_AUTHOR"],
+        "--project",
+        Path.cwd().name,
+        "--version",
+        __version__,
+        "--mapping-file",
+        "babel.cfg",
+        "--output-file",
+        _pot_file(),
+        ".",
+    )
+    _add_translator()
 
 
 def _pybabel_update() -> None:
