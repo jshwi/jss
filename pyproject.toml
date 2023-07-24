@@ -20,6 +20,8 @@ skip-magic-trailing-comma = true
 
 [tool.constcheck]
 ignore_strings = [
+  "--input-file",
+  "--output-dir",
   "COPYRIGHT_AUTHOR",
   "GET",
   "LC_MESSAGES",
@@ -32,8 +34,10 @@ ignore_strings = [
   "dynamic",
   "index",
   "messages.pot",
+  "pybabel",
   "store",
   "store_true",
+  "update",
   "user.id",
   "utf-8"
 ]

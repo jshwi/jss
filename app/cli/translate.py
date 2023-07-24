@@ -17,10 +17,6 @@ from flask.cli import with_appcontext
 from app.version import __version__
 
 
-def _pybabel(positional: str, *args: str | os.PathLike) -> None:
-    subprocess.run(["pybabel", positional, *args], check=True)
-
-
 def _add_translator() -> None:
     pot_file = Path("messages.pot")
     pot_file.write_text(
@@ -43,50 +39,70 @@ def _remove_headers(file: Path) -> None:
 
 
 def _pybabel_extract() -> None:
-    _pybabel(
-        "extract",
-        "--keywords=_l",
-        "--width=79",
-        "--msgid-bugs-address",
-        current_app.config["COPYRIGHT_EMAIL"],
-        "--copyright-holder",
-        current_app.config["COPYRIGHT_AUTHOR"],
-        "--project",
-        Path.cwd().name,
-        "--version",
-        __version__,
-        "--mapping-file",
-        "babel.cfg",
-        "--output-file",
-        "messages.pot",
-        ".",
+    subprocess.run(
+        [
+            "pybabel",
+            "extract",
+            "--keywords=_l",
+            "--width=79",
+            "--msgid-bugs-address",
+            current_app.config["COPYRIGHT_EMAIL"],
+            "--copyright-holder",
+            current_app.config["COPYRIGHT_AUTHOR"],
+            "--project",
+            Path.cwd().name,
+            "--version",
+            __version__,
+            "--mapping-file",
+            "babel.cfg",
+            "--output-file",
+            "messages.pot",
+            ".",
+        ],
+        check=True,
     )
     _add_translator()
 
 
 def _pybabel_update() -> None:
-    _pybabel(
-        "update",
-        "--input-file",
-        "messages.pot",
-        "--output-dir",
-        current_app.config["TRANSLATIONS_DIR"],
+    subprocess.run(
+        [
+            "pybabel",
+            "update",
+            "--input-file",
+            "messages.pot",
+            "--output-dir",
+            current_app.config["TRANSLATIONS_DIR"],
+        ],
+        check=True,
     )
 
 
 def _pybabel_compile() -> None:
-    _pybabel("compile", "--directory", current_app.config["TRANSLATIONS_DIR"])
+    subprocess.run(
+        [
+            "pybabel",
+            "compile",
+            "--directory",
+            current_app.config["TRANSLATIONS_DIR"],
+        ],
+        check=True,
+    )
 
 
 def _pybabel_init(lang: str) -> None:
-    _pybabel(
-        "init",
-        "--input-file",
-        "messages.pot",
-        "--output-dir",
-        current_app.config["TRANSLATIONS_DIR"],
-        "--locale",
-        lang,
+    subprocess.run(
+        [
+            "pybabel",
+            "init",
+            "--input-file",
+            "messages.pot",
+            "--output-dir",
+            current_app.config["TRANSLATIONS_DIR"],
+            "--locale",
+            lang,
+        ],
+        check=True,
     )
 
 

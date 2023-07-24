@@ -2105,10 +2105,10 @@ def test_translate_init_files(
 
     commands = [_extract, _init]
 
-    def _pybabel(_: str, *__: str | os.PathLike) -> None:
+    def _run(_: str, *__: str | os.PathLike, **___: bool) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr("app.cli.translate._pybabel", _pybabel)
+    monkeypatch.setattr("app.cli.translate.subprocess.run", _run)
     result = runner.invoke(
         args=[TRANSLATE, INIT, lang_arg], catch_exceptions=False
     )
@@ -2158,10 +2158,10 @@ def test_translate_update_files(
 
     commands = [_extract, _update]
 
-    def _pybabel(_: str, *__: str | os.PathLike) -> None:
+    def _run(_: str, *__: str | os.PathLike, **___: bool) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr("app.cli.translate._pybabel", _pybabel)
+    monkeypatch.setattr("app.cli.translate.subprocess.run", _run)
     result = runner.invoke(args=[TRANSLATE, "update"], catch_exceptions=False)
     po_contents = po_file.read_text(encoding="utf-8")
     assert "<Result okay>" in str(result)
