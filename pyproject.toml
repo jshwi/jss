@@ -22,6 +22,7 @@ skip-magic-trailing-comma = true
 ignore_strings = [
   "COPYRIGHT_AUTHOR",
   "GET",
+  "LC_MESSAGES",
   "POST",
   "Password",
   "SECRET_KEY",

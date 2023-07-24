@@ -18,11 +18,6 @@ from app.version import __version__
 
 
 #: Evaluated within application context
-def _lc_dir() -> Path:
-    return Path("LC_MESSAGES")
-
-
-#: Evaluated within application context
 def _pot_file() -> Path:
     return Path("messages.pot")
 
@@ -110,7 +105,7 @@ def translate_update_cli() -> None:
     _pybabel_extract()
     _pybabel_update()
     for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-        file = lang / _lc_dir() / _po_file()
+        file = lang / "LC_MESSAGES" / _po_file()
         _remove_headers(file)
 
     os.remove(_pot_file())
@@ -121,7 +116,7 @@ def translate_compile_cli() -> None:
     tdir: Path = current_app.config["TRANSLATIONS_DIR"]
     if tdir.is_dir():
         for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-            catalog = lang / _lc_dir() / _po_file()
+            catalog = lang / "LC_MESSAGES" / _po_file()
             if catalog.is_file():
                 _pybabel_compile()
                 break
@@ -137,7 +132,10 @@ def translate_init_cli(lang: str) -> None:
     _pybabel_extract()
     _pybabel_init(lang)
     file = (
-        current_app.config["TRANSLATIONS_DIR"] / lang / _lc_dir() / _po_file()
+        current_app.config["TRANSLATIONS_DIR"]
+        / lang
+        / "LC_MESSAGES"
+        / _po_file()
     )
     _remove_headers(file)
     os.remove(_pot_file())
