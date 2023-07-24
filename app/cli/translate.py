@@ -19,17 +19,17 @@ from app.version import __version__
 
 #: Evaluated within application context
 def _lc_dir() -> Path:
-    return Path(f"LC_{current_app.config['BABEL_FILENAME'].upper()}")
+    return Path("LC_MESSAGES")
 
 
 #: Evaluated within application context
 def _pot_file() -> Path:
-    return Path(f"{current_app.config['BABEL_FILENAME']}.pot")
+    return Path("messages.pot")
 
 
 #: Evaluated within application context
 def _po_file() -> Path:
-    return Path(f"{current_app.config['BABEL_FILENAME']}.po")
+    return Path("messages.po")
 
 
 def _pybabel(positional: str, *args: str | os.PathLike) -> None:
