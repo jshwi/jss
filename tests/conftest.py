@@ -56,6 +56,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("LICENSE", str(tmp_path / LICENSE))
     monkeypatch.setenv("COPYRIGHT_AUTHOR", COPYRIGHT_AUTHOR)
     monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)
+    monkeypatch.setenv("SHOW_POSTS", "1")
     return create_app()
 
 
