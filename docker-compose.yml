@@ -17,6 +17,7 @@ x-development: &development
     MAIL_USE_SSL: ${DEV_MAIL_USE_SSL}
     MAIL_USE_TLS: ${DEV_MAIL_USE_TLS}
     SHOW_POSTS: ${SHOW_POSTS}
+    SHOW_REGISTER: ${SHOW_REGISTER}
   image: jss-development:1.26.0
   volumes:
     - ./app:/home/jss/app/

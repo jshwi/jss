@@ -37,12 +37,12 @@ msgstr "Perfil"
 msgid "Logout"
 msgstr "Cerrar sesión"
 
-#: app/templates/auth/register.html:6 app/templates/navbar.html:125
+#: app/templates/auth/register.html:6 app/templates/navbar.html:126
 #: app/views/forms.py:44
 msgid "Register"
 msgstr "Registrarse"
 
-#: app/templates/navbar.html:130
+#: app/templates/navbar.html:132
 msgid "Login"
 msgstr "Acceso"
 
