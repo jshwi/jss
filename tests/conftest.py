@@ -46,6 +46,9 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     """
     monkeypatch.setenv("TESTING", "1")
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
+    monkeypatch.setenv(
+        "SQLALCHEMY_DATABASE_URI", f"sqlite:////{tmp_path / 'test.db'}"
+    )
     monkeypatch.setenv("SECRET_KEY", "testing")
     monkeypatch.setenv("MAIL_SUBJECT_PREFIX", "[JSS]: ")
     monkeypatch.setenv("ADMINS", f"{ADMIN_USER_EMAIL},{MAIN_USER_EMAIL}")
