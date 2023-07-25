@@ -104,11 +104,7 @@ def messages() -> str:
     db.session.commit()
     page = request.args.get("page", 1, type=int)
     query = current_user.messages_received.order_by(Message.created.desc())
-    posts = query.paginate(
-        page=page,
-        per_page=current_app.config["POSTS_PER_PAGE"],
-        error_out=False,
-    )
+    posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
         "user/messages.html",
         posts=posts.items,

@@ -26,9 +26,7 @@ class MyModelView(sqla.ModelView):
     :param session: Database session.
     """
 
-    def __init__(
-        self, model: db.Model, session: db.session  # type: ignore
-    ) -> None:
+    def __init__(self, model: db.Model, session: db.session) -> None:
         super().__init__(model, session)
         self.endpoint = f"{model.__table__}s"
 
