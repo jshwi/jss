@@ -65,8 +65,10 @@
         {# variable page content to override for each template #}
         {% block app_content %}{% endblock %}
 
-        {# override for pages displaying posts and use as base #}
-        {% block posts %}{% endblock %}
+        {% if config["SHOW_POSTS"] %}
+          {# override for pages displaying posts and use as base #}
+          {% block posts %}{% endblock %}
+        {% endif %}
 
         {# display footer on all pages #}
         {% block footer %}{% include "footer.html" %}{% endblock %}

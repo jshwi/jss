@@ -4,4 +4,7 @@
 {# page header and browser tab #}
 {# no extra code needed #}
 {# post parameters are passed from Python and sent to the post base block #}
-{% block page_name %}{{ _("Posts") }}{% endblock %}
+{% if config["SHOW_POSTS"] %}
+  {# override for pages displaying posts and use as base #}
+  {% block page_name %}{{ _("Posts") }}{% endblock %}
+{% endif %}

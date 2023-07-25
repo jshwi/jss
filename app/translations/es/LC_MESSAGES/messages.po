@@ -182,7 +182,7 @@ msgstr "Editar Publicación"
 msgid "Delete"
 msgstr "Borrar"
 
-#: app/templates/public/index.html:7
+#: app/templates/public/index.html:9
 msgid "Posts"
 msgstr "Publicaciones"
 
