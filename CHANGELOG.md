@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.26.0...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- add optional display of register on navbar
 - add `TITLE` config variable
 - add optional display of posts
 

@@ -365,6 +365,11 @@ class _Config(Env):
         """Header for page."""
         return self.str("TITLE", default="")
 
+    @property
+    def SHOW_REGISTER(self) -> bool:
+        """Show register option."""
+        return self.bool("SHOW_REGISTER", default=True)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

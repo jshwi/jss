@@ -119,12 +119,14 @@
           </a>
         </li>
       {% else %}
-        <li class="nav-item" href="{{ url_for("auth.register") }}"
-            title="Register">
-          <a class="nav-link" href="{{ url_for("auth.register") }}">
-            {{ _("Register") }}
-          </a>
-        </li>
+        {% if config["SHOW_REGISTER"] %}
+          <li class="nav-item" href="{{ url_for("auth.register") }}"
+              title="Register">
+            <a class="nav-link" href="{{ url_for("auth.register") }}">
+              {{ _("Register") }}
+            </a>
+          </li>
+        {% endif %}
         <li class="nav-item" href="{{ url_for("auth.login") }}" title="Login">
           <a class="nav-link" href="{{ url_for("auth.login") }}">
             {{ _("Login") }}
