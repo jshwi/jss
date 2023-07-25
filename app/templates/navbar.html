@@ -129,7 +129,11 @@
         {% endif %}
         <li class="nav-item" href="{{ url_for("auth.login") }}" title="Login">
           <a class="nav-link" href="{{ url_for("auth.login") }}">
-            {{ _("Login") }}
+            {% if config["NAVBAR_ICONS"] %}
+              <i class="bi bi-person-circle" style='font-size:30px;'></i>
+            {% else %}
+              {{ _("Login") }}
+            {% endif %}
           </a>
         </li>
       {% endif %}

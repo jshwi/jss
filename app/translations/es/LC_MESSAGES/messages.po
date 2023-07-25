@@ -42,7 +42,7 @@ msgstr "Cerrar sesión"
 msgid "Register"
 msgstr "Registrarse"
 
-#: app/templates/navbar.html:132
+#: app/templates/navbar.html:135
 msgid "Login"
 msgstr "Acceso"
 
