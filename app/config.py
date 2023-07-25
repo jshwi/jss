@@ -355,6 +355,11 @@ class _Config(Env):
 
         return self.list("LANGUAGES", default=default)
 
+    @property
+    def SHOW_POSTS(self) -> bool:
+        """Show posts from database."""
+        return self.bool("SHOW_POSTS", default=True)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.
