@@ -6,5 +6,8 @@
 {# post parameters are passed from Python and sent to the post base block #}
 {% if config["SHOW_POSTS"] %}
   {# override for pages displaying posts and use as base #}
-  {% block page_name %}{{ _("Posts") }}{% endblock %}
+  {% set name = _("Posts") %}
+{% else %}
+  {% set name = _(config["TITLE"]) %}
 {% endif %}
+{% block page_name %}{{ name }}{% endblock %}

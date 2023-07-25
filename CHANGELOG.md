@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.26.0...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- add `TITLE` config variable
 - add optional display of posts
 
 [1.26.0](https://github.com/jshwi/jss/releases/tag/v1.26.0) - 2023-07-25

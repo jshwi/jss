@@ -360,6 +360,11 @@ class _Config(Env):
         """Show posts from database."""
         return self.bool("SHOW_POSTS", default=True)
 
+    @property
+    def TITLE(self) -> str:
+        """Header for page."""
+        return self.str("TITLE", default="")
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.
