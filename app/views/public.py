@@ -33,7 +33,11 @@ def index() -> str:
     """
     page = request.args.get("page", 1, type=int)
     query = Post.query.order_by(Post.created.desc())
-    posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+    posts = query.paginate(
+        page=page,
+        per_page=current_app.config["POSTS_PER_PAGE"],
+        error_out=False,
+    )
     return render_template(
         "public/index.html",
         posts=posts.items,
@@ -61,7 +65,11 @@ def profile(username: str) -> str | Response:
     user = User.query.filter_by(username=username).first()
     page = request.args.get("page", 1, type=int)
     query = user.posts.order_by(Post.created.desc())
-    posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+    posts = query.paginate(
+        page=page,
+        per_page=current_app.config["POSTS_PER_PAGE"],
+        error_out=False,
+    )
     return render_template(
         "public/profile.html",
         posts=posts.items,
