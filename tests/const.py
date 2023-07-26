@@ -114,6 +114,8 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/profile/<username>",
             "/auth/logout",
             "/auth/reset_password/<token>",
+            "/order/success",
+            "/order/cancel",
         ],
     ),
     (
@@ -140,6 +142,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/redirect/unfollow/<username>",
             "/post/<int:id>/delete",
             "/report/csp_violations",
+            "/order/call",
         ],
     ),
 ]

@@ -68,6 +68,9 @@
         {% if config["SHOW_POSTS"] %}
           {# override for pages displaying posts and use as base #}
           {% block posts %}{% endblock %}
+        {% elif config["SHOW_PAYMENT"] %}
+          {# override for pages displaying posts and use as base #}
+          {% block payment %}{% endblock %}
         {% endif %}
 
         {# display footer on all pages #}

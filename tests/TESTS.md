@@ -67,6 +67,11 @@ Test generated avatar URL for expected value.
 Test user denied when jwt for resetting password is expired.
 
 
+### Book call
+
+Test booking of call.
+
+
 ### Config copyright
 
 Test parsing of metadata from project root.
@@ -273,6 +278,16 @@ Test that the navbar Home link appropriately switches on and off.
 ### Navbar user dropdown config switch
 
 Test that the user dropdown appropriately switches on and off.
+
+
+### Order cancel
+
+Test order cancellation view.
+
+
+### Order success
+
+Test order success view.
 
 
 ### Pagination nav

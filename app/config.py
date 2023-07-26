@@ -370,6 +370,21 @@ class _Config(Env):
         """Show register option."""
         return self.bool("SHOW_REGISTER", default=True)
 
+    @property
+    def SHOW_PAYMENT(self):
+        """Show payment option."""
+        return self.bool("SHOW_PAYMENT", default=False)
+
+    @property
+    def STRIPE_SECRET_KEY(self) -> str:
+        """Secret key for Stripe API."""
+        return self.str("STRIPE_SECRET_KEY", default=None)
+
+    @property
+    def PAYMENT_OPTIONS(self) -> dict[str, str]:
+        """Options to pass to Stripe's API."""
+        return self.dict("PAYMENT_OPTIONS", default={"price": "None"})
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

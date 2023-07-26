@@ -19,7 +19,7 @@ from flask_babel import get_locale
 from flask_login import current_user
 
 from app.extensions import db
-from app.views import admin, auth, post, public, redirect, report, user
+from app.views import admin, auth, order, post, public, redirect, report, user
 
 
 def _before_request() -> None:
@@ -60,6 +60,7 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(user.blueprint)
     app.register_blueprint(post.blueprint)
     app.register_blueprint(redirect.blueprint)
+    app.register_blueprint(order.blueprint)
     app.add_url_rule("/", endpoint="index")
     admin.init_app(app)
     app.after_request(format_html)  # type: ignore

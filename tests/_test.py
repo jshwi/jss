@@ -2259,3 +2259,50 @@ def test_has_languages(test_app: Flask) -> None:
     )
     config.init_app(test_app)
     assert "es" in test_app.config["LANGUAGES"]
+
+
+def test_book_call(
+    monkeypatch: pytest.MonkeyPatch, client: FlaskClient
+) -> None:
+    """Test booking of call.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param client: Test application client.
+    """
+    stripe = Recorder()
+    stripe.checkout = Recorder()  # type: ignore
+    stripe.checkout.Session = Recorder()  # type: ignore
+    stripe.checkout.Session.create = Recorder()  # type: ignore
+    stripe.checkout.Session.create.url = Recorder()  # type: ignore
+    monkeypatch.setattr("app.views.order.stripe", stripe)
+    client.post("/order/call")
+    assert (
+        stripe.checkout.Session.create.kwargs["api_key"]  # type: ignore
+        == "stripe_secret_key"
+    )
+    assert (
+        stripe.checkout.Session.create.kwargs["line_items"][0][  # type: ignore
+            "price_data"
+        ]["unit_amount"]
+        == 20000
+    )
+
+
+@pytest.mark.usefixtures(INIT_DB)
+def test_order_success(client: FlaskClient) -> None:
+    """Test order success view.
+
+    :param client: Test application client.
+    """
+    response = client.get("/order/success", follow_redirects=True)
+    assert "Thank you, your order has been placed." in response.data.decode()
+
+
+@pytest.mark.usefixtures(INIT_DB)
+def test_order_cancel(client: FlaskClient) -> None:
+    """Test order cancellation view.
+
+    :param client: Test application client.
+    """
+    response = client.get("/order/cancel", follow_redirects=True)
+    assert "Your order was canceled." in response.data.decode()

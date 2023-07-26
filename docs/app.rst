@@ -77,6 +77,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.views.order
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.views.post
    :members:
    :undoc-members:

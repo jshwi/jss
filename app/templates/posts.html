@@ -90,3 +90,12 @@ this is the base template for pages displaying posts #}
       </ul>
     </nav>
 {% endblock %}
+{% block payment %}
+  <tr>
+    <td>
+      <form method="POST" action="/order/call">
+        <input type="submit" value="Book a call">
+      </form>
+    </td>
+  </tr>
+{% endblock %}

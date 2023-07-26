@@ -61,6 +61,8 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)
     monkeypatch.setenv("SHOW_POSTS", "1")
     monkeypatch.setenv("SHOW_REGISTER", "1")
+    monkeypatch.setenv("STRIPE_SECRET_KEY", "stripe_secret_key")
+    monkeypatch.setenv("PAYMENT_OPTIONS", "price=20000,per=hour")
     return create_app()
 
 
