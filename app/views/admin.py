@@ -20,7 +20,9 @@ _INDEX = "index"
 
 
 class _MyModelView(sqla.ModelView):
-    def __init__(self, model: db.Model, session: db.session) -> None:
+    def __init__(
+        self, model: db.Model, session: db.session  # type: ignore
+    ) -> None:
         super().__init__(model, session)
         self.endpoint = f"{model.__table__}s"
 

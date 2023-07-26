@@ -91,7 +91,9 @@ class _Config(Env):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         """Alias for ``DATABASE_URL.``"""
-        default = None
+        # this was the default in 2.x.x, now if this does not get set
+        # before a certain action a runtime error is raised
+        default = "sqlite:///:memory:"
         if self.DATABASE_URL is not None:
             default = self.DATABASE_URL.replace("postgres://", "postgresql://")
 
