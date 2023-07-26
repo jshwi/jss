@@ -21,7 +21,7 @@ x-development: &development
     SHOW_PAYMENT: ${SHOW_PAYMENT:-0}
     STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
     PAYMENT_OPTIONS: ${PAYMENT_OPTIONS}
-  image: jss-development:1.27.0
+  image: jss-development:1.28.0
   volumes:
     - ./app:/home/jss/app/
     - ./migrations:/home/jss/migrations/
@@ -37,7 +37,7 @@ x-development: &development
       REDIS_URL: "redis://test-redis:6379/0"
       SQL_HOST: "test-postgres"
       SQL_PORT: "5432"
-    image: jss-testing:1.27.0
+    image: jss-testing:1.28.0
     volumes:
       - ./app:/home/jss/app/
       - ./migrations:/home/jss/migrations/
@@ -144,7 +144,7 @@ services:
       - "SEND_FILE_MAX_AGE_DEFAULT"
     expose:
       - 5000
-    image: jss-production:1.27.0
+    image: jss-production:1.28.0
     volumes:
       - static_volume:/home/jss/app/static/
 
@@ -153,7 +153,7 @@ services:
       context: .
       target: nginx
     container_name: jss-nginx
-    image: jss-nginx:1.27.0
+    image: jss-nginx:1.28.0
     ports:
       - "80:80"
       - "443:443"
