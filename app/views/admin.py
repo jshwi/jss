@@ -19,13 +19,7 @@ from app.views.security import admin_required
 _INDEX = "index"
 
 
-class MyModelView(sqla.ModelView):
-    """Custom model view that determines accessibility.
-
-    :param model: Database model.
-    :param session: Database session.
-    """
-
+class _MyModelView(sqla.ModelView):
     def __init__(self, model: db.Model, session: db.session) -> None:
         super().__init__(model, session)
         self.endpoint = f"{model.__table__}s"
@@ -72,8 +66,8 @@ def init_app(app: Flask) -> None:
         base_template="/admin/master.html",
         template_mode="bootstrap4",
     )
-    admin.add_view(MyModelView(User, db.session))
-    admin.add_view(MyModelView(Post, db.session))
-    admin.add_view(MyModelView(Message, db.session))
-    admin.add_view(MyModelView(Notification, db.session))
-    admin.add_view(MyModelView(Task, db.session))
+    admin.add_view(_MyModelView(User, db.session))
+    admin.add_view(_MyModelView(Post, db.session))
+    admin.add_view(_MyModelView(Message, db.session))
+    admin.add_view(_MyModelView(Notification, db.session))
+    admin.add_view(_MyModelView(Task, db.session))
