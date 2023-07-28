@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.29.0...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- remove `fontawesome.bundle.js` which does not exist
 
 [1.29.0](https://github.com/jshwi/jss/releases/tag/v1.29.0) - 2023-07-28
 ------------------------------------------------------------------------
