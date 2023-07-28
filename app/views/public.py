@@ -32,6 +32,7 @@ def index() -> str:
     :return: Rendered index template.
     """
     page = request.args.get("page", 1, type=int)
+    # noinspection PyUnresolvedReferences
     query = Post.query.order_by(Post.created.desc())
     posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
@@ -60,6 +61,7 @@ def profile(username: str) -> str | Response:
     form = EmptyForm()
     user = User.query.filter_by(username=username).first()
     page = request.args.get("page", 1, type=int)
+    # noinspection PyUnresolvedReferences
     query = user.posts.order_by(Post.created.desc())
     posts = query.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     return render_template(
