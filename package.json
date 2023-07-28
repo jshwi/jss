@@ -23,7 +23,7 @@
     "bootstrap4-toggle": "^3.6.1",
     "darkreader": "^4.9.58",
     "highlight.js": "^11.7.0",
-    "jest-environment-jsdom": "^29.6.1",
+    "jest-environment-jsdom": "^29.6.2",
     "jquery": "^3.7.0",
     "moment": "^2.29.4"
   },
