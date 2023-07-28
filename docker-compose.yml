@@ -7,7 +7,6 @@ x-development: &development
   environment: &dev-environment
     DATABASE: "postgres"
     DATABASE_URL: "postgresql://jss:jss@dev-postgres:5432/jss"
-    REDIS_URL: "redis://dev-redis:6379/0"
     SQL_HOST: "dev-postgres"
     SQL_PORT: "5432"
     MAIL_PASSWORD: ${DEV_MAIL_PASSWORD}
@@ -34,7 +33,6 @@ x-development: &development
       TESTING: "1"
       DATABASE: "postgres"
       DATABASE_URL: "postgresql://jss:jss@test-postgres:5432/jss"
-      REDIS_URL: "redis://test-redis:6379/0"
       SQL_HOST: "test-postgres"
       SQL_PORT: "5432"
     image: jss-testing:1.29.0
@@ -42,11 +40,6 @@ x-development: &development
       - ./app:/home/jss/app/
       - ./migrations:/home/jss/migrations/
       - ./tests:/home/jss/tests/
-
-x-redis: &redis
-  image: redis:6.2-alpine
-  ports:
-    - "6379:6379"
 
 x-postgres: &postgres
   environment:
@@ -65,7 +58,6 @@ services:
     container_name: jss-dev
     depends_on:
       - dev-postgres
-      - dev-redis
     environment:
       <<: *dev-environment
     ports:
@@ -77,12 +69,6 @@ services:
     volumes:
       - dev_postgres_data:/var/lib/postgresql/data/
 
-  dev-redis:
-    <<: *redis
-    container_name: jss-dev-redis
-    volumes:
-      - dev_redis_dump:/data/
-
   test:
     <<: *testing
     entrypoint: ./entrypoint
@@ -90,7 +76,6 @@ services:
     container_name: jss-test
     depends_on:
       - test-postgres
-      - test-redis
     environment:
       <<: *test-environment
     ports:
@@ -101,12 +86,6 @@ services:
     container_name: jss-test-postgres
     ports:
       - "5433:5432"
-
-  test-redis:
-    <<: *redis
-    container_name: jss-test-redis
-    ports:
-      - "6380:6379"
 
   production:
     build:
@@ -162,5 +141,4 @@ services:
 
 volumes:
   dev_postgres_data:
-  dev_redis_dump:
   static_volume:
