@@ -18,8 +18,8 @@ x-development: &development
     SHOW_POSTS: ${SHOW_POSTS:-1}
     SHOW_REGISTER: ${SHOW_REGISTER:-0}
     SHOW_PAYMENT: ${SHOW_PAYMENT:-0}
-    STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
-    PAYMENT_OPTIONS: ${PAYMENT_OPTIONS}
+    STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-stripe_secret_key}
+    PAYMENT_OPTIONS: ${PAYMENT_OPTIONS:-price=20000,per=hour}
   image: jss-development:1.29.0
   volumes:
     - ./app:/home/jss/app/
