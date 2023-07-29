@@ -117,6 +117,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/order/success",
             "/order/cancel",
             "/favicon.ico",
+            "/admin/",
         ],
     ),
     (

@@ -2306,3 +2306,13 @@ def test_order_cancel(client: FlaskClient) -> None:
     """
     response = client.get("/order/cancel", follow_redirects=True)
     assert "Your order was canceled." in response.data.decode()
+
+
+@pytest.mark.usefixtures(INIT_DB)
+def test_admin_page(client: FlaskClient) -> None:
+    """Test rendering of admin page.
+
+    :param client: Test application client.
+    """
+    response = client.get("/admin/")
+    assert "Admin" in response.data.decode()

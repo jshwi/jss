@@ -27,6 +27,11 @@ is not logged in:
 > ‘AnonymousUserMixin’ object has no attribute ‘admin’
 
 
+### Admin page
+
+Test rendering of admin page.
+
+
 ### Admin required
 
 Test requirement that admin user be logged in to post.

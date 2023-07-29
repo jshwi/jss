@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.29.0...HEAD)
 ------------------------------------------------------------------------
+### Added
+- add /admin endpoint
+
 ### Changed
 - change /admin endpoint to /database
 - rename `Console` to `Database`

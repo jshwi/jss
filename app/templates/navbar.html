@@ -97,6 +97,11 @@
           <div class="list-group list-group-horizontal">
         {% endif %}
         {% if current_user.admin %}
+          <li class="nav-item" href="/admin" title="Admin">
+            <a class="nav-link" href="/admin">
+              {{ _("Admin") }}
+            </a>
+          </li>
           <li class="nav-item" href="/database" title="Database">
             <a class="nav-link" href="/database">
               {{ _("Database") }}

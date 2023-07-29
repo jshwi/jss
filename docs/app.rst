@@ -61,6 +61,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.views.admin
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.views.auth
    :members:
    :undoc-members:
