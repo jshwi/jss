@@ -4,12 +4,15 @@ app.views.public
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 from flask import (
     Blueprint,
     current_app,
     redirect,
     render_template,
     request,
+    send_from_directory,
     url_for,
 )
 from werkzeug import Response
@@ -88,4 +91,17 @@ def profile(username: str) -> str | Response:
             if posts.has_prev
             else None
         ),
+    )
+
+
+@blueprint.route("/favicon.ico")
+def favicon() -> Response:
+    """Endpoint for the app's favicon.
+
+    :return: Response object.
+    """
+    return send_from_directory(
+        Path(current_app.root_path) / "static",
+        "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
     )

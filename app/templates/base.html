@@ -8,7 +8,7 @@
 {% block metas %}
     {{ super() }}
 
-    <link rel="shortcut icon" href="{{static_url_for('static', filename='favicon.ico') }}">
+    <link rel="shortcut icon" href="{{url_for('public.favicon')}}">
     <link rel="apple-touch-icon" href="{{static_url_for('static', filename='apple-touch-icon.png') }}">
     <link rel="manifest" href="{{static_url_for('static', filename='site.webmanifest') }}">
     <meta name="description" content="A Flask web app">

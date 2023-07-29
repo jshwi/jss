@@ -116,6 +116,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/auth/reset_password/<token>",
             "/order/success",
             "/order/cancel",
+            "/favicon.ico",
         ],
     ),
     (
