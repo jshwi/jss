@@ -265,7 +265,7 @@ msgid LOGOUT
 msgstr ""
 
 #: app/dom/navbar.py:48
-msgid "Console"
+msgid "Database"
 msgstr ""
 
 #: app/dom/navbar.py:49

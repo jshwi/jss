@@ -26,8 +26,8 @@ msgid "New"
 msgstr "Nuevo"
 
 #: app/templates/navbar.html:102
-msgid "Console"
-msgstr "Consola"
+msgid "Database"
+msgstr "Base de datos"
 
 #: app/templates/navbar.html:111
 msgid "Profile"

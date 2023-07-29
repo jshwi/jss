@@ -1739,9 +1739,9 @@ def test_navbar_user_dropdown_config_switch(
         i in response.data.decode()
         for i in [
             '<div class="list-group list-group-horizontal">',
-            '<li class="nav-item" href="/admin" title="Console">',
+            '<li class="nav-item" href="/admin" title="Database">',
             '<a class="nav-link" href="/admin">',
-            "Console",
+            "Database",
             '<li class="nav-item" href="/profile/admin" title="Profile">',
             '<a class="nav-link" href="/profile/admin">',
             "Profile",
@@ -1759,9 +1759,9 @@ def test_navbar_user_dropdown_config_switch(
         i in response.data.decode()
         for i in [
             '<ul class="dropdown-menu dropdown-menu-right">',
-            '<li class="nav-item" href="/admin" title="Console">',
+            '<li class="nav-item" href="/admin" title="Database">',
             '<a class="nav-link" href="/admin">',
-            "Console",
+            "Database",
             '<li class="nav-item" href="/profile/admin" title="Profile">',
             '<a class="nav-link" href="/profile/admin">',
             "Profile",
