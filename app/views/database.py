@@ -1,6 +1,6 @@
 """
-app.views.admin
-================
+app.views.database
+==================
 
 Admin page initialized with models for reading and writing.
 """
@@ -65,7 +65,7 @@ def init_app(app: Flask) -> None:
     admin = Admin(
         app,
         index_view=MyAdminIndexView(endpoint="database", url="/database"),
-        base_template="/admin/master.html",
+        base_template="/database/master.html",
         template_mode="bootstrap4",
     )
     admin.add_view(_MyModelView(User, db.session))

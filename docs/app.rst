@@ -61,11 +61,11 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.views.admin
+.. automodule:: app.views.auth
    :members:
    :undoc-members:
    :show-inheritance:
-.. automodule:: app.views.auth
+.. automodule:: app.views.database
    :members:
    :undoc-members:
    :show-inheritance:
