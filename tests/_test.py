@@ -1739,8 +1739,8 @@ def test_navbar_user_dropdown_config_switch(
         i in response.data.decode()
         for i in [
             '<div class="list-group list-group-horizontal">',
-            '<li class="nav-item" href="/admin" title="Database">',
-            '<a class="nav-link" href="/admin">',
+            '<li class="nav-item" href="/database" title="Database">',
+            '<a class="nav-link" href="/database">',
             "Database",
             '<li class="nav-item" href="/profile/admin" title="Profile">',
             '<a class="nav-link" href="/profile/admin">',
@@ -1759,8 +1759,8 @@ def test_navbar_user_dropdown_config_switch(
         i in response.data.decode()
         for i in [
             '<ul class="dropdown-menu dropdown-menu-right">',
-            '<li class="nav-item" href="/admin" title="Database">',
-            '<a class="nav-link" href="/admin">',
+            '<li class="nav-item" href="/database" title="Database">',
+            '<a class="nav-link" href="/database">',
             "Database",
             '<li class="nav-item" href="/profile/admin" title="Profile">',
             '<a class="nav-link" href="/profile/admin">',
@@ -1777,16 +1777,16 @@ def test_all_routes_covered(test_app: Flask) -> None:
 
     :param test_app: Test application.
     """
-    ignore = ["/admin/*", "/static/*", "/bootstrap/*"]
-    exception = ["/admin/"]
+    ignore = ["/database/*", "/static/*", "/bootstrap/*"]
+    exception = ["/database/"]
     filter_covered = [
         r.rule
         for r in test_app.url_map.iter_rules()
         if not any(fnmatch.fnmatch(r.rule, i) for i in ignore)
         or r.rule in exception
     ]
-    assert "/admin/admin_notification/ajax/lookup/" not in filter_covered
-    assert "/admin/" in filter_covered
+    assert "/database/database_notification/ajax/lookup/" not in filter_covered
+    assert "/database/" in filter_covered
     assert all(r in COVERED_ROUTES for r in filter_covered)
 
 

@@ -49,8 +49,8 @@ MAIL_USERNAME = MAIN_USER_USERNAME
 MAIL_PASSWORD = "unique"
 MAIL_PORT = 25
 PROFILE_EDIT = "/user/profile/edit"
-ADMIN_ROUTE = "/admin"
-ADMIN_USER_ROUTE = "/admin/users"
+ADMIN_ROUTE = "/database"
+ADMIN_USER_ROUTE = "/database/users"
 COPYRIGHT_YEAR = "2023"
 COPYRIGHT_AUTHOR = "John Doe"
 COPYRIGHT_EMAIL = "john.doe@test.com"
@@ -122,7 +122,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
     (
         401,  # unauthorized,
         [
-            "/admin/",
+            "/database/",
             "/redirect/<token>",
             "/redirect/resend",
             "/auth/unconfirmed",
