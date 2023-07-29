@@ -11,6 +11,7 @@ from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
+    FileField,
     PasswordField,
     StringField,
     SubmitField,
@@ -85,6 +86,13 @@ class PostForm(FlaskForm):
     body = PageDownField(
         _l("Body"), validators=[DataRequired()], render_kw={"rows": 12}
     )
+    submit = SubmitField(_l("Submit"))
+
+
+class UploadForm(FlaskForm):
+    """For for uploading files."""
+
+    file = FileField(_l("File"))
     submit = SubmitField(_l("Submit"))
 
 

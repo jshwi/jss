@@ -1,0 +1,11 @@
+{# user/send_message.html #}
+{% extends "base.html" %}
+{% import 'bootstrap4/form.html' as wtf %}
+
+{# page header and browser tab #}
+{% block page_name %}{{ _("Upload favicon") }} {{ recipient }}{% endblock %}
+
+{# page body unique to send message view #}
+{% block app_content %}
+    {{ wtf.render_form(form) }}
+{% endblock %}

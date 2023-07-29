@@ -3,4 +3,10 @@
 
 {% block page_name %}{{ _("Admin") }}{% endblock %}
 
-{% block app_content %}{% endblock %}
+{% block app_content %}
+  <ul>
+    <li>
+      <a href="{{ url_for("upload.favicon") }}">Update favicon</a>
+    </li>
+  </ul>
+{% endblock %}

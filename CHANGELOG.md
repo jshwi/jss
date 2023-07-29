@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.29.0...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- add upload favicon functionality to admin interface
 - add /admin endpoint
 
 ### Changed

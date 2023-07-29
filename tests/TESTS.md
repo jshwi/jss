@@ -400,6 +400,26 @@ Test when unconfirmed user tries to enter restricted view.
 Test update view modifies the existing data.
 
 
+### Upload bad file
+
+Test uploading of an invalid file.
+
+
+### Upload good file
+
+Test uploading of a valid file.
+
+
+### Upload unknown file type
+
+Test uploading of file that’s invalid as it can’t be determined.
+
+
+### Upload view
+
+Test upload create view.
+
+
 ### User name change accessible
 
 Test that even after name-change user is accessible by old name.

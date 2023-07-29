@@ -105,6 +105,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.views.upload
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.views.user
    :members:
    :undoc-members:

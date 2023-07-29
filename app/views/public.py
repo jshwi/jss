@@ -100,8 +100,9 @@ def favicon() -> Response:
 
     :return: Response object.
     """
+    path = Path(current_app.root_path) / "static" / "uploads" / "favicon.ico"
     return send_from_directory(
-        Path(current_app.root_path) / "static",
-        "favicon.ico",
+        path.parent if path.is_file() else path.parent.parent,
+        path.name,
         mimetype="image/vnd.microsoft.icon",
     )

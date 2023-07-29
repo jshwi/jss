@@ -28,6 +28,7 @@ from app.views import (
     public,
     redirect,
     report,
+    upload,
     user,
 )
 
@@ -72,6 +73,7 @@ def init_app(app: Flask) -> None:
     app.register_blueprint(redirect.blueprint)
     app.register_blueprint(order.blueprint)
     app.register_blueprint(admin.blueprint)
+    app.register_blueprint(upload.blueprint)
     app.add_url_rule("/", endpoint="index")
     database.init_app(app)
     app.after_request(format_html)  # type: ignore

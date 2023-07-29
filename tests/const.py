@@ -3,6 +3,7 @@ tests.const
 ===========
 """
 from datetime import datetime
+from pathlib import Path
 
 UPDATE1 = "/post/1/update"
 ADMIN_USER_USERNAME = "admin"
@@ -83,6 +84,9 @@ POST_1_DELETE = "/post/1/delete"
 ADMIN = "admin"
 POST_CREATE = "/post/create"
 BODY = "body"
+TUX_PNG = Path(__file__).parent / "resources" / "tux.png"
+UPLOAD_FAVICON = "/upload/favicon"
+FILE = "file"
 PYPROJECT_TOML = f"""\
 [tool.poetry]
 authors = [
@@ -135,6 +139,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/user/messages",
             "/user/notifications",
             "/post/<int:id>/update",
+            "/upload/favicon",
         ],
     ),
     (

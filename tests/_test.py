@@ -43,6 +43,7 @@ from .const import (
     COPYRIGHT_YEAR,
     COVERED_ROUTES,
     CREATE,
+    FILE,
     INIT,
     INIT_DB,
     INVALID_OR_EXPIRED,
@@ -106,7 +107,9 @@ from .const import (
     TITLE,
     TRANSLATE,
     TRANSLATIONS_DIR,
+    TUX_PNG,
     UPDATE1,
+    UPLOAD_FAVICON,
     USER,
     USERNAME,
     USERNAME_IS_TAKEN,
@@ -2316,3 +2319,98 @@ def test_admin_page(client: FlaskClient) -> None:
     """
     response = client.get("/admin/")
     assert "Admin" in response.data.decode()
+
+
+@pytest.mark.usefixtures(INIT_DB)
+def test_upload_view(
+    client: FlaskClient, add_test_objects: AddTestObjects, auth: AuthActions
+) -> None:
+    """Test upload create view.
+
+    :param client: Test application client.
+    :param add_test_objects: Add test objects to test database.
+    :param auth: Handle authorization.
+    """
+    user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+    )
+    add_test_objects.add_test_users(user_test_object)
+    auth.login(user_test_object)
+    response = client.get(UPLOAD_FAVICON, follow_redirects=True)
+    assert "Upload favicon" in response.data.decode()
+
+
+@pytest.mark.usefixtures(INIT_DB)
+def test_upload_good_file(
+    client: FlaskClient, add_test_objects: AddTestObjects, auth: AuthActions
+) -> None:
+    """Test uploading of a valid file.
+
+    :param client: Test application client.
+    :param add_test_objects: Add test objects to test database.
+    :param auth: Handle authorization.
+    """
+    user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+    )
+    add_test_objects.add_test_users(user_test_object)
+    auth.login(user_test_object)
+    response = client.post(
+        UPLOAD_FAVICON, follow_redirects=True, data={FILE: TUX_PNG.open("rb")}
+    )
+    assert f"{TUX_PNG.name} uploaded successfully" in response.data.decode()
+
+
+# noinspection DuplicatedCode
+@pytest.mark.usefixtures(INIT_DB)
+def test_upload_bad_file(
+    tmp_path: Path,
+    client: FlaskClient,
+    add_test_objects: AddTestObjects,
+    auth: AuthActions,
+) -> None:
+    """Test uploading of an invalid file.
+
+    :param tmp_path: Create and return temporary ``Path`` object.
+    :param client: Test application client.
+    :param add_test_objects: Add test objects to test database.
+    :param auth: Handle authorization.
+    """
+    file = tmp_path / f"{TUX_PNG.stem}.txt"
+    shutil.copy(TUX_PNG, file)
+    user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+    )
+    add_test_objects.add_test_users(user_test_object)
+    auth.login(user_test_object)
+    response = client.post(
+        UPLOAD_FAVICON, follow_redirects=True, data={FILE: file.open("rb")}
+    )
+    assert "cannot confirm validity of file" in response.data.decode()
+
+
+# noinspection DuplicatedCode
+@pytest.mark.usefixtures(INIT_DB)
+def test_upload_unknown_file_type(
+    monkeypatch: pytest.MonkeyPatch,
+    client: FlaskClient,
+    add_test_objects: AddTestObjects,
+    auth: AuthActions,
+) -> None:
+    """Test uploading of file that's invalid as it can't be determined.
+
+    :param monkeypatch: Mock patch environment and attributes.
+    :param client: Test application client.
+    :param add_test_objects: Add test objects to test database.
+    :param auth: Handle authorization.
+    """
+    monkeypatch.setattr("app.views.upload.imghdr.what", lambda *_: None)
+    user_test_object = UserTestObject(
+        ADMIN_USER_USERNAME, ADMIN_USER_EMAIL, ADMIN_USER_PASSWORD, admin=True
+    )
+    add_test_objects.add_test_users(user_test_object)
+    auth.login(user_test_object)
+    response = client.post(
+        UPLOAD_FAVICON, follow_redirects=True, data={FILE: TUX_PNG.open("rb")}
+    )
+    assert "cannot confirm validity of file" in response.data.decode()

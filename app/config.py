@@ -387,6 +387,30 @@ class _Config(Env):
         """Options to pass to Stripe's API."""
         return self.dict("PAYMENT_OPTIONS", default={"price": "None"})
 
+    @property
+    def MAX_CONTENT_LENGTH(self) -> int:
+        """Max content length for file uploads."""
+        return self.int("MAX_CONTENT_LENGTH", default=1024 * 1024)
+
+    @property
+    def UPLOAD_EXTENSIONS(self) -> list[str]:
+        """Extensions allowed for upload."""
+        return self.list(
+            "UPLOAD_EXTENSIONS",
+            default=[".txt", ".pdf", ".png", ".jpg", ".jpeg", ".gif"],
+        )
+
+    @property
+    def UPLOAD_PATH(self) -> Path:
+        """Path to upload file to."""
+        upload_path = self.path(
+            "UPLOAD_PATH", default=Path("app") / "static" / "uploads"
+        )
+        gitignore = upload_path / ".gitignore"
+        upload_path.mkdir(exist_ok=True, parents=True)
+        gitignore.write_text("*", encoding="utf-8")
+        return upload_path
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.
