@@ -243,6 +243,11 @@ instead of `User.query.filter_by(username=username).first()`
 Test `jinja2.ext` has attrs needed for language support.
 
 
+### Lexer readme
+
+Test generating of lexer list.
+
+
 ### Login
 
 Test login functionality.
