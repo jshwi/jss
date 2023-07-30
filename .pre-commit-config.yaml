@@ -12,6 +12,7 @@ ci:
     - about-tests
     - commit-policy
     - update-translations
+    - about-translations
 default_language_version:
   python: python3.8
 default_stages:
@@ -107,6 +108,13 @@ repos:
         name: update translations
         description: update translation files
         entry: poetry run flask translate update
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: about-translations
+        name: about translations
+        description: update about translations
+        entry: poetry run flask translate readme
         language: system
         always_run: true
         pass_filenames: false

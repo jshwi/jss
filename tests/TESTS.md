@@ -380,6 +380,11 @@ Test commands called when invoking `flask translate compile`.
 Test management of files when running `flask translate init`.
 
 
+### Translate readme
+
+Test generating of language list.
+
+
 ### Translate update args
 
 Test commands called when invoking `flask translate update`.

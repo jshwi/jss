@@ -111,8 +111,9 @@ def translate_update_cli() -> None:
     _pybabel_extract()
     _pybabel_update()
     for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-        file = lang / "LC_MESSAGES" / "messages.po"
-        _remove_headers(file)
+        if lang.is_dir():
+            file = lang / "LC_MESSAGES" / "messages.po"
+            _remove_headers(file)
 
     os.remove("messages.pot")
 
@@ -177,3 +178,26 @@ def _init(lang: str) -> None:
     :param lang: Language to initialize.
     """
     translate_init_cli(lang)
+
+
+@translate.command("readme")
+@with_appcontext
+def _readme() -> None:
+    """List supported languages.."""
+    languages = []
+    readme = current_app.config["TRANSLATIONS_DIR"] / "LANGUAGES.md"
+    for path in current_app.config["TRANSLATIONS_DIR"].iterdir():
+        if path.is_dir():
+            languages.append(
+                "- {}\n".format(
+                    (path / "LC_MESSAGES" / "messages.po")
+                    .read_text(encoding="utf-8")
+                    .split()[1]
+                )
+            )
+
+    readme.write_text(
+        "# Languages\n\n{}".format("\n".join(sorted(languages))),
+        encoding="utf-8",
+    )
+    print("readme written successfully")
