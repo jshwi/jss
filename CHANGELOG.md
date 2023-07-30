@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.29.0...HEAD)
 ------------------------------------------------------------------------
+### Changed
+- position footer at bottom of page
+
 ### Fixed
 - remove `fontawesome.bundle.js` which does not exist
 

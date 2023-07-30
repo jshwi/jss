@@ -33,3 +33,11 @@
   -moz-border-radius: 25%;
   -webkit-border-radius: 25%;
 }
+
+/* see https://stackoverflow.com/questions/4575826/ */
+.flex-wrapper {
+  display: flex;
+  min-height: 85vh;
+  flex-direction: column;
+  justify-content: space-between;
+}

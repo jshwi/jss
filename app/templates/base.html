@@ -62,19 +62,21 @@
         {# declared in the title block #}
         <header><h1>{% block header %}{{ self.page_name() }}{% endblock %}</h1></header>
 
-        {# variable page content to override for each template #}
-        {% block app_content %}{% endblock %}
+        <div class="flex-wrapper">
+          {# variable page content to override for each template #}
+          {% block app_content %}{% endblock %}
 
-        {% if config["SHOW_POSTS"] %}
-          {# override for pages displaying posts and use as base #}
-          {% block posts %}{% endblock %}
-        {% elif config["SHOW_PAYMENT"] %}
-          {# override for pages displaying posts and use as base #}
-          {% block payment %}{% endblock %}
-        {% endif %}
+          {% if config["SHOW_POSTS"] %}
+            {# override for pages displaying posts and use as base #}
+            {% block posts %}{% endblock %}
+          {% elif config["SHOW_PAYMENT"] %}
+            {# override for pages displaying posts and use as base #}
+            {% block payment %}{% endblock %}
+          {% endif %}
 
-        {# display footer on all pages #}
-        {% block footer %}{% include "footer.html" %}{% endblock %}
+          {# display footer on all pages #}
+          {% block footer %}{% include "footer.html" %}{% endblock %}
+        </div>
     </div>
 {% endblock %}
 
