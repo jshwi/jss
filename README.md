@@ -42,3 +42,52 @@ https://localhost:443
 ## Documentation
 
 - Source documentation [here](https://jshwi.github.io/jss/)
+
+## Features
+
+### Progressive Web Application
+
+- Mobile support
+- Installable as a standalone app
+
+### User Accounts
+
+- Single admin user (Can only be created by root user via the commandline)
+  - Access to site configuration
+    - change favicon
+  - Access to UI for viewing database
+- Signing up
+  - Email verification
+- Log in
+  - Password reset functionality
+- Logged in (including admin)
+  - Editable user profiles
+  - Functionality to follow other users
+  - Functionality to message other users
+  - Allow changing of username (while still being able to find user by old username)
+
+### Blog Posts
+
+- CREATE, READ, UPDATE, DELETE, or "CRUD"
+- Posting, updating, and deleting posts restricted to authorized users
+- All posts are timestamped
+- Markdown support with syntax highlighting (see list of languages [here](https://github.com/jshwi/jss/blob/master/.github/LEXERS.md))
+- Pagination support
+- Support for versioning and rolling back changes
+
+### Configurable
+
+- Toggle dark mode
+
+### Translation
+
+- See list of languages [here](https://github.com/jshwi/jss/blob/master/app/translations/LANGUAGES.md)
+
+### Integrations
+
+- Stripe payment option
+- Gravatar for user avatars
+
+### Error handling
+
+- Support for emailing errors
