@@ -6,7 +6,7 @@ Define app's commandline functions.
 """
 from flask import Flask
 
-from app.cli import create, translate
+from app.cli import create, lexers, translate
 
 
 def init_app(app: Flask) -> None:
@@ -16,3 +16,4 @@ def init_app(app: Flask) -> None:
     """
     app.cli.add_command(create.create)
     app.cli.add_command(translate.translate)
+    app.cli.add_command(lexers.lexers)

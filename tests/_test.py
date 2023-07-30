@@ -2442,3 +2442,55 @@ def test_translate_readme(test_app: Flask, runner: FlaskCliRunner) -> None:
     assert (test_app.config[TRANSLATIONS_DIR] / "LANGUAGES.md").read_text(
         encoding="utf-8"
     ) == expected
+
+
+def test_lexer_readme(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
+) -> None:
+    """Test generating of lexer list.
+
+    :param tmp_path: Create and return temporary ``Path`` object.
+    :param monkeypatch: Mock patch environment and attributes.
+    :param runner: Test application cli.
+    """
+    content = """\
+const hljs = require("highlight.js/lib/core");
+const hljsPython = require("highlight.js/lib/languages/python");
+const hljsShell = require("highlight.js/lib/languages/shell");
+const hljsYaml = require("highlight.js/lib/languages/yaml");
+
+hljs.registerLanguage("python", hljsPython);
+hljs.registerLanguage("shell", hljsShell);
+hljs.registerLanguage("yaml", hljsYaml);
+
+document.addEventListener("DOMContentLoaded", () => {
+  hljs.highlightAll();
+});
+"""
+    expected = """\
+# Languages
+
+- python
+
+- shell
+
+- yaml
+"""
+    # everything after `tmp_path` is the parents that `Path` will
+    # traverse from __file__
+    #
+    # .. code-block: python
+    #
+    #    ...
+    #    root = Path(__file__).parent.parent.parent
+    #    ...
+    monkeypatch.setattr(
+        "app.cli.lexers.Path", lambda _: tmp_path / "app" / "cli" / "lexers.py"
+    )
+    readme = tmp_path / ".github" / "LEXERS.md"
+    highlight_js = tmp_path / "assets" / "js" / "highlight.js"
+    readme.parent.mkdir(parents=True)
+    highlight_js.parent.mkdir(parents=True)
+    highlight_js.write_text(content, encoding="utf-8")
+    runner.invoke(args=["lexers", "readme"], catch_exceptions=False)
+    assert readme.read_text(encoding="utf-8") == expected
