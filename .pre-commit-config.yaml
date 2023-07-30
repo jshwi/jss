@@ -13,6 +13,7 @@ ci:
     - commit-policy
     - update-translations
     - about-translations
+    - about-lexers
 default_language_version:
   python: python3.8
 default_stages:
@@ -115,6 +116,13 @@ repos:
         name: about translations
         description: update about translations
         entry: poetry run flask translate readme
+        language: system
+        always_run: true
+        pass_filenames: false
+      - id: about-lexers
+        name: about lexers
+        description: update about lexers
+        entry: poetry run flask lexers readme
         language: system
         always_run: true
         pass_filenames: false

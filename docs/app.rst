@@ -13,6 +13,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.cli.lexers
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.cli.translate
    :members:
    :undoc-members:
