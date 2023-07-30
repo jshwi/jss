@@ -2414,3 +2414,33 @@ def test_upload_unknown_file_type(
         UPLOAD_FAVICON, follow_redirects=True, data={FILE: TUX_PNG.open("rb")}
     )
     assert "cannot confirm validity of file" in response.data.decode()
+
+
+def test_translate_readme(test_app: Flask, runner: FlaskCliRunner) -> None:
+    """Test generating of language list.
+
+    :param test_app: Test application.
+    :param runner: Test application cli.
+    """
+    po_files = {
+        "es": "# Spanish translations for jss.",
+        "de": "# German translations for jss.",
+        "fr": "# French translations for jss.",
+    }
+    expected = """\
+# Languages
+
+- French
+
+- German
+
+- Spanish
+"""
+    for key, value in po_files.items():
+        path = test_app.config[TRANSLATIONS_DIR] / key / "LC_MESSAGES"
+        path.mkdir(parents=True)
+        (path / MESSAGES_PO).write_text(value, encoding="utf-8")
+    runner.invoke(args=[TRANSLATE, "readme"], catch_exceptions=False)
+    assert (test_app.config[TRANSLATIONS_DIR] / "LANGUAGES.md").read_text(
+        encoding="utf-8"
+    ) == expected
