@@ -6,6 +6,5 @@ jss docs
    :name: mastertoc
 
    app
-   readme
 
 This documentation was last updated on |today|
