@@ -103,7 +103,7 @@ name = "jss"
 packages = [
   {include = "app"}
 ]
-readme = "README.rst"
+readme = "README.md"
 repository = "https://github.com/jshwi/jss"
 version = "1.30.0"
 
@@ -166,7 +166,8 @@ audit = [
   "about-tests",
   "commit-policy",
   "const",
-  "docs",
+  "coverage",
+  "doctest-package",
   "files",
   "format",
   "format-docs",
@@ -174,7 +175,6 @@ audit = [
   "imports",
   "lint",
   "params",
-  "test",
   "typecheck",
   "unused"
 ]

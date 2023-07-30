@@ -2,18 +2,18 @@ ci:
   skip:
     - pylint
     - doctest-package
-    - doctest-readme
     - deptry
     - mypy
     - docsig
     - vulture
-    - tests
     - toc
     - about-tests
     - commit-policy
     - update-translations
     - about-translations
     - about-lexers
+    - build-docs
+    - coverage
 default_language_version:
   python: python3.8
 default_stages:
@@ -47,12 +47,6 @@ repos:
         language: system
         entry: poetry run pyaud doctest-package
         pass_filenames: false
-      # no hooks found for `doctest`
-      - id: doctest-readme
-        name: doctest readme
-        language: system
-        entry: poetry run pyaud doctest-readme
-        pass_filenames: false
       # script installs stubs if necessary
       - id: mypy
         name: check types
@@ -70,12 +64,6 @@ repos:
         name: check for unused code
         language: system
         entry: poetry run pyaud unused
-        pass_filenames: false
-      # script also handles coverage
-      - id: tests
-        name: test source code
-        language: system
-        entry: poetry run pyaud test
         pass_filenames: false
       # script written for specific format
       - id: toc
@@ -125,6 +113,19 @@ repos:
         entry: poetry run flask lexers readme
         language: system
         always_run: true
+        pass_filenames: false
+      - id: build-docs
+        name: build docs
+        description: build docs
+        entry: poetry run sphinx-build -M html docs docs/_build -W
+        language: system
+        always_run: true
+        pass_filenames: false
+      # script handles testing and coverage
+      - id: coverage
+        name: test source code and coverage
+        language: system
+        entry: poetry run pyaud coverage
         pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v4.4.0"
