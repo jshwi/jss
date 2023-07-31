@@ -1821,10 +1821,8 @@ def test_static_route_default(
     )
     add_test_objects.add_test_posts(post_test_object)
     interpolate_routes(routes, 1, 0, MAIN_USER_USERNAME)
-    assert all(
-        client.get(r, follow_redirects=True).status_code == code
-        for r in routes
-    )
+    for route in routes:
+        assert client.get(route, follow_redirects=True).status_code == code
 
 
 @pytest.mark.usefixtures(INIT_DB)
