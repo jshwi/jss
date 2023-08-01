@@ -17,6 +17,10 @@ from flask import Flask
 
 
 class _Config(Env):
+    def __init__(self, root_path: Path) -> None:
+        super().__init__()
+        self._root_path = root_path
+
     @property
     def DEBUG(self) -> bool:
         """Debug mode."""
@@ -404,7 +408,7 @@ class _Config(Env):
     def UPLOAD_PATH(self) -> Path:
         """Path to upload file to."""
         upload_path = self.path(
-            "UPLOAD_PATH", default=Path("app") / "static" / "uploads"
+            "UPLOAD_PATH", default=self._root_path / "static" / "uploads"
         )
         gitignore = upload_path / ".gitignore"
         upload_path.mkdir(exist_ok=True, parents=True)
@@ -424,6 +428,6 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
-    config = _Config()
+    config = _Config(Path(app.root_path))
     config.read_env()
     app.config.from_object(config)
