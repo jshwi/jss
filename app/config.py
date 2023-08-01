@@ -407,10 +407,19 @@ class _Config(Env):
         )
 
     @property
+    def STATIC_FOLDER(self) -> Path:
+        """Path to static files."""
+        static_folder = self.path(
+            "STATIC_FOLDER", default=self._root_path / "static"
+        )
+        create_gitignore(static_folder)
+        return static_folder
+
+    @property
     def UPLOAD_PATH(self) -> Path:
         """Path to upload file to."""
         upload_path = self.path(
-            "UPLOAD_PATH", default=self._root_path / "static" / "uploads"
+            "UPLOAD_PATH", default=self.STATIC_FOLDER / "uploads"
         )
         create_gitignore(upload_path)
         return upload_path
@@ -431,3 +440,4 @@ def init_app(app: Flask) -> None:
     config = _Config(Path(app.root_path))
     config.read_env()
     app.config.from_object(config)
+    app.static_folder = app.config["STATIC_FOLDER"]
