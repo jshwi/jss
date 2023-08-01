@@ -1790,7 +1790,8 @@ def test_all_routes_covered(test_app: Flask) -> None:
     ]
     assert "/database/database_notification/ajax/lookup/" not in filter_covered
     assert "/database/" in filter_covered
-    assert all(r in COVERED_ROUTES for r in filter_covered)
+    for route in filter_covered:
+        assert route in COVERED_ROUTES
 
 
 @pytest.mark.usefixtures(INIT_DB, "init_static")
