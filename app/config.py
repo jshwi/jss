@@ -424,6 +424,11 @@ class _Config(Env):
         create_gitignore(upload_path)
         return upload_path
 
+    @property
+    def SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS(self) -> bool:
+        """Generate list of rules without params."""
+        return self.bool("SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS", default=True)
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

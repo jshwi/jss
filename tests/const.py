@@ -122,6 +122,7 @@ STATUS_CODE_TO_ROUTE_DEFAULT = [
             "/order/cancel",
             "/favicon.ico",
             "/admin/",
+            "/sitemap.xml",
         ],
     ),
     (
