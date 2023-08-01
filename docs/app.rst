@@ -53,6 +53,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.version
    :members:
    :undoc-members:
