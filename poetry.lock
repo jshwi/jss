@@ -1263,6 +1263,26 @@ Flask = ">=1.0"
 IPython = ">=5.0.0"
 
 [[package]]
+name = "flask-sitemap"
+version = "0.4.0"
+description = "Flask extension that helps with sitemap generation."
+optional = false
+python-versions = "*"
+files = [
+    {file = "Flask-Sitemap-0.4.0.tar.gz", hash = "sha256:a59f726e889a1c7a71c6d0980fb62c2a9f382c73391567e00f8af892bb4ec731"},
+    {file = "Flask_Sitemap-0.4.0-py2.py3-none-any.whl", hash = "sha256:bafdcca1fc321aafb8c086a8bd260591df29c521032001533327825acff976b8"},
+]
+
+[package.dependencies]
+blinker = ">=1.3"
+Flask = ">=1.1"
+
+[package.extras]
+all = ["Sphinx (==4.2.0)", "check-manifest (>=0.42)", "coverage (>=5.3,<6)", "pytest (>=6,<7)", "pytest-cov (>=2.10.1)", "pytest-flask (>=1.0.0)", "pytest-isort (>=1.2.0)", "pytest-pycodestyle (>=2.2.0)", "pytest-pydocstyle (>=2.2.0)"]
+docs = ["Sphinx (==4.2.0)"]
+tests = ["check-manifest (>=0.42)", "coverage (>=5.3,<6)", "pytest (>=6,<7)", "pytest-cov (>=2.10.1)", "pytest-flask (>=1.0.0)", "pytest-isort (>=1.2.0)", "pytest-pycodestyle (>=2.2.0)", "pytest-pydocstyle (>=2.2.0)"]
+
+[[package]]
 name = "flask-sqlalchemy"
 version = "3.0.5"
 description = "Add SQLAlchemy support to your Flask application."
@@ -3676,4 +3696,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "27c13cca8b89d58ca52c8fcdb8c15d4df9f68eab77eab209f34712e3c6a2aa3e"
+content-hash = "25d2628e708dfb13dcf3fe6ff3910c31e680290ed36738cb4fbcf98a51c626e3"

@@ -1780,7 +1780,12 @@ def test_all_routes_covered(test_app: Flask) -> None:
 
     :param test_app: Test application.
     """
-    ignore = ["/database/*", "/static/*", "/bootstrap/*"]
+    ignore = [
+        "/database/*",
+        "/static/*",
+        "/bootstrap/*",
+        "/sitemap<int:page>.xml",
+    ]
     exception = ["/database/"]
     filter_covered = [
         r.rule

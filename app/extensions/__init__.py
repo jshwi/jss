@@ -14,6 +14,7 @@ from flask_migrate import Migrate
 from flask_misaka import Misaka
 from flask_moment import Moment
 from flask_pagedown import PageDown
+from flask_sitemap import Sitemap
 from flask_sqlalchemy import SQLAlchemy
 from flask_static_digest import FlaskStaticDigest
 from flask_wtf.csrf import CSRFProtect
@@ -35,6 +36,7 @@ moment = Moment()
 talisman = Talisman()
 compress = Compress()
 babel = Babel()
+sitemap = Sitemap()
 
 
 def init_app(app: Flask) -> None:
@@ -56,3 +58,4 @@ def init_app(app: Flask) -> None:
     talisman.init_app(app)
     compress.init_app(app)
     babel.init_app(app)
+    sitemap.init_app(app)
