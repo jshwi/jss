@@ -63,6 +63,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("SHOW_REGISTER", "1")
     monkeypatch.setenv("STRIPE_SECRET_KEY", "stripe_secret_key")
     monkeypatch.setenv("PAYMENT_OPTIONS", "price=20000,per=hour")
+    monkeypatch.setenv("STATIC_FOLDER", str(tmp_path / "static"))
     return create_app()
 
 
@@ -154,28 +155,17 @@ def fixture_add_test_objects(test_app: Flask) -> AddTestObjects:
 
 
 @pytest.fixture(name="init_static")
-def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
+def fixture_init_static(test_app: Flask) -> None:
     """Initialize static dir and set in app for testing.
 
     :param test_app: Test application.
-    :param tmp_path: Create and return temporary directory.
     """
-    # create and set static
-    static_dir = tmp_path / "static"
-    static_dir.mkdir()
-    test_app.static_folder = str(static_dir)
-
-    # add non "built" static files
-    setting_files = ["browserconfig.xml"]
-    for setting_file in setting_files:
-        Path(static_dir / setting_file).touch()
-
-    # create "built" images
     items = [
         "favicon.ico",
         "mstile-150x150.png",
         "safari-pinned-tab.svg",
         "site.webmanifest",
+        "browserconfig.xml",
     ]
     for item in items:
-        Path(static_dir / item).touch()
+        (test_app.config["STATIC_FOLDER"] / item).touch()
