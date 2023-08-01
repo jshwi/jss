@@ -15,6 +15,8 @@ import tomli
 from environs import Env
 from flask import Flask
 
+from app.utils import create_gitignore
+
 
 class _Config(Env):
     def __init__(self, root_path: Path) -> None:
@@ -410,9 +412,7 @@ class _Config(Env):
         upload_path = self.path(
             "UPLOAD_PATH", default=self._root_path / "static" / "uploads"
         )
-        gitignore = upload_path / ".gitignore"
-        upload_path.mkdir(exist_ok=True, parents=True)
-        gitignore.write_text("*", encoding="utf-8")
+        create_gitignore(upload_path)
         return upload_path
 
 
