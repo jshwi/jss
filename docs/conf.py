@@ -79,9 +79,9 @@ html_theme_options = {
         "repo": "fontawesome/brands/github",
         "edit": "material/file-edit-outline",
     },
-    "site_url": "https://constcheck.readthedocs.io/",
-    "repo_url": "https://github.com/jshwi/constcheck/",
-    "repo_name": "constcheck",
+    "site_url": "https://jss.readthedocs.io/",
+    "repo_url": "https://github.com/jshwi/jss/",
+    "repo_name": "jss",
     "edit_uri": "blob/master/docs",
     "globaltoc_collapse": True,
     "features": [
@@ -102,12 +102,12 @@ html_theme_options = {
     "social": [
         {
             "icon": "fontawesome/brands/github",
-            "link": "https://github.com/jshwi/constcheck/",
+            "link": "https://github.com/jshwi/jss/",
             "name": "Source on github.com",
         },
         {
             "icon": "fontawesome/brands/python",
-            "link": "https://pypi.org/project/constcheck/",
+            "link": "https://pypi.org/project/jss/",
         },
     ],
 }
