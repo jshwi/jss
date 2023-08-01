@@ -6,7 +6,6 @@ The ``test_app`` fixture will call the factory and pass ``test_config``
 to configure the application and database for testing instead of using
 local development configuration.
 """
-import shutil
 import typing as t
 from pathlib import Path
 
@@ -64,12 +63,6 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("SHOW_REGISTER", "1")
     monkeypatch.setenv("STRIPE_SECRET_KEY", "stripe_secret_key")
     monkeypatch.setenv("PAYMENT_OPTIONS", "price=20000,per=hour")
-    root = Path(__file__).parent.parent
-    static_path = root / "app" / "static"
-    static_path.mkdir(exist_ok=True, parents=True)
-    gitignore = static_path / ".gitignore"
-    gitignore.write_text("*", encoding="utf-8")
-    shutil.copy(root / "assets" / "img" / "favicon.ico", static_path)
     return create_app()
 
 
@@ -177,10 +170,6 @@ def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
     for setting_file in setting_files:
         Path(static_dir / setting_file).touch()
 
-    # create build dir
-    build_dir = static_dir / "build"
-    build_dir.mkdir()
-
     # create "built" images
     items = [
         "favicon.ico",
@@ -189,4 +178,4 @@ def fixture_init_static(test_app: Flask, tmp_path: Path) -> None:
         "site.webmanifest",
     ]
     for item in items:
-        Path(build_dir / item).touch()
+        Path(static_dir / item).touch()
