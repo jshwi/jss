@@ -110,11 +110,6 @@ insert the new post data into the database.
 Test commands called when invoking `flask create admin`.
 
 
-### Create command
-
-Test cli.
-
-
 ### Create user email exists
 
 Test creation of a new user whose email is already registered.

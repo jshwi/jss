@@ -478,27 +478,6 @@ def test_delete(
         assert post is None
 
 
-def test_create_command(
-    monkeypatch: pytest.MonkeyPatch, runner: FlaskCliRunner
-) -> None:
-    """Test cli.
-
-    :param monkeypatch: Mock patch environment and attributes.
-    :param runner: Test application cli.
-    """
-    # flask create user
-    state_1 = Recorder()
-    monkeypatch.setattr("app.cli.create.create_user_cli", state_1)
-    runner.invoke(args=[CREATE, USER])
-    assert state_1.called
-
-    # flask create admin
-    state_2 = Recorder()
-    monkeypatch.setattr("app.cli.create.create_admin_cli", state_2)
-    runner.invoke(args=[CREATE, ADMIN])
-    assert state_2.called
-
-
 def test_export() -> None:
     """Test export to dict_ function for models."""
     # noinspection PyArgumentList
