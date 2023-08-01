@@ -15,29 +15,17 @@ from app.models import User
 from app.user import create_user
 
 
-def create_user_override(
-    username: str, email: str, password: str, **kwargs: object
-) -> User:
-    """Create a new user and confirm them automatically.
-
-    :param username: New user's username.
-    :param email: New user's email address.
-    :param password: New user's password.
-    :param kwargs: Additional keyword args to pass to user model.
-    :return: New ``User`` object.
-    """
-    return create_user(
-        username,
-        email,
-        password,
-        confirmed=True,
-        confirmed_on=datetime.now(),
-        **kwargs,
-    )
+@click.group()
+def create() -> None:
+    """Create users."""
+    # group functions are registered as decorators, and this will
+    # decorate its subcommands, not `click`
 
 
-def create_user_cli() -> None:
-    """Create a new user."""
+@create.command()
+@with_appcontext
+def user() -> None:
+    """Create a new user with the commandline instead of web form."""
     username = input("username: ")
     if User.query.filter_by(username=username).first() is not None:
         print("username is taken")
@@ -53,17 +41,21 @@ def create_user_cli() -> None:
         print("passwords do not match: could not add user")
         return
 
-    create_user_override(username, email, password)
+    create_user(
+        username, email, password, confirmed=True, confirmed_on=datetime.now()
+    )
     print("user successfully created")
 
 
-def create_admin_cli() -> None:
-    """Create admin user."""
+@create.command()
+@with_appcontext
+def admin() -> None:
+    """Create a new admin with the commandline instead of web form."""
     if User.query.get(1) is None:
         # no need to add to the app config
         # this will only need to be called once
         # raising an error won't be necessary after the first time
-        create_user_override(
+        create_user(
             username="admin",
             email=current_app.config["ADMINS"][0],
             password=current_app.config["ADMIN_SECRET"],
@@ -71,24 +63,3 @@ def create_admin_cli() -> None:
             authorized=True,
         )
         print("admin successfully created")
-
-
-@click.group()
-def create() -> None:
-    """Create users."""
-    # group functions are registered as decorators, and this will
-    # decorate its subcommands, not `click`
-
-
-@create.command("user")
-@with_appcontext
-def user() -> None:
-    """Create a new user with the commandline instead of web form."""
-    create_user_cli()
-
-
-@create.command("admin")
-@with_appcontext
-def admin() -> None:
-    """Create a new admin with the commandline instead of web form."""
-    create_admin_cli()
