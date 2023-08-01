@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - add `STATIC_FOLDER` environment variable
 
+### Fixed
+- ensure configured favicon resolves to `UPLOADS_PATH`
+
 [1.30.0](https://github.com/jshwi/jss/releases/tag/v1.30.0) - 2023-07-30
 ------------------------------------------------------------------------
 ### Added

@@ -4,8 +4,6 @@ app.views.public
 """
 from __future__ import annotations
 
-from pathlib import Path
-
 from flask import (
     Blueprint,
     current_app,
@@ -100,7 +98,7 @@ def favicon() -> Response:
 
     :return: Response object.
     """
-    path = Path(current_app.root_path) / "static" / "uploads" / "favicon.ico"
+    path = current_app.config["UPLOAD_PATH"] / "favicon.ico"
     return send_from_directory(
         path.parent if path.is_file() else path.parent.parent,
         path.name,
