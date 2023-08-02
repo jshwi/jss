@@ -111,3 +111,5 @@ html_theme_options = {
         },
     ],
 }
+
+todo_include_todos = True
