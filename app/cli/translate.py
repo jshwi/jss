@@ -162,9 +162,10 @@ def update() -> None:
     translate_update_cli()
 
 
-@translate.command("compile")
+# noinspection PyShadowingBuiltins
+@translate.command()
 @with_appcontext
-def _compile() -> None:
+def compile() -> None:  # pylint: disable=redefined-builtin
     """Compile all languages."""
     translate_compile_cli()
 

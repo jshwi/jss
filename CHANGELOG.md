@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.31.0...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- add `app.cli.translate.compile`
 - add `app.cli.translate.update`
 - add `app.cli.lexer.readme`
 - add `app.cli.create.admin`
