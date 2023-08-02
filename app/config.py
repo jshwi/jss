@@ -175,11 +175,6 @@ class Config(Env):
         return self.str("BRAND", default="")
 
     @property
-    def LICENSE(self) -> Path:
-        """Path to LICENSE file."""
-        return self.path("LICENSE", default=self._root_path.parent / "LICENSE")
-
-    @property
     def PYPROJECT_TOML(self) -> Path:
         """Path to LICENSE file."""
         return self.path(
@@ -191,7 +186,9 @@ class Config(Env):
         """Return the copyright line from LICENSE else None."""
         return self.str(
             "COPYRIGHT",
-            default=self.LICENSE.read_text(encoding="utf-8").splitlines()[2],
+            default=(self._root_path.parent / "LICENSE")
+            .read_text(encoding="utf-8")
+            .splitlines()[2],
         )
 
     @property
