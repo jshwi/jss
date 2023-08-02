@@ -151,11 +151,6 @@ class Config(Env):
         return self.bool("MAIL_USER_SSL", default=False)
 
     @property
-    def MAIL_DEBUG(self) -> bool:
-        """Mail debug mode: Default to same as ``FLASK_DEBUG``."""
-        return self.bool("MAIL_DEBUG", default=self.DEBUG)
-
-    @property
     def MAIL_USERNAME(self) -> str | None:
         """Username of sender."""
         return self.str("MAIL_USERNAME", default=None)
