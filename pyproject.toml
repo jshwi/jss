@@ -30,6 +30,7 @@ ignore_strings = [
   "SECRET_KEY",
   "Submit",
   "TRANSLATIONS_DIR",
+  "app",
   "data",
   "dynamic",
   "index",

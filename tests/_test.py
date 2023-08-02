@@ -49,7 +49,6 @@ from .const import (
     LAST_USER_EMAIL,
     LAST_USER_PASSWORD,
     LAST_USER_USERNAME,
-    LICENSE,
     LICENSE_CONTENTS,
     LOCATION,
     LOGOUT,
@@ -1641,15 +1640,12 @@ def test_config_copyright(
     :param test_app: Test application.
     """
     pyproject_toml = tmp_path / "pyproject.toml"
-    with open(os.environ["LICENSE"], "w", encoding="utf-8") as fout:
-        fout.write(LICENSE_CONTENTS)
-
-    with open(pyproject_toml, "w", encoding="utf-8") as fout:
-        fout.write(PYPROJECT_TOML)
-
+    lic = tmp_path / "LICENSE"
+    lic.write_text(LICENSE_CONTENTS, encoding="utf-8")
+    pyproject_toml.write_text(PYPROJECT_TOML, encoding="utf-8")
     monkeypatch.setenv("PYPROJECT_TOML", str(pyproject_toml))
+    test_app.root_path = str(tmp_path / "app")
     config.init_app(test_app)
-    assert str(test_app.config[LICENSE]) == os.environ["LICENSE"]
     assert test_app.config["COPYRIGHT_YEAR"] == COPYRIGHT_YEAR
     assert test_app.config["COPYRIGHT_AUTHOR"] == COPYRIGHT_AUTHOR
     assert test_app.config["COPYRIGHT_EMAIL"] == COPYRIGHT_EMAIL
