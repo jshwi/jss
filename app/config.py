@@ -166,11 +166,6 @@ class Config(Env):
         return self.int("POSTS_PER_PAGE", default=25)
 
     @property
-    def REDIS_URL(self) -> str:
-        """URL to ``Redis`` server."""
-        return self.str("REDIS_URL", default="redis://")
-
-    @property
     def RESERVED_USERNAMES(self) -> list[str]:
         """List of names that cannot be registered the standard way."""
         return self.list("RESERVED_USERNAMES", default=[])
