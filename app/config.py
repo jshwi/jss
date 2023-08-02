@@ -96,11 +96,6 @@ class Config(Env):
         return self.bool("FLASK_STATIC_DIGEST_GZIP_FILES", default=True)
 
     @property
-    def CACHE_TYPE(self) -> str:
-        """Can be "memcached", "redis", etc."""
-        return self.str("CACHE_TYPE", default="simple")
-
-    @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         """Alias for ``DATABASE_URL.``"""
         # this was the default in 2.x.x, now if this does not get set
