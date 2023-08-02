@@ -181,12 +181,12 @@ def init(lang: str) -> None:
     translate_init_cli(lang)
 
 
-@translate.command("readme")
+@translate.command()
 @with_appcontext
-def _readme() -> None:
+def readme() -> None:
     """List supported languages.."""
     languages = []
-    readme = current_app.config["TRANSLATIONS_DIR"] / "LANGUAGES.md"
+    markdown = current_app.config["TRANSLATIONS_DIR"] / "LANGUAGES.md"
     for path in current_app.config["TRANSLATIONS_DIR"].iterdir():
         if path.is_dir():
             languages.append(
@@ -197,7 +197,7 @@ def _readme() -> None:
                 )
             )
 
-    readme.write_text(
+    markdown.write_text(
         "# Languages\n\n{}".format("\n".join(sorted(languages))),
         encoding="utf-8",
     )
