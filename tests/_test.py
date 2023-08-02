@@ -32,7 +32,6 @@ from .const import (
     ADMIN_USER_PASSWORD,
     ADMIN_USER_ROUTE,
     ADMIN_USER_USERNAME,
-    APP_UTILS_LANG_SUBPROCESS_RUN,
     AUTHORIZED_USER_EMAIL,
     AUTHORIZED_USER_PASSWORD,
     AUTHORIZED_USER_USERNAME,
@@ -104,6 +103,7 @@ from .const import (
     ROUTE,
     SENDER_ID,
     STATUS_CODE_TO_ROUTE_DEFAULT,
+    SUBPROCESS_RUN,
     TITLE,
     TRANSLATE,
     TRANSLATIONS_DIR,
@@ -2094,7 +2094,7 @@ def test_translate_init_files(
     def _run(_: str, *__: str | os.PathLike, **___: bool) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr("app.cli.translate.subprocess.run", _run)
+    monkeypatch.setattr(SUBPROCESS_RUN, _run)
     result = runner.invoke(
         args=[TRANSLATE, INIT, lang_arg], catch_exceptions=False
     )
@@ -2147,7 +2147,7 @@ def test_translate_update_files(
     def _run(_: str, *__: str | os.PathLike, **___: bool) -> None:
         commands.pop(0)()
 
-    monkeypatch.setattr("app.cli.translate.subprocess.run", _run)
+    monkeypatch.setattr(SUBPROCESS_RUN, _run)
     result = runner.invoke(args=[TRANSLATE, "update"], catch_exceptions=False)
     po_contents = po_file.read_text(encoding="utf-8")
     assert "<Result okay>" in str(result)
@@ -2179,7 +2179,7 @@ def test_translate_args(
         commands.extend(args)
         Path(MESSAGES_POT).write_text(POT_CONTENTS)
 
-    monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
+    monkeypatch.setattr(SUBPROCESS_RUN, _subprocess_run)
     runner.invoke(args=[TRANSLATE, INIT, "es"])
     assert PYBABEL in commands
     assert "extract" in commands
@@ -2201,7 +2201,7 @@ def test_translate_update_args(
         commands.extend(args)
         Path(MESSAGES_POT).write_text(POT_CONTENTS)
 
-    monkeypatch.setattr(APP_UTILS_LANG_SUBPROCESS_RUN, _subprocess_run)
+    monkeypatch.setattr(SUBPROCESS_RUN, _subprocess_run)
     runner.invoke(args=[TRANSLATE, "update"])
     assert PYBABEL in commands
     assert "extract" in commands
@@ -2221,9 +2221,7 @@ def test_translate_compile(
         test_app.config[TRANSLATIONS_DIR] / "es" / "LC_MESSAGES" / MESSAGES_PO
     )
     commands = []
-    monkeypatch.setattr(
-        APP_UTILS_LANG_SUBPROCESS_RUN, lambda x, **y: commands.extend(x)
-    )
+    monkeypatch.setattr(SUBPROCESS_RUN, lambda x, **y: commands.extend(x))
     result = runner.invoke(args=[TRANSLATE, COMPILE], catch_exceptions=False)
     assert "No message catalogs to compile" in result.output
     assert not commands
