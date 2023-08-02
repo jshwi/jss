@@ -18,7 +18,13 @@ from flask import Flask
 from app.utils import create_gitignore
 
 
-class _Config(Env):
+class Config(Env):
+    """The application's configuration object.
+
+    :param root_path: The application's filesystem, starting at the
+        root.
+    """
+
     def __init__(self, root_path: Path) -> None:
         super().__init__()
         self._root_path = root_path
@@ -442,7 +448,7 @@ def init_app(app: Flask) -> None:
 
     :param app: Application factory object.
     """
-    config = _Config(Path(app.root_path))
+    config = Config(Path(app.root_path))
     config.read_env()
     app.config.from_object(config)
     app.static_folder = app.config["STATIC_FOLDER"]
