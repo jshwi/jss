@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - fix display of avatar on user profile
 
 ### Removed
+- remove `PYPROJECT_TOML` config variable
 - remove `LICENSE` config variable
 - remove `CSP_REPORT_URI` config variable
 - remove `REDIS_URL` config variable

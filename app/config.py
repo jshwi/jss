@@ -175,13 +175,6 @@ class Config(Env):
         return self.str("BRAND", default="")
 
     @property
-    def PYPROJECT_TOML(self) -> Path:
-        """Path to LICENSE file."""
-        return self.path(
-            "PYPROJECT_TOML", default=self._root_path.parent / "pyproject.toml"
-        )
-
-    @property
     def COPYRIGHT(self) -> str:
         """Return the copyright line from LICENSE else None."""
         return self.str(
@@ -229,7 +222,9 @@ class Config(Env):
         """
         return self.str(
             "COPYRIGHT_EMAIL",
-            default=tomli.loads(self.PYPROJECT_TOML.read_text())
+            default=tomli.loads(
+                (self._root_path.parent / "pyproject.toml").read_text()
+            )
             .get("tool", {})
             .get("poetry", {})
             .get("authors", [])[0]

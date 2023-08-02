@@ -79,7 +79,7 @@ FROM base AS production
 # copy over app, database migrations, and wsgi entry point
 COPY ./app ./app
 COPY ./migrations ./migrations
-COPY ./wsgi.py ./bin/post_compile ./LICENSE ./
+COPY ./wsgi.py ./bin/post_compile ./LICENSE ./pyproject.toml ./
 
 # copy over prepared virtualenv from builder
 COPY --from=backend-builder $VENV ./.venv
@@ -126,7 +126,7 @@ ENV COPYRIGHT_EMAIL "dev_copyright_author@localhost.com"
 ENV MAIL_SUBJECT_PREFIX "[DevBrand]: "
 
 # execute command defined in docker-compose.yml within this script
-COPY ./bin/entrypoint ./LICENSE ./
+COPY ./bin/entrypoint ./LICENSE ./pyproject.toml ./
 
 # copy over prepared python virtualenv from builder
 COPY --from=dev-backend-builder $VENV ./.venv
