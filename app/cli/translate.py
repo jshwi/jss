@@ -155,9 +155,9 @@ def translate() -> None:
     # decorate its subcommands, not `click`
 
 
-@translate.command("update")
+@translate.command()
 @with_appcontext
-def _update() -> None:
+def update() -> None:
     """Update all languages."""
     translate_update_cli()
 
