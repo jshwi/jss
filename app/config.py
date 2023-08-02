@@ -88,14 +88,6 @@ class Config(Env):
         return self.list("FLASK_STATIC_DIGEST_BLACKLIST_FILTER", default=[])
 
     @property
-    def FLASK_STATIC_DIGEST_GZIP_FILES(self) -> bool:
-        """When set to False then gzipped files will not be created.
-
-        Static files will still get md5 tagged.
-        """
-        return self.bool("FLASK_STATIC_DIGEST_GZIP_FILES", default=True)
-
-    @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         """Alias for ``DATABASE_URL.``"""
         # this was the default in 2.x.x, now if this does not get set

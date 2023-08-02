@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - fix display of avatar on user profile
 
 ### Removed
+- remove `FLASK_STATIC_DIGEST_GZIP_FILES` config variable
 - remove `CACHE_TYPE` config variable
 
 [1.31.0](https://github.com/jshwi/jss/releases/tag/v1.31.0) - 2023-08-01
