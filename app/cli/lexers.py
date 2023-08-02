@@ -18,12 +18,12 @@ def lexers() -> None:
     # decorate its subcommands, not `click`
 
 
-@lexers.command("readme")
+@lexers.command()
 @with_appcontext
-def _readme() -> None:
+def readme() -> None:
     """Update all languages."""
     root = Path(__file__).parent.parent.parent
-    readme = root / ".github" / "LEXERS.md"
+    markdown = root / ".github" / "LEXERS.md"
     highlight_js = root / "assets" / "js" / "highlight.js"
     languages = []
     for line in highlight_js.read_text(encoding="utf-8").splitlines():
@@ -34,7 +34,7 @@ def _readme() -> None:
             if match is not None:
                 languages.append(f"- {match.group(1)}\n")
 
-    readme.write_text(
+    markdown.write_text(
         "# Languages\n\n{}".format("\n".join(sorted(languages))),
         encoding="utf-8",
     )
