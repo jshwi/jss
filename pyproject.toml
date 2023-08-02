@@ -33,6 +33,7 @@ ignore_strings = [
   "data",
   "dynamic",
   "index",
+  "messages.po",
   "messages.pot",
   "pybabel",
   "store",

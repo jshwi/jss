@@ -17,17 +17,6 @@ from flask.cli import with_appcontext
 from app.version import __version__
 
 
-def _add_translator() -> None:
-    pot_file = Path("messages.pot")
-    pot_file.write_text(
-        pot_file.read_text(encoding="utf-8")
-        .replace("FIRST AUTHOR", current_app.config["COPYRIGHT_AUTHOR"])
-        .replace("FULL NAME", current_app.config["COPYRIGHT_AUTHOR"])
-        .replace("EMAIL@ADDRESS", current_app.config["COPYRIGHT_EMAIL"]),
-        encoding="utf-8",
-    )
-
-
 def _remove_headers(file: Path) -> None:
     """Remove problematic headers (e.g. that cause merge conflicts)."""
     lines = []
@@ -61,91 +50,14 @@ def _pybabel_extract() -> None:
         ],
         check=True,
     )
-    _add_translator()
-
-
-def _pybabel_update() -> None:
-    subprocess.run(
-        [
-            "pybabel",
-            "update",
-            "--input-file",
-            "messages.pot",
-            "--output-dir",
-            current_app.config["TRANSLATIONS_DIR"],
-        ],
-        check=True,
+    pot_file = Path("messages.pot")
+    pot_file.write_text(
+        pot_file.read_text(encoding="utf-8")
+        .replace("FIRST AUTHOR", current_app.config["COPYRIGHT_AUTHOR"])
+        .replace("FULL NAME", current_app.config["COPYRIGHT_AUTHOR"])
+        .replace("EMAIL@ADDRESS", current_app.config["COPYRIGHT_EMAIL"]),
+        encoding="utf-8",
     )
-
-
-def _pybabel_compile() -> None:
-    subprocess.run(
-        [
-            "pybabel",
-            "compile",
-            "--directory",
-            current_app.config["TRANSLATIONS_DIR"],
-        ],
-        check=True,
-    )
-
-
-def _pybabel_init(lang: str) -> None:
-    subprocess.run(
-        [
-            "pybabel",
-            "init",
-            "--input-file",
-            "messages.pot",
-            "--output-dir",
-            current_app.config["TRANSLATIONS_DIR"],
-            "--locale",
-            lang,
-        ],
-        check=True,
-    )
-
-
-def translate_update_cli() -> None:
-    """Update all languages."""
-    _pybabel_extract()
-    _pybabel_update()
-    for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-        if lang.is_dir():
-            file = lang / "LC_MESSAGES" / "messages.po"
-            _remove_headers(file)
-
-    os.remove("messages.pot")
-
-
-def translate_compile_cli() -> None:
-    """Compile all languages."""
-    tdir: Path = current_app.config["TRANSLATIONS_DIR"]
-    if tdir.is_dir():
-        for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-            catalog = lang / "LC_MESSAGES" / "messages.po"
-            if catalog.is_file():
-                _pybabel_compile()
-                break
-    else:
-        print("No message catalogs to compile")
-
-
-def translate_init_cli(lang: str) -> None:
-    """Initialize a new language.
-
-    :param lang: Language to initialize.
-    """
-    _pybabel_extract()
-    _pybabel_init(lang)
-    file = (
-        current_app.config["TRANSLATIONS_DIR"]
-        / lang
-        / "LC_MESSAGES"
-        / "messages.po"
-    )
-    _remove_headers(file)
-    os.remove("messages.pot")
 
 
 @click.group()
@@ -159,7 +71,23 @@ def translate() -> None:
 @with_appcontext
 def update() -> None:
     """Update all languages."""
-    translate_update_cli()
+    _pybabel_extract()
+    subprocess.run(
+        [
+            "pybabel",
+            "update",
+            "--input-file",
+            "messages.pot",
+            "--output-dir",
+            current_app.config["TRANSLATIONS_DIR"],
+        ],
+        check=True,
+    )
+    for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
+        if lang.is_dir():
+            _remove_headers(lang / "LC_MESSAGES" / "messages.po")
+
+    os.remove("messages.pot")
 
 
 # noinspection PyShadowingBuiltins
@@ -167,7 +95,23 @@ def update() -> None:
 @with_appcontext
 def compile() -> None:  # pylint: disable=redefined-builtin
     """Compile all languages."""
-    translate_compile_cli()
+    tdir: Path = current_app.config["TRANSLATIONS_DIR"]
+    if tdir.is_dir():
+        for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
+            catalog = lang / "LC_MESSAGES" / "messages.po"
+            if catalog.is_file():
+                subprocess.run(
+                    [
+                        "pybabel",
+                        "compile",
+                        "--directory",
+                        current_app.config["TRANSLATIONS_DIR"],
+                    ],
+                    check=True,
+                )
+                break
+    else:
+        print("No message catalogs to compile")
 
 
 @translate.command()
@@ -178,7 +122,27 @@ def init(lang: str) -> None:
 
     :param lang: Language to initialize.
     """
-    translate_init_cli(lang)
+    _pybabel_extract()
+    subprocess.run(
+        [
+            "pybabel",
+            "init",
+            "--input-file",
+            "messages.pot",
+            "--output-dir",
+            current_app.config["TRANSLATIONS_DIR"],
+            "--locale",
+            lang,
+        ],
+        check=True,
+    )
+    _remove_headers(
+        current_app.config["TRANSLATIONS_DIR"]
+        / lang
+        / "LC_MESSAGES"
+        / "messages.po"
+    )
+    os.remove("messages.pot")
 
 
 @translate.command()
