@@ -170,10 +170,10 @@ def compile() -> None:  # pylint: disable=redefined-builtin
     translate_compile_cli()
 
 
-@translate.command("init")
+@translate.command()
 @click.argument("lang")
 @with_appcontext
-def _init(lang: str) -> None:
+def init(lang: str) -> None:
     """Initialize a new language.
 
     :param lang: Language to initialize.
