@@ -21,7 +21,7 @@ def init_app(app: Flask) -> None:
     exceptions = {
         int(k): v
         for k, v in json.loads(
-            (Path(__file__).parent / "schemas" / "exceptions.json").read_text(
+            (Path(app.root_path) / "schemas" / "exceptions.json").read_text(
                 encoding="utf-8"
             )
         ).items()

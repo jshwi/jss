@@ -191,17 +191,13 @@ class Config(Env):
     @property
     def LICENSE(self) -> Path:
         """Path to LICENSE file."""
-        return self.path(
-            "LICENSE",
-            default=Path(__file__).absolute().parent.parent / "LICENSE",
-        )
+        return self.path("LICENSE", default=self._root_path.parent / "LICENSE")
 
     @property
     def PYPROJECT_TOML(self) -> Path:
         """Path to LICENSE file."""
         return self.path(
-            "PYPROJECT_TOML",
-            default=Path(__file__).absolute().parent.parent / "pyproject.toml",
+            "PYPROJECT_TOML", default=self._root_path.parent / "pyproject.toml"
         )
 
     @property
@@ -344,7 +340,7 @@ class Config(Env):
     def TRANSLATIONS_DIR(self) -> Path:
         """Dir to store translations in."""
         return self.path(
-            "TRANSLATIONS_DIR", default=Path("app") / "translations"
+            "TRANSLATIONS_DIR", default=self._root_path / "translations"
         )
 
     @property

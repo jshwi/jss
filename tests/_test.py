@@ -2040,6 +2040,7 @@ def test_csp_report(
 )
 def test_csp_class(
     monkeypatch: pytest.MonkeyPatch,
+    test_app: Flask,
     default: CSPType,
     add: CSPType,
     expected: CSPType,
@@ -2050,13 +2051,14 @@ def test_csp_class(
     custom configured policy items.
 
     :param monkeypatch: Mock patch environment and attributes.
+    :param test_app: Test application.
     :param default: The policy to start with.
     :param add: The configured policy directive to add to the existing
         policy.
     :param expected: The expected
     """
     monkeypatch.setattr("json.loads", lambda _: default)
-    csp = ContentSecurityPolicy()
+    csp = ContentSecurityPolicy(Path(test_app.root_path) / "schemas")
     csp.update_policy(add)
     assert dict(csp) == expected  # type: ignore
 

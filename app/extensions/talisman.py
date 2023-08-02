@@ -28,15 +28,14 @@ CSPType = t.Dict[str, CSPValType]
 
 
 class ContentSecurityPolicy(CSPType):
-    """Object for setting default CSP and config override."""
+    """Object for setting default CSP and config override.
 
-    def __init__(self) -> None:
+    :param schemas: Path to schemas directory.
+    """
+
+    def __init__(self, schemas: Path) -> None:
         super().__init__(
-            json.loads(
-                (
-                    Path(__file__).parent.parent / "schemas" / "csp.json"
-                ).read_text(encoding="utf-8")
-            )
+            json.loads((schemas / "csp.json").read_text(encoding="utf-8"))
         )
 
     def _format_value(self, key: str, theirs: str | list[str]) -> CSPValType:
@@ -119,7 +118,7 @@ class Talisman(_Talisman):  # pylint: disable=too-few-public-methods
         x_xss_protection: bool = True,
     ) -> None:
         """Initialization."""
-        csp = ContentSecurityPolicy()
+        csp = ContentSecurityPolicy(Path(app.root_path) / "schemas")
         csp.update_policy(app.config["CSP"])
         super().init_app(
             app,
