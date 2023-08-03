@@ -317,11 +317,10 @@ class Config(Env):
     @property
     def LANGUAGES(self) -> list[str]:
         """Supported languages."""
-        default = ["en"]
-        if self.TRANSLATIONS_DIR.is_dir():
-            default.extend([p.name for p in self.TRANSLATIONS_DIR.iterdir()])
-
-        return self.list("LANGUAGES", default=default)
+        return self.list(
+            "LANGUAGES",
+            default=["es"] + [p.name for p in self.TRANSLATIONS_DIR.iterdir()],
+        )
 
     @property
     def SHOW_POSTS(self) -> bool:
