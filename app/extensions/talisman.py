@@ -8,6 +8,7 @@ import json
 import typing as t
 from pathlib import Path
 
+from flask import Flask
 from flask_talisman import (
     DEFAULT_CSP_POLICY,
     DEFAULT_DOCUMENT_POLICY,
@@ -93,30 +94,30 @@ class Talisman(_Talisman):  # pylint: disable=too-few-public-methods
     # pylint: disable=too-many-locals
     def init_app(
         self,
-        app,
-        feature_policy=DEFAULT_FEATURE_POLICY,
-        permissions_policy=DEFAULT_PERMISSIONS_POLICY,
-        document_policy=DEFAULT_DOCUMENT_POLICY,
-        force_https=True,
-        force_https_permanent=False,
-        force_file_save=False,
-        frame_options=SAMEORIGIN,
-        frame_options_allow_from=None,
-        strict_transport_security=True,
-        strict_transport_security_preload=False,
-        strict_transport_security_max_age=ONE_YEAR_IN_SECS,
-        strict_transport_security_include_subdomains=True,
-        content_security_policy=DEFAULT_CSP_POLICY,
-        content_security_policy_report_uri=None,
-        content_security_policy_report_only=False,
-        content_security_policy_nonce_in=None,
-        referrer_policy=DEFAULT_REFERRER_POLICY,
-        session_cookie_secure=True,
-        session_cookie_http_only=True,
-        session_cookie_samesite=DEFAULT_SESSION_COOKIE_SAMESITE,
-        x_content_type_options=True,
-        x_xss_protection=True,
-    ):
+        app: Flask,
+        feature_policy: str | dict[str, str] = DEFAULT_FEATURE_POLICY,
+        permissions_policy: str | dict[str, str] = DEFAULT_PERMISSIONS_POLICY,
+        document_policy: str | dict[str, str] = DEFAULT_DOCUMENT_POLICY,
+        force_https: bool = True,
+        force_https_permanent: bool = False,
+        force_file_save: bool = False,
+        frame_options: str = SAMEORIGIN,
+        frame_options_allow_from: str | None = None,
+        strict_transport_security: bool = True,
+        strict_transport_security_preload: bool = False,
+        strict_transport_security_max_age: int = ONE_YEAR_IN_SECS,
+        strict_transport_security_include_subdomains: bool = True,
+        content_security_policy: str | dict[str, str] = DEFAULT_CSP_POLICY,
+        content_security_policy_report_uri: str | None = None,
+        content_security_policy_report_only: bool = False,
+        content_security_policy_nonce_in: list[str] | None = None,
+        referrer_policy: str = DEFAULT_REFERRER_POLICY,
+        session_cookie_secure: bool = True,
+        session_cookie_http_only: bool = True,
+        session_cookie_samesite: str = DEFAULT_SESSION_COOKIE_SAMESITE,
+        x_content_type_options: bool = True,
+        x_xss_protection: bool = True,
+    ) -> None:
         """Initialization."""
         csp = ContentSecurityPolicy()
         csp.update_policy(app.config["CSP"])

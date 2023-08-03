@@ -372,7 +372,7 @@ class Config(Env):
         return self.bool("SHOW_REGISTER", default=True)
 
     @property
-    def SHOW_PAYMENT(self):
+    def SHOW_PAYMENT(self) -> bool:
         """Show payment option."""
         return self.bool("SHOW_PAYMENT", default=False)
 
