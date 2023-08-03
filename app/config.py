@@ -40,9 +40,9 @@ class Config(Env):
         return self.bool("TESTING", default=False)
 
     @property
-    def DATABASE_URL(self) -> str | None:
+    def DATABASE_URL(self) -> str:
         """Database location."""
-        return self.str("DATABASE_URL", default=None)
+        return self.str("DATABASE_URL", default="sqlite:///:memory:")
 
     @property
     def SECRET_KEY(self) -> str | None:
@@ -92,11 +92,10 @@ class Config(Env):
         """Alias for ``DATABASE_URL.``"""
         # this was the default in 2.x.x, now if this does not get set
         # before a certain action a runtime error is raised
-        default = "sqlite:///:memory:"
-        if self.DATABASE_URL is not None:
-            default = self.DATABASE_URL.replace("postgres://", "postgresql://")
-
-        return self.str("SQLALCHEMY_DATABASE_URI", default=default)
+        return self.str(
+            "SQLALCHEMY_DATABASE_URI",
+            default=self.DATABASE_URL.replace("postgres://", "postgresql://"),
+        )
 
     @property
     def SQLALCHEMY_TRACK_MODIFICATIONS(self) -> bool:

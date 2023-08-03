@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - add sitemap
 
 ### Changed
+- add default value for `DATABASE_URL`
 - update `CSPType` to refer to `ContentSecurityPolicy`
 
 ### Fixed
