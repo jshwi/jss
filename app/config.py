@@ -8,7 +8,6 @@ https://12factor.net/config:
 # pylint: disable=too-many-public-methods,invalid-name
 from __future__ import annotations
 
-import datetime
 from pathlib import Path
 
 import tomli
@@ -205,11 +204,7 @@ class Config(Env):
         If ``COPYRIGHT_YEAR`` environment variables is set then that
         is returned.
         """
-        year = datetime.datetime.now().strftime("%Y")
-        if self.COPYRIGHT is not None:
-            year = self.COPYRIGHT.split()[2]
-
-        return self.str("COPYRIGHT_YEAR", default=year)
+        return self.str("COPYRIGHT_YEAR", default=self.COPYRIGHT.split()[2])
 
     @property
     def COPYRIGHT_AUTHOR(self) -> str:
