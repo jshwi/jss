@@ -188,16 +188,12 @@ class Config(Env):
         )
 
     @property
-    def COPYRIGHT(self) -> str | None:
+    def COPYRIGHT(self) -> str:
         """Return the copyright line from LICENSE else None."""
-        declaration = None
-        if self.LICENSE.is_file():
-            with open(self.LICENSE, encoding="utf-8") as fin:
-                for line in fin.read().splitlines():
-                    if "Copyright" in line:
-                        declaration = line
-
-        return self.str("COPYRIGHT", default=declaration)
+        return self.str(
+            "COPYRIGHT",
+            default=self.LICENSE.read_text(encoding="utf-8").splitlines()[2],
+        )
 
     @property
     def COPYRIGHT_YEAR(self) -> str:
