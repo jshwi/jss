@@ -227,14 +227,14 @@ class Config(Env):
         If ``COPYRIGHT_EMAIL`` environment variables is set, then that
         is returned.
         """
-        email = ""
-        if self.PYPROJECT_TOML.is_file():
-            obj = tomli.loads(self.PYPROJECT_TOML.read_text())
-            authors = obj.get("tool", {}).get("poetry", {}).get("authors", [])
-            if authors:
-                email = authors[0].split()[1][1:-1]
-
-        return self.str("COPYRIGHT_EMAIL", default=email)
+        return self.str(
+            "COPYRIGHT_EMAIL",
+            default=tomli.loads(self.PYPROJECT_TOML.read_text())
+            .get("tool", {})
+            .get("poetry", {})
+            .get("authors", [])[0]
+            .split()[1][1:-1],
+        )
 
     @property
     def NAVBAR_HOME(self) -> bool:
