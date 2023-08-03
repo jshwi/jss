@@ -89,6 +89,6 @@ def user() -> None:
 
 @create.command("admin")
 @with_appcontext
-def _admin() -> None:
+def admin() -> None:
     """Create a new admin with the commandline instead of web form."""
     create_admin_cli()
