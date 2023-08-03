@@ -82,7 +82,7 @@ def create() -> None:
 
 @create.command("user")
 @with_appcontext
-def _user() -> None:
+def user() -> None:
     """Create a new user with the commandline instead of web form."""
     create_user_cli()
 
