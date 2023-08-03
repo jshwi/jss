@@ -221,11 +221,9 @@ class Config(Env):
         If ``COPYRIGHT_AUTHOR`` environment variables is set then that
         is returned.
         """
-        author = ""
-        if self.COPYRIGHT is not None:
-            author = " ".join(self.COPYRIGHT.split()[3:])
-
-        return self.str("COPYRIGHT_AUTHOR", default=author)
+        return self.str(
+            "COPYRIGHT_AUTHOR", default=" ".join(self.COPYRIGHT.split()[3:])
+        )
 
     @property
     def COPYRIGHT_EMAIL(self) -> str:
