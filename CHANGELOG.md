@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.31.0...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- add `SCHEMAS` config variable
 - add `app.config.Config`
 - add `app.cli.translate.readme`
 - add `app.cli.translate.init`

@@ -2051,7 +2051,7 @@ def test_csp_class(
     :param expected: The expected
     """
     monkeypatch.setattr("json.loads", lambda _: default)
-    csp = ContentSecurityPolicy(Path(test_app.root_path) / "schemas")
+    csp = ContentSecurityPolicy(test_app.config["SCHEMAS"])
     csp.update_policy(add)
     assert dict(csp) == expected  # type: ignore
 

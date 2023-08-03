@@ -117,7 +117,7 @@ class Talisman(_Talisman):  # pylint: disable=too-few-public-methods
         x_xss_protection: bool = True,
     ) -> None:
         """Initialization."""
-        csp = ContentSecurityPolicy(Path(app.root_path) / "schemas")
+        csp = ContentSecurityPolicy(app.config["SCHEMAS"])
         csp.update_policy(app.config["CSP"])
         super().init_app(
             app,

@@ -392,6 +392,14 @@ class Config(Env):
         """Generate list of rules without params."""
         return self.bool("SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS", default=True)
 
+    @property
+    def SCHEMAS(self) -> Path:
+        """Path to schemas.
+
+        Default value is ``app.root_path / "schemas"``.
+        """
+        return self.path("SCHEMAS", default=self._root_path / "schemas")
+
 
 def init_app(app: Flask) -> None:
     """Register config for ``Flask`` app.

@@ -7,7 +7,6 @@ Register handling of error-codes and their corresponding pages.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from flask import Flask, render_template
 from werkzeug.exceptions import HTTPException
@@ -21,7 +20,7 @@ def init_app(app: Flask) -> None:
     exceptions = {
         int(k): v
         for k, v in json.loads(
-            (Path(app.root_path) / "schemas" / "exceptions.json").read_text(
+            (app.config["SCHEMAS"] / "exceptions.json").read_text(
                 encoding="utf-8"
             )
         ).items()
