@@ -15,8 +15,6 @@ import tomli
 from environs import Env
 from flask import Flask
 
-from app.fs import create_gitignore
-
 
 class Config(Env):
     """The application's configuration object.
@@ -402,11 +400,7 @@ class Config(Env):
     @property
     def UPLOAD_PATH(self) -> Path:
         """Path to upload file to."""
-        upload_path = self.path(
-            "UPLOAD_PATH", default=self.STATIC_FOLDER / "uploads"
-        )
-        create_gitignore(upload_path)
-        return upload_path
+        return self.path("UPLOAD_PATH", default=self.STATIC_FOLDER / "uploads")
 
     @property
     def SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS(self) -> bool:
