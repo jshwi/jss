@@ -397,11 +397,7 @@ class Config(Env):
     @property
     def STATIC_FOLDER(self) -> Path:
         """Path to static files."""
-        static_folder = self.path(
-            "STATIC_FOLDER", default=self._root_path / "static"
-        )
-        create_gitignore(static_folder)
-        return static_folder
+        return self.path("STATIC_FOLDER", default=self._root_path / "static")
 
     @property
     def UPLOAD_PATH(self) -> Path:
