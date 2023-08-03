@@ -140,7 +140,7 @@ class Talisman(_Talisman):  # pylint: disable=too-few-public-methods
                 strict_transport_security_include_subdomains
             ),
             content_security_policy=csp,
-            content_security_policy_report_uri=app.config["CSP_REPORT_URI"],
+            content_security_policy_report_uri="/report/csp_violations",
             content_security_policy_report_only=app.config["CSP_REPORT_ONLY"],
             content_security_policy_nonce_in=["style-src-attr"],
             referrer_policy=referrer_policy,

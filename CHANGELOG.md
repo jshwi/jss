@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - fix display of avatar on user profile
 
 ### Removed
+- remove `CSP_REPORT_URI` config variable
 - remove `REDIS_URL` config variable
 - remove `MAIL_DEBUG` config variable
 - remove `FLASK_STATIC_DIGEST_GZIP_FILES` config variable

@@ -304,11 +304,6 @@ class Config(Env):
         return self.bool("CSP_REPORT_ONLY", default=True)
 
     @property
-    def CSP_REPORT_URI(self) -> str:
-        """URI to report CSP violations to."""
-        return self.str("CSP_REPORT_URI", default="/report/csp_violations")
-
-    @property
     def BOOTSTRAP_SERVE_LOCAL(self) -> bool:
         """Serve local CSS."""
         return self.bool("BOOTSTRAP_SERVE_LOCAL", default=True)
