@@ -49,7 +49,6 @@ from .const import (
     LAST_USER_EMAIL,
     LAST_USER_PASSWORD,
     LAST_USER_USERNAME,
-    LICENSE_CONTENTS,
     LOCATION,
     LOGOUT,
     MAIL_PASSWORD,
@@ -1640,8 +1639,6 @@ def test_config_copyright(
     :param test_app: Test application.
     """
     pyproject_toml = tmp_path / "pyproject.toml"
-    lic = tmp_path / "LICENSE"
-    lic.write_text(LICENSE_CONTENTS, encoding="utf-8")
     pyproject_toml.write_text(PYPROJECT_TOML, encoding="utf-8")
     monkeypatch.setenv("PYPROJECT_TOML", str(pyproject_toml))
     test_app.root_path = str(tmp_path / "app")

@@ -23,6 +23,7 @@ from .const import (
     COPYRIGHT_EMAIL,
     INIT_DB,
     LICENSE,
+    LICENSE_CONTENTS,
     MAIN_USER_EMAIL,
     TRANSLATIONS_DIR,
 )
@@ -44,6 +45,8 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     :param monkeypatch: Mock patch environment and attributes.
     :return: Test application
     """
+    lic = tmp_path / "LICENSE"
+    lic.write_text(LICENSE_CONTENTS, encoding="utf-8")
     monkeypatch.setenv("TESTING", "1")
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
     monkeypatch.setenv(
