@@ -192,6 +192,7 @@
     "test:py:doctest": "poetry run pyaud doctest",
     "test:py:doctest:package": "poetry run pyaud doctest-package",
     "test:py:doctest:readme": "poetry run pyaud doctest-readme",
+    "test:py:findflaky": "poetry run pytest --cov=app --cov=tests --find-flaky",
     "test:unit": "poetry run pyaud tests",
     "toml:sort": "poetry run pyaud sort-pyproject",
     "translate:compile": "poetry run flask translate compile",
