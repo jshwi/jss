@@ -95,23 +95,19 @@ def update() -> None:
 @with_appcontext
 def compile() -> None:  # pylint: disable=redefined-builtin
     """Compile all languages."""
-    tdir: Path = current_app.config["TRANSLATIONS_DIR"]
-    if tdir.is_dir():
-        for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
-            catalog = lang / "LC_MESSAGES" / "messages.po"
-            if catalog.is_file():
-                subprocess.run(
-                    [
-                        "pybabel",
-                        "compile",
-                        "--directory",
-                        current_app.config["TRANSLATIONS_DIR"],
-                    ],
-                    check=True,
-                )
-                break
-    else:
-        print("No message catalogs to compile")
+    for lang in current_app.config["TRANSLATIONS_DIR"].iterdir():
+        catalog = lang / "LC_MESSAGES" / "messages.po"
+        if catalog.is_file():
+            subprocess.run(
+                [
+                    "pybabel",
+                    "compile",
+                    "--directory",
+                    current_app.config["TRANSLATIONS_DIR"],
+                ],
+                check=True,
+            )
+            break
 
 
 @translate.command()

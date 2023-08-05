@@ -47,6 +47,8 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     """
     lic = tmp_path / "LICENSE"
     lic.write_text(LICENSE_CONTENTS, encoding="utf-8")
+    translations_dir = tmp_path / "translations"
+    translations_dir.mkdir()
     monkeypatch.setenv("TESTING", "1")
     monkeypatch.setenv("DATABASE_URL", f"sqlite:////{tmp_path / 'test.db'}")
     monkeypatch.setenv(
@@ -58,7 +60,7 @@ def fixture_test_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Flask:
     monkeypatch.setenv("DEFAULT_MAIL_SENDER", "no-reply@test.com")
     monkeypatch.setenv("DEBUG_TB_ENABLED", "0")
     monkeypatch.setenv("ADMIN_SECRET", ADMIN_USER_PASSWORD)
-    monkeypatch.setenv(TRANSLATIONS_DIR, str(tmp_path / "translations"))
+    monkeypatch.setenv(TRANSLATIONS_DIR, str(translations_dir))
     monkeypatch.setenv("LICENSE", str(tmp_path / LICENSE))
     monkeypatch.setenv("COPYRIGHT_AUTHOR", COPYRIGHT_AUTHOR)
     monkeypatch.setenv("COPYRIGHT_EMAIL", COPYRIGHT_EMAIL)

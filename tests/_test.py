@@ -2217,8 +2217,7 @@ def test_translate_compile(
     )
     commands = []
     monkeypatch.setattr(SUBPROCESS_RUN, lambda x, **y: commands.extend(x))
-    result = runner.invoke(args=[TRANSLATE, COMPILE], catch_exceptions=False)
-    assert "No message catalogs to compile" in result.output
+    runner.invoke(args=[TRANSLATE, COMPILE], catch_exceptions=False)
     assert not commands
     po_file.parent.mkdir(parents=True)
     po_file.touch()
@@ -2232,6 +2231,7 @@ def test_has_languages(test_app: Flask) -> None:
 
     :param test_app: Test application.
     """
+    shutil.rmtree(test_app.config["TRANSLATIONS_DIR"])
     shutil.copytree(
         Path(__file__).parent.parent / "app" / "translations",
         os.environ["TRANSLATIONS_DIR"],
