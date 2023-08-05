@@ -41,6 +41,10 @@ app
    :members:
    :undoc-members:
    :show-inheritance:
+.. automodule:: app.fs
+   :members:
+   :undoc-members:
+   :show-inheritance:
 .. automodule:: app.log
    :members:
    :undoc-members:
@@ -54,10 +58,6 @@ app
    :undoc-members:
    :show-inheritance:
 .. automodule:: app.user
-   :members:
-   :undoc-members:
-   :show-inheritance:
-.. automodule:: app.utils
    :members:
    :undoc-members:
    :show-inheritance:

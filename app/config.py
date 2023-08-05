@@ -15,7 +15,7 @@ import tomli
 from environs import Env
 from flask import Flask
 
-from app.utils import create_gitignore
+from app.fs import create_gitignore
 
 
 class Config(Env):
