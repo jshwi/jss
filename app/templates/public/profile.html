@@ -9,7 +9,7 @@
 {% block app_content %}
 
     {# user"s avatar #}
-    <img src="{{ user.avatar(70) }}" alt="{{ user.username }}"/>
+    <p><img src="{{ user.avatar(128) }}" class="navbar-avatar" alt="{{ user.username }}"/></p>
 
     {# if user"s info has been added, display it #}
     {% if user.about_me %}
