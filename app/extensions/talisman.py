@@ -23,11 +23,8 @@ from flask_talisman.talisman import (
     ONE_YEAR_IN_SECS,
 )
 
-CSPValType = t.Union[str, t.List[str]]
-CSPType = t.Dict[str, CSPValType]
 
-
-class ContentSecurityPolicy(CSPType):
+class ContentSecurityPolicy(t.Dict[str, t.Union[str, t.List[str]]]):
     """Object for setting default CSP and config override.
 
     :param schemas: Path to schemas directory.
@@ -38,7 +35,9 @@ class ContentSecurityPolicy(CSPType):
             json.loads((schemas / "csp.json").read_text(encoding="utf-8"))
         )
 
-    def _format_value(self, key: str, theirs: str | list[str]) -> CSPValType:
+    def _format_value(
+        self, key: str, theirs: str | list[str]
+    ) -> str | list[str]:
         # start with a list, to combine "ours" and "theirs"
         value = []
         ours = self.get(key)
@@ -68,7 +67,7 @@ class ContentSecurityPolicy(CSPType):
 
         return value
 
-    def update_policy(self, update: CSPType) -> None:
+    def update_policy(self, update: ContentSecurityPolicy) -> None:
         """Combine a configured policy without overriding the existing.
 
         If the result is a single item, add a str.

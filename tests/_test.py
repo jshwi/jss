@@ -21,7 +21,7 @@ from flask_login import current_user
 
 from app import config
 from app.extensions import mail
-from app.extensions.talisman import ContentSecurityPolicy, CSPType
+from app.extensions.talisman import ContentSecurityPolicy
 from app.log import smtp_handler
 from app.models import Post, User, db
 
@@ -2034,9 +2034,9 @@ def test_csp_report(
 def test_csp_class(
     monkeypatch: pytest.MonkeyPatch,
     test_app: Flask,
-    default: CSPType,
-    add: CSPType,
-    expected: CSPType,
+    default: ContentSecurityPolicy,
+    add: ContentSecurityPolicy,
+    expected: ContentSecurityPolicy,
 ) -> None:
     """Test the ``ContentSecurityPolicy`` object.
 

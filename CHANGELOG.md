@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - add `app.cli.create.user`
 - add sitemap
 
+### Changed
+- update `CSPType` to refer to `ContentSecurityPolicy`
+
 ### Fixed
 - fix display of avatar on user profile
 
