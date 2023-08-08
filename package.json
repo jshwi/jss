@@ -30,7 +30,7 @@
   "description": "A Flask webapp",
   "devDependencies": {
     "@babel/core": "^7.22.9",
-    "@babel/eslint-parser": "^7.22.9",
+    "@babel/eslint-parser": "^7.22.10",
     "@babel/preset-env": "^7.22.9",
     "babel-jest": "^29.6.2",
     "babel-loader": "^9.1.3",
