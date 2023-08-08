@@ -2,7 +2,7 @@
 app.models
 ==========
 
-Define app's database models.
+Application's database models.
 """
 # pylint: disable=too-few-public-methods
 from __future__ import annotations
@@ -40,9 +40,9 @@ class BaseModel(db.Model):  # type: ignore
     __abstract__ = True
 
     def export(self) -> dict[str, str]:
-        """Get post attributes as a dict of str objects.
+        """Get database attributes as a ``dict`` of ``str``  objects.
 
-        :return: Post as dict.
+        :return: Database as a ``dict``.
         """
         return {
             k: str(v)
@@ -54,18 +54,43 @@ class BaseModel(db.Model):  # type: ignore
 class User(UserMixin, BaseModel):
     """Database schema for users."""
 
+    #: ID of this user.
     id = db.Column(db.Integer, primary_key=True)
+
+    #: Username of this user.
     username = db.Column(db.String(64), index=True, unique=True)
+
+    #: Email of this user.
     email = db.Column(db.String(120), index=True, unique=True)
+
+    #: Password hash of this user's password.
     password_hash = db.Column(db.String(128))
+
+    #: Date that the user was created.
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    #: Whether this this user is an admin or not.
     admin = db.Column(db.Boolean, default=False)
+
+    #: Posts that have been added by the this user.
     posts = db.relationship("Post", backref="author", lazy="dynamic")
+
+    #: Whether this this user is confirmed or not.
     confirmed = db.Column(db.Boolean, default=False)
+
+    #: Date that the this user was confirmed on.
     confirmed_on = db.Column(db.DateTime)
+
+    #: About me page for the this user.
     about_me = db.Column(db.String(140))
+
+    #: Date that the this user last logged in on.
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+
+    #: Whether this user is authorized to make posts or not.
     authorized = db.Column(db.Boolean, default=False)
+
+    #: User's that this user if following.
     followed: RelationshipProperty = db.relationship(
         "User",
         secondary=followers,
@@ -74,22 +99,32 @@ class User(UserMixin, BaseModel):
         backref=db.backref("followers", lazy="dynamic"),
         lazy="dynamic",
     )
+
+    #: Messages that this user has sent.
     messages_sent = db.relationship(
         "Message",
         foreign_keys="Message.sender_id",
         backref="author",
         lazy="dynamic",
     )
+
+    #: Messages this user has received.
     messages_received = db.relationship(
         "Message",
         foreign_keys="Message.recipient_id",
         backref="recipient",
         lazy="dynamic",
     )
+
+    #: The last time the user visited the messages page.
     last_message_read_time = db.Column(db.DateTime)
+
+    #: Notifications pending for this user.
     notifications = db.relationship(
         "Notification", backref="user", lazy="dynamic"
     )
+
+    #: Tasks associated with this user.
     tasks = db.relationship("Task", backref="user", lazy="dynamic")
 
     def set_password(self, password: str) -> None:
@@ -221,11 +256,22 @@ class Post(BaseModel):
 
     __versioned__: t.Dict[object, object] = {}
 
+    #: ID of the user that wrote this post.
     id = db.Column(db.Integer, primary_key=True)
+
+    #: Title of this post.
     title = db.Column(db.String, nullable=False)
+
+    #: Body of this post.
     body = db.Column(db.String)
+
+    #: Date that the post was created.
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    #: ID of this post.
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    #: Date that this post was last edited.
     edited = db.Column(db.DateTime, default=None)
 
     def get_version(self, index: int) -> ModelBuilder | None:
@@ -289,20 +335,38 @@ class Post(BaseModel):
 class Message(BaseModel):
     """Database schema for user messages."""
 
+    #: Message ID.
     id = db.Column(db.Integer, primary_key=True)
+
+    #: ID of the sender of the message.
     sender_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    #: ID of the recipient of the message.
     recipient_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    #: Message body.
     body = db.Column(db.String(140))
+
+    #: Date that the message was created and sent.
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
 class Notification(BaseModel):
     """Database schema for notifications."""
 
+    #: ID of this notification.
     id = db.Column(db.Integer, primary_key=True)
+
+    #: Name of this notification.
     name = db.Column(db.String(128), index=True)
+
+    #: ID of the user who this notification belongs to.
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    #: Date this notification was created.
     timestamp = db.Column(db.Float, index=True, default=time)
+
+    #: Database to JSON dictionary mapping as a string.
     mapping = db.Column(db.Text)
 
     def set_mapping(self, mapping: dict[str, object]) -> None:
@@ -323,18 +387,32 @@ class Notification(BaseModel):
 class Task(BaseModel):
     """Database schema for background tasks."""
 
+    #: ID of the task.
     id = db.Column(db.String(36), primary_key=True)
+
+    #: Name of the task.
     name = db.Column(db.String(128), index=True)
+
+    #: Description of the task.
     description = db.Column(db.String(128))
+
+    #: User that this task belongs to.
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    #: Whether this task is complete or not.
     complete = db.Column(db.Boolean, default=False)
 
 
 class Usernames(BaseModel):
     """Database schema for username changes."""
 
+    #: ID of the username.
     id = db.Column(db.Integer, primary_key=True)
+
+    #: Single username amongst the usernames.
     username = db.Column(db.String(64), index=True)
+
+    #: ID of the user that this username belongs to.
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 

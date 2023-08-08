@@ -1,8 +1,6 @@
 """
 app.extensions
 ==============
-
-Each extension is initialized with ``init_app`` method.
 """
 from flask import Flask
 from flask_bootstrap import Bootstrap4
@@ -40,9 +38,9 @@ sitemap = Sitemap()
 
 
 def init_app(app: Flask) -> None:
-    """Register ``Flask`` extensions.
+    """Initialize extensions.
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     debug_toolbar.init_app(app)
     static_digest.init_app(app)

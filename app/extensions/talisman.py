@@ -70,23 +70,28 @@ class ContentSecurityPolicy(t.Dict[str, t.Union[str, t.List[str]]]):
     def update_policy(self, update: ContentSecurityPolicy) -> None:
         """Combine a configured policy without overriding the existing.
 
-        If the result is a single item, add a str.
+        If the result is a single item, add a ``str``.
 
-        If the result is a list, remove duplicates and sort.
+        If the result is a ``list``, remove duplicates and sort.
 
-        If either is a str and the other is a list, add the str and the
-        list contents to the new list.
+        If either is a ``str`` and the other is a ``list``, add the
+        ``str`` and the ``list`` contents to the new ``list``.
 
-        If both are str values add to the new list.
+        If both are ``str`` values add to the new ``list``.
 
-        :param update: A str or a list of str objects.
+        :param update: A ``str`` or a ``list`` of ``str`` objects.
         """
         for key, value in update.items():
             self[key] = self._format_value(key, value)
 
 
 class Talisman(_Talisman):  # pylint: disable=too-few-public-methods
-    """Subclass ``Talisman``."""
+    """Subclass ``flask_talisman.Talisman``.
+
+    With this the ``Talisman.init_app`` can be tweaked so that
+    everything remains encapsulated in the application factory, with no
+    need to add additional functions to the application..
+    """
 
     # pylint: disable=dangerous-default-value,too-many-arguments
     # pylint: disable=too-many-locals
@@ -116,7 +121,7 @@ class Talisman(_Talisman):  # pylint: disable=too-few-public-methods
         x_content_type_options: bool = True,
         x_xss_protection: bool = True,
     ) -> None:
-        """Initialization."""
+        """Set up this instance for use with app."""
         csp = ContentSecurityPolicy(app.config["SCHEMAS"])
         csp.update_policy(app.config["CSP"])
         super().init_app(

@@ -2,7 +2,7 @@
 app.cli.create
 ==============
 
-Add assets to database.
+Create and add assets to database.
 """
 from datetime import datetime
 from getpass import getpass
@@ -17,9 +17,7 @@ from app.user import create_user
 
 @click.group()
 def create() -> None:
-    """Create users."""
-    # group functions are registered as decorators, and this will
-    # decorate its subcommands, not `click`
+    """Create and add assets to database."""
 
 
 @create.command()

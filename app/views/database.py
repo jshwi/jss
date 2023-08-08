@@ -60,7 +60,7 @@ def init_app(app: Flask) -> None:
 
     See https://stackoverflow.com/questions/18002750
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     admin = Admin(
         app,

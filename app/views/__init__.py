@@ -62,7 +62,7 @@ def format_html(response: Response) -> Response:
 def init_app(app: Flask) -> None:
     """Load the app with views.
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     app.before_request(_before_request)
     app.register_blueprint(report.blueprint)

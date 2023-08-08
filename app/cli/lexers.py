@@ -1,6 +1,8 @@
 """
 app.cli.lexers
 ==============
+
+Commands related to language syntax.
 """
 from __future__ import annotations
 
@@ -13,9 +15,7 @@ from flask.cli import with_appcontext
 
 @click.group()
 def lexers() -> None:
-    """Lexer commands."""
-    # group functions are registered as decorators, and this will
-    # decorate its subcommands, not `click`
+    """Commands related to language syntax."""
 
 
 @lexers.command()

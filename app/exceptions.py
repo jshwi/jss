@@ -13,9 +13,15 @@ from werkzeug.exceptions import HTTPException
 
 
 def init_app(app: Flask) -> None:
-    """Register error handlers.
+    """Initialize error pages for this application.
 
-    :param app: Application factory object.
+    See `exceptions`_.
+
+    .. _exceptions:
+        https://github.com/jshwi/jss/blob/master/app/schemas/
+        exceptions.json
+
+    :param app: Application object.
     """
     exceptions = {
         int(k): v
@@ -27,13 +33,6 @@ def init_app(app: Flask) -> None:
     }
 
     def render_error(error: HTTPException) -> tuple[str, int]:
-        """Render error template.
-
-        If a HTTPException, pull the ``code`` attribute; default to 500.
-
-        :param error: Exception to catch and render page for.
-        :return: Tuple consisting of rendered template and error code.
-        """
         # not considered error for logging as all "errors" will be
         # emailed
         app.logger.info(error.description)
@@ -47,5 +46,7 @@ def init_app(app: Flask) -> None:
             error_code,
         )
 
+    # render error template.
+    # If a HTTPException pull the ``code`` attribute; default to 500
     for errcode in exceptions:
         app.errorhandler(errcode)(render_error)

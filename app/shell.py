@@ -12,7 +12,7 @@ from app.models import Message, Notification, Post, Task, User, Usernames, db
 def register_models(app: Flask) -> None:
     """Make database models accessible to the ``Flask`` shell.
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     app.shell_context_processor(
         lambda: {
@@ -30,6 +30,6 @@ def register_models(app: Flask) -> None:
 def init_app(app: Flask) -> None:
     """Register shell context objects.
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     register_models(app)

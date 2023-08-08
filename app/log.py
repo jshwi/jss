@@ -17,7 +17,7 @@ formatter = logging.Formatter(
 def smtp_handler(app: Flask) -> None:
     """Configure an SMTP handler for error reporting.
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     server = app.config["MAIL_SERVER"]
     username = app.config["MAIL_USERNAME"]
@@ -48,7 +48,7 @@ def integrate_loggers(app: Flask) -> None:
 
     https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     gunicorn_logger = logging.getLogger("gunicorn.error")
     app.logger.handlers = gunicorn_logger.handlers
@@ -56,9 +56,9 @@ def integrate_loggers(app: Flask) -> None:
 
 
 def init_app(app: Flask) -> None:
-    """Add handlers to app logger.
+    """Initialize application loggers.
 
-    :param app: Application factory object.
+    :param app: Application object.
     """
     smtp_handler(app)
     if not app.config["DEBUG"]:

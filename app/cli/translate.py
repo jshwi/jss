@@ -62,9 +62,7 @@ def _pybabel_extract() -> None:
 
 @click.group()
 def translate() -> None:
-    """Translation and localization commands."""
-    # group functions are registered as decorators, and this will
-    # decorate its subcommands, not `click`
+    """Commands related to language translation."""
 
 
 @translate.command()
