@@ -997,17 +997,17 @@ dates = ["pytz (>=2019.1)"]
 
 [[package]]
 name = "email-validator"
-version = "1.3.1"
+version = "2.1.0"
 description = "A robust email address syntax and deliverability validation library."
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.7"
 files = [
-    {file = "email_validator-1.3.1-py2.py3-none-any.whl", hash = "sha256:49a72f5fa6ed26be1c964f0567d931d10bf3fdeeacdf97bc26ef1cd2a44e0bda"},
-    {file = "email_validator-1.3.1.tar.gz", hash = "sha256:d178c5c6fa6c6824e9b04f199cf23e79ac15756786573c190d2ad13089411ad2"},
+    {file = "email_validator-2.1.0-py3-none-any.whl", hash = "sha256:4496ecc949b51e42d1c9e6159d57cd04ef017af57d2e366ed7fd998f1bf8af69"},
+    {file = "email_validator-2.1.0.tar.gz", hash = "sha256:5f511cca8856bb03251d6292ba59e7f98978aae13fa5823ddd8bf885c56a6260"},
 ]
 
 [package.dependencies]
-dnspython = ">=1.15.0"
+dnspython = ">=2.0.0"
 idna = ">=2.0.0"
 
 [[package]]
@@ -3829,4 +3829,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "59dff03ee4dcbee513adaf74dde171adcbd0499e63e846fd9d8ba4779931f6c9"
+content-hash = "229fbe2453d2fecbffbf7b35ba1333e6a12cedaa94ff7801cf04b3a17f187d3d"
