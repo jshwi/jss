@@ -2297,6 +2297,8 @@ files = [
     {file = "psycopg2-2.9.9-cp310-cp310-win_amd64.whl", hash = "sha256:426f9f29bde126913a20a96ff8ce7d73fd8a216cfb323b1f04da402d452853c3"},
     {file = "psycopg2-2.9.9-cp311-cp311-win32.whl", hash = "sha256:ade01303ccf7ae12c356a5e10911c9e1c51136003a9a1d92f7aa9d010fb98372"},
     {file = "psycopg2-2.9.9-cp311-cp311-win_amd64.whl", hash = "sha256:121081ea2e76729acfb0673ff33755e8703d45e926e416cb59bae3a86c6a4981"},
+    {file = "psycopg2-2.9.9-cp312-cp312-win32.whl", hash = "sha256:d735786acc7dd25815e89cc4ad529a43af779db2e25aa7c626de864127e5a024"},
+    {file = "psycopg2-2.9.9-cp312-cp312-win_amd64.whl", hash = "sha256:a7653d00b732afb6fc597e29c50ad28087dcb4fbfb28e86092277a559ae4e693"},
     {file = "psycopg2-2.9.9-cp37-cp37m-win32.whl", hash = "sha256:5e0d98cade4f0e0304d7d6f25bbfbc5bd186e07b38eac65379309c4ca3193efa"},
     {file = "psycopg2-2.9.9-cp37-cp37m-win_amd64.whl", hash = "sha256:7e2dacf8b009a1c1e843b5213a87f7c544b2b042476ed7755be813eaf4e8347a"},
     {file = "psycopg2-2.9.9-cp38-cp38-win32.whl", hash = "sha256:ff432630e510709564c01dafdbe996cb552e0b9f3f065eb89bdce5bd31fabf4c"},
@@ -3076,19 +3078,19 @@ type-comment = ["typed-ast (>=1.5.4)"]
 
 [[package]]
 name = "sphinx-immaterial"
-version = "0.11.7"
+version = "0.11.8"
 description = "Adaptation of mkdocs-material theme for the Sphinx documentation system"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "sphinx_immaterial-0.11.7-py3-none-any.whl", hash = "sha256:2166b8272e1dbf2c2fd93c801c6db24e1d7168c5c7283159bf0e8ee713166c02"},
-    {file = "sphinx_immaterial-0.11.7.tar.gz", hash = "sha256:619075d7d5edd03bc92a1bbf9bab68675cf52cf43965b1d6607222881a15d88c"},
+    {file = "sphinx_immaterial-0.11.8-py3-none-any.whl", hash = "sha256:4362096902384f907aad4758452fdc02f4080e615cb4ce28838fb941f9f52734"},
+    {file = "sphinx_immaterial-0.11.8.tar.gz", hash = "sha256:35b1d96b8bf2eaf42d8a1ce7d5d1526b8fe0d95a14aed90635ad50211805182d"},
 ]
 
 [package.dependencies]
 appdirs = "*"
 markupsafe = "*"
-pydantic = ">=2.0"
+pydantic = ">=2.4"
 pydantic-extra-types = "*"
 requests = "*"
 sphinx = ">=4.5"
@@ -3829,4 +3831,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "8e65cac886e84f807b6af57c137a3cbda580be7027bca74a0f588aabed3a69a1"
+content-hash = "3ac732fcdb46917c21846557d596aa4262bb713e1ede2bfa765cf16a3b6850ba"
