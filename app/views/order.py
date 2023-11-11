@@ -31,7 +31,7 @@ def call() -> Response:
         success_url=f"{request.host_url}order/success",
         cancel_url=f"{request.host_url}order/cancel",
     )
-    return redirect(checkout_session.url)
+    return redirect(checkout_session.url)  # type: ignore
 
 
 @blueprint.route("success")
