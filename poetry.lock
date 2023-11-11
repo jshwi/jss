@@ -106,13 +106,13 @@ files = [
 
 [[package]]
 name = "arcon"
-version = "0.2.1"
+version = "0.3.0"
 description = "Persistent runtime config"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "arcon-0.2.1-py3-none-any.whl", hash = "sha256:666feb8ca37b4d4d9ee42c54232630e289e07d2b337be5f51fe21e026b182d60"},
-    {file = "arcon-0.2.1.tar.gz", hash = "sha256:2497152cce25203ee7cbce4ad24bb214b4491e94de2c842c42e3930b3be50df6"},
+    {file = "arcon-0.3.0-py3-none-any.whl", hash = "sha256:1aa243bb2df8413636ea734b0fa36496dc1b47c4c72fcd7a9efe9450ce2d59ec"},
+    {file = "arcon-0.3.0.tar.gz", hash = "sha256:90699c8e04ceb2e5fb361d025a06fa0882484ce82dfa0a2440a95603b7f7cf40"},
 ]
 
 [package.dependencies]
@@ -2319,22 +2319,22 @@ tests = ["pytest"]
 
 [[package]]
 name = "pyaud"
-version = "6.2.2"
+version = "7.2.0"
 description = "Framework for writing Python package audits"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "pyaud-6.2.2-py3-none-any.whl", hash = "sha256:df7db9ae4d7e40a18be804037329fe4a154771fc14285473e272f5f4a34da932"},
-    {file = "pyaud-6.2.2.tar.gz", hash = "sha256:dec60a822cc90098543b3745cabd8d5f3b83677e7bfb6853ddd28b82d152af36"},
+    {file = "pyaud-7.2.0-py3-none-any.whl", hash = "sha256:8e4cda20359e948df5117252cff2aa76b4aee39b19e2a4603c1f0df76e80dfdb"},
+    {file = "pyaud-7.2.0.tar.gz", hash = "sha256:28962fa6f15329fb15e008c5e4e1c20d92a15295d43cb204cddfb401941bd5a1"},
 ]
 
 [package.dependencies]
-arcon = ">=0.2.1,<0.3.0"
+arcon = ">=0,<1"
 gitpython = ">=3.1.30,<4.0.0"
 lsfiles = ">=0.5"
 object-colors = ">=2.0.1,<3.0.0"
 pyaud-plugins = ">=0.14.0"
-spall = ">=0,<1"
+rich = ">=13.5.2,<14.0.0"
 
 [[package]]
 name = "pyaud-plugins"
@@ -2987,17 +2987,6 @@ python-versions = ">=3.8"
 files = [
     {file = "soupsieve-2.5-py3-none-any.whl", hash = "sha256:eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7"},
     {file = "soupsieve-2.5.tar.gz", hash = "sha256:5663d5a7b3bfaeee0bc4372e7fc48f9cff4940b3eec54a6451cc5299f1097690"},
-]
-
-[[package]]
-name = "spall"
-version = "0.6.1"
-description = "Object-oriented commandline"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "spall-0.6.1-py3-none-any.whl", hash = "sha256:a0174d6c8fdc13d7198c6c981c3a4eeb79898e4794b6ba3c35d4272ece0e1bb1"},
-    {file = "spall-0.6.1.tar.gz", hash = "sha256:83002b2b60a7fd49c2a9108938d099fbf975048a4e0349f06c1a3c589de2bfcb"},
 ]
 
 [[package]]
@@ -3777,4 +3766,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "c3ae8a00a8e54e5c59f80210d91f3132d90e64063701f814f6ba94f33b8856b2"
+content-hash = "12c00a650ae9cf7d272ceb7b18afcf38b1db6b089f07c8d508a99546f1b20b38"
