@@ -138,7 +138,7 @@ RUN chown -R $USER:$USER ./
 USER $USER
 
 # ============================== Nginx =================================
-FROM nginx:1.25.1-alpine AS nginx
+FROM nginx:1.25.3-alpine AS nginx
 
 # remove default config in `nginx` container
 RUN rm /etc/nginx/conf.d/default.conf
