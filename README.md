@@ -1,4 +1,7 @@
-# jss
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jshwi/jss/master/assets/img/safari-pinned-tab.svg" alt="jss" width="30%"/>
+</p>
 
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build](https://github.com/jshwi/jss/actions/workflows/build.yaml/badge.svg)](https://github.com/jshwi/jss/actions/workflows/build.yaml)
