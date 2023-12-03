@@ -1,5 +1,7 @@
 # Languages
 
+- ini
+
 - python
 
 - shell
