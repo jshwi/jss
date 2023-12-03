@@ -6,8 +6,6 @@ on:
   pull_request:
     branches:
       - master
-permissions:
-  contents: write
 jobs:
   build:
     name: >
@@ -60,11 +58,3 @@ jobs:
       - name: Upload coverage
         id: upload-coverage
         uses: codecov/codecov-action@v3
-      - name: Build docs
-        id: build-docs
-        run: poetry run sphinx-build -M html docs docs/_build -W
-      - name: Deploy docs
-        id: deploy-docs
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs/_build/html
