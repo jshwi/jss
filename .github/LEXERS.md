@@ -6,4 +6,6 @@
 
 - shell
 
+- toml
+
 - yaml

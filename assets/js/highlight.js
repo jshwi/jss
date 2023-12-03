@@ -8,6 +8,7 @@ hljs.registerLanguage("python", hljsPython);
 hljs.registerLanguage("shell", hljsShell);
 hljs.registerLanguage("yaml", hljsYaml);
 hljs.registerLanguage("ini", hljsIni);
+hljs.registerLanguage("toml", hljsIni);
 
 document.addEventListener("DOMContentLoaded", () => {
   hljs.highlightAll();
