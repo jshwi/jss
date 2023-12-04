@@ -564,6 +564,11 @@ class Config(Env):
         return self.bool("SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS", default=True)
 
     @property
+    def SITEMAP_CHANGEFREQ(self) -> str:
+        """Frequency of change."""
+        return self.str("SITEMAP_CHANGEFREQ", default="monthly")
+
+    @property
     def SCHEMAS(self) -> Path:
         """Path to schemas.
 

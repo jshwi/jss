@@ -7,7 +7,14 @@ from __future__ import annotations
 import typing as t
 from datetime import datetime
 
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
 from werkzeug import Response
 
@@ -70,7 +77,13 @@ def sitemap_read() -> (
     """
     posts = Post.query.all()
     for post in posts:
-        yield "post.read", {"id": post.id}, datetime.now(), "monthly", 0.7
+        yield (
+            "post.read",
+            {"id": post.id},
+            datetime.now(),
+            current_app.config["SITEMAP_CHANGEFREQ"],
+            0.7,
+        )
 
 
 @blueprint.route("/<int:id>/update", methods=["GET", "POST"])
