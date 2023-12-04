@@ -4,6 +4,9 @@ app.views.public
 """
 from __future__ import annotations
 
+import typing as t
+from datetime import datetime
+
 from flask import (
     Blueprint,
     current_app,
@@ -15,6 +18,7 @@ from flask import (
 )
 from werkzeug import Response
 
+from app.extensions import sitemap
 from app.models import Post, User
 from app.views.forms import EmptyForm
 
@@ -49,6 +53,23 @@ def index() -> str:
         prev_url=(
             url_for("index", page=posts.prev_num) if posts.has_prev else None
         ),
+    )
+
+
+@sitemap.register_generator
+def sitemap_index() -> (
+    t.Generator[tuple[str, dict[str, t.Any], datetime, str, float], None, None]
+):
+    """Add index to sitemap.
+
+    :return: Generator yielding data for sitemap.
+    """
+    yield (
+        "index",
+        {},
+        datetime.now(),
+        current_app.config["SITEMAP_CHANGEFREQ"],
+        0.7,
     )
 
 
