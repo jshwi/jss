@@ -561,7 +561,7 @@ class Config(Env):
 
         Default value is ``True``.
         """
-        return self.bool("SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS", default=True)
+        return self.bool("SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS", default=False)
 
     @property
     def SITEMAP_CHANGEFREQ(self) -> str:

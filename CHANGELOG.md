@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - index to sitemap generator
 - sitemap change freq to config
 
+### Changed
+- remove items that do not need to be on sitemap by default
+
 [1.34.0](https://github.com/jshwi/jss/releases/tag/v1.34.0) - 2023-12-04
 ------------------------------------------------------------------------
 ### Added
