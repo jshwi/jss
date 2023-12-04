@@ -4,12 +4,14 @@ app.views.post
 """
 from __future__ import annotations
 
+import typing as t
 from datetime import datetime
 
 from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from werkzeug import Response
 
+from app.extensions import sitemap
 from app.models import Post, db
 from app.views.forms import PostForm
 from app.views.security import authorization_required
@@ -56,6 +58,19 @@ def read(id: int) -> str | Response:
     revision = request.args.get("revision", -1, type=int)
     post = Post.get_post(id, revision, checkauthor=False)
     return render_template("post/read.html", post=post, revision=revision)
+
+
+@sitemap.register_generator
+def sitemap_read() -> (
+    t.Generator[tuple[str, dict[str, t.Any], datetime, str, float], None, None]
+):
+    """Generate post URLs for sitemap.
+
+    :return: Generator yielding data for sitemap.
+    """
+    posts = Post.query.all()
+    for post in posts:
+        yield "post.read", {"id": post.id}, datetime.now(), "monthly", 0.7
 
 
 @blueprint.route("/<int:id>/update", methods=["GET", "POST"])
