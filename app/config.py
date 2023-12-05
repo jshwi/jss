@@ -569,6 +569,11 @@ class Config(Env):
         return self.str("SITEMAP_CHANGEFREQ", default="monthly")
 
     @property
+    def SITEMAP_URL_SCHEME(self) -> str:
+        """URL scheme for sitemap."""
+        return self.str("SITEMAP_URL_SCHEME", default="https")
+
+    @property
     def SCHEMAS(self) -> Path:
         """Path to schemas.
 
