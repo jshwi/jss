@@ -36,6 +36,7 @@ ignore_strings = [
   "index",
   "messages.po",
   "messages.pot",
+  "public.profile",
   "pybabel",
   "store",
   "store_true",

@@ -113,6 +113,25 @@ def profile(username: str) -> str | Response:
     )
 
 
+@sitemap.register_generator
+def sitemap_user() -> (
+    t.Generator[tuple[str, dict[str, t.Any], datetime, str, float], None, None]
+):
+    """Generate user URLs for sitemap.
+
+    :return: Generator yielding data for sitemap.
+    """
+    users = User.query.all()
+    for user in users:
+        yield (
+            "public.profile",
+            {"username": user.username},
+            datetime.now(),
+            current_app.config["SITEMAP_CHANGEFREQ"],
+            0.7,
+        )
+
+
 @blueprint.route("/favicon.ico")
 def favicon() -> Response:
     """Endpoint for the app's favicon.

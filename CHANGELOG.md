@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased](https://github.com/jshwi/jss/compare/v1.34.0...HEAD)
 ------------------------------------------------------------------------
 ### Added
+- add profiles to sitemap
 - index to sitemap generator
 - sitemap change freq to config
 
