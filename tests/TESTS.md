@@ -11,6 +11,11 @@ This file is auto-generated and any changes made to it will be overwritten
 Test `404 Not Found` is returned when a route does not exist.
 
 
+### Add authorized users to sitemap
+
+Test only authorized user profiles get added to sitemap.
+
+
 ### Admin access control
 
 Test access to admin console restricted to admin user.

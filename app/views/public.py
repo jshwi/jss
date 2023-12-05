@@ -123,13 +123,14 @@ def sitemap_user() -> (
     """
     users = User.query.all()
     for user in users:
-        yield (
-            "public.profile",
-            {"username": user.username},
-            datetime.now(),
-            current_app.config["SITEMAP_CHANGEFREQ"],
-            0.7,
-        )
+        if user.authorized:
+            yield (
+                "public.profile",
+                {"username": user.username},
+                datetime.now(),
+                current_app.config["SITEMAP_CHANGEFREQ"],
+                0.7,
+            )
 
 
 @blueprint.route("/favicon.ico")

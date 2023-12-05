@@ -2472,3 +2472,43 @@ document.addEventListener("DOMContentLoaded", () => {
     highlight_js.write_text(content, encoding="utf-8")
     runner.invoke(args=["lexers", "readme"], catch_exceptions=False)
     assert readme.read_text(encoding="utf-8") == expected
+
+
+@pytest.mark.usefixtures(INIT_DB)
+def test_add_authorized_users_to_sitemap(
+    client: FlaskClient, add_test_objects: AddTestObjects
+) -> None:
+    """Test only authorized user profiles get added to sitemap.
+
+    :param client: Test application client.
+    :param add_test_objects: Add test objects to test database.
+    """
+    # assert no users in sitemap
+    user_test_object = UserTestObject(
+        MAIN_USER_USERNAME, MAIN_USER_EMAIL, MAIN_USER_PASSWORD, confirmed=True
+    )
+    post_test_object = PostTestObject(
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(post_test_object)
+    response = client.get("/sitemap.xml").data.decode()
+    assert MAIN_USER_USERNAME not in response
+    assert AUTHORIZED_USER_USERNAME not in response
+
+    # assert authorized user now in sitemap
+    user_test_object = UserTestObject(
+        AUTHORIZED_USER_USERNAME,
+        AUTHORIZED_USER_EMAIL,
+        AUTHORIZED_USER_PASSWORD,
+        confirmed=True,
+        authorized=True,
+    )
+    post_test_object = PostTestObject(
+        POST_TITLE_1, POST_BODY_1, POST_AUTHOR_ID_1, POST_CREATED_1
+    )
+    add_test_objects.add_test_users(user_test_object)
+    add_test_objects.add_test_posts(post_test_object)
+    response = client.get("/sitemap.xml").data.decode()
+    assert MAIN_USER_USERNAME not in response
+    assert AUTHORIZED_USER_USERNAME in response
