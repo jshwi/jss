@@ -3637,13 +3637,13 @@ watchdog = ["watchdog (>=2.3)"]
 
 [[package]]
 name = "wtforms"
-version = "3.1.1"
+version = "3.1.2"
 description = "Form validation and rendering for Python web development."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "wtforms-3.1.1-py3-none-any.whl", hash = "sha256:ae7c54b29806c70f7bce8eb9f24afceb10ca5c32af3d9f04f74d2f66ccc5c7e0"},
-    {file = "wtforms-3.1.1.tar.gz", hash = "sha256:5e51df8af9a60f6beead75efa10975e97768825a82146a65c7cbf5b915990620"},
+    {file = "wtforms-3.1.2-py3-none-any.whl", hash = "sha256:bf831c042829c8cdbad74c27575098d541d039b1faa74c771545ecac916f2c07"},
+    {file = "wtforms-3.1.2.tar.gz", hash = "sha256:f8d76180d7239c94c6322f7990ae1216dae3659b7aa1cee94b6318bdffb474b9"},
 ]
 
 [package.dependencies]
@@ -3686,4 +3686,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "f3ad12b2dc3cb9428266622e6f9fc4fc023a6f3b3c82df69d88f905ec6af14f6"
+content-hash = "634b6f55a697f540c328b60ba9c3cea1018ac61b0af7aa90c430856299906fc3"
