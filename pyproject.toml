@@ -171,6 +171,7 @@ audit = [
   "about-tests",
   "commit-policy",
   "const",
+  "copyright-year",
   "coverage",
   "doctest-package",
   "files",
