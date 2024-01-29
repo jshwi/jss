@@ -4,6 +4,7 @@ app.models
 
 Application's database models.
 """
+
 # pylint: disable=too-few-public-methods
 from __future__ import annotations
 

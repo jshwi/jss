@@ -6,6 +6,7 @@ The ``test_app`` fixture will call the factory and pass ``test_config``
 to configure the application and database for testing instead of using
 local development configuration.
 """
+
 import typing as t
 from pathlib import Path
 

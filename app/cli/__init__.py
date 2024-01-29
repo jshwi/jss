@@ -13,6 +13,7 @@ third-party extensions e.g. ``flask db`` from ``flask_migrate`` and
 
 For all available commands run ``flask --help``.
 """
+
 from flask import Flask
 
 from app.cli import create, lexers, translate

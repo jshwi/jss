@@ -2,6 +2,7 @@
 app.views.redirect
 ===================
 """
+
 from datetime import datetime
 
 from flask import Blueprint, flash, redirect, render_template, url_for

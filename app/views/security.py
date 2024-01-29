@@ -4,6 +4,7 @@ app.views.security
 
 Define app's security functionality.
 """
+
 from __future__ import annotations
 
 import functools

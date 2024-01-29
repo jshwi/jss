@@ -4,6 +4,7 @@ app.cli.translate
 
 Run translation actions.
 """
+
 from __future__ import annotations
 
 import os

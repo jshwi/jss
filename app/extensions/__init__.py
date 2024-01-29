@@ -2,6 +2,7 @@
 app.extensions
 ==============
 """
+
 from flask import Flask
 from flask_bootstrap import Bootstrap4
 from flask_compress import Compress
