@@ -5,6 +5,7 @@ app.views.forms
 All classes derived from ``FlaskForm`` imported from ``Flask-WTF``.
 ``Flask-WTF`` is a ``Flask`` extension built on top of ``WTForms``.
 """
+
 from flask import current_app
 from flask_babel import lazy_gettext as _l
 from flask_pagedown.fields import PageDownField

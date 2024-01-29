@@ -4,6 +4,7 @@ app.log
 
 Register custom app loggers.
 """
+
 import logging
 from logging.handlers import SMTPHandler
 

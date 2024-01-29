@@ -2,6 +2,7 @@
 app.extensions.babel
 ====================
 """
+
 from flask import Flask, request
 from flask_babel import Babel as _Babel
 

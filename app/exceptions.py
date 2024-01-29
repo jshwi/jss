@@ -4,6 +4,7 @@ app.exceptions
 
 Register handling of error-codes and their corresponding pages.
 """
+
 from __future__ import annotations
 
 import json
