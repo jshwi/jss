@@ -2,6 +2,7 @@
 app.views.report
 =================
 """
+
 import json
 
 from flask import Blueprint, Response, current_app, make_response, request

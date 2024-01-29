@@ -4,6 +4,7 @@ app.views.database
 
 Admin page initialized with models for reading and writing.
 """
+
 from __future__ import annotations
 
 from flask import Flask

@@ -4,6 +4,7 @@ app.user
 
 Functionality for user's of the app.
 """
+
 from app.extensions import login_manager
 from app.models import User, Usernames, db
 

@@ -4,6 +4,7 @@ app.cli.create
 
 Create and add assets to database.
 """
+
 from datetime import datetime
 from getpass import getpass
 
