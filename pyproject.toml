@@ -143,7 +143,7 @@ gunicorn = "^21.2.0"
 itsdangerous = "^2.1.2"
 psycopg2 = "^2.9.7"
 python = "^3.8"
-stripe = "^8.3.0"
+stripe = "^8.5.0"
 tomli = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
