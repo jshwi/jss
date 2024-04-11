@@ -19,11 +19,11 @@ def call() -> Response:
 
     :return: Response object.
     """
-    price_data = {
-        "product_data": {"name": "Book a call"},
-        "unit_amount": int(current_app.config["PAYMENT_OPTIONS"]["price"]),
-        "currency": "usd",
-    }
+    price_data = stripe.checkout.Session.CreateParamsLineItemPriceData(
+        product_data={"name": "Book a call"},
+        unit_amount=int(current_app.config["PAYMENT_OPTIONS"]["price"]),
+        currency="usd",
+    )
     checkout_session = stripe.checkout.Session.create(
         api_key=current_app.config["STRIPE_SECRET_KEY"],
         line_items=[{"price_data": price_data, "quantity": 1}],
