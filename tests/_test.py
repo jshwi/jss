@@ -2252,6 +2252,9 @@ def test_book_call(
     stripe = Recorder()
     stripe.checkout = Recorder()  # type: ignore
     stripe.checkout.Session = Recorder()  # type: ignore
+    stripe.checkout.Session.CreateParamsLineItemPriceData = (  # type: ignore
+        dict
+    )
     stripe.checkout.Session.create = Recorder()  # type: ignore
     stripe.checkout.Session.create.url = Recorder()  # type: ignore
     monkeypatch.setattr("app.views.order.stripe", stripe)
