@@ -1179,19 +1179,21 @@ flask = "*"
 
 [[package]]
 name = "flask-debugtoolbar"
-version = "0.13.1"
+version = "0.14.1"
 description = "A toolbar overlay for debugging Flask applications."
 optional = false
 python-versions = ">=2.7"
 files = [
-    {file = "Flask-DebugToolbar-0.13.1.tar.gz", hash = "sha256:0c26aa013a9813b8886857bf0ec24d28ab494114a264baf06c951cadc4dd0dae"},
-    {file = "Flask_DebugToolbar-0.13.1-py3-none-any.whl", hash = "sha256:491c737f321830c06a2835784acf1fc8488fd257a0ef318810b3b6bed5f600d5"},
+    {file = "Flask-DebugToolbar-0.14.1.tar.gz", hash = "sha256:ccd6a72119ea4f7c486823591b2b2f4a14dc7fb38d6bd495272e0ebdc08724cd"},
+    {file = "Flask_DebugToolbar-0.14.1-py3-none-any.whl", hash = "sha256:3b938b02c418ac86fc18431f484dcd459f24acf3d0c1e72131c06413863bcf04"},
 ]
 
 [package.dependencies]
 Blinker = "*"
 Flask = ">=0.8"
 itsdangerous = "*"
+MarkupSafe = "*"
+packaging = "*"
 werkzeug = "*"
 
 [[package]]
@@ -3669,4 +3671,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "a9510a23b54158aaaf48da340703b8e921b8a465a3fcf0dd57c0b55a7083ee15"
+content-hash = "00f44af0d8ffa4f8950343a55ed5982cb15966d4dcb7a35cb57cc71cb8bb3eab"
