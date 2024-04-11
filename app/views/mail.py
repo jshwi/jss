@@ -4,6 +4,7 @@ app.views.mail
 
 Setup app's mailer.
 """
+
 from __future__ import annotations
 
 from threading import Thread

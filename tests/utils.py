@@ -4,6 +4,7 @@ tests.utils
 
 Utilities for testing.
 """
+
 # pylint: disable=too-few-public-methods,invalid-name
 # pylint: disable=too-many-instance-attributes,too-many-arguments
 from __future__ import annotations

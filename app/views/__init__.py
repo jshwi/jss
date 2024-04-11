@@ -11,6 +11,7 @@ an outgoing response.
 ``Flask`` can also go the other direction and generate a URL to view
 based on its name and arguments.
 """
+
 from datetime import datetime
 
 from bs4 import BeautifulSoup
