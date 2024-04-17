@@ -3405,13 +3405,13 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "stripe"
-version = "9.1.0"
+version = "9.2.0"
 description = "Python bindings for the Stripe API"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "stripe-9.1.0-py2.py3-none-any.whl", hash = "sha256:fd1783f79af109138f96c886db21aadb388cba3731ae404451d3e0fa08291b5b"},
-    {file = "stripe-9.1.0.tar.gz", hash = "sha256:e9cb74f42e0a5bb345b0412071a03d070edda0fc6120a97543eb0e1afff285b8"},
+    {file = "stripe-9.2.0-py2.py3-none-any.whl", hash = "sha256:f5e75709d0271917fbb4c16864d5a33ac1d0ae3d277907aadf6c3e4f7562a706"},
+    {file = "stripe-9.2.0.tar.gz", hash = "sha256:bc4f522fe6afa2b9a7cb1820d7ead6d90fdf0a5e6bc6a1a463becfd970a11e22"},
 ]
 
 [package.dependencies]
@@ -3672,4 +3672,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "90a03d19dcdf39811a13e24d0851eec854bd849378568afa76609abc45113ba4"
+content-hash = "04b26a601b9359edabf897519de52516a0cd49753dfb19677b818a10b42d7291"
