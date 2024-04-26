@@ -1179,22 +1179,25 @@ flask = "*"
 
 [[package]]
 name = "flask-debugtoolbar"
-version = "0.14.1"
+version = "0.15.0"
 description = "A toolbar overlay for debugging Flask applications."
 optional = false
-python-versions = ">=2.7"
+python-versions = ">=3.7"
 files = [
-    {file = "Flask-DebugToolbar-0.14.1.tar.gz", hash = "sha256:ccd6a72119ea4f7c486823591b2b2f4a14dc7fb38d6bd495272e0ebdc08724cd"},
-    {file = "Flask_DebugToolbar-0.14.1-py3-none-any.whl", hash = "sha256:3b938b02c418ac86fc18431f484dcd459f24acf3d0c1e72131c06413863bcf04"},
+    {file = "Flask_DebugToolbar-0.15.0-py3-none-any.whl", hash = "sha256:ca9e3e3ec0c955238c55ec4c8bb1e3ae39862c8251f6fefc110ecb85e2328c1a"},
+    {file = "flask_debugtoolbar-0.15.0.tar.gz", hash = "sha256:191ad326a447dfe1516196b3474c84b9800b5feafa99aad8149c52525ab347fb"},
 ]
 
 [package.dependencies]
 Blinker = "*"
-Flask = ">=0.8"
+Flask = ">=2.2.0"
 itsdangerous = "*"
 MarkupSafe = "*"
 packaging = "*"
 werkzeug = "*"
+
+[package.extras]
+docs = ["Pallets-Sphinx-Themes", "Sphinx (>=1.2.2)"]
 
 [[package]]
 name = "flask-login"
@@ -3672,4 +3675,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "bfc5caddf26ade0858b8a01f26c749e49107e0dcb325920ec650ebd816baae5e"
+content-hash = "5034668c7a0a9c394a5b6d9d167e0bfac228f856de4427177c0051550bd05f00"
