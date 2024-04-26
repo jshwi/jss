@@ -157,7 +157,7 @@ def readme() -> None:
             )
 
     markdown.write_text(
-        "# Languages\n\n{}".format("\n".join(sorted(languages))),
+        f"# Languages\n\n{'\\n'.join(sorted(languages))}",
         encoding="utf-8",
     )
     print("readme written successfully")
