@@ -64,7 +64,7 @@ FROM backend-builder AS dev-backend-builder
 RUN poetry install --no-root --no-ansi
 
 # ========================= Frontend Builder ===========================
-FROM node:21 AS frontend-builder
+FROM node:22 AS frontend-builder
 
 # copy over files needed to compile static assets
 COPY ./webpack.config.js ./package.json ./package-lock.json ./
