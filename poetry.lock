@@ -3336,18 +3336,18 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "sqlalchemy-continuum"
-version = "1.4.1"
+version = "1.4.2"
 description = "Versioning and auditing extension for SQLAlchemy."
 optional = false
 python-versions = "*"
 files = [
-    {file = "SQLAlchemy-Continuum-1.4.1.tar.gz", hash = "sha256:e01646cdfbfd6b31a21b0aeba6bbff661258d5be8477c7500cab3a1c74848e6e"},
-    {file = "SQLAlchemy_Continuum-1.4.1-py3-none-any.whl", hash = "sha256:f884ab36b1be724ecba867f21557f8f4658c1fb9dee6df8fe9a39b63d485bdd5"},
+    {file = "SQLAlchemy_Continuum-1.4.2-py3-none-any.whl", hash = "sha256:154588d79deb8b1683b5f39c130e6f0ad793c0b2f27e8c210565c23fb6fe74de"},
+    {file = "sqlalchemy_continuum-1.4.2.tar.gz", hash = "sha256:0fd2be79f718eda47c2206879d92ec4ebf1889364637b3caf3ee5d34bd19c8e3"},
 ]
 
 [package.dependencies]
-SQLAlchemy = ">=1.4.0,<=2.0.21"
-SQLAlchemy-Utils = ">=0.30.12"
+SQLAlchemy = ">=1.4.0"
+SQLAlchemy-Utils = ">=0.41.2"
 
 [package.extras]
 flask = ["Flask (>=0.9)"]
@@ -3672,4 +3672,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "bfc5caddf26ade0858b8a01f26c749e49107e0dcb325920ec650ebd816baae5e"
+content-hash = "38881b7e2b7559b9735fb3efc9c4fe65b2aef0661038f4731cd87dc0377c170b"
