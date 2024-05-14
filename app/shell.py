@@ -4,6 +4,7 @@ app.shell
 
 Define attributes regarding use of ``flask shell``.
 """
+
 from flask import Flask
 
 from app.models import Message, Notification, Post, Task, User, Usernames, db

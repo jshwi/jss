@@ -24,6 +24,7 @@ Registers:
     * Blueprints containing routing logic
     * This app's interactive shell
 """
+
 from flask import Flask
 
 from app import cli, config, exceptions, extensions, fs, log, shell, views

@@ -5,6 +5,7 @@ app.config
 Most configuration is set via environment variables as per
 https://12factor.net/config:
 """
+
 # pylint: disable=too-many-public-methods,invalid-name
 from __future__ import annotations
 

@@ -4,6 +4,7 @@ app.cli.lexers
 
 Commands related to language syntax.
 """
+
 from __future__ import annotations
 
 import re

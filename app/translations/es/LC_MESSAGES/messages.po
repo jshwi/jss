@@ -42,7 +42,7 @@ msgid "Logout"
 msgstr "Cerrar sesión"
 
 #: app/templates/auth/register.html:6 app/templates/navbar.html:131
-#: app/views/forms.py:45
+#: app/views/forms.py:46
 msgid "Register"
 msgstr "Registrarse"
 
@@ -78,7 +78,7 @@ msgstr "Próximo"
 msgid "Upload favicon"
 msgstr "Subir favicon"
 
-#: app/templates/auth/login.html:6 app/views/forms.py:79
+#: app/templates/auth/login.html:6 app/views/forms.py:80
 msgid "Sign In"
 msgstr "Ingresar"
 
@@ -112,7 +112,7 @@ msgstr ""
 "Ingrese su correo electrónico para recibir un enlace de restablecimiento "
 "de contraseña"
 
-#: app/templates/auth/reset_password.html:6 app/views/forms.py:114
+#: app/templates/auth/reset_password.html:6 app/views/forms.py:115
 msgid "Reset Password"
 msgstr "Restablecer la contraseña"
 
@@ -230,93 +230,93 @@ msgstr "Mensajes"
 msgid "Send Message to"
 msgstr "Enviar mensaje a"
 
-#: app/views/forms.py:35 app/views/forms.py:76
+#: app/views/forms.py:36 app/views/forms.py:77
 msgid "Username"
 msgstr "Nombre de usuario"
 
-#: app/views/forms.py:38 app/views/forms.py:102
+#: app/views/forms.py:39 app/views/forms.py:103
 msgid "Email"
 msgstr "Email"
 
-#: app/views/forms.py:40 app/views/forms.py:77 app/views/forms.py:109
+#: app/views/forms.py:41 app/views/forms.py:78 app/views/forms.py:110
 msgid "Password"
 msgstr "Contraseña"
 
-#: app/views/forms.py:42 app/views/forms.py:111
+#: app/views/forms.py:43 app/views/forms.py:112
 msgid "Confirm Password"
 msgstr "Confirmar Contraseña"
 
-#: app/views/forms.py:57
+#: app/views/forms.py:58
 msgid "Username is taken"
 msgstr "Se toma el nombre de usuario"
 
-#: app/views/forms.py:69
+#: app/views/forms.py:70
 msgid "A user with this email address is already registered"
 msgstr "Un usuario con esta dirección de correo electrónico ya está registrado"
 
-#: app/views/forms.py:78
+#: app/views/forms.py:79
 msgid "Remember Me"
 msgstr "Recordarme"
 
-#: app/views/forms.py:85
+#: app/views/forms.py:86
 msgid "Title"
 msgstr "Título"
 
-#: app/views/forms.py:87
+#: app/views/forms.py:88
 msgid "Body"
 msgstr "Cuerpo"
 
-#: app/views/forms.py:89 app/views/forms.py:96 app/views/forms.py:124
-#: app/views/forms.py:130 app/views/forms.py:139
+#: app/views/forms.py:90 app/views/forms.py:97 app/views/forms.py:125
+#: app/views/forms.py:131 app/views/forms.py:140
 msgid "Submit"
 msgstr "Presentar"
 
-#: app/views/forms.py:95
+#: app/views/forms.py:96
 msgid "File"
 msgstr "Archivo"
 
-#: app/views/forms.py:103
+#: app/views/forms.py:104
 msgid "Request Password Reset"
 msgstr "Petición para la recuperación de contraseña"
 
-#: app/views/forms.py:112
+#: app/views/forms.py:113
 msgid "password"
 msgstr "contraseña"
 
-#: app/views/forms.py:120
+#: app/views/forms.py:121
 msgid "username"
 msgstr "uombre de usuario"
 
-#: app/views/forms.py:122
+#: app/views/forms.py:123
 msgid "About me"
 msgstr "Acerca de mí"
 
-#: app/views/forms.py:137
+#: app/views/forms.py:138
 msgid "Message"
 msgstr "Mensaje"
 
-#: app/views/redirect.py:42
+#: app/views/redirect.py:43
 msgid "Account already confirmed. Please login."
 msgstr "Cuenta ya confirmada. Por favor Iniciar sesión."
 
-#: app/views/redirect.py:48
+#: app/views/redirect.py:49
 msgid "Your account has been verified."
 msgstr "Tu cuenta ha sido verificada."
 
-#: app/views/redirect.py:51
+#: app/views/redirect.py:52
 msgid "The confirmation link is invalid or has expired."
 msgstr "El enlace de confirmación no es válido o ha caducado."
 
-#: app/views/redirect.py:78
+#: app/views/redirect.py:79
 msgid "A new confirmation email has been sent."
 msgstr "Se ha enviado un nuevo correo electrónico de confirmación."
 
-#: app/views/redirect.py:100
+#: app/views/redirect.py:101
 #, python-format
 msgid "You are now following %(username)s"
 msgstr "Ahora estás siguiendo a %(username)s"
 
-#: app/views/redirect.py:123
+#: app/views/redirect.py:124
 #, python-format
 msgid "You are no longer following %(username)s"
 msgstr "Ya no sigues a %(username)s"
