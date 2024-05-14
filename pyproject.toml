@@ -54,7 +54,10 @@ omit = [
 ]
 
 [tool.deptry]
-ignore_unused = [
+exclude = ['migrations\/.*', 'tests\/.*']
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
   "Jinja2",
   "email-validator",
   "gunicorn",
