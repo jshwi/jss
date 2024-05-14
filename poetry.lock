@@ -1246,17 +1246,17 @@ Flask-SQLAlchemy = ">=1.0"
 
 [[package]]
 name = "flask-misaka"
-version = "1.0.0"
+version = "1.0.1"
 description = "A pleasant interface between the Flask web framework and the Misaka Markdown parser."
 optional = false
 python-versions = "*"
 files = [
-    {file = "Flask-Misaka-1.0.0.tar.gz", hash = "sha256:f423c3beb5502742a57330a272f81d53223f6f99d45cc45b03926e3a3034f589"},
-    {file = "Flask_Misaka-1.0.0-py3-none-any.whl", hash = "sha256:d0cfb0efd9e5afacda76defd4a605a68390f4fb1bef283c71534fd3ce0d3efb5"},
+    {file = "Flask-Misaka-1.0.1.tar.gz", hash = "sha256:5dc58780b79666c107bdd301764b658d56a97a22af06e716b281d641a98a29fa"},
+    {file = "Flask_Misaka-1.0.1-py3-none-any.whl", hash = "sha256:10a39185b4d3f1bd306ff827deb8d20c8121176e6b26c3d962c15845655f43ce"},
 ]
 
 [package.dependencies]
-Flask = ">=0.7"
+markupsafe = "*"
 misaka = ">=2.0,<3.0"
 
 [[package]]
@@ -3692,4 +3692,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "97ef7b9792cf348efbf39d38c25a2d895f72665075c74fd8a378f27a0d44a6fb"
+content-hash = "b07de56f532f18c5ae40eb7b6a7f3fe9a5a2d8f4e5688fb928adbb436acebe26"
