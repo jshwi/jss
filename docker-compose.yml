@@ -20,7 +20,7 @@ x-development: &development
     SHOW_PAYMENT: ${SHOW_PAYMENT:-0}
     STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-stripe_secret_key}
     PAYMENT_OPTIONS: ${PAYMENT_OPTIONS:-price=20000,per=hour}
-  image: jss-development:1.36.2
+  image: jss-development:1.36.3
   volumes:
     - ./app:/home/jss/app/
     - ./migrations:/home/jss/migrations/
@@ -35,7 +35,7 @@ x-development: &development
       DATABASE_URL: "postgresql://jss:jss@test-postgres:5432/jss"
       SQL_HOST: "test-postgres"
       SQL_PORT: "5432"
-    image: jss-testing:1.36.2
+    image: jss-testing:1.36.3
     volumes:
       - ./app:/home/jss/app/
       - ./migrations:/home/jss/migrations/
@@ -123,7 +123,7 @@ services:
       - "SEND_FILE_MAX_AGE_DEFAULT"
     expose:
       - 5000
-    image: jss-production:1.36.2
+    image: jss-production:1.36.3
     volumes:
       - static_volume:/home/jss/app/static/
 
@@ -132,7 +132,7 @@ services:
       context: .
       target: nginx
     container_name: jss-nginx
-    image: jss-nginx:1.36.2
+    image: jss-nginx:1.36.3
     ports:
       - "80:80"
       - "443:443"
