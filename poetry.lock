@@ -1312,13 +1312,13 @@ sqlalchemy = ">=1.4.18"
 
 [[package]]
 name = "flask-static-digest"
-version = "0.4.0"
+version = "0.4.1"
 description = "Flask extension for md5 tagging and compressing (gzip / brotli) static files."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Static-Digest-0.4.0.tar.gz", hash = "sha256:52d89e52d77dbc63949d365e597109f382bc6d600fa59bbf2347bddd7ae4ddeb"},
-    {file = "Flask_Static_Digest-0.4.0-py3-none-any.whl", hash = "sha256:7464fbc4b07f9ae980d30a35d876cc4a92d28a4626db6ea1110eace8963b296f"},
+    {file = "Flask_Static_Digest-0.4.1-py3-none-any.whl", hash = "sha256:72bed5f614bcb57a81d2ebf6aa9ee3158a6057114b441ee791340b2c0df962b1"},
+    {file = "flask_static_digest-0.4.1.tar.gz", hash = "sha256:a6b38e953a4cfaac092e0ae40feea82a4f098bfac50969cefc48d4a9e7492e14"},
 ]
 
 [package.dependencies]
@@ -3627,4 +3627,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "cb0a23f72e7294d90d53165e086eb8aa94eb5cf23a734f9f398bba681cf1a5fb"
+content-hash = "ac1e2b9b9b78b4ee18aca0a37423838bc37486b33f711d2ca953122d0278dfba"
