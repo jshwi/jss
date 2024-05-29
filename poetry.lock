@@ -1235,18 +1235,21 @@ misaka = ">=2.0,<3.0"
 
 [[package]]
 name = "flask-moment"
-version = "1.0.5"
+version = "1.0.6"
 description = "Formatting of dates and times in Flask templates using moment.js."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Moment-1.0.5.tar.gz", hash = "sha256:33307ecd4af8290b6df6a9828ff55ac0977d0567817f9bc0f69803d22ed2b55c"},
-    {file = "Flask_Moment-1.0.5-py3-none-any.whl", hash = "sha256:6e7b3eef89e2137bbbee975405f241a68a44edfa34bf052c92d84364992adca6"},
+    {file = "Flask_Moment-1.0.6-py3-none-any.whl", hash = "sha256:3ae8baea20a41e99f457b9710ecd1368911dd5133f09a27583eb0dcb3491e31d"},
+    {file = "flask_moment-1.0.6.tar.gz", hash = "sha256:2f8969907cbacde4a88319792e8f920ba5c9dd9d99ced2346cad563795302b88"},
 ]
 
 [package.dependencies]
 Flask = "*"
 packaging = ">=14.1"
+
+[package.extras]
+docs = ["sphinx"]
 
 [[package]]
 name = "flask-pagedown"
@@ -3675,4 +3678,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "ac1e2b9b9b78b4ee18aca0a37423838bc37486b33f711d2ca953122d0278dfba"
+content-hash = "155e38fba18878855f38d784ab9777fc075c40ebfca48a9dda37e448b764fd92"
