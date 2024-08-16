@@ -3395,13 +3395,13 @@ files = [
 
 [[package]]
 name = "stripe"
-version = "10.6.0"
+version = "10.8.0"
 description = "Python bindings for the Stripe API"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "stripe-10.6.0-py2.py3-none-any.whl", hash = "sha256:97290ba8b57b32b3782adf654e080011f9ff331f81d7c3fa182cb1c0270b9467"},
-    {file = "stripe-10.6.0.tar.gz", hash = "sha256:41ccb0ada5928d89530ed06d17a71bfbf5f4ea4f2324e30d8d636a2ab7180a74"},
+    {file = "stripe-10.8.0-py2.py3-none-any.whl", hash = "sha256:cf2f4ae56bf9230e17f4e98741de919382e66f9eba8a5bcf1244ce5f4966c7c9"},
+    {file = "stripe-10.8.0.tar.gz", hash = "sha256:2b49a6a4b403209c1df98d19e8b8392ba17d841399ac82a25b5b0894c1efae5f"},
 ]
 
 [package.dependencies]
@@ -3774,4 +3774,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "58793f36cd3fa851ec5a31d9390cc73ec69c39b36ba4e43b78116fc3466562aa"
+content-hash = "4ee82aab861db90051de31effe1b5809dbc21d08b771a25491e435a9b5fd074c"
