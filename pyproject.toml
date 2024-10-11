@@ -162,7 +162,7 @@ pytest-flakefinder = "^1.1.0"
 pytest-randomly = "^3.13.0"
 pytest-xdist = "^3.3.1"
 sphinx-immaterial = "^0.11.14"
-sphinx-toolbox = "^3.7.0"
+sphinx-toolbox = "^3.8.1"
 templatest = "^0.10.1"
 
 [tool.pyaud]
