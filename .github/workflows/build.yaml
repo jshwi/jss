@@ -36,7 +36,7 @@ jobs:
           cache: poetry
       - name: Setup Node
         id: setup-node
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
