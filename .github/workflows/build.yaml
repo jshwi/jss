@@ -60,4 +60,4 @@ jobs:
         run: docker compose build
       - name: Upload coverage
         id: upload-coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
