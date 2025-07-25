@@ -146,7 +146,7 @@ gunicorn = "^22.0.0"
 itsdangerous = "^2.2.0"
 psycopg2 = "^2.9.7"
 python = "^3.8"
-stripe = "^9.6.0"
+stripe = "^12.3.0"
 tomli = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
