@@ -22,7 +22,7 @@
     "bootstrap-icons": "^1.11.3",
     "bootstrap4-toggle": "^3.6.1",
     "darkreader": "^4.9.85",
-    "highlight.js": "^11.10.0",
+    "highlight.js": "^11.11.1",
     "jest-environment-jsdom": "^29.7.0",
     "jquery": "^3.7.1",
     "moment": "^2.30.1"
