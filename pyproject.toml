@@ -184,15 +184,15 @@ audit = [
   "unused"
 ]
 exclude = '''
-  (?x)^(
-    | poetry\.lock
-    | package-lock\.json
-    | migrations\/.*
-    | \.bumpversion\.cfg
-    | docs\/conf\.py
-    | whitelist\.py
-    | wsgi\.py
-  )$
+(?x)^(
+  | poetry\.lock
+  | package-lock\.json
+  | migrations\/.*
+  | \.bumpversion\.cfg
+  | docs\/conf\.py
+  | whitelist\.py
+  | wsgi\.py
+)$
 '''
 
 [tool.pytest.ini_options]
