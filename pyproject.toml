@@ -61,6 +61,7 @@ DEP002 = [
   "Jinja2",
   "email-validator",
   "gunicorn",
+  "marshmallow",
   "psycopg2"
 ]
 
@@ -144,6 +145,7 @@ flask-sitemap = "^0.4.0"
 flask-talisman = "^1.1.0"
 gunicorn = "^22.0.0"
 itsdangerous = "^2.2.0"
+marshmallow = "3.19.0"
 psycopg2 = "^2.9.7"
 python = "^3.8"
 stripe = "^12.3.0"
