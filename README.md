@@ -9,7 +9,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jshwi/jss/master.svg)](https://results.pre-commit.ci/latest/github/jshwi/jss/master)
 [![codecov.io](https://codecov.io/gh/jshwi/jss/branch/master/graph/badge.svg)](https://codecov.io/gh/jshwi/jss)
 [![readthedocs.org](https://readthedocs.org/projects/jss/badge/?version=latest)](https://jss.readthedocs.io/en/latest/?badge=latest)
-[![python3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380)
+[![python3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390)
 [![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![docformatter](https://img.shields.io/badge/%20formatter-docformatter-fedcba.svg)](https://github.com/PyCQA/docformatter)

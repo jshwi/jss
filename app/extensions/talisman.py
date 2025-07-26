@@ -95,7 +95,7 @@ class Talisman(_Talisman):  # pylint: disable=too-few-public-methods
     """
 
     # pylint: disable=dangerous-default-value,too-many-arguments
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-positional-arguments
     def init_app(
         self,
         app: Flask,

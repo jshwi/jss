@@ -1391,6 +1391,7 @@ def test_admin_access_without_login(client: FlaskClient) -> None:
     )
 
 
+# pylint: disable=too-many-positional-arguments
 @pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "method,data,bad_route",
@@ -1857,6 +1858,7 @@ def test_version_dropdown(
         assert i in response.data.decode()
 
 
+# pylint: disable=too-many-positional-arguments
 @pytest.mark.usefixtures(INIT_DB)
 @pytest.mark.parametrize(
     "route,test_object,method",

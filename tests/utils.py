@@ -37,7 +37,7 @@ class UserTestObject(TestObject):
     :param confirmed: Is user confirmed? True or False.
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         username: str,
         email: str,
