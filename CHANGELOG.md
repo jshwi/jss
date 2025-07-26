@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased](https://github.com/jshwi/jss/compare/v1.36.6...HEAD)
 ------------------------------------------------------------------------
+### Fixed
+- add .python-version for build
 
 [1.36.6](https://github.com/jshwi/jss/releases/tag/v1.36.6) - 2025-07-26
 ------------------------------------------------------------------------
