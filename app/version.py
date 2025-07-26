@@ -8,4 +8,4 @@ Allows for access to the version internally without cyclic imports
 caused by accessing it through __init__.
 """
 
-__version__ = "1.36.6"
+__version__ = "1.36.7"
