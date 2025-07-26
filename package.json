@@ -203,5 +203,5 @@
     "webpack:prod": "NODE_ENV=production webpack",
     "webpack:watch": "NODE_ENV=development webpack --watch --progress"
   },
-  "version": "1.36.7"
+  "version": "1.37.0"
 }
