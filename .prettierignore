@@ -1,4 +1,5 @@
 .mypy_cache/
+.pre-commit-config.yaml
 .pytest_cache/
 CHANGELOG.md
 app/static
