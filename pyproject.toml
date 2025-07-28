@@ -163,7 +163,7 @@ pytest = "^8.3.5"
 pytest-flakefinder = "^1.1.0"
 pytest-randomly = "^3.13.0"
 pytest-xdist = "^3.3.1"
-sphinx-immaterial = "^0.11.14"
+sphinx-immaterial = "^0.12.5"
 sphinx-toolbox = "^4.0.0"
 templatest = "^0.10.1"
 
