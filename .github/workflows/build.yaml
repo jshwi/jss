@@ -55,9 +55,6 @@ jobs:
       - name: Build
         id: build
         run: npm run webpack:prod
-      - name: Docker
-        id: docker
-        run: docker compose build
       - name: Upload coverage
         id: upload-coverage
         uses: codecov/codecov-action@v4
