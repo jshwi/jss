@@ -22,7 +22,7 @@ from app.models import User
 
 
 def admin_required(
-    view: t.Callable[..., str | Response]
+    view: t.Callable[..., str | Response],
 ) -> t.Callable[..., str | Response]:
     """Handle views that require an admin be signed in.
 
@@ -47,7 +47,7 @@ def admin_required(
 
 
 def authorization_required(
-    view: t.Callable[..., str | Response]
+    view: t.Callable[..., str | Response],
 ) -> t.Callable[..., str | Response]:
     """Handle views that require an authorized user be signed in.
 
@@ -70,7 +70,7 @@ def authorization_required(
 
 
 def confirmation_required(
-    view: t.Callable[..., str | Response]
+    view: t.Callable[..., str | Response],
 ) -> t.Callable[..., str | Response]:
     """Handle views that require a verified logged-in user.
 
