@@ -3192,14 +3192,14 @@ typing-extensions = {version = ">=4.13.2", markers = "python_version < \"3.13\""
 
 [[package]]
 name = "requests"
-version = "2.32.4"
+version = "2.32.5"
 description = "Python HTTP for Humans."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
-    {file = "requests-2.32.4-py3-none-any.whl", hash = "sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c"},
-    {file = "requests-2.32.4.tar.gz", hash = "sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422"},
+    {file = "requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6"},
+    {file = "requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf"},
 ]
 
 [package.dependencies]
@@ -3501,7 +3501,6 @@ description = "Sphinx directive to add unselectable prompt"
 optional = false
 python-versions = ">=3.9,<4.0"
 groups = ["dev"]
-markers = "python_version < \"3.11\""
 files = [
     {file = "sphinx_prompt-1.8.0-py3-none-any.whl", hash = "sha256:369ecc633f0711886f9b3a078c83264245be1adf46abeeb9b88b5519e4b51007"},
     {file = "sphinx_prompt-1.8.0.tar.gz", hash = "sha256:47482f86fcec29662fdfd23e7c04ef03582714195d01f5d565403320084372ed"},
@@ -3511,29 +3510,6 @@ files = [
 docutils = "*"
 pygments = "*"
 Sphinx = ">=7.0.0,<8.0.0"
-
-[[package]]
-name = "sphinx-prompt"
-version = "1.10.0"
-description = "Sphinx directive to add unselectable prompt"
-optional = false
-python-versions = ">=3.11"
-groups = ["dev"]
-markers = "python_version >= \"3.11\""
-files = [
-    {file = "sphinx_prompt-1.10.0-py3-none-any.whl", hash = "sha256:d62f7a1aa346225d30222a271dc78997031204a5f199ce5006c14ece0d94b217"},
-    {file = "sphinx_prompt-1.10.0.tar.gz", hash = "sha256:23dca4c07ade840c9e87089d79d3499040fa524b3c422941427454e215fdd111"},
-]
-
-[package.dependencies]
-certifi = "*"
-docutils = "*"
-idna = "*"
-jinja2 = "*"
-pygments = "*"
-requests = "2.32.4"
-Sphinx = "*"
-urllib3 = "*"
 
 [[package]]
 name = "sphinx-tabs"
