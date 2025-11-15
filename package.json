@@ -16,7 +16,7 @@
     "url": "https://github.com/jshwi/jss/issues"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^7.0.0",
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.13.1",
