@@ -151,7 +151,7 @@ python = "^3.9"
 stripe = "^12.3.0"
 tomli = "^2.0.1"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 bump2version = "^1.0.1"
 deptry = "^0.18.0"
 flask-shell-ipython = "^0.5.1"
