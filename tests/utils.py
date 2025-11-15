@@ -151,7 +151,9 @@ class AuthActions:
         :return: href tag parsed from HTML.
         """
         return str(
-            BeautifulSoup(html, features="html.parser").find("a")["href"]
+            BeautifulSoup(html, features="html.parser").find(  # type: ignore
+                "a"
+            )["href"]
         )
 
     def follow_token_route(
