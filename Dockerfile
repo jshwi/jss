@@ -1,5 +1,5 @@
 # =============================== Base =================================
-FROM python:3.12-alpine AS base
+FROM python:3.14.1-alpine AS base
 
 ARG USER=jss
 ARG WORKDIR=/home/$USER
