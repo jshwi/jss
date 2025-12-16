@@ -1,3 +1,7 @@
+# Status: Archived
+
+This repository has been archived and is no longer maintained
+
 <!--suppress HtmlDeprecatedAttribute -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/jshwi/jss/master/assets/img/safari-pinned-tab.svg" alt="jss" width="30%"/>
