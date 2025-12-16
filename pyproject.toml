@@ -164,7 +164,7 @@ pytest-flakefinder = "^1.1.0"
 pytest-randomly = "^4.0.1"
 pytest-xdist = "^3.3.1"
 sphinx-immaterial = "^0.11.14"
-sphinx-toolbox = "^4.0.0"
+sphinx-toolbox = "^4.1.0"
 templatest = "^0.10.1"
 
 [tool.pyaud]
